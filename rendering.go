@@ -11,6 +11,7 @@ import (
 	"text/template"
 )
 
+// Render the documentation, return a slice of index entries.
 func renderDocs(
 	docFileName string,
 	relPath string,
