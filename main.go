@@ -1,6 +1,7 @@
 package main
 
 import (
+	_ "embed"
 	"fmt"
 	"go/ast"
 	"go/parser"
@@ -23,68 +24,8 @@ type PageData struct {
 	Functions   []Function
 }
 
-const tmpl = `<!DOCTYPE html>
-<html lang="en" data-theme="dark">
-<head>
-	<meta charset="UTF-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	<title>{{.PackageName}} Docs</title>
-	<link href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css" rel="stylesheet">
-	<style>
-		html { font-size: 13px; }
-		body {
-			font-family: 'Fira Code', monospace;
-			padding: 1rem;
-			margin: 0 auto;
-			max-width: 960px;
-		}
-		h1 {
-			font-size: 1.4rem;
-			margin-bottom: 1rem;
-		}
-		h2 {
-			font-size: 1rem;
-			margin: 0.3rem 0 0.2rem;
-		}
-		p {
-			margin: 0 0 0.3rem;
-			line-height: 1.3;
-		}
-		pre {
-			background: #1e1e1e;
-			color: #dcdcdc;
-			padding: 0.4rem 0.6rem;
-			border-radius: 6px;
-			margin: 0 0 1rem;
-			font-size: 0.85rem;
-			overflow-x: auto;
-		}
-		code {
-			color: #ffcc66;
-			white-space: pre-wrap;
-		}
-		article {
-			margin-bottom: 0.5rem;
-			padding: 0.4rem 0.6rem;
-			background: #2c2c2c;
-			border-radius: 6px;
-			box-shadow: 0 0 3px rgba(0,0,0,0.3);
-		}
-	</style>
-</head>
-<body>
-	<main>
-		<h1>Package <code>{{.PackageName}}</code> Documentation</h1>
-		{{range .Functions}}
-			<article>
-				<h2>{{.Name}}</h2>
-				{{if .Doc}}<p>{{.Doc}}</p>{{end}}
-				<pre><code>{{.FullSig}}</code></pre>
-			</article>
-		{{end}}
-	</main>
-</body>
-</html>`
+//go:embed views/template.html
+var tmpl string
 
 func main() {
 	if len(os.Args) < 2 {
