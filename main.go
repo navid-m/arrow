@@ -10,6 +10,7 @@ import (
 	"os"
 	"path/filepath"
 	"strings"
+	"sync"
 	"text/template"
 )
 
@@ -25,17 +26,20 @@ func main() {
 		return
 	}
 
-	var (
-		srcPath      = os.Args[1]
-		fset         = token.NewFileSet()
-		docDir       = filepath.Join(".", "docs")
-		indexEntries []models.IndexEntry
-	)
+	srcPath := os.Args[1]
+	fset := token.NewFileSet()
+	docDir := filepath.Join(".", "docs")
 
 	if err := os.MkdirAll(docDir, 0755); err != nil {
 		fmt.Printf("Failed to create docs directory: %v\n", err)
 		return
 	}
+
+	var (
+		indexEntries []models.IndexEntry
+		mu           sync.Mutex
+		wg           sync.WaitGroup
+	)
 
 	err := filepath.Walk(srcPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil || !info.IsDir() {
@@ -50,17 +54,26 @@ func main() {
 			return nil
 		}
 
-		var (
-			relPath, _  = filepath.Rel(srcPath, path)
-			docFileName = strings.ReplaceAll(relPath, string(filepath.Separator), "_")
-		)
+		relPath, _ := filepath.Rel(srcPath, path)
+		docFileName := strings.ReplaceAll(relPath, string(filepath.Separator), "_")
 		if docFileName == "." || docFileName == "" {
 			docFileName = "main"
 		}
 
-		indexEntries = getIndexEntries(docFileName, indexEntries, relPath, pkgs, docDir, srcPath)
+		wg.Add(1)
+		go func(docFileName, relPath string, pkgs map[string]*ast.Package) {
+			defer wg.Done()
+			entries := renderDocs(docFileName, relPath, pkgs, docDir, srcPath)
+
+			mu.Lock()
+			indexEntries = append(indexEntries, entries...)
+			mu.Unlock()
+		}(docFileName, relPath, pkgs)
+
 		return nil
 	})
+
+	wg.Wait()
 
 	if err != nil {
 		panic(err)
@@ -80,19 +93,18 @@ func main() {
 	}
 }
 
-func getIndexEntries(
+func renderDocs(
 	docFileName string,
-	indexEntries []models.IndexEntry,
 	relPath string,
 	pkgs map[string]*ast.Package,
 	docDir string,
 	srcPath string,
 ) []models.IndexEntry {
 	docFile := fmt.Sprintf("%s-docs.html", docFileName)
-	indexEntries = append(indexEntries, models.IndexEntry{
+	indexEntry := models.IndexEntry{
 		PackageName: relPath,
 		DocFile:     docFile,
-	})
+	}
 
 	for pkgName, pkg := range pkgs {
 		pageData := models.PageData{PackageName: pkgName}
@@ -104,10 +116,10 @@ func getIndexEntries(
 					subPkgPath := filepath.Join(relPath, item.Name())
 					goFiles, _ := filepath.Glob(filepath.Join(srcPath, subPkgPath, "*.go"))
 					if len(goFiles) > 0 {
-						docFileName := strings.ReplaceAll(subPkgPath, string(filepath.Separator), "_") + "-docs.html"
+						subDocFile := strings.ReplaceAll(subPkgPath, string(filepath.Separator), "_") + "-docs.html"
 						pageData.SubPackages = append(pageData.SubPackages, models.IndexEntry{
 							PackageName: item.Name(),
-							DocFile:     docFileName,
+							DocFile:     subDocFile,
 						})
 					}
 				}
@@ -231,7 +243,7 @@ func getIndexEntries(
 
 		fmt.Printf("Generated %s\n", outFile)
 	}
-	return indexEntries
+	return []models.IndexEntry{indexEntry}
 }
 
 // Extract fields from the function signature
