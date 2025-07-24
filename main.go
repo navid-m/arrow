@@ -58,7 +58,7 @@ func main() {
 			docFileName = "main"
 		}
 
-		indexEntries = getIndexEntries(docFileName, indexEntries, relPath, pkgs, docDir)
+		indexEntries = getIndexEntries(docFileName, indexEntries, relPath, pkgs, docDir, srcPath)
 		return nil
 	})
 
@@ -86,6 +86,7 @@ func getIndexEntries(
 	relPath string,
 	pkgs map[string]*ast.Package,
 	docDir string,
+	srcPath string,
 ) []models.IndexEntry {
 	docFile := fmt.Sprintf("%s-docs.html", docFileName)
 	indexEntries = append(indexEntries, models.IndexEntry{
@@ -95,6 +96,23 @@ func getIndexEntries(
 
 	for pkgName, pkg := range pkgs {
 		pageData := models.PageData{PackageName: pkgName}
+
+		subItems, err := os.ReadDir(filepath.Join(srcPath, relPath))
+		if err == nil {
+			for _, item := range subItems {
+				if item.IsDir() {
+					subPkgPath := filepath.Join(relPath, item.Name())
+					goFiles, _ := filepath.Glob(filepath.Join(srcPath, subPkgPath, "*.go"))
+					if len(goFiles) > 0 {
+						docFileName := strings.ReplaceAll(subPkgPath, string(filepath.Separator), "_") + "-docs.html"
+						pageData.SubPackages = append(pageData.SubPackages, models.IndexEntry{
+							PackageName: item.Name(),
+							DocFile:     docFileName,
+						})
+					}
+				}
+			}
+		}
 
 		for _, file := range pkg.Files {
 			for _, decl := range file.Decls {

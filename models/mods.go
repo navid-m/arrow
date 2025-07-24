@@ -25,6 +25,7 @@ type PageData struct {
 	Functions   []Function
 	Structs     []Struct
 	Globals     []Global
+	SubPackages []IndexEntry
 }
 
 type IndexEntry struct {
