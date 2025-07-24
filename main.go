@@ -32,37 +32,58 @@ type PageData struct {
 	Structs     []Struct
 }
 
+type IndexEntry struct {
+	PackageName string
+	DocFile     string
+}
+
 //go:embed views/template.html
 var tmpl string
+
+//go:embed views/index.html
+var indexTmpl string
 
 func main() {
 	if len(os.Args) < 2 {
 		fmt.Println("Usage: arrow <path-to-go-source>")
 		return
 	}
-	var (
-		srcPath = os.Args[1]
-		fset    = token.NewFileSet()
-	)
+
+	srcPath := os.Args[1]
+	fset := token.NewFileSet()
+	docDir := filepath.Join(".", "docs")
+
+	if err := os.MkdirAll(docDir, 0755); err != nil {
+		fmt.Printf("Failed to create docs directory: %v\n", err)
+		return
+	}
+
+	var indexEntries []IndexEntry
+
 	err := filepath.Walk(srcPath, func(path string, info os.FileInfo, err error) error {
-		if err != nil {
+		if err != nil || !info.IsDir() {
 			return err
-		}
-		if !info.IsDir() {
-			return nil
 		}
 
 		pkgs, err := parser.ParseDir(fset, path, func(fi os.FileInfo) bool {
 			return strings.HasSuffix(fi.Name(), ".go")
 		}, parser.ParseComments)
 
-		if err != nil {
+		if err != nil || len(pkgs) == 0 {
 			return nil
 		}
 
-		if len(pkgs) == 0 {
-			return nil
+		relPath, _ := filepath.Rel(srcPath, path)
+		docFileName := strings.ReplaceAll(relPath, string(filepath.Separator), "_")
+		if docFileName == "." || docFileName == "" {
+			docFileName = "main"
 		}
+
+		docFile := fmt.Sprintf("%s-docs.html", docFileName)
+		indexEntries = append(indexEntries, IndexEntry{
+			PackageName: relPath,
+			DocFile:     docFile,
+		})
 
 		for pkgName, pkg := range pkgs {
 			pageData := PageData{PackageName: pkgName}
@@ -136,7 +157,7 @@ func main() {
 				}
 			}
 
-			outFile := filepath.Join(path, fmt.Sprintf("%s-docs.html", pkgName))
+			outFile := filepath.Join(docDir, docFile)
 			f, err := os.Create(outFile)
 			if err != nil {
 				fmt.Printf("Failed to create %s: %v\n", outFile, err)
@@ -151,12 +172,24 @@ func main() {
 
 			fmt.Printf("Generated %s\n", outFile)
 		}
-
 		return nil
 	})
 
 	if err != nil {
 		panic(err)
+	}
+
+	indexFile := filepath.Join(docDir, "index.html")
+	f, err := os.Create(indexFile)
+	if err != nil {
+		fmt.Printf("Failed to create index.html: %v\n", err)
+		return
+	}
+	defer f.Close()
+
+	t := template.Must(template.New("index").Parse(indexTmpl))
+	if err := t.Execute(f, indexEntries); err != nil {
+		fmt.Printf("Error creating index: %v\n", err)
 	}
 }
 
