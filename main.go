@@ -88,7 +88,22 @@ func main() {
 	defer f.Close()
 
 	t := template.Must(template.New("index").Parse(indexTmpl))
-	if err := t.Execute(f, indexEntries); err != nil {
+	wd, err := os.Getwd()
+	if err != nil {
+		fmt.Printf("Failed to get working directory: %v\n", err)
+		return
+	}
+	workingDirName := filepath.Base(wd)
+
+	data := struct {
+		IndexEntries   []models.IndexEntry
+		WorkingDirName string
+	}{
+		IndexEntries:   indexEntries,
+		WorkingDirName: workingDirName,
+	}
+
+	if err := t.Execute(f, data); err != nil {
 		fmt.Printf("Error creating index: %v\n", err)
 	}
 }
