@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+   <head>
+      <meta charset="UTF-8" />
+      <meta
+         name="viewport"
+         content="width=device-width, initial-scale=1.0"
+      />
+      <title>Docs - cacheprog</title>
+      <link
+         href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
+         rel="stylesheet"
+      />
+      <style>
+         html {
+            font-size: 13px;
+         }
+         body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+         }
+         .sidebar {
+            width: 200px;
+            background: rgba(59, 56, 56, 0.1);
+            padding: 1.2rem;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            overflow-y: auto;
+            margin-right: 7px;
+         }
+         main {
+            flex: 0.9;
+            padding: 1rem;
+            margin: 0;
+            max-width: calc(100% - 220px);
+         }
+         h1 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+         }
+         h2 {
+            font-size: 1.2rem;
+            margin: 0.3rem 0 0.2rem;
+         }
+         pre {
+            background: #1e1e1e;
+            color: #dcdcdc;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            margin: 0 0 1rem;
+            font-size: 0.85rem;
+            overflow-x: auto;
+         }
+         code {
+            color: #f0dbdb;
+            white-space: pre-wrap;
+         }
+         p {
+            font-size: 15px;
+            padding-top: 10px;
+         }
+         article {
+            margin-bottom: 0.5rem;
+            padding: 0.4rem 0.9rem;
+            background: rgba(59, 56, 56, 0.5);
+            border-radius: 10px;
+            max-width: 99%;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+         }
+         .hidden {
+            display: none;
+         }
+         .filter-toggle label {
+            display: block;
+            margin-bottom: 0.5rem;
+         }
+         .field-line {
+            display: block;
+         }
+      </style>
+   </head>
+   <body>
+      <aside class="sidebar">
+         <a href="index.html">⌂</a>
+         |
+         <a href="#" onclick="history.back()">←</a>
+         <hr style="opacity: 0" />
+         <h2>Filters</h2>
+         <hr />
+         <input
+            type="search"
+            id="searchInput"
+            placeholder="Search symbols..."
+            style="
+               width: 100%;
+               margin-bottom: 1rem;
+               margin-top: 0.8rem;
+               border-radius: 10px !important;
+               height: 50px;
+               height: 2.5rem;
+            "
+         />
+         <div class="filter-toggle">
+            <label>
+               <input type="checkbox" id="showPrivateFunctions" />
+               Show private functions
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateStructs" />
+               Show private structs
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateFields" />
+               Show private struct fields
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateGlobals" />
+               Show private globals
+            </label>
+         </div>
+         <hr style="opacity: 0" />
+         <h2 style="padding-top: 5px">Subpackages</h2>
+         <hr />
+         
+         <span style="color: rgba(177, 175, 175, 0.5)">
+            No subpackages
+         </span>
+         
+      </aside>
+      <main>
+         <h1>
+            Package
+            <code>cacheprog</code>
+         </h1>
+         <hr />
+         
+         <article class="global" data-name="CmdPut">
+            <h2>CmdPut</h2>
+            <hr />
+            
+            <p>CmdPut tells the cache program to store an object in the cache.
+
+[Request.ActionID] is the cache key of this object. The cache should
+store [Request.OutputID] and [Request.Body] under this key for a
+later "get" request. It must also store the Body in a file in the local
+file system and return the path to that file in [Response.DiskPath],
+which must exist at least until a "close" request.</p>
+            
+            <pre><code>CmdPut</code></pre>
+         </article>
+         
+         <article class="global" data-name="CmdGet">
+            <h2>CmdGet</h2>
+            <hr />
+            
+            <p>CmdGet tells the cache program to retrieve an object from the cache.
+
+[Request.ActionID] specifies the key of the object to get. If the
+cache does not contain this object, it should set [Response.Miss] to
+true. Otherwise, it should populate the fields of [Response],
+including setting [Response.OutputID] to the OutputID of the original
+"put" request and [Response.DiskPath] to the path of a local file
+containing the Body of the original "put" request. That file must
+continue to exist at least until a "close" request.</p>
+            
+            <pre><code>CmdGet</code></pre>
+         </article>
+         
+         <article class="global" data-name="CmdClose">
+            <h2>CmdClose</h2>
+            <hr />
+            
+            <p>CmdClose requests that the cache program exit gracefully.
+
+The cache program should reply to this request and then exit
+(thus closing its stdout).</p>
+            
+            <pre><code>CmdClose</code></pre>
+         </article>
+          
+         <article class="struct" data-name="Request">
+            <h2>type Request struct</h2>
+            <hr />
+            
+            <p>Request is the JSON-encoded message that's sent from the go command to
+the GOCACHEPROG child process over stdin. Each JSON object is on its own
+line. A ProgRequest of Type "put" with BodySize > 0 will be followed by a
+line containing a base64-encoded JSON string literal of the body.</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">ID int64
+Command Cmd
+ActionID []byte
+OutputID []byte
+Body io.Reader
+BodySize int64
+ObjectID []byte</code></pre>
+         </article>
+         
+         <article class="struct" data-name="Response">
+            <h2>type Response struct</h2>
+            <hr />
+            
+            <p>Response is the JSON response from the child process to the go command.
+
+With the exception of the first protocol message that the child writes to its
+stdout with ID==0 and KnownCommands populated, these are only sent in
+response to a Request from the go command.
+
+Responses can be sent in any order. The ID must match the request they're
+replying to.</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">ID int64
+Err string
+KnownCommands []Cmd
+Miss bool
+OutputID []byte
+Size int64
+Time *time.Time
+DiskPath string</code></pre>
+         </article>
+          
+      </main>
+      <script>
+         function isPrivate(name) {
+            return /^[a-z]/.test(name);
+         }
+         document.addEventListener("DOMContentLoaded", () => {
+            const toggles = {
+               functions: document.getElementById("showPrivateFunctions"),
+               structs: document.getElementById("showPrivateStructs"),
+               fields: document.getElementById("showPrivateFields"),
+               globals: document.getElementById("showPrivateGlobals"),
+            };
+            const hideInitial = (selector, toggle) => {
+               document.querySelectorAll(selector).forEach((el) => {
+                  const name = el.dataset.name;
+                  if (isPrivate(name)) {
+                     el.classList.add("private", "hidden");
+                  }
+               });
+               toggle.addEventListener("change", () => {
+                  const show = toggle.checked;
+                  document
+                     .querySelectorAll(`${selector}.private`)
+                     .forEach((el) => {
+                        el.classList.toggle("hidden", !show);
+                     });
+               });
+            };
+            hideInitial("article.function", toggles.functions);
+            hideInitial("article.struct", toggles.structs);
+            hideInitial("article.global", toggles.globals);
+            document
+               .querySelectorAll("article.struct")
+               .forEach((article) => {
+                  const codeBlock =
+                     article.querySelector("code.fields-code");
+                  if (!codeBlock) return;
+                  const lines = codeBlock.innerText.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
+                        );
+                        if (!nameMatch)
+                           return `<span class=\"field-line\">${line}</span>`;
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class=\"field-line${
+                           isPriv ? " hidden private" : ""
+                        }\" data-name=\"${name}\">${line}</span>`;
+                     })
+                     .join("");
+                  codeBlock.innerHTML = newContent;
+                  toggles.fields.addEventListener("change", () => {
+                     const show = toggles.fields.checked;
+                     article
+                        .querySelectorAll(".field-line.private")
+                        .forEach((el) =>
+                           el.classList.toggle("hidden", !show)
+                        );
+                  });
+               });
+            const searchInput = document.getElementById("searchInput");
+            searchInput.addEventListener("input", () => {
+               const query = searchInput.value.trim().toLowerCase();
+               document.querySelectorAll("article").forEach((el) => {
+                  const name = el.dataset.name.toLowerCase();
+                  if (query === "" || name.includes(query)) {
+                     el.classList.remove("hidden");
+                  } else {
+                     el.classList.add("hidden");
+                  }
+               });
+            });
+         });
+      </script>
+   </body>
+</html>

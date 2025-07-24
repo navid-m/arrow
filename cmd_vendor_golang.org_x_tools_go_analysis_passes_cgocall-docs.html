@@ -1,0 +1,385 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+   <head>
+      <meta charset="UTF-8" />
+      <meta
+         name="viewport"
+         content="width=device-width, initial-scale=1.0"
+      />
+      <title>Docs - cgocall</title>
+      <link
+         href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
+         rel="stylesheet"
+      />
+      <style>
+         html {
+            font-size: 13px;
+         }
+         body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+         }
+         .sidebar {
+            width: 200px;
+            background: rgba(59, 56, 56, 0.1);
+            padding: 1.2rem;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            overflow-y: auto;
+            margin-right: 7px;
+         }
+         main {
+            flex: 0.9;
+            padding: 1rem;
+            margin: 0;
+            max-width: calc(100% - 220px);
+         }
+         h1 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+         }
+         h2 {
+            font-size: 1.2rem;
+            margin: 0.3rem 0 0.2rem;
+         }
+         pre {
+            background: #1e1e1e;
+            color: #dcdcdc;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            margin: 0 0 1rem;
+            font-size: 0.85rem;
+            overflow-x: auto;
+         }
+         code {
+            color: #f0dbdb;
+            white-space: pre-wrap;
+         }
+         p {
+            font-size: 15px;
+            padding-top: 10px;
+         }
+         article {
+            margin-bottom: 0.5rem;
+            padding: 0.4rem 0.9rem;
+            background: rgba(59, 56, 56, 0.5);
+            border-radius: 10px;
+            max-width: 99%;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+         }
+         .hidden {
+            display: none;
+         }
+         .filter-toggle label {
+            display: block;
+            margin-bottom: 0.5rem;
+         }
+         .field-line {
+            display: block;
+         }
+      </style>
+   </head>
+   <body>
+      <aside class="sidebar">
+         <a href="index.html">⌂</a>
+         |
+         <a href="#" onclick="history.back()">←</a>
+         <hr style="opacity: 0" />
+         <h2>Filters</h2>
+         <hr />
+         <input
+            type="search"
+            id="searchInput"
+            placeholder="Search symbols..."
+            style="
+               width: 100%;
+               margin-bottom: 1rem;
+               margin-top: 0.8rem;
+               border-radius: 10px !important;
+               height: 50px;
+               height: 2.5rem;
+            "
+         />
+         <div class="filter-toggle">
+            <label>
+               <input type="checkbox" id="showPrivateFunctions" />
+               Show private functions
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateStructs" />
+               Show private structs
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateFields" />
+               Show private struct fields
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateGlobals" />
+               Show private globals
+            </label>
+         </div>
+         <hr style="opacity: 0" />
+         <h2 style="padding-top: 5px">Subpackages</h2>
+         <hr />
+         
+         <span style="color: rgba(177, 175, 175, 0.5)">
+            No subpackages
+         </span>
+         
+      </aside>
+      <main>
+         <h1>
+            Package
+            <code>cgocall</code>
+         </h1>
+         <hr />
+         
+         <article class="global" data-name="debug">
+            <h2>debug</h2>
+            <hr />
+            
+            <pre><code>debug</code></pre>
+         </article>
+         
+         <article class="global" data-name="Doc">
+            <h2>Doc</h2>
+            <hr />
+            
+            <pre><code>Doc</code></pre>
+         </article>
+         
+         <article class="global" data-name="Analyzer">
+            <h2>Analyzer</h2>
+            <hr />
+            
+            <pre><code>Analyzer</code></pre>
+         </article>
+           
+         <article class="function" data-name="run">
+            <h2>run</h2>
+            <hr />
+            
+            <pre><code>func run(pass *analysis.Pass) (*ast.InterfaceType, error)</code></pre>
+         </article>
+         
+         <article class="function" data-name="checkCgo">
+            <h2>checkCgo</h2>
+            <hr />
+            
+            <pre><code>func checkCgo(fset *token.FileSet, f *ast.File, info *types.Info, reportf func)</code></pre>
+         </article>
+         
+         <article class="function" data-name="typeCheckCgoSourceFiles">
+            <h2>typeCheckCgoSourceFiles</h2>
+            <hr />
+            
+            <p>typeCheckCgoSourceFiles returns type-checked syntax trees for the raw
+cgo files of a package (those that import "C"). Such files are not
+Go, so there may be gaps in type information around C.f references.
+
+This checker was initially written in vet to inspect raw cgo source
+files using partial type information. However, Analyzers in the new
+analysis API are presented with the type-checked, "cooked" Go ASTs
+resulting from cgo-processing files, so we must choose between
+working with the cooked file generated by cgo (which was tried but
+proved fragile) or locating the raw cgo file (e.g. from //line
+directives) and working with that, as we now do.
+
+Specifically, we must type-check the raw cgo source files (or at
+least the subtrees needed for this analyzer) in an environment that
+simulates the rest of the already type-checked package.
+
+For example, for each raw cgo source file in the original package,
+such as this one:
+
+	package p
+	import "C"
+	import "fmt"
+	type T int
+	const k = 3
+	var x, y = fmt.Println()
+	func f() { ... }
+	func g() { ... C.malloc(k) ... }
+	func (T) f(int) string { ... }
+
+we synthesize a new ast.File, shown below, that dot-imports the
+original "cooked" package using a special name ("·this·"), so that all
+references to package members resolve correctly. (References to
+unexported names cause an "unexported" error, which we ignore.)
+
+To avoid shadowing names imported from the cooked package,
+package-level declarations in the new source file are modified so
+that they do not declare any names.
+(The cgocall analysis is concerned with uses, not declarations.)
+Specifically, type declarations are discarded;
+all names in each var and const declaration are blanked out;
+each method is turned into a regular function by turning
+the receiver into the first parameter;
+and all functions are renamed to "_".
+
+	package p
+	import . "·this·" // declares T, k, x, y, f, g, T.f
+	import "C"
+	import "fmt"
+	const _ = 3
+	var _, _ = fmt.Println()
+	func _() { ... }
+	func _() { ... C.malloc(k) ... }
+	func _(T, int) string { ... }
+
+In this way, the raw function bodies and const/var initializer
+expressions are preserved but refer to the "cooked" objects imported
+from "·this·", and none of the transformed package-level declarations
+actually declares anything. In the example above, the reference to k
+in the argument of the call to C.malloc resolves to "·this·".k, which
+has an accurate type.
+
+This approach could in principle be generalized to more complex
+analyses on raw cgo files. One could synthesize a "C" package so that
+C.f would resolve to "·this·"._C_func_f, for example. But we have
+limited ourselves here to preserving function bodies and initializer
+expressions since that is all that the cgocall analyzer needs.</p>
+            
+            <pre><code>func typeCheckCgoSourceFiles(fset *token.FileSet, pkg *types.Package, files []*ast.File, info *types.Info, sizes types.Sizes) ([]*ast.File, *types.Info, error)</code></pre>
+         </article>
+         
+         <article class="function" data-name="cgoBaseType">
+            <h2>cgoBaseType</h2>
+            <hr />
+            
+            <p>cgoBaseType tries to look through type conversions involving
+unsafe.Pointer to find the real type. It converts:
+
+	unsafe.Pointer(x) => x
+	*(*unsafe.Pointer)(unsafe.Pointer(&x)) => x</p>
+            
+            <pre><code>func cgoBaseType(info *types.Info, arg ast.Expr) types.Type</code></pre>
+         </article>
+         
+         <article class="function" data-name="typeOKForCgoCall">
+            <h2>typeOKForCgoCall</h2>
+            <hr />
+            
+            <p>typeOKForCgoCall reports whether the type of arg is OK to pass to a
+C function using cgo. This is not true for Go types with embedded
+pointers. m is used to avoid infinite recursion on recursive types.</p>
+            
+            <pre><code>func typeOKForCgoCall(t types.Type, m *ast.MapType) bool</code></pre>
+         </article>
+         
+         <article class="function" data-name="isUnsafePointer">
+            <h2>isUnsafePointer</h2>
+            <hr />
+            
+            <pre><code>func isUnsafePointer(info *types.Info, e ast.Expr) bool</code></pre>
+         </article>
+         
+         <article class="function" data-name="Import">
+            <h2>Import</h2>
+            <hr />
+            
+            <pre><code>func Import(path string) (*types.Package, error)</code></pre>
+         </article>
+         
+         <article class="function" data-name="imported">
+            <h2>imported</h2>
+            <hr />
+            
+            <p>TODO(adonovan): make this a library function or method of Info.</p>
+            
+            <pre><code>func imported(info *types.Info, spec *ast.ImportSpec) *types.Package</code></pre>
+         </article>
+         
+         <article class="function" data-name="setGoVersion">
+            <h2>setGoVersion</h2>
+            <hr />
+            
+            <pre><code>func setGoVersion(tc *types.Config, pkg *types.Package)</code></pre>
+         </article>
+         
+         <article class="function" data-name="setGoVersion">
+            <h2>setGoVersion</h2>
+            <hr />
+            
+            <pre><code>func setGoVersion(tc *types.Config, pkg *types.Package)</code></pre>
+         </article>
+         
+      </main>
+      <script>
+         function isPrivate(name) {
+            return /^[a-z]/.test(name);
+         }
+         document.addEventListener("DOMContentLoaded", () => {
+            const toggles = {
+               functions: document.getElementById("showPrivateFunctions"),
+               structs: document.getElementById("showPrivateStructs"),
+               fields: document.getElementById("showPrivateFields"),
+               globals: document.getElementById("showPrivateGlobals"),
+            };
+            const hideInitial = (selector, toggle) => {
+               document.querySelectorAll(selector).forEach((el) => {
+                  const name = el.dataset.name;
+                  if (isPrivate(name)) {
+                     el.classList.add("private", "hidden");
+                  }
+               });
+               toggle.addEventListener("change", () => {
+                  const show = toggle.checked;
+                  document
+                     .querySelectorAll(`${selector}.private`)
+                     .forEach((el) => {
+                        el.classList.toggle("hidden", !show);
+                     });
+               });
+            };
+            hideInitial("article.function", toggles.functions);
+            hideInitial("article.struct", toggles.structs);
+            hideInitial("article.global", toggles.globals);
+            document
+               .querySelectorAll("article.struct")
+               .forEach((article) => {
+                  const codeBlock =
+                     article.querySelector("code.fields-code");
+                  if (!codeBlock) return;
+                  const lines = codeBlock.innerText.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
+                        );
+                        if (!nameMatch)
+                           return `<span class=\"field-line\">${line}</span>`;
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class=\"field-line${
+                           isPriv ? " hidden private" : ""
+                        }\" data-name=\"${name}\">${line}</span>`;
+                     })
+                     .join("");
+                  codeBlock.innerHTML = newContent;
+                  toggles.fields.addEventListener("change", () => {
+                     const show = toggles.fields.checked;
+                     article
+                        .querySelectorAll(".field-line.private")
+                        .forEach((el) =>
+                           el.classList.toggle("hidden", !show)
+                        );
+                  });
+               });
+            const searchInput = document.getElementById("searchInput");
+            searchInput.addEventListener("input", () => {
+               const query = searchInput.value.trim().toLowerCase();
+               document.querySelectorAll("article").forEach((el) => {
+                  const name = el.dataset.name.toLowerCase();
+                  if (query === "" || name.includes(query)) {
+                     el.classList.remove("hidden");
+                  } else {
+                     el.classList.add("hidden");
+                  }
+               });
+            });
+         });
+      </script>
+   </body>
+</html>

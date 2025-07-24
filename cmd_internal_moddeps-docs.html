@@ -1,0 +1,324 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+   <head>
+      <meta charset="UTF-8" />
+      <meta
+         name="viewport"
+         content="width=device-width, initial-scale=1.0"
+      />
+      <title>Docs - moddeps_test</title>
+      <link
+         href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
+         rel="stylesheet"
+      />
+      <style>
+         html {
+            font-size: 13px;
+         }
+         body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+         }
+         .sidebar {
+            width: 200px;
+            background: rgba(59, 56, 56, 0.1);
+            padding: 1.2rem;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            overflow-y: auto;
+            margin-right: 7px;
+         }
+         main {
+            flex: 0.9;
+            padding: 1rem;
+            margin: 0;
+            max-width: calc(100% - 220px);
+         }
+         h1 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+         }
+         h2 {
+            font-size: 1.2rem;
+            margin: 0.3rem 0 0.2rem;
+         }
+         pre {
+            background: #1e1e1e;
+            color: #dcdcdc;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            margin: 0 0 1rem;
+            font-size: 0.85rem;
+            overflow-x: auto;
+         }
+         code {
+            color: #f0dbdb;
+            white-space: pre-wrap;
+         }
+         p {
+            font-size: 15px;
+            padding-top: 10px;
+         }
+         article {
+            margin-bottom: 0.5rem;
+            padding: 0.4rem 0.9rem;
+            background: rgba(59, 56, 56, 0.5);
+            border-radius: 10px;
+            max-width: 99%;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+         }
+         .hidden {
+            display: none;
+         }
+         .filter-toggle label {
+            display: block;
+            margin-bottom: 0.5rem;
+         }
+         .field-line {
+            display: block;
+         }
+      </style>
+   </head>
+   <body>
+      <aside class="sidebar">
+         <a href="index.html">⌂</a>
+         |
+         <a href="#" onclick="history.back()">←</a>
+         <hr style="opacity: 0" />
+         <h2>Filters</h2>
+         <hr />
+         <input
+            type="search"
+            id="searchInput"
+            placeholder="Search symbols..."
+            style="
+               width: 100%;
+               margin-bottom: 1rem;
+               margin-top: 0.8rem;
+               border-radius: 10px !important;
+               height: 50px;
+               height: 2.5rem;
+            "
+         />
+         <div class="filter-toggle">
+            <label>
+               <input type="checkbox" id="showPrivateFunctions" />
+               Show private functions
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateStructs" />
+               Show private structs
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateFields" />
+               Show private struct fields
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateGlobals" />
+               Show private globals
+            </label>
+         </div>
+         <hr style="opacity: 0" />
+         <h2 style="padding-top: 5px">Subpackages</h2>
+         <hr />
+         
+         <span style="color: rgba(177, 175, 175, 0.5)">
+            No subpackages
+         </span>
+         
+      </aside>
+      <main>
+         <h1>
+            Package
+            <code>moddeps_test</code>
+         </h1>
+         <hr />
+         
+         <article class="global" data-name="goroot">
+            <h2>goroot</h2>
+            <hr />
+            
+            <p>goroot caches the list of modules found in the GOROOT source tree.</p>
+            
+            <pre><code>goroot *ast.StructType</code></pre>
+         </article>
+          
+         <article class="struct" data-name="runner">
+            <h2>type runner struct</h2>
+            <hr />
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">Dir string
+Env []string</code></pre>
+         </article>
+         
+         <article class="struct" data-name="gorootModule">
+            <h2>type gorootModule struct</h2>
+            <hr />
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">Path string
+Dir string
+hasVendor bool</code></pre>
+         </article>
+          
+         <article class="function" data-name="TestAllDependencies">
+            <h2>TestAllDependencies</h2>
+            <hr />
+            
+            <p>TestAllDependencies ensures dependencies of all
+modules in GOROOT are in a consistent state.
+
+In short mode, it does a limited quick check and stops there.
+In long mode, it also makes a copy of the entire GOROOT tree
+and requires network access to perform more thorough checks.
+Keep this distinction in mind when adding new checks.
+
+See issues 36852, 41409, and 43687.
+(Also see golang.org/issue/27348.)</p>
+            
+            <pre><code>func TestAllDependencies(t *testing.T)</code></pre>
+         </article>
+         
+         <article class="function" data-name="packagePattern">
+            <h2>packagePattern</h2>
+            <hr />
+            
+            <p>packagePattern returns a package pattern that matches all packages
+in the module modulePath, and ideally as few others as possible.</p>
+            
+            <pre><code>func packagePattern(modulePath string) string</code></pre>
+         </article>
+         
+         <article class="function" data-name="makeGOROOTCopy">
+            <h2>makeGOROOTCopy</h2>
+            <hr />
+            
+            <p>makeGOROOTCopy makes a temporary copy of the current GOROOT tree.
+The goal is to allow the calling test t to safely mutate a GOROOT
+copy without also modifying the original GOROOT.
+
+It copies the entire tree as is, with the exception of the GOROOT/.git
+directory, which is skipped, and the GOROOT/{bin,pkg} directories,
+which are symlinked. This is done for speed, since a GOROOT tree is
+functional without being in a Git repository, and bin and pkg are
+deemed safe to share for the purpose of the TestAllDependencies test.</p>
+            
+            <pre><code>func makeGOROOTCopy(t *testing.T) string</code></pre>
+         </article>
+         
+         <article class="function" data-name="run">
+            <h2>run</h2>
+            <hr />
+            
+            <p>run runs the command and requires that it succeeds.</p>
+            
+            <pre><code>func run(t *testing.T, args ...string)</code></pre>
+         </article>
+         
+         <article class="function" data-name="TestDependencyVersionsConsistent">
+            <h2>TestDependencyVersionsConsistent</h2>
+            <hr />
+            
+            <p>TestDependencyVersionsConsistent verifies that each module in GOROOT that
+requires a given external dependency requires the same version of that
+dependency.
+
+This property allows us to maintain a single release branch of each such
+dependency, minimizing the number of backports needed to pull in critical
+fixes. It also ensures that any bug detected and fixed in one GOROOT module
+(such as "std") is fixed in all other modules (such as "cmd") as well.</p>
+            
+            <pre><code>func TestDependencyVersionsConsistent(t *testing.T)</code></pre>
+         </article>
+         
+         <article class="function" data-name="findGorootModules">
+            <h2>findGorootModules</h2>
+            <hr />
+            
+            <p>findGorootModules returns the list of modules found in the GOROOT source tree.</p>
+            
+            <pre><code>func findGorootModules(t *testing.T) []gorootModule</code></pre>
+         </article>
+         
+      </main>
+      <script>
+         function isPrivate(name) {
+            return /^[a-z]/.test(name);
+         }
+         document.addEventListener("DOMContentLoaded", () => {
+            const toggles = {
+               functions: document.getElementById("showPrivateFunctions"),
+               structs: document.getElementById("showPrivateStructs"),
+               fields: document.getElementById("showPrivateFields"),
+               globals: document.getElementById("showPrivateGlobals"),
+            };
+            const hideInitial = (selector, toggle) => {
+               document.querySelectorAll(selector).forEach((el) => {
+                  const name = el.dataset.name;
+                  if (isPrivate(name)) {
+                     el.classList.add("private", "hidden");
+                  }
+               });
+               toggle.addEventListener("change", () => {
+                  const show = toggle.checked;
+                  document
+                     .querySelectorAll(`${selector}.private`)
+                     .forEach((el) => {
+                        el.classList.toggle("hidden", !show);
+                     });
+               });
+            };
+            hideInitial("article.function", toggles.functions);
+            hideInitial("article.struct", toggles.structs);
+            hideInitial("article.global", toggles.globals);
+            document
+               .querySelectorAll("article.struct")
+               .forEach((article) => {
+                  const codeBlock =
+                     article.querySelector("code.fields-code");
+                  if (!codeBlock) return;
+                  const lines = codeBlock.innerText.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
+                        );
+                        if (!nameMatch)
+                           return `<span class=\"field-line\">${line}</span>`;
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class=\"field-line${
+                           isPriv ? " hidden private" : ""
+                        }\" data-name=\"${name}\">${line}</span>`;
+                     })
+                     .join("");
+                  codeBlock.innerHTML = newContent;
+                  toggles.fields.addEventListener("change", () => {
+                     const show = toggles.fields.checked;
+                     article
+                        .querySelectorAll(".field-line.private")
+                        .forEach((el) =>
+                           el.classList.toggle("hidden", !show)
+                        );
+                  });
+               });
+            const searchInput = document.getElementById("searchInput");
+            searchInput.addEventListener("input", () => {
+               const query = searchInput.value.trim().toLowerCase();
+               document.querySelectorAll("article").forEach((el) => {
+                  const name = el.dataset.name.toLowerCase();
+                  if (query === "" || name.includes(query)) {
+                     el.classList.remove("hidden");
+                  } else {
+                     el.classList.add("hidden");
+                  }
+               });
+            });
+         });
+      </script>
+   </body>
+</html>

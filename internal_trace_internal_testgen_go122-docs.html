@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+   <head>
+      <meta charset="UTF-8" />
+      <meta
+         name="viewport"
+         content="width=device-width, initial-scale=1.0"
+      />
+      <title>Docs - testkit</title>
+      <link
+         href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
+         rel="stylesheet"
+      />
+      <style>
+         html {
+            font-size: 13px;
+         }
+         body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+         }
+         .sidebar {
+            width: 200px;
+            background: rgba(59, 56, 56, 0.1);
+            padding: 1.2rem;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            overflow-y: auto;
+            margin-right: 7px;
+         }
+         main {
+            flex: 0.9;
+            padding: 1rem;
+            margin: 0;
+            max-width: calc(100% - 220px);
+         }
+         h1 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+         }
+         h2 {
+            font-size: 1.2rem;
+            margin: 0.3rem 0 0.2rem;
+         }
+         pre {
+            background: #1e1e1e;
+            color: #dcdcdc;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            margin: 0 0 1rem;
+            font-size: 0.85rem;
+            overflow-x: auto;
+         }
+         code {
+            color: #f0dbdb;
+            white-space: pre-wrap;
+         }
+         p {
+            font-size: 15px;
+            padding-top: 10px;
+         }
+         article {
+            margin-bottom: 0.5rem;
+            padding: 0.4rem 0.9rem;
+            background: rgba(59, 56, 56, 0.5);
+            border-radius: 10px;
+            max-width: 99%;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+         }
+         .hidden {
+            display: none;
+         }
+         .filter-toggle label {
+            display: block;
+            margin-bottom: 0.5rem;
+         }
+         .field-line {
+            display: block;
+         }
+      </style>
+   </head>
+   <body>
+      <aside class="sidebar">
+         <a href="index.html">⌂</a>
+         |
+         <a href="#" onclick="history.back()">←</a>
+         <hr style="opacity: 0" />
+         <h2>Filters</h2>
+         <hr />
+         <input
+            type="search"
+            id="searchInput"
+            placeholder="Search symbols..."
+            style="
+               width: 100%;
+               margin-bottom: 1rem;
+               margin-top: 0.8rem;
+               border-radius: 10px !important;
+               height: 50px;
+               height: 2.5rem;
+            "
+         />
+         <div class="filter-toggle">
+            <label>
+               <input type="checkbox" id="showPrivateFunctions" />
+               Show private functions
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateStructs" />
+               Show private structs
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateFields" />
+               Show private struct fields
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateGlobals" />
+               Show private globals
+            </label>
+         </div>
+         <hr style="opacity: 0" />
+         <h2 style="padding-top: 5px">Subpackages</h2>
+         <hr />
+         
+         <span style="color: rgba(177, 175, 175, 0.5)">
+            No subpackages
+         </span>
+         
+      </aside>
+      <main>
+         <h1>
+            Package
+            <code>testkit</code>
+         </h1>
+         <hr />
+         
+         <article class="global" data-name="NoString">
+            <h2>NoString</h2>
+            <hr />
+            
+            <pre><code>NoString</code></pre>
+         </article>
+         
+         <article class="global" data-name="NoStack">
+            <h2>NoStack</h2>
+            <hr />
+            
+            <pre><code>NoStack</code></pre>
+         </article>
+          
+         <article class="struct" data-name="Trace">
+            <h2>type Trace struct</h2>
+            <hr />
+            
+            <p>Trace represents an execution trace for testing.
+
+It does a little bit of work to ensure that the produced trace is valid,
+just for convenience. It mainly tracks batches and batch sizes (so they're
+trivially correct), tracks strings and stacks, and makes sure emitted string
+and stack batches are valid. That last part can be controlled by a few options.
+
+Otherwise, it performs no validation on the trace at all.</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">ver version.Version
+names *ast.MapType
+specs []event.Spec
+events []raw.Event
+gens []*Generation
+validTimestamps bool
+bad bool
+badMatch *regexp.Regexp</code></pre>
+         </article>
+         
+         <article class="struct" data-name="stack">
+            <h2>type stack struct</h2>
+            <hr />
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">stk []trace.StackFrame
+len int</code></pre>
+         </article>
+         
+         <article class="struct" data-name="Generation">
+            <h2>type Generation struct</h2>
+            <hr />
+            
+            <p>Generation represents a single generation in the trace.</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">trace *Trace
+gen uint64
+batches []*Batch
+strings *ast.MapType
+stacks *ast.MapType
+ignoreStringBatchSizeLimit bool
+ignoreStackBatchSizeLimit bool</code></pre>
+         </article>
+         
+         <article class="struct" data-name="Batch">
+            <h2>type Batch struct</h2>
+            <hr />
+            
+            <p>Batch represents an event batch.</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">gen *Generation
+thread trace.ThreadID
+timestamp Time
+size uint64
+events []raw.Event</code></pre>
+         </article>
+          
+         <article class="function" data-name="Main">
+            <h2>Main</h2>
+            <hr />
+            
+            <pre><code>func Main(f func)</code></pre>
+         </article>
+         
+         <article class="function" data-name="NewTrace">
+            <h2>NewTrace</h2>
+            <hr />
+            
+            <p>NewTrace creates a new trace.</p>
+            
+            <pre><code>func NewTrace() *Trace</code></pre>
+         </article>
+         
+         <article class="function" data-name="ExpectFailure">
+            <h2>ExpectFailure</h2>
+            <hr />
+            
+            <p>ExpectFailure writes down that the trace should be broken. The caller
+must provide a pattern matching the expected error produced by the parser.</p>
+            
+            <pre><code>func ExpectFailure(pattern string)</code></pre>
+         </article>
+         
+         <article class="function" data-name="ExpectSuccess">
+            <h2>ExpectSuccess</h2>
+            <hr />
+            
+            <p>ExpectSuccess writes down that the trace should successfully parse.</p>
+            
+            <pre><code>func ExpectSuccess()</code></pre>
+         </article>
+         
+         <article class="function" data-name="RawEvent">
+            <h2>RawEvent</h2>
+            <hr />
+            
+            <p>RawEvent emits an event into the trace. name must correspond to one
+of the names in Specs() result for the version that was passed to
+this trace.</p>
+            
+            <pre><code>func RawEvent(typ event.Type, data []byte, args ...uint64)</code></pre>
+         </article>
+         
+         <article class="function" data-name="DisableTimestamps">
+            <h2>DisableTimestamps</h2>
+            <hr />
+            
+            <p>DisableTimestamps makes the timestamps for all events generated after
+this call zero. Raw events are exempted from this because the caller
+has to pass their own timestamp into those events anyway.</p>
+            
+            <pre><code>func DisableTimestamps()</code></pre>
+         </article>
+         
+         <article class="function" data-name="Generation">
+            <h2>Generation</h2>
+            <hr />
+            
+            <p>Generation creates a new trace generation.
+
+This provides more structure than Event to allow for more easily
+creating complex traces that are mostly or completely correct.</p>
+            
+            <pre><code>func Generation(gen uint64) *Generation</code></pre>
+         </article>
+         
+         <article class="function" data-name="Generate">
+            <h2>Generate</h2>
+            <hr />
+            
+            <p>Generate creates a test file for the trace.</p>
+            
+            <pre><code>func Generate() []byte</code></pre>
+         </article>
+         
+         <article class="function" data-name="createEvent">
+            <h2>createEvent</h2>
+            <hr />
+            
+            <pre><code>func createEvent(ev event.Type, data []byte, args ...uint64) raw.Event</code></pre>
+         </article>
+         
+         <article class="function" data-name="Batch">
+            <h2>Batch</h2>
+            <hr />
+            
+            <p>Batch starts a new event batch in the trace data.
+
+This is convenience function for generating correct batches.</p>
+            
+            <pre><code>func Batch(thread trace.ThreadID, time Time) *Batch</code></pre>
+         </article>
+         
+         <article class="function" data-name="String">
+            <h2>String</h2>
+            <hr />
+            
+            <p>String registers a string with the trace.
+
+This is a convenience function for easily adding correct
+strings to traces.</p>
+            
+            <pre><code>func String(s string) uint64</code></pre>
+         </article>
+         
+         <article class="function" data-name="Stack">
+            <h2>Stack</h2>
+            <hr />
+            
+            <p>Stack registers a stack with the trace.
+
+This is a convenience function for easily adding correct
+stacks to traces.</p>
+            
+            <pre><code>func Stack(stk []trace.StackFrame) uint64</code></pre>
+         </article>
+         
+         <article class="function" data-name="writeEventsTo">
+            <h2>writeEventsTo</h2>
+            <hr />
+            
+            <p>writeEventsTo emits event batches in the generation to tw.</p>
+            
+            <pre><code>func writeEventsTo(tw *raw.TextWriter)</code></pre>
+         </article>
+         
+         <article class="function" data-name="newStructuralBatch">
+            <h2>newStructuralBatch</h2>
+            <hr />
+            
+            <pre><code>func newStructuralBatch() *Batch</code></pre>
+         </article>
+         
+         <article class="function" data-name="Event">
+            <h2>Event</h2>
+            <hr />
+            
+            <p>Event emits an event into a batch. name must correspond to one
+of the names in Specs() result for the version that was passed to
+this trace. Callers must omit the timestamp delta.</p>
+            
+            <pre><code>func Event(name string, args ...any)</code></pre>
+         </article>
+         
+         <article class="function" data-name="uintArgFor">
+            <h2>uintArgFor</h2>
+            <hr />
+            
+            <pre><code>func uintArgFor(arg any, argSpec string) uint64</code></pre>
+         </article>
+         
+         <article class="function" data-name="RawEvent">
+            <h2>RawEvent</h2>
+            <hr />
+            
+            <p>RawEvent emits an event into a batch. name must correspond to one
+of the names in Specs() result for the version that was passed to
+this trace.</p>
+            
+            <pre><code>func RawEvent(typ event.Type, data []byte, args ...uint64)</code></pre>
+         </article>
+         
+         <article class="function" data-name="writeEventsTo">
+            <h2>writeEventsTo</h2>
+            <hr />
+            
+            <p>writeEventsTo emits events in the batch, including the batch header, to tw.</p>
+            
+            <pre><code>func writeEventsTo(tw *raw.TextWriter)</code></pre>
+         </article>
+         
+      </main>
+      <script>
+         function isPrivate(name) {
+            return /^[a-z]/.test(name);
+         }
+         document.addEventListener("DOMContentLoaded", () => {
+            const toggles = {
+               functions: document.getElementById("showPrivateFunctions"),
+               structs: document.getElementById("showPrivateStructs"),
+               fields: document.getElementById("showPrivateFields"),
+               globals: document.getElementById("showPrivateGlobals"),
+            };
+            const hideInitial = (selector, toggle) => {
+               document.querySelectorAll(selector).forEach((el) => {
+                  const name = el.dataset.name;
+                  if (isPrivate(name)) {
+                     el.classList.add("private", "hidden");
+                  }
+               });
+               toggle.addEventListener("change", () => {
+                  const show = toggle.checked;
+                  document
+                     .querySelectorAll(`${selector}.private`)
+                     .forEach((el) => {
+                        el.classList.toggle("hidden", !show);
+                     });
+               });
+            };
+            hideInitial("article.function", toggles.functions);
+            hideInitial("article.struct", toggles.structs);
+            hideInitial("article.global", toggles.globals);
+            document
+               .querySelectorAll("article.struct")
+               .forEach((article) => {
+                  const codeBlock =
+                     article.querySelector("code.fields-code");
+                  if (!codeBlock) return;
+                  const lines = codeBlock.innerText.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
+                        );
+                        if (!nameMatch)
+                           return `<span class=\"field-line\">${line}</span>`;
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class=\"field-line${
+                           isPriv ? " hidden private" : ""
+                        }\" data-name=\"${name}\">${line}</span>`;
+                     })
+                     .join("");
+                  codeBlock.innerHTML = newContent;
+                  toggles.fields.addEventListener("change", () => {
+                     const show = toggles.fields.checked;
+                     article
+                        .querySelectorAll(".field-line.private")
+                        .forEach((el) =>
+                           el.classList.toggle("hidden", !show)
+                        );
+                  });
+               });
+            const searchInput = document.getElementById("searchInput");
+            searchInput.addEventListener("input", () => {
+               const query = searchInput.value.trim().toLowerCase();
+               document.querySelectorAll("article").forEach((el) => {
+                  const name = el.dataset.name.toLowerCase();
+                  if (query === "" || name.includes(query)) {
+                     el.classList.remove("hidden");
+                  } else {
+                     el.classList.add("hidden");
+                  }
+               });
+            });
+         });
+      </script>
+   </body>
+</html>

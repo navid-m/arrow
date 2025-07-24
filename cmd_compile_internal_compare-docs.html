@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+   <head>
+      <meta charset="UTF-8" />
+      <meta
+         name="viewport"
+         content="width=device-width, initial-scale=1.0"
+      />
+      <title>Docs - compare</title>
+      <link
+         href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
+         rel="stylesheet"
+      />
+      <style>
+         html {
+            font-size: 13px;
+         }
+         body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+         }
+         .sidebar {
+            width: 200px;
+            background: rgba(59, 56, 56, 0.1);
+            padding: 1.2rem;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            overflow-y: auto;
+            margin-right: 7px;
+         }
+         main {
+            flex: 0.9;
+            padding: 1rem;
+            margin: 0;
+            max-width: calc(100% - 220px);
+         }
+         h1 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+         }
+         h2 {
+            font-size: 1.2rem;
+            margin: 0.3rem 0 0.2rem;
+         }
+         pre {
+            background: #1e1e1e;
+            color: #dcdcdc;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            margin: 0 0 1rem;
+            font-size: 0.85rem;
+            overflow-x: auto;
+         }
+         code {
+            color: #f0dbdb;
+            white-space: pre-wrap;
+         }
+         p {
+            font-size: 15px;
+            padding-top: 10px;
+         }
+         article {
+            margin-bottom: 0.5rem;
+            padding: 0.4rem 0.9rem;
+            background: rgba(59, 56, 56, 0.5);
+            border-radius: 10px;
+            max-width: 99%;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+         }
+         .hidden {
+            display: none;
+         }
+         .filter-toggle label {
+            display: block;
+            margin-bottom: 0.5rem;
+         }
+         .field-line {
+            display: block;
+         }
+      </style>
+   </head>
+   <body>
+      <aside class="sidebar">
+         <a href="index.html">⌂</a>
+         |
+         <a href="#" onclick="history.back()">←</a>
+         <hr style="opacity: 0" />
+         <h2>Filters</h2>
+         <hr />
+         <input
+            type="search"
+            id="searchInput"
+            placeholder="Search symbols..."
+            style="
+               width: 100%;
+               margin-bottom: 1rem;
+               margin-top: 0.8rem;
+               border-radius: 10px !important;
+               height: 50px;
+               height: 2.5rem;
+            "
+         />
+         <div class="filter-toggle">
+            <label>
+               <input type="checkbox" id="showPrivateFunctions" />
+               Show private functions
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateStructs" />
+               Show private structs
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateFields" />
+               Show private struct fields
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateGlobals" />
+               Show private globals
+            </label>
+         </div>
+         <hr style="opacity: 0" />
+         <h2 style="padding-top: 5px">Subpackages</h2>
+         <hr />
+         
+         <span style="color: rgba(177, 175, 175, 0.5)">
+            No subpackages
+         </span>
+         
+      </aside>
+      <main>
+         <h1>
+            Package
+            <code>compare</code>
+         </h1>
+         <hr />
+           
+         <article class="function" data-name="IsRegularMemory">
+            <h2>IsRegularMemory</h2>
+            <hr />
+            
+            <p>IsRegularMemory reports whether t can be compared/hashed as regular memory.</p>
+            
+            <pre><code>func IsRegularMemory(t *types.Type) bool</code></pre>
+         </article>
+         
+         <article class="function" data-name="Memrun">
+            <h2>Memrun</h2>
+            <hr />
+            
+            <p>Memrun finds runs of struct fields for which memory-only algs are appropriate.
+t is the parent struct type, and start is the field index at which to start the run.
+size is the length in bytes of the memory included in the run.
+next is the index just after the end of the memory run.</p>
+            
+            <pre><code>func Memrun(t *types.Type, start int) (size int64, next int)</code></pre>
+         </article>
+         
+         <article class="function" data-name="EqCanPanic">
+            <h2>EqCanPanic</h2>
+            <hr />
+            
+            <p>EqCanPanic reports whether == on type t could panic (has an interface somewhere).
+t must be comparable.</p>
+            
+            <pre><code>func EqCanPanic(t *types.Type) bool</code></pre>
+         </article>
+         
+         <article class="function" data-name="EqStructCost">
+            <h2>EqStructCost</h2>
+            <hr />
+            
+            <p>EqStructCost returns the cost of an equality comparison of two structs.
+
+The cost is determined using an algorithm which takes into consideration
+the size of the registers in the current architecture and the size of the
+memory-only fields in the struct.</p>
+            
+            <pre><code>func EqStructCost(t *types.Type) int64</code></pre>
+         </article>
+         
+         <article class="function" data-name="eqStructFieldCost">
+            <h2>eqStructFieldCost</h2>
+            <hr />
+            
+            <p>eqStructFieldCost returns the cost of an equality comparison of two struct fields.
+t is the parent struct type, and i is the index of the field in the parent struct type.
+eqStructFieldCost may compute the cost of several adjacent fields at once. It returns
+the cost, the size of the set of fields it computed the cost for (in bytes), and the
+index of the first field not part of the set of fields for which the cost
+has already been calculated.</p>
+            
+            <pre><code>func eqStructFieldCost(t *types.Type, i int) (int64, int64, int)</code></pre>
+         </article>
+         
+         <article class="function" data-name="calculateCostForType">
+            <h2>calculateCostForType</h2>
+            <hr />
+            
+            <pre><code>func calculateCostForType(t *types.Type) int64</code></pre>
+         </article>
+         
+         <article class="function" data-name="EqStruct">
+            <h2>EqStruct</h2>
+            <hr />
+            
+            <p>EqStruct compares two structs np and nq for equality.
+It works by building a list of boolean conditions to satisfy.
+Conditions must be evaluated in the returned order and
+properly short-circuited by the caller.
+The first return value is the flattened list of conditions,
+the second value is a boolean indicating whether any of the
+comparisons could panic.</p>
+            
+            <pre><code>func EqStruct(t *types.Type, np ir.Node, nq ir.Node) ([]ir.Node, bool)</code></pre>
+         </article>
+         
+         <article class="function" data-name="EqString">
+            <h2>EqString</h2>
+            <hr />
+            
+            <p>EqString returns the nodes
+
+	len(s) == len(t)
+
+and
+
+	memequal(s.ptr, t.ptr, len(s))
+
+which can be used to construct string equality comparison.
+eqlen must be evaluated before eqmem, and shortcircuiting is required.</p>
+            
+            <pre><code>func EqString(s ir.Node, t ir.Node) (eqlen *ir.BinaryExpr, eqmem *ir.CallExpr)</code></pre>
+         </article>
+         
+         <article class="function" data-name="EqInterface">
+            <h2>EqInterface</h2>
+            <hr />
+            
+            <p>EqInterface returns the nodes
+
+	s.tab == t.tab (or s.typ == t.typ, as appropriate)
+
+and
+
+	ifaceeq(s.tab, s.data, t.data) (or efaceeq(s.typ, s.data, t.data), as appropriate)
+
+which can be used to construct interface equality comparison.
+eqtab must be evaluated before eqdata, and shortcircuiting is required.</p>
+            
+            <pre><code>func EqInterface(s ir.Node, t ir.Node) (eqtab *ir.BinaryExpr, eqdata *ir.CallExpr)</code></pre>
+         </article>
+         
+         <article class="function" data-name="eqfield">
+            <h2>eqfield</h2>
+            <hr />
+            
+            <p>eqfield returns the node
+
+	p.field == q.field</p>
+            
+            <pre><code>func eqfield(p ir.Node, q ir.Node, field int) ir.Node</code></pre>
+         </article>
+         
+         <article class="function" data-name="eqmem">
+            <h2>eqmem</h2>
+            <hr />
+            
+            <p>eqmem returns the node
+
+	memequal(&p.field, &q.field, size)</p>
+            
+            <pre><code>func eqmem(p ir.Node, q ir.Node, field int, size int64) ir.Node</code></pre>
+         </article>
+         
+         <article class="function" data-name="eqmemfunc">
+            <h2>eqmemfunc</h2>
+            <hr />
+            
+            <pre><code>func eqmemfunc(size int64, t *types.Type) (fn *ir.Name, needsize bool)</code></pre>
+         </article>
+         
+         <article class="function" data-name="init">
+            <h2>init</h2>
+            <hr />
+            
+            <pre><code>func init()</code></pre>
+         </article>
+         
+         <article class="function" data-name="TestEqStructCost">
+            <h2>TestEqStructCost</h2>
+            <hr />
+            
+            <pre><code>func TestEqStructCost(t *testing.T)</code></pre>
+         </article>
+         
+      </main>
+      <script>
+         function isPrivate(name) {
+            return /^[a-z]/.test(name);
+         }
+         document.addEventListener("DOMContentLoaded", () => {
+            const toggles = {
+               functions: document.getElementById("showPrivateFunctions"),
+               structs: document.getElementById("showPrivateStructs"),
+               fields: document.getElementById("showPrivateFields"),
+               globals: document.getElementById("showPrivateGlobals"),
+            };
+            const hideInitial = (selector, toggle) => {
+               document.querySelectorAll(selector).forEach((el) => {
+                  const name = el.dataset.name;
+                  if (isPrivate(name)) {
+                     el.classList.add("private", "hidden");
+                  }
+               });
+               toggle.addEventListener("change", () => {
+                  const show = toggle.checked;
+                  document
+                     .querySelectorAll(`${selector}.private`)
+                     .forEach((el) => {
+                        el.classList.toggle("hidden", !show);
+                     });
+               });
+            };
+            hideInitial("article.function", toggles.functions);
+            hideInitial("article.struct", toggles.structs);
+            hideInitial("article.global", toggles.globals);
+            document
+               .querySelectorAll("article.struct")
+               .forEach((article) => {
+                  const codeBlock =
+                     article.querySelector("code.fields-code");
+                  if (!codeBlock) return;
+                  const lines = codeBlock.innerText.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
+                        );
+                        if (!nameMatch)
+                           return `<span class=\"field-line\">${line}</span>`;
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class=\"field-line${
+                           isPriv ? " hidden private" : ""
+                        }\" data-name=\"${name}\">${line}</span>`;
+                     })
+                     .join("");
+                  codeBlock.innerHTML = newContent;
+                  toggles.fields.addEventListener("change", () => {
+                     const show = toggles.fields.checked;
+                     article
+                        .querySelectorAll(".field-line.private")
+                        .forEach((el) =>
+                           el.classList.toggle("hidden", !show)
+                        );
+                  });
+               });
+            const searchInput = document.getElementById("searchInput");
+            searchInput.addEventListener("input", () => {
+               const query = searchInput.value.trim().toLowerCase();
+               document.querySelectorAll("article").forEach((el) => {
+                  const name = el.dataset.name.toLowerCase();
+                  if (query === "" || name.includes(query)) {
+                     el.classList.remove("hidden");
+                  } else {
+                     el.classList.add("hidden");
+                  }
+               });
+            });
+         });
+      </script>
+   </body>
+</html>

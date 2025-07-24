@@ -1,0 +1,540 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+   <head>
+      <meta charset="UTF-8" />
+      <meta
+         name="viewport"
+         content="width=device-width, initial-scale=1.0"
+      />
+      <title>Docs - devirtualize</title>
+      <link
+         href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
+         rel="stylesheet"
+      />
+      <style>
+         html {
+            font-size: 13px;
+         }
+         body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+         }
+         .sidebar {
+            width: 200px;
+            background: rgba(59, 56, 56, 0.1);
+            padding: 1.2rem;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            overflow-y: auto;
+            margin-right: 7px;
+         }
+         main {
+            flex: 0.9;
+            padding: 1rem;
+            margin: 0;
+            max-width: calc(100% - 220px);
+         }
+         h1 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+         }
+         h2 {
+            font-size: 1.2rem;
+            margin: 0.3rem 0 0.2rem;
+         }
+         pre {
+            background: #1e1e1e;
+            color: #dcdcdc;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            margin: 0 0 1rem;
+            font-size: 0.85rem;
+            overflow-x: auto;
+         }
+         code {
+            color: #f0dbdb;
+            white-space: pre-wrap;
+         }
+         p {
+            font-size: 15px;
+            padding-top: 10px;
+         }
+         article {
+            margin-bottom: 0.5rem;
+            padding: 0.4rem 0.9rem;
+            background: rgba(59, 56, 56, 0.5);
+            border-radius: 10px;
+            max-width: 99%;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+         }
+         .hidden {
+            display: none;
+         }
+         .filter-toggle label {
+            display: block;
+            margin-bottom: 0.5rem;
+         }
+         .field-line {
+            display: block;
+         }
+      </style>
+   </head>
+   <body>
+      <aside class="sidebar">
+         <a href="index.html">⌂</a>
+         |
+         <a href="#" onclick="history.back()">←</a>
+         <hr style="opacity: 0" />
+         <h2>Filters</h2>
+         <hr />
+         <input
+            type="search"
+            id="searchInput"
+            placeholder="Search symbols..."
+            style="
+               width: 100%;
+               margin-bottom: 1rem;
+               margin-top: 0.8rem;
+               border-radius: 10px !important;
+               height: 50px;
+               height: 2.5rem;
+            "
+         />
+         <div class="filter-toggle">
+            <label>
+               <input type="checkbox" id="showPrivateFunctions" />
+               Show private functions
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateStructs" />
+               Show private structs
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateFields" />
+               Show private struct fields
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateGlobals" />
+               Show private globals
+            </label>
+         </div>
+         <hr style="opacity: 0" />
+         <h2 style="padding-top: 5px">Subpackages</h2>
+         <hr />
+         
+         <span style="color: rgba(177, 175, 175, 0.5)">
+            No subpackages
+         </span>
+         
+      </aside>
+      <main>
+         <h1>
+            Package
+            <code>devirtualize</code>
+         </h1>
+         <hr />
+          
+         <article class="struct" data-name="CallStat">
+            <h2>type CallStat struct</h2>
+            <hr />
+            
+            <p>CallStat summarizes a single call site.
+
+This is used only for debug logging.</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">Pkg string
+Pos string
+Caller string
+Direct bool
+Interface bool
+Weight int64
+Hottest string
+HottestWeight int64
+Devirtualized string
+DevirtualizedWeight int64</code></pre>
+         </article>
+         
+         <article class="struct" data-name="profileBuilder">
+            <h2>type profileBuilder struct</h2>
+            <hr />
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">p *pgoir.Profile</code></pre>
+         </article>
+          
+         <article class="function" data-name="ProfileGuided">
+            <h2>ProfileGuided</h2>
+            <hr />
+            
+            <p>ProfileGuided performs call devirtualization of indirect calls based on
+profile information.
+
+Specifically, it performs conditional devirtualization of interface calls or
+function value calls for the hottest callee.
+
+That is, for interface calls it performs a transformation like:
+
+	type Iface interface {
+		Foo()
+	}
+
+	type Concrete struct{}
+
+	func (Concrete) Foo() {}
+
+	func foo(i Iface) {
+		i.Foo()
+	}
+
+to:
+
+	func foo(i Iface) {
+		if c, ok := i.(Concrete); ok {
+			c.Foo()
+		} else {
+			i.Foo()
+		}
+	}
+
+For function value calls it performs a transformation like:
+
+	func Concrete() {}
+
+	func foo(fn func()) {
+		fn()
+	}
+
+to:
+
+	func foo(fn func()) {
+		if internal/abi.FuncPCABIInternal(fn) == internal/abi.FuncPCABIInternal(Concrete) {
+			Concrete()
+		} else {
+			fn()
+		}
+	}
+
+The primary benefit of this transformation is enabling inlining of the
+direct call.</p>
+            
+            <pre><code>func ProfileGuided(fn *ir.Func, p *pgoir.Profile)</code></pre>
+         </article>
+         
+         <article class="function" data-name="maybeDevirtualizeInterfaceCall">
+            <h2>maybeDevirtualizeInterfaceCall</h2>
+            <hr />
+            
+            <p>Devirtualize interface call if possible and eligible. Returns the new
+ir.Node if call was devirtualized, and if so also the callee and weight of
+the devirtualized edge.</p>
+            
+            <pre><code>func maybeDevirtualizeInterfaceCall(p *pgoir.Profile, fn *ir.Func, call *ir.CallExpr) (ir.Node, *ir.Func, int64)</code></pre>
+         </article>
+         
+         <article class="function" data-name="maybeDevirtualizeFunctionCall">
+            <h2>maybeDevirtualizeFunctionCall</h2>
+            <hr />
+            
+            <p>Devirtualize an indirect function call if possible and eligible. Returns the new
+ir.Node if call was devirtualized, and if so also the callee and weight of
+the devirtualized edge.</p>
+            
+            <pre><code>func maybeDevirtualizeFunctionCall(p *pgoir.Profile, fn *ir.Func, call *ir.CallExpr) (ir.Node, *ir.Func, int64)</code></pre>
+         </article>
+         
+         <article class="function" data-name="shouldPGODevirt">
+            <h2>shouldPGODevirt</h2>
+            <hr />
+            
+            <p>shouldPGODevirt checks if we should perform PGO devirtualization to the
+target function.
+
+PGO devirtualization is most valuable when the callee is inlined, so if it
+won't inline we can skip devirtualizing.</p>
+            
+            <pre><code>func shouldPGODevirt(fn *ir.Func) bool</code></pre>
+         </article>
+         
+         <article class="function" data-name="constructCallStat">
+            <h2>constructCallStat</h2>
+            <hr />
+            
+            <p>constructCallStat builds an initial CallStat describing this call, for
+logging. If the call is devirtualized, the devirtualization fields should be
+updated.</p>
+            
+            <pre><code>func constructCallStat(p *pgoir.Profile, fn *ir.Func, name string, call *ir.CallExpr) *CallStat</code></pre>
+         </article>
+         
+         <article class="function" data-name="copyInputs">
+            <h2>copyInputs</h2>
+            <hr />
+            
+            <p>copyInputs copies the inputs to a call: the receiver (for interface calls)
+or function value (for function value calls) and the arguments. These
+expressions are evaluated once and assigned to temporaries.
+
+The assignment statement is added to init and the copied receiver/fn
+expression and copied arguments expressions are returned.</p>
+            
+            <pre><code>func copyInputs(curfn *ir.Func, pos src.XPos, recvOrFn ir.Node, args []ir.Node, init *ir.Nodes) (ir.Node, []ir.Node)</code></pre>
+         </article>
+         
+         <article class="function" data-name="retTemps">
+            <h2>retTemps</h2>
+            <hr />
+            
+            <p>retTemps returns a slice of temporaries to be used for storing result values from call.</p>
+            
+            <pre><code>func retTemps(curfn *ir.Func, pos src.XPos, call *ir.CallExpr) []ir.Node</code></pre>
+         </article>
+         
+         <article class="function" data-name="condCall">
+            <h2>condCall</h2>
+            <hr />
+            
+            <p>condCall returns an ir.InlinedCallExpr that performs a call to thenCall if
+cond is true and elseCall if cond is false. The return variables of the
+InlinedCallExpr evaluate to the return values from the call.</p>
+            
+            <pre><code>func condCall(curfn *ir.Func, pos src.XPos, cond ir.Node, thenCall *ir.CallExpr, elseCall *ir.CallExpr, init ir.Nodes) *ir.InlinedCallExpr</code></pre>
+         </article>
+         
+         <article class="function" data-name="rewriteInterfaceCall">
+            <h2>rewriteInterfaceCall</h2>
+            <hr />
+            
+            <p>rewriteInterfaceCall devirtualizes the given interface call using a direct
+method call to concretetyp.</p>
+            
+            <pre><code>func rewriteInterfaceCall(call *ir.CallExpr, curfn *ir.Func, callee *ir.Func, concretetyp *types.Type) ir.Node</code></pre>
+         </article>
+         
+         <article class="function" data-name="rewriteFunctionCall">
+            <h2>rewriteFunctionCall</h2>
+            <hr />
+            
+            <p>rewriteFunctionCall devirtualizes the given OCALLFUNC using a direct
+function call to callee.</p>
+            
+            <pre><code>func rewriteFunctionCall(call *ir.CallExpr, curfn *ir.Func, callee *ir.Func) ir.Node</code></pre>
+         </article>
+         
+         <article class="function" data-name="methodRecvType">
+            <h2>methodRecvType</h2>
+            <hr />
+            
+            <p>methodRecvType returns the type containing method fn. Returns nil if fn
+is not a method.</p>
+            
+            <pre><code>func methodRecvType(fn *ir.Func) *types.Type</code></pre>
+         </article>
+         
+         <article class="function" data-name="interfaceCallRecvTypeAndMethod">
+            <h2>interfaceCallRecvTypeAndMethod</h2>
+            <hr />
+            
+            <p>interfaceCallRecvTypeAndMethod returns the type and the method of the interface
+used in an interface call.</p>
+            
+            <pre><code>func interfaceCallRecvTypeAndMethod(call *ir.CallExpr) (*types.Type, *types.Sym)</code></pre>
+         </article>
+         
+         <article class="function" data-name="findHotConcreteCallee">
+            <h2>findHotConcreteCallee</h2>
+            <hr />
+            
+            <p>findHotConcreteCallee returns the *ir.Func of the hottest callee of a call,
+if available, and its edge weight. extraFn can perform additional
+applicability checks on each candidate edge. If extraFn returns false,
+candidate will not be considered a valid callee candidate.</p>
+            
+            <pre><code>func findHotConcreteCallee(p *pgoir.Profile, caller *ir.Func, call *ir.CallExpr, extraFn func) (*ir.Func, int64)</code></pre>
+         </article>
+         
+         <article class="function" data-name="findHotConcreteInterfaceCallee">
+            <h2>findHotConcreteInterfaceCallee</h2>
+            <hr />
+            
+            <p>findHotConcreteInterfaceCallee returns the *ir.Func of the hottest callee of an
+interface call, if available, and its edge weight.</p>
+            
+            <pre><code>func findHotConcreteInterfaceCallee(p *pgoir.Profile, caller *ir.Func, call *ir.CallExpr) (*ir.Func, int64)</code></pre>
+         </article>
+         
+         <article class="function" data-name="findHotConcreteFunctionCallee">
+            <h2>findHotConcreteFunctionCallee</h2>
+            <hr />
+            
+            <p>findHotConcreteFunctionCallee returns the *ir.Func of the hottest callee of an
+indirect function call, if available, and its edge weight.</p>
+            
+            <pre><code>func findHotConcreteFunctionCallee(p *pgoir.Profile, caller *ir.Func, call *ir.CallExpr) (*ir.Func, int64)</code></pre>
+         </article>
+         
+         <article class="function" data-name="init">
+            <h2>init</h2>
+            <hr />
+            
+            <pre><code>func init()</code></pre>
+         </article>
+         
+         <article class="function" data-name="makePos">
+            <h2>makePos</h2>
+            <hr />
+            
+            <pre><code>func makePos(b *src.PosBase, line uint, col uint) src.XPos</code></pre>
+         </article>
+         
+         <article class="function" data-name="newProfileBuilder">
+            <h2>newProfileBuilder</h2>
+            <hr />
+            
+            <pre><code>func newProfileBuilder() *profileBuilder</code></pre>
+         </article>
+         
+         <article class="function" data-name="Profile">
+            <h2>Profile</h2>
+            <hr />
+            
+            <p>Profile returns the constructed profile.</p>
+            
+            <pre><code>func Profile() *pgoir.Profile</code></pre>
+         </article>
+         
+         <article class="function" data-name="NewNode">
+            <h2>NewNode</h2>
+            <hr />
+            
+            <p>NewNode creates a new IRNode and adds it to the profile.
+
+fn may be nil, in which case the node will set LinkerSymbolName.</p>
+            
+            <pre><code>func NewNode(name string, fn *ir.Func) *pgoir.IRNode</code></pre>
+         </article>
+         
+         <article class="function" data-name="addEdge">
+            <h2>addEdge</h2>
+            <hr />
+            
+            <p>Add a new call edge from caller to callee.</p>
+            
+            <pre><code>func addEdge(caller *pgoir.IRNode, callee *pgoir.IRNode, offset int, weight int64)</code></pre>
+         </article>
+         
+         <article class="function" data-name="makeStructWithMethod">
+            <h2>makeStructWithMethod</h2>
+            <hr />
+            
+            <p>Create a new struct type named structName with a method named methName and
+return the method.</p>
+            
+            <pre><code>func makeStructWithMethod(pkg *types.Pkg, structName string, methName string) *ir.Func</code></pre>
+         </article>
+         
+         <article class="function" data-name="TestFindHotConcreteInterfaceCallee">
+            <h2>TestFindHotConcreteInterfaceCallee</h2>
+            <hr />
+            
+            <pre><code>func TestFindHotConcreteInterfaceCallee(t *testing.T)</code></pre>
+         </article>
+         
+         <article class="function" data-name="TestFindHotConcreteFunctionCallee">
+            <h2>TestFindHotConcreteFunctionCallee</h2>
+            <hr />
+            
+            <pre><code>func TestFindHotConcreteFunctionCallee(t *testing.T)</code></pre>
+         </article>
+         
+         <article class="function" data-name="StaticCall">
+            <h2>StaticCall</h2>
+            <hr />
+            
+            <p>StaticCall devirtualizes the given call if possible when the concrete callee
+is available statically.</p>
+            
+            <pre><code>func StaticCall(call *ir.CallExpr)</code></pre>
+         </article>
+         
+      </main>
+      <script>
+         function isPrivate(name) {
+            return /^[a-z]/.test(name);
+         }
+         document.addEventListener("DOMContentLoaded", () => {
+            const toggles = {
+               functions: document.getElementById("showPrivateFunctions"),
+               structs: document.getElementById("showPrivateStructs"),
+               fields: document.getElementById("showPrivateFields"),
+               globals: document.getElementById("showPrivateGlobals"),
+            };
+            const hideInitial = (selector, toggle) => {
+               document.querySelectorAll(selector).forEach((el) => {
+                  const name = el.dataset.name;
+                  if (isPrivate(name)) {
+                     el.classList.add("private", "hidden");
+                  }
+               });
+               toggle.addEventListener("change", () => {
+                  const show = toggle.checked;
+                  document
+                     .querySelectorAll(`${selector}.private`)
+                     .forEach((el) => {
+                        el.classList.toggle("hidden", !show);
+                     });
+               });
+            };
+            hideInitial("article.function", toggles.functions);
+            hideInitial("article.struct", toggles.structs);
+            hideInitial("article.global", toggles.globals);
+            document
+               .querySelectorAll("article.struct")
+               .forEach((article) => {
+                  const codeBlock =
+                     article.querySelector("code.fields-code");
+                  if (!codeBlock) return;
+                  const lines = codeBlock.innerText.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
+                        );
+                        if (!nameMatch)
+                           return `<span class=\"field-line\">${line}</span>`;
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class=\"field-line${
+                           isPriv ? " hidden private" : ""
+                        }\" data-name=\"${name}\">${line}</span>`;
+                     })
+                     .join("");
+                  codeBlock.innerHTML = newContent;
+                  toggles.fields.addEventListener("change", () => {
+                     const show = toggles.fields.checked;
+                     article
+                        .querySelectorAll(".field-line.private")
+                        .forEach((el) =>
+                           el.classList.toggle("hidden", !show)
+                        );
+                  });
+               });
+            const searchInput = document.getElementById("searchInput");
+            searchInput.addEventListener("input", () => {
+               const query = searchInput.value.trim().toLowerCase();
+               document.querySelectorAll("article").forEach((el) => {
+                  const name = el.dataset.name.toLowerCase();
+                  if (query === "" || name.includes(query)) {
+                     el.classList.remove("hidden");
+                  } else {
+                     el.classList.add("hidden");
+                  }
+               });
+            });
+         });
+      </script>
+   </body>
+</html>

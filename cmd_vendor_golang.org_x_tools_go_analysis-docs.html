@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+   <head>
+      <meta charset="UTF-8" />
+      <meta
+         name="viewport"
+         content="width=device-width, initial-scale=1.0"
+      />
+      <title>Docs - analysis</title>
+      <link
+         href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
+         rel="stylesheet"
+      />
+      <style>
+         html {
+            font-size: 13px;
+         }
+         body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+         }
+         .sidebar {
+            width: 200px;
+            background: rgba(59, 56, 56, 0.1);
+            padding: 1.2rem;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            overflow-y: auto;
+            margin-right: 7px;
+         }
+         main {
+            flex: 0.9;
+            padding: 1rem;
+            margin: 0;
+            max-width: calc(100% - 220px);
+         }
+         h1 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+         }
+         h2 {
+            font-size: 1.2rem;
+            margin: 0.3rem 0 0.2rem;
+         }
+         pre {
+            background: #1e1e1e;
+            color: #dcdcdc;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            margin: 0 0 1rem;
+            font-size: 0.85rem;
+            overflow-x: auto;
+         }
+         code {
+            color: #f0dbdb;
+            white-space: pre-wrap;
+         }
+         p {
+            font-size: 15px;
+            padding-top: 10px;
+         }
+         article {
+            margin-bottom: 0.5rem;
+            padding: 0.4rem 0.9rem;
+            background: rgba(59, 56, 56, 0.5);
+            border-radius: 10px;
+            max-width: 99%;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+         }
+         .hidden {
+            display: none;
+         }
+         .filter-toggle label {
+            display: block;
+            margin-bottom: 0.5rem;
+         }
+         .field-line {
+            display: block;
+         }
+      </style>
+   </head>
+   <body>
+      <aside class="sidebar">
+         <a href="index.html">⌂</a>
+         |
+         <a href="#" onclick="history.back()">←</a>
+         <hr style="opacity: 0" />
+         <h2>Filters</h2>
+         <hr />
+         <input
+            type="search"
+            id="searchInput"
+            placeholder="Search symbols..."
+            style="
+               width: 100%;
+               margin-bottom: 1rem;
+               margin-top: 0.8rem;
+               border-radius: 10px !important;
+               height: 50px;
+               height: 2.5rem;
+            "
+         />
+         <div class="filter-toggle">
+            <label>
+               <input type="checkbox" id="showPrivateFunctions" />
+               Show private functions
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateStructs" />
+               Show private structs
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateFields" />
+               Show private struct fields
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateGlobals" />
+               Show private globals
+            </label>
+         </div>
+         <hr style="opacity: 0" />
+         <h2 style="padding-top: 5px">Subpackages</h2>
+         <hr />
+          
+         <a href="cmd_vendor_golang.org_x_tools_go_analysis_unitchecker-docs.html">unitchecker</a>
+         <br />
+          
+      </aside>
+      <main>
+         <h1>
+            Package
+            <code>analysis</code>
+         </h1>
+         <hr />
+          
+         <article class="struct" data-name="Analyzer">
+            <h2>type Analyzer struct</h2>
+            <hr />
+            
+            <p>An Analyzer describes an analysis function and its options.</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">Name string
+Doc string
+URL string
+Flags flag.FlagSet
+Run func
+RunDespiteErrors bool
+Requires []*Analyzer
+ResultType reflect.Type
+FactTypes []Fact</code></pre>
+         </article>
+         
+         <article class="struct" data-name="Pass">
+            <h2>type Pass struct</h2>
+            <hr />
+            
+            <p>A Pass provides information to the Run function that
+applies a specific analyzer to a single Go package.
+
+It forms the interface between the analysis logic and the driver
+program, and has both input and an output components.
+
+As in a compiler, one pass may depend on the result computed by another.
+
+The Run function should not call any of the Pass functions concurrently.</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">Analyzer *Analyzer
+Fset *token.FileSet
+Files []*ast.File
+OtherFiles []string
+IgnoredFiles []string
+Pkg *types.Package
+TypesInfo *types.Info
+TypesSizes types.Sizes
+TypeErrors []types.Error
+Module *Module
+Report func
+ResultOf *ast.MapType
+ReadFile func
+ImportObjectFact func
+ImportPackageFact func
+ExportObjectFact func
+ExportPackageFact func
+AllPackageFacts func
+AllObjectFacts func</code></pre>
+         </article>
+         
+         <article class="struct" data-name="PackageFact">
+            <h2>type PackageFact struct</h2>
+            <hr />
+            
+            <p>PackageFact is a package together with an associated fact.</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">Package *types.Package
+Fact Fact</code></pre>
+         </article>
+         
+         <article class="struct" data-name="ObjectFact">
+            <h2>type ObjectFact struct</h2>
+            <hr />
+            
+            <p>ObjectFact is an object together with an associated fact.</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">Object types.Object
+Fact Fact</code></pre>
+         </article>
+         
+         <article class="struct" data-name="Module">
+            <h2>type Module struct</h2>
+            <hr />
+            
+            <p>A Module describes the module to which a package belongs.</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">Path string
+Version string
+GoVersion string</code></pre>
+         </article>
+         
+         <article class="struct" data-name="Diagnostic">
+            <h2>type Diagnostic struct</h2>
+            <hr />
+            
+            <p>A Diagnostic is a message associated with a source location or range.
+
+An Analyzer may return a variety of diagnostics; the optional Category,
+which should be a constant, may be used to classify them.
+It is primarily intended to make it easy to look up documentation.
+
+All Pos values are interpreted relative to Pass.Fset. If End is
+provided, the diagnostic is specified to apply to the range between
+Pos and End.</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">Pos token.Pos
+End token.Pos
+Category string
+Message string
+URL string
+SuggestedFixes []SuggestedFix
+Related []RelatedInformation</code></pre>
+         </article>
+         
+         <article class="struct" data-name="RelatedInformation">
+            <h2>type RelatedInformation struct</h2>
+            <hr />
+            
+            <p>RelatedInformation contains information related to a diagnostic.
+For example, a diagnostic that flags duplicated declarations of a
+variable may include one RelatedInformation per existing
+declaration.</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">Pos token.Pos
+End token.Pos
+Message string</code></pre>
+         </article>
+         
+         <article class="struct" data-name="SuggestedFix">
+            <h2>type SuggestedFix struct</h2>
+            <hr />
+            
+            <p>A SuggestedFix is a code change associated with a Diagnostic that a
+user can choose to apply to their code. Usually the SuggestedFix is
+meant to fix the issue flagged by the diagnostic.
+
+The TextEdits must not overlap, nor contain edits for other packages.</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">Message string
+TextEdits []TextEdit</code></pre>
+         </article>
+         
+         <article class="struct" data-name="TextEdit">
+            <h2>type TextEdit struct</h2>
+            <hr />
+            
+            <p>A TextEdit represents the replacement of the code between Pos and End with the new text.
+Each TextEdit should apply to a single file. End should not be earlier in the file than Pos.</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">Pos token.Pos
+End token.Pos
+NewText []byte</code></pre>
+         </article>
+         
+         <article class="struct" data-name="CycleInRequiresGraphError">
+            <h2>type CycleInRequiresGraphError struct</h2>
+            <hr />
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">AnalyzerNames *ast.MapType</code></pre>
+         </article>
+          
+         <article class="function" data-name="String">
+            <h2>String</h2>
+            <hr />
+            
+            <pre><code>func String() string</code></pre>
+         </article>
+         
+         <article class="function" data-name="Reportf">
+            <h2>Reportf</h2>
+            <hr />
+            
+            <p>Reportf is a helper function that reports a Diagnostic using the
+specified position and formatted error message.</p>
+            
+            <pre><code>func Reportf(pos token.Pos, format string, args ...*ast.InterfaceType)</code></pre>
+         </article>
+         
+         <article class="function" data-name="ReportRangef">
+            <h2>ReportRangef</h2>
+            <hr />
+            
+            <p>ReportRangef is a helper function that reports a Diagnostic using the
+range provided. ast.Node values can be passed in as the range because
+they satisfy the Range interface.</p>
+            
+            <pre><code>func ReportRangef(rng Range, format string, args ...*ast.InterfaceType)</code></pre>
+         </article>
+         
+         <article class="function" data-name="String">
+            <h2>String</h2>
+            <hr />
+            
+            <pre><code>func String() string</code></pre>
+         </article>
+         
+         <article class="function" data-name="Validate">
+            <h2>Validate</h2>
+            <hr />
+            
+            <p>Validate reports an error if any of the analyzers are misconfigured.
+Checks include:
+that the name is a valid identifier;
+that the Doc is not empty;
+that the Run is non-nil;
+that the Requires graph is acyclic;
+that analyzer fact types are unique;
+that each fact type is a pointer.
+
+Analyzer names need not be unique, though this may be confusing.</p>
+            
+            <pre><code>func Validate(analyzers []*Analyzer) error</code></pre>
+         </article>
+         
+         <article class="function" data-name="validIdent">
+            <h2>validIdent</h2>
+            <hr />
+            
+            <pre><code>func validIdent(name string) bool</code></pre>
+         </article>
+         
+         <article class="function" data-name="Error">
+            <h2>Error</h2>
+            <hr />
+            
+            <pre><code>func Error() string</code></pre>
+         </article>
+         
+      </main>
+      <script>
+         function isPrivate(name) {
+            return /^[a-z]/.test(name);
+         }
+         document.addEventListener("DOMContentLoaded", () => {
+            const toggles = {
+               functions: document.getElementById("showPrivateFunctions"),
+               structs: document.getElementById("showPrivateStructs"),
+               fields: document.getElementById("showPrivateFields"),
+               globals: document.getElementById("showPrivateGlobals"),
+            };
+            const hideInitial = (selector, toggle) => {
+               document.querySelectorAll(selector).forEach((el) => {
+                  const name = el.dataset.name;
+                  if (isPrivate(name)) {
+                     el.classList.add("private", "hidden");
+                  }
+               });
+               toggle.addEventListener("change", () => {
+                  const show = toggle.checked;
+                  document
+                     .querySelectorAll(`${selector}.private`)
+                     .forEach((el) => {
+                        el.classList.toggle("hidden", !show);
+                     });
+               });
+            };
+            hideInitial("article.function", toggles.functions);
+            hideInitial("article.struct", toggles.structs);
+            hideInitial("article.global", toggles.globals);
+            document
+               .querySelectorAll("article.struct")
+               .forEach((article) => {
+                  const codeBlock =
+                     article.querySelector("code.fields-code");
+                  if (!codeBlock) return;
+                  const lines = codeBlock.innerText.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
+                        );
+                        if (!nameMatch)
+                           return `<span class=\"field-line\">${line}</span>`;
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class=\"field-line${
+                           isPriv ? " hidden private" : ""
+                        }\" data-name=\"${name}\">${line}</span>`;
+                     })
+                     .join("");
+                  codeBlock.innerHTML = newContent;
+                  toggles.fields.addEventListener("change", () => {
+                     const show = toggles.fields.checked;
+                     article
+                        .querySelectorAll(".field-line.private")
+                        .forEach((el) =>
+                           el.classList.toggle("hidden", !show)
+                        );
+                  });
+               });
+            const searchInput = document.getElementById("searchInput");
+            searchInput.addEventListener("input", () => {
+               const query = searchInput.value.trim().toLowerCase();
+               document.querySelectorAll("article").forEach((el) => {
+                  const name = el.dataset.name.toLowerCase();
+                  if (query === "" || name.includes(query)) {
+                     el.classList.remove("hidden");
+                  } else {
+                     el.classList.add("hidden");
+                  }
+               });
+            });
+         });
+      </script>
+   </body>
+</html>

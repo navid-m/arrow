@@ -1,0 +1,420 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+   <head>
+      <meta charset="UTF-8" />
+      <meta
+         name="viewport"
+         content="width=device-width, initial-scale=1.0"
+      />
+      <title>Docs - path</title>
+      <link
+         href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
+         rel="stylesheet"
+      />
+      <style>
+         html {
+            font-size: 13px;
+         }
+         body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+         }
+         .sidebar {
+            width: 200px;
+            background: rgba(59, 56, 56, 0.1);
+            padding: 1.2rem;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            overflow-y: auto;
+            margin-right: 7px;
+         }
+         main {
+            flex: 0.9;
+            padding: 1rem;
+            margin: 0;
+            max-width: calc(100% - 220px);
+         }
+         h1 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+         }
+         h2 {
+            font-size: 1.2rem;
+            margin: 0.3rem 0 0.2rem;
+         }
+         pre {
+            background: #1e1e1e;
+            color: #dcdcdc;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            margin: 0 0 1rem;
+            font-size: 0.85rem;
+            overflow-x: auto;
+         }
+         code {
+            color: #f0dbdb;
+            white-space: pre-wrap;
+         }
+         p {
+            font-size: 15px;
+            padding-top: 10px;
+         }
+         article {
+            margin-bottom: 0.5rem;
+            padding: 0.4rem 0.9rem;
+            background: rgba(59, 56, 56, 0.5);
+            border-radius: 10px;
+            max-width: 99%;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+         }
+         .hidden {
+            display: none;
+         }
+         .filter-toggle label {
+            display: block;
+            margin-bottom: 0.5rem;
+         }
+         .field-line {
+            display: block;
+         }
+      </style>
+   </head>
+   <body>
+      <aside class="sidebar">
+         <a href="index.html">⌂</a>
+         |
+         <a href="#" onclick="history.back()">←</a>
+         <hr style="opacity: 0" />
+         <h2>Filters</h2>
+         <hr />
+         <input
+            type="search"
+            id="searchInput"
+            placeholder="Search symbols..."
+            style="
+               width: 100%;
+               margin-bottom: 1rem;
+               margin-top: 0.8rem;
+               border-radius: 10px !important;
+               height: 50px;
+               height: 2.5rem;
+            "
+         />
+         <div class="filter-toggle">
+            <label>
+               <input type="checkbox" id="showPrivateFunctions" />
+               Show private functions
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateStructs" />
+               Show private structs
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateFields" />
+               Show private struct fields
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateGlobals" />
+               Show private globals
+            </label>
+         </div>
+         <hr style="opacity: 0" />
+         <h2 style="padding-top: 5px">Subpackages</h2>
+         <hr />
+          
+         <a href="path_filepath-docs.html">filepath</a>
+         <br />
+          
+      </aside>
+      <main>
+         <h1>
+            Package
+            <code>path</code>
+         </h1>
+         <hr />
+         
+         <article class="global" data-name="ErrBadPattern">
+            <h2>ErrBadPattern</h2>
+            <hr />
+            
+            <p>ErrBadPattern indicates a pattern was malformed.</p>
+            
+            <pre><code>ErrBadPattern</code></pre>
+         </article>
+          
+         <article class="struct" data-name="lazybuf">
+            <h2>type lazybuf struct</h2>
+            <hr />
+            
+            <p>A lazybuf is a lazily constructed path buffer.
+It supports append, reading previously appended bytes,
+and retrieving the final string. It does not allocate a buffer
+to hold the output until that output diverges from s.</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">s string
+buf []byte
+w int</code></pre>
+         </article>
+          
+         <article class="function" data-name="Match">
+            <h2>Match</h2>
+            <hr />
+            
+            <p>Match reports whether name matches the shell pattern.
+The pattern syntax is:
+
+	pattern:
+		{ term }
+	term:
+		'*'         matches any sequence of non-/ characters
+		'?'         matches any single non-/ character
+		'[' [ '^' ] { character-range } ']'
+		            character class (must be non-empty)
+		c           matches character c (c != '*', '?', '\\', '[')
+		'\\' c      matches character c
+
+	character-range:
+		c           matches character c (c != '\\', '-', ']')
+		'\\' c      matches character c
+		lo '-' hi   matches character c for lo <= c <= hi
+
+Match requires pattern to match all of name, not just a substring.
+The only possible returned error is [ErrBadPattern], when pattern
+is malformed.</p>
+            
+            <pre><code>func Match(pattern string, name string) (matched bool, err error)</code></pre>
+         </article>
+         
+         <article class="function" data-name="scanChunk">
+            <h2>scanChunk</h2>
+            <hr />
+            
+            <p>scanChunk gets the next segment of pattern, which is a non-star string
+possibly preceded by a star.</p>
+            
+            <pre><code>func scanChunk(pattern string) (star bool, chunk string, rest string)</code></pre>
+         </article>
+         
+         <article class="function" data-name="matchChunk">
+            <h2>matchChunk</h2>
+            <hr />
+            
+            <p>matchChunk checks whether chunk matches the beginning of s.
+If so, it returns the remainder of s (after the match).
+Chunk is all single-character operators: literals, char classes, and ?.</p>
+            
+            <pre><code>func matchChunk(chunk string, s string) (rest string, ok bool, err error)</code></pre>
+         </article>
+         
+         <article class="function" data-name="getEsc">
+            <h2>getEsc</h2>
+            <hr />
+            
+            <p>getEsc gets a possibly-escaped character from chunk, for a character class.</p>
+            
+            <pre><code>func getEsc(chunk string) (r rune, nchunk string, err error)</code></pre>
+         </article>
+         
+         <article class="function" data-name="index">
+            <h2>index</h2>
+            <hr />
+            
+            <pre><code>func index(i int) byte</code></pre>
+         </article>
+         
+         <article class="function" data-name="append">
+            <h2>append</h2>
+            <hr />
+            
+            <pre><code>func append(c byte)</code></pre>
+         </article>
+         
+         <article class="function" data-name="string">
+            <h2>string</h2>
+            <hr />
+            
+            <pre><code>func string() string</code></pre>
+         </article>
+         
+         <article class="function" data-name="Clean">
+            <h2>Clean</h2>
+            <hr />
+            
+            <p>Clean returns the shortest path name equivalent to path
+by purely lexical processing. It applies the following rules
+iteratively until no further processing can be done:
+
+ 1. Replace multiple slashes with a single slash.
+ 2. Eliminate each . path name element (the current directory).
+ 3. Eliminate each inner .. path name element (the parent directory)
+    along with the non-.. element that precedes it.
+ 4. Eliminate .. elements that begin a rooted path:
+    that is, replace "/.." by "/" at the beginning of a path.
+
+The returned path ends in a slash only if it is the root "/".
+
+If the result of this process is an empty string, Clean
+returns the string ".".
+
+See also Rob Pike, “Lexical File Names in Plan 9 or
+Getting Dot-Dot Right,”
+https://9p.io/sys/doc/lexnames.html</p>
+            
+            <pre><code>func Clean(path string) string</code></pre>
+         </article>
+         
+         <article class="function" data-name="Split">
+            <h2>Split</h2>
+            <hr />
+            
+            <p>Split splits path immediately following the final slash,
+separating it into a directory and file name component.
+If there is no slash in path, Split returns an empty dir and
+file set to path.
+The returned values have the property that path = dir+file.</p>
+            
+            <pre><code>func Split(path string) (dir string, file string)</code></pre>
+         </article>
+         
+         <article class="function" data-name="Join">
+            <h2>Join</h2>
+            <hr />
+            
+            <p>Join joins any number of path elements into a single path,
+separating them with slashes. Empty elements are ignored.
+The result is Cleaned. However, if the argument list is
+empty or all its elements are empty, Join returns
+an empty string.</p>
+            
+            <pre><code>func Join(elem ...string) string</code></pre>
+         </article>
+         
+         <article class="function" data-name="Ext">
+            <h2>Ext</h2>
+            <hr />
+            
+            <p>Ext returns the file name extension used by path.
+The extension is the suffix beginning at the final dot
+in the final slash-separated element of path;
+it is empty if there is no dot.</p>
+            
+            <pre><code>func Ext(path string) string</code></pre>
+         </article>
+         
+         <article class="function" data-name="Base">
+            <h2>Base</h2>
+            <hr />
+            
+            <p>Base returns the last element of path.
+Trailing slashes are removed before extracting the last element.
+If the path is empty, Base returns ".".
+If the path consists entirely of slashes, Base returns "/".</p>
+            
+            <pre><code>func Base(path string) string</code></pre>
+         </article>
+         
+         <article class="function" data-name="IsAbs">
+            <h2>IsAbs</h2>
+            <hr />
+            
+            <p>IsAbs reports whether the path is absolute.</p>
+            
+            <pre><code>func IsAbs(path string) bool</code></pre>
+         </article>
+         
+         <article class="function" data-name="Dir">
+            <h2>Dir</h2>
+            <hr />
+            
+            <p>Dir returns all but the last element of path, typically the path's directory.
+After dropping the final element using [Split], the path is Cleaned and trailing
+slashes are removed.
+If the path is empty, Dir returns ".".
+If the path consists entirely of slashes followed by non-slash bytes, Dir
+returns a single slash. In any other case, the returned path does not end in a
+slash.</p>
+            
+            <pre><code>func Dir(path string) string</code></pre>
+         </article>
+         
+      </main>
+      <script>
+         function isPrivate(name) {
+            return /^[a-z]/.test(name);
+         }
+         document.addEventListener("DOMContentLoaded", () => {
+            const toggles = {
+               functions: document.getElementById("showPrivateFunctions"),
+               structs: document.getElementById("showPrivateStructs"),
+               fields: document.getElementById("showPrivateFields"),
+               globals: document.getElementById("showPrivateGlobals"),
+            };
+            const hideInitial = (selector, toggle) => {
+               document.querySelectorAll(selector).forEach((el) => {
+                  const name = el.dataset.name;
+                  if (isPrivate(name)) {
+                     el.classList.add("private", "hidden");
+                  }
+               });
+               toggle.addEventListener("change", () => {
+                  const show = toggle.checked;
+                  document
+                     .querySelectorAll(`${selector}.private`)
+                     .forEach((el) => {
+                        el.classList.toggle("hidden", !show);
+                     });
+               });
+            };
+            hideInitial("article.function", toggles.functions);
+            hideInitial("article.struct", toggles.structs);
+            hideInitial("article.global", toggles.globals);
+            document
+               .querySelectorAll("article.struct")
+               .forEach((article) => {
+                  const codeBlock =
+                     article.querySelector("code.fields-code");
+                  if (!codeBlock) return;
+                  const lines = codeBlock.innerText.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
+                        );
+                        if (!nameMatch)
+                           return `<span class=\"field-line\">${line}</span>`;
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class=\"field-line${
+                           isPriv ? " hidden private" : ""
+                        }\" data-name=\"${name}\">${line}</span>`;
+                     })
+                     .join("");
+                  codeBlock.innerHTML = newContent;
+                  toggles.fields.addEventListener("change", () => {
+                     const show = toggles.fields.checked;
+                     article
+                        .querySelectorAll(".field-line.private")
+                        .forEach((el) =>
+                           el.classList.toggle("hidden", !show)
+                        );
+                  });
+               });
+            const searchInput = document.getElementById("searchInput");
+            searchInput.addEventListener("input", () => {
+               const query = searchInput.value.trim().toLowerCase();
+               document.querySelectorAll("article").forEach((el) => {
+                  const name = el.dataset.name.toLowerCase();
+                  if (query === "" || name.includes(query)) {
+                     el.classList.remove("hidden");
+                  } else {
+                     el.classList.add("hidden");
+                  }
+               });
+            });
+         });
+      </script>
+   </body>
+</html>

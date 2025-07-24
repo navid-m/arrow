@@ -1,0 +1,726 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+   <head>
+      <meta charset="UTF-8" />
+      <meta
+         name="viewport"
+         content="width=device-width, initial-scale=1.0"
+      />
+      <title>Docs - toolchain</title>
+      <link
+         href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
+         rel="stylesheet"
+      />
+      <style>
+         html {
+            font-size: 13px;
+         }
+         body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+         }
+         .sidebar {
+            width: 200px;
+            background: rgba(59, 56, 56, 0.1);
+            padding: 1.2rem;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            overflow-y: auto;
+            margin-right: 7px;
+         }
+         main {
+            flex: 0.9;
+            padding: 1rem;
+            margin: 0;
+            max-width: calc(100% - 220px);
+         }
+         h1 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+         }
+         h2 {
+            font-size: 1.2rem;
+            margin: 0.3rem 0 0.2rem;
+         }
+         pre {
+            background: #1e1e1e;
+            color: #dcdcdc;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            margin: 0 0 1rem;
+            font-size: 0.85rem;
+            overflow-x: auto;
+         }
+         code {
+            color: #f0dbdb;
+            white-space: pre-wrap;
+         }
+         p {
+            font-size: 15px;
+            padding-top: 10px;
+         }
+         article {
+            margin-bottom: 0.5rem;
+            padding: 0.4rem 0.9rem;
+            background: rgba(59, 56, 56, 0.5);
+            border-radius: 10px;
+            max-width: 99%;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+         }
+         .hidden {
+            display: none;
+         }
+         .filter-toggle label {
+            display: block;
+            margin-bottom: 0.5rem;
+         }
+         .field-line {
+            display: block;
+         }
+      </style>
+   </head>
+   <body>
+      <aside class="sidebar">
+         <a href="index.html">⌂</a>
+         |
+         <a href="#" onclick="history.back()">←</a>
+         <hr style="opacity: 0" />
+         <h2>Filters</h2>
+         <hr />
+         <input
+            type="search"
+            id="searchInput"
+            placeholder="Search symbols..."
+            style="
+               width: 100%;
+               margin-bottom: 1rem;
+               margin-top: 0.8rem;
+               border-radius: 10px !important;
+               height: 50px;
+               height: 2.5rem;
+            "
+         />
+         <div class="filter-toggle">
+            <label>
+               <input type="checkbox" id="showPrivateFunctions" />
+               Show private functions
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateStructs" />
+               Show private structs
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateFields" />
+               Show private struct fields
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateGlobals" />
+               Show private globals
+            </label>
+         </div>
+         <hr style="opacity: 0" />
+         <h2 style="padding-top: 5px">Subpackages</h2>
+         <hr />
+         
+         <span style="color: rgba(177, 175, 175, 0.5)">
+            No subpackages
+         </span>
+         
+      </aside>
+      <main>
+         <h1>
+            Package
+            <code>toolchain</code>
+         </h1>
+         <hr />
+         
+         <article class="global" data-name="pathExts">
+            <h2>pathExts</h2>
+            <hr />
+            
+            <pre><code>pathExts</code></pre>
+         </article>
+         
+         <article class="global" data-name="gotoolchainModule">
+            <h2>gotoolchainModule</h2>
+            <hr />
+            
+            <p>We download golang.org/toolchain version v0.0.1-<gotoolchain>.<goos>-<goarch>.
+If the 0.0.1 indicates anything at all, its the version of the toolchain packaging:
+if for some reason we needed to change the way toolchains are packaged into
+module zip files in a future version of Go, we could switch to v0.0.2 and then
+older versions expecting the old format could use v0.0.1 and newer versions
+would use v0.0.2. Of course, then we'd also have to publish two of each
+module zip file. It's not likely we'll ever need to change this.</p>
+            
+            <pre><code>gotoolchainModule</code></pre>
+         </article>
+         
+         <article class="global" data-name="gotoolchainVersion">
+            <h2>gotoolchainVersion</h2>
+            <hr />
+            
+            <pre><code>gotoolchainVersion</code></pre>
+         </article>
+         
+         <article class="global" data-name="targetEnv">
+            <h2>targetEnv</h2>
+            <hr />
+            
+            <p>targetEnv is a special environment variable set to the expected
+toolchain version during the toolchain switch by the parent
+process and cleared in the child process. When set, that indicates
+to the child to confirm that it provides the expected toolchain version.</p>
+            
+            <pre><code>targetEnv</code></pre>
+         </article>
+         
+         <article class="global" data-name="countEnv">
+            <h2>countEnv</h2>
+            <hr />
+            
+            <p>countEnv is a special environment variable
+that is incremented during each toolchain switch, to detect loops.
+It is cleared before invoking programs in 'go run', 'go test', 'go generate', and 'go tool'
+by invoking them in an environment filtered with FilterEnv,
+so user programs should not see this in their environment.</p>
+            
+            <pre><code>countEnv</code></pre>
+         </article>
+         
+         <article class="global" data-name="maxSwitch">
+            <h2>maxSwitch</h2>
+            <hr />
+            
+            <p>maxSwitch is the maximum toolchain switching depth.
+Most uses should never see more than three.
+(Perhaps one for the initial GOTOOLCHAIN dispatch,
+a second for go get doing an upgrade, and a third if
+for some reason the chosen upgrade version is too small
+by a little.)
+When the count reaches maxSwitch - 10, we start logging
+the switched versions for debugging before crashing with
+a fatal error upon reaching maxSwitch.
+That should be enough to see the repetition.</p>
+            
+            <pre><code>maxSwitch</code></pre>
+         </article>
+         
+         <article class="global" data-name="counterErrorsInvalidToolchainInFile">
+            <h2>counterErrorsInvalidToolchainInFile</h2>
+            <hr />
+            
+            <pre><code>counterErrorsInvalidToolchainInFile</code></pre>
+         </article>
+         
+         <article class="global" data-name="toolchainTrace">
+            <h2>toolchainTrace</h2>
+            <hr />
+            
+            <pre><code>toolchainTrace</code></pre>
+         </article>
+         
+         <article class="global" data-name="counterSelectExec">
+            <h2>counterSelectExec</h2>
+            <hr />
+            
+            <pre><code>counterSelectExec</code></pre>
+         </article>
+         
+         <article class="global" data-name="TestVersionSwitch">
+            <h2>TestVersionSwitch</h2>
+            <hr />
+            
+            <p>TestVersionSwitch is set in the test go binary to the value in $TESTGO_VERSION_SWITCH.
+Valid settings are:
+
+	"switch" - simulate version switches by reinvoking the test go binary with a different TESTGO_VERSION.
+	"mismatch" - like "switch" but forget to set TESTGO_VERSION, so it looks like we invoked a mismatched toolchain
+	"loop" - like "mismatch" but forget the target check, causing a toolchain switching loop</p>
+            
+            <pre><code>TestVersionSwitch string</code></pre>
+         </article>
+         
+         <article class="global" data-name="writeBits">
+            <h2>writeBits</h2>
+            <hr />
+            
+            <pre><code>writeBits fs.FileMode</code></pre>
+         </article>
+         
+         <article class="global" data-name="f">
+            <h2>f</h2>
+            <hr />
+            
+            <pre><code>f</code></pre>
+         </article>
+         
+         <article class="global" data-name="relRC">
+            <h2>relRC</h2>
+            <hr />
+            
+            <pre><code>relRC</code></pre>
+         </article>
+         
+         <article class="global" data-name="rel2">
+            <h2>rel2</h2>
+            <hr />
+            
+            <pre><code>rel2</code></pre>
+         </article>
+         
+         <article class="global" data-name="rel0">
+            <h2>rel0</h2>
+            <hr />
+            
+            <pre><code>rel0</code></pre>
+         </article>
+         
+         <article class="global" data-name="newerToolchainTests">
+            <h2>newerToolchainTests</h2>
+            <hr />
+            
+            <pre><code>newerToolchainTests</code></pre>
+         </article>
+         
+         <article class="global" data-name="counterSwitchExec">
+            <h2>counterSwitchExec</h2>
+            <hr />
+            
+            <pre><code>counterSwitchExec</code></pre>
+         </article>
+          
+         <article class="struct" data-name="Switcher">
+            <h2>type Switcher struct</h2>
+            <hr />
+            
+            <p>A Switcher collects errors to be reported and then decides
+between reporting the errors or switching to a new toolchain
+to resolve them.
+
+The client calls [Switcher.Error] repeatedly with errors encountered
+and then calls [Switcher.Switch]. If the errors included any
+*gover.TooNewErrors (potentially wrapped) and switching is
+permitted by GOTOOLCHAIN, Switch switches to a new toolchain.
+Otherwise Switch prints all the errors using base.Error.
+
+See https://go.dev/doc/toolchain#switch.</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">TooNew *gover.TooNewError
+Errors []error</code></pre>
+         </article>
+          
+         <article class="function" data-name="execGoToolchain">
+            <h2>execGoToolchain</h2>
+            <hr />
+            
+            <p>execGoToolchain execs the Go toolchain with the given name (gotoolchain),
+GOROOT directory, and go command executable.
+The GOROOT directory is empty if we are invoking a command named
+gotoolchain found in $PATH.</p>
+            
+            <pre><code>func execGoToolchain(gotoolchain string, dir string, exe string)</code></pre>
+         </article>
+         
+         <article class="function" data-name="pathDirs">
+            <h2>pathDirs</h2>
+            <hr />
+            
+            <p>pathDirs returns the directories in the system search path.</p>
+            
+            <pre><code>func pathDirs() []string</code></pre>
+         </article>
+         
+         <article class="function" data-name="pathVersion">
+            <h2>pathVersion</h2>
+            <hr />
+            
+            <p>pathVersion returns the Go version implemented by the file
+described by de and info in directory dir.
+The analysis only uses the name itself; it does not run the program.</p>
+            
+            <pre><code>func pathVersion(dir string, de fs.DirEntry, info fs.FileInfo) (string, bool)</code></pre>
+         </article>
+         
+         <article class="function" data-name="pathDirs">
+            <h2>pathDirs</h2>
+            <hr />
+            
+            <p>pathDirs returns the directories in the system search path.</p>
+            
+            <pre><code>func pathDirs() []string</code></pre>
+         </article>
+         
+         <article class="function" data-name="pathVersion">
+            <h2>pathVersion</h2>
+            <hr />
+            
+            <p>pathVersion returns the Go version implemented by the file
+described by de and info in directory dir.
+The analysis only uses the name itself; it does not run the program.</p>
+            
+            <pre><code>func pathVersion(dir string, de fs.DirEntry, info fs.FileInfo) (string, bool)</code></pre>
+         </article>
+         
+         <article class="function" data-name="pathDirs">
+            <h2>pathDirs</h2>
+            <hr />
+            
+            <p>pathDirs returns the directories in the system search path.</p>
+            
+            <pre><code>func pathDirs() []string</code></pre>
+         </article>
+         
+         <article class="function" data-name="pathVersion">
+            <h2>pathVersion</h2>
+            <hr />
+            
+            <p>pathVersion returns the Go version implemented by the file
+described by de and info in directory dir.
+The analysis only uses the name itself; it does not run the program.</p>
+            
+            <pre><code>func pathVersion(dir string, de fs.DirEntry, info fs.FileInfo) (string, bool)</code></pre>
+         </article>
+         
+         <article class="function" data-name="pathDirs">
+            <h2>pathDirs</h2>
+            <hr />
+            
+            <p>pathDirs returns the directories in the system search path.</p>
+            
+            <pre><code>func pathDirs() []string</code></pre>
+         </article>
+         
+         <article class="function" data-name="pathVersion">
+            <h2>pathVersion</h2>
+            <hr />
+            
+            <p>pathVersion returns the Go version implemented by the file
+described by de and info in directory dir.
+The analysis only uses the name itself; it does not run the program.</p>
+            
+            <pre><code>func pathVersion(dir string, de fs.DirEntry, info fs.FileInfo) (string, bool)</code></pre>
+         </article>
+         
+         <article class="function" data-name="cutExt">
+            <h2>cutExt</h2>
+            <hr />
+            
+            <p>cutExt looks for any of the known extensions at the end of file.
+If one is found, cutExt returns the file name with the extension trimmed,
+the extension itself, and true to signal that an extension was found.
+Otherwise cutExt returns file, "", false.</p>
+            
+            <pre><code>func cutExt(file string, exts []string) (name string, ext string, found bool)</code></pre>
+         </article>
+         
+         <article class="function" data-name="FilterEnv">
+            <h2>FilterEnv</h2>
+            <hr />
+            
+            <p>FilterEnv returns a copy of env with internal GOTOOLCHAIN environment
+variables filtered out.</p>
+            
+            <pre><code>func FilterEnv(env []string) []string</code></pre>
+         </article>
+         
+         <article class="function" data-name="Select">
+            <h2>Select</h2>
+            <hr />
+            
+            <p>Select invokes a different Go toolchain if directed by
+the GOTOOLCHAIN environment variable or the user's configuration
+or go.mod file.
+It must be called early in startup.
+See https://go.dev/doc/toolchain#select.</p>
+            
+            <pre><code>func Select()</code></pre>
+         </article>
+         
+         <article class="function" data-name="Exec">
+            <h2>Exec</h2>
+            <hr />
+            
+            <p>Exec invokes the specified Go toolchain or else prints an error and exits the process.
+If $GOTOOLCHAIN is set to path or min+path, Exec only considers the PATH
+as a source of Go toolchains. Otherwise Exec tries the PATH but then downloads
+a toolchain if necessary.</p>
+            
+            <pre><code>func Exec(gotoolchain string)</code></pre>
+         </article>
+         
+         <article class="function" data-name="size">
+            <h2>size</h2>
+            <hr />
+            
+            <pre><code>func size(path string) int64</code></pre>
+         </article>
+         
+         <article class="function" data-name="raceSafeCopy">
+            <h2>raceSafeCopy</h2>
+            <hr />
+            
+            <p>raceSafeCopy copies the file old to the file new, being careful to ensure
+that if multiple go commands call raceSafeCopy(old, new) at the same time,
+they don't interfere with each other: both will succeed and return and
+later observe the correct content in new. Like in the build cache, we arrange
+this by opening new without truncation and then writing the content.
+Both go commands can do this simultaneously and will write the same thing
+(old never changes content).</p>
+            
+            <pre><code>func raceSafeCopy(old string, new string) error</code></pre>
+         </article>
+         
+         <article class="function" data-name="modGoToolchain">
+            <h2>modGoToolchain</h2>
+            <hr />
+            
+            <p>modGoToolchain finds the enclosing go.work or go.mod file
+and returns the go version and toolchain lines from the file.
+The toolchain line overrides the version line</p>
+            
+            <pre><code>func modGoToolchain() (file string, goVers string, toolchain string)</code></pre>
+         </article>
+         
+         <article class="function" data-name="goInstallVersion">
+            <h2>goInstallVersion</h2>
+            <hr />
+            
+            <p>goInstallVersion reports whether the command line is go install m@v or go run m@v.
+If so, Select must not read the go.mod or go.work file in "auto" or "path" mode.</p>
+            
+            <pre><code>func goInstallVersion(minVers string) bool</code></pre>
+         </article>
+         
+         <article class="function" data-name="TestNewerToolchain">
+            <h2>TestNewerToolchain</h2>
+            <hr />
+            
+            <pre><code>func TestNewerToolchain(t *testing.T)</code></pre>
+         </article>
+         
+         <article class="function" data-name="sysWriteBits">
+            <h2>sysWriteBits</h2>
+            <hr />
+            
+            <p>sysWriteBits determines which bits to OR into the mode to make a directory writable.
+It must be called when there are no other file system operations happening.</p>
+            
+            <pre><code>func sysWriteBits() fs.FileMode</code></pre>
+         </article>
+         
+         <article class="function" data-name="execGoToolchain">
+            <h2>execGoToolchain</h2>
+            <hr />
+            
+            <pre><code>func execGoToolchain(gotoolchain string, dir string, exe string)</code></pre>
+         </article>
+         
+         <article class="function" data-name="Error">
+            <h2>Error</h2>
+            <hr />
+            
+            <p>Error reports the error to the Switcher,
+which saves it for processing during Switch.</p>
+            
+            <pre><code>func Error(err error)</code></pre>
+         </article>
+         
+         <article class="function" data-name="addTooNew">
+            <h2>addTooNew</h2>
+            <hr />
+            
+            <p>addTooNew adds any TooNew errors that can be found in err.</p>
+            
+            <pre><code>func addTooNew(err error)</code></pre>
+         </article>
+         
+         <article class="function" data-name="NeedSwitch">
+            <h2>NeedSwitch</h2>
+            <hr />
+            
+            <p>NeedSwitch reports whether Switch would attempt to switch toolchains.</p>
+            
+            <pre><code>func NeedSwitch() bool</code></pre>
+         </article>
+         
+         <article class="function" data-name="Switch">
+            <h2>Switch</h2>
+            <hr />
+            
+            <p>Switch decides whether to switch to a newer toolchain
+to resolve any of the saved errors.
+It switches if toolchain switches are permitted and there is at least one TooNewError.
+
+If Switch decides not to switch toolchains, it prints the errors using base.Error and returns.
+
+If Switch decides to switch toolchains but cannot identify a toolchain to use.
+it prints the errors along with one more about not being able to find the toolchain
+and returns.
+
+Otherwise, Switch prints an informational message giving a reason for the
+switch and the toolchain being invoked and then switches toolchains.
+This operation never returns.</p>
+            
+            <pre><code>func Switch(ctx context.Context)</code></pre>
+         </article>
+         
+         <article class="function" data-name="SwitchOrFatal">
+            <h2>SwitchOrFatal</h2>
+            <hr />
+            
+            <p>SwitchOrFatal attempts a toolchain switch based on the information in err
+and otherwise falls back to base.Fatal(err).</p>
+            
+            <pre><code>func SwitchOrFatal(ctx context.Context, err error)</code></pre>
+         </article>
+         
+         <article class="function" data-name="NewerToolchain">
+            <h2>NewerToolchain</h2>
+            <hr />
+            
+            <p>NewerToolchain returns the name of the toolchain to use when we need
+to switch to a newer toolchain that must support at least the given Go version.
+See https://go.dev/doc/toolchain#switch.
+
+If the latest major release is 1.N.0, we use the latest patch release of 1.(N-1) if that's >= version.
+Otherwise we use the latest 1.N if that's allowed.
+Otherwise we use the latest release.</p>
+            
+            <pre><code>func NewerToolchain(ctx context.Context, version string) (string, error)</code></pre>
+         </article>
+         
+         <article class="function" data-name="autoToolchains">
+            <h2>autoToolchains</h2>
+            <hr />
+            
+            <p>autoToolchains returns the list of toolchain versions available to GOTOOLCHAIN=auto or =min+auto mode.</p>
+            
+            <pre><code>func autoToolchains(ctx context.Context) ([]string, error)</code></pre>
+         </article>
+         
+         <article class="function" data-name="pathToolchains">
+            <h2>pathToolchains</h2>
+            <hr />
+            
+            <p>pathToolchains returns the list of toolchain versions available to GOTOOLCHAIN=path or =min+path mode.</p>
+            
+            <pre><code>func pathToolchains(ctx context.Context) ([]string, error)</code></pre>
+         </article>
+         
+         <article class="function" data-name="newerToolchain">
+            <h2>newerToolchain</h2>
+            <hr />
+            
+            <p>newerToolchain implements NewerToolchain where the list of choices is known.
+It is separated out for easier testing of this logic.</p>
+            
+            <pre><code>func newerToolchain(need string, list []string) (string, error)</code></pre>
+         </article>
+         
+         <article class="function" data-name="HasAuto">
+            <h2>HasAuto</h2>
+            <hr />
+            
+            <p>HasAuto reports whether the GOTOOLCHAIN setting allows "auto" upgrades.</p>
+            
+            <pre><code>func HasAuto() bool</code></pre>
+         </article>
+         
+         <article class="function" data-name="HasPath">
+            <h2>HasPath</h2>
+            <hr />
+            
+            <p>HasPath reports whether the GOTOOLCHAIN setting allows "path" upgrades.</p>
+            
+            <pre><code>func HasPath() bool</code></pre>
+         </article>
+         
+         <article class="function" data-name="sysWriteBits">
+            <h2>sysWriteBits</h2>
+            <hr />
+            
+            <pre><code>func sysWriteBits() fs.FileMode</code></pre>
+         </article>
+         
+      </main>
+      <script>
+         function isPrivate(name) {
+            return /^[a-z]/.test(name);
+         }
+         document.addEventListener("DOMContentLoaded", () => {
+            const toggles = {
+               functions: document.getElementById("showPrivateFunctions"),
+               structs: document.getElementById("showPrivateStructs"),
+               fields: document.getElementById("showPrivateFields"),
+               globals: document.getElementById("showPrivateGlobals"),
+            };
+            const hideInitial = (selector, toggle) => {
+               document.querySelectorAll(selector).forEach((el) => {
+                  const name = el.dataset.name;
+                  if (isPrivate(name)) {
+                     el.classList.add("private", "hidden");
+                  }
+               });
+               toggle.addEventListener("change", () => {
+                  const show = toggle.checked;
+                  document
+                     .querySelectorAll(`${selector}.private`)
+                     .forEach((el) => {
+                        el.classList.toggle("hidden", !show);
+                     });
+               });
+            };
+            hideInitial("article.function", toggles.functions);
+            hideInitial("article.struct", toggles.structs);
+            hideInitial("article.global", toggles.globals);
+            document
+               .querySelectorAll("article.struct")
+               .forEach((article) => {
+                  const codeBlock =
+                     article.querySelector("code.fields-code");
+                  if (!codeBlock) return;
+                  const lines = codeBlock.innerText.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
+                        );
+                        if (!nameMatch)
+                           return `<span class=\"field-line\">${line}</span>`;
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class=\"field-line${
+                           isPriv ? " hidden private" : ""
+                        }\" data-name=\"${name}\">${line}</span>`;
+                     })
+                     .join("");
+                  codeBlock.innerHTML = newContent;
+                  toggles.fields.addEventListener("change", () => {
+                     const show = toggles.fields.checked;
+                     article
+                        .querySelectorAll(".field-line.private")
+                        .forEach((el) =>
+                           el.classList.toggle("hidden", !show)
+                        );
+                  });
+               });
+            const searchInput = document.getElementById("searchInput");
+            searchInput.addEventListener("input", () => {
+               const query = searchInput.value.trim().toLowerCase();
+               document.querySelectorAll("article").forEach((el) => {
+                  const name = el.dataset.name.toLowerCase();
+                  if (query === "" || name.includes(query)) {
+                     el.classList.remove("hidden");
+                  } else {
+                     el.classList.add("hidden");
+                  }
+               });
+            });
+         });
+      </script>
+   </body>
+</html>

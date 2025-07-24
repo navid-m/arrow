@@ -1,0 +1,374 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+   <head>
+      <meta charset="UTF-8" />
+      <meta
+         name="viewport"
+         content="width=device-width, initial-scale=1.0"
+      />
+      <title>Docs - benchmark</title>
+      <link
+         href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
+         rel="stylesheet"
+      />
+      <style>
+         html {
+            font-size: 13px;
+         }
+         body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+         }
+         .sidebar {
+            width: 200px;
+            background: rgba(59, 56, 56, 0.1);
+            padding: 1.2rem;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            overflow-y: auto;
+            margin-right: 7px;
+         }
+         main {
+            flex: 0.9;
+            padding: 1rem;
+            margin: 0;
+            max-width: calc(100% - 220px);
+         }
+         h1 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+         }
+         h2 {
+            font-size: 1.2rem;
+            margin: 0.3rem 0 0.2rem;
+         }
+         pre {
+            background: #1e1e1e;
+            color: #dcdcdc;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            margin: 0 0 1rem;
+            font-size: 0.85rem;
+            overflow-x: auto;
+         }
+         code {
+            color: #f0dbdb;
+            white-space: pre-wrap;
+         }
+         p {
+            font-size: 15px;
+            padding-top: 10px;
+         }
+         article {
+            margin-bottom: 0.5rem;
+            padding: 0.4rem 0.9rem;
+            background: rgba(59, 56, 56, 0.5);
+            border-radius: 10px;
+            max-width: 99%;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+         }
+         .hidden {
+            display: none;
+         }
+         .filter-toggle label {
+            display: block;
+            margin-bottom: 0.5rem;
+         }
+         .field-line {
+            display: block;
+         }
+      </style>
+   </head>
+   <body>
+      <aside class="sidebar">
+         <a href="index.html">⌂</a>
+         |
+         <a href="#" onclick="history.back()">←</a>
+         <hr style="opacity: 0" />
+         <h2>Filters</h2>
+         <hr />
+         <input
+            type="search"
+            id="searchInput"
+            placeholder="Search symbols..."
+            style="
+               width: 100%;
+               margin-bottom: 1rem;
+               margin-top: 0.8rem;
+               border-radius: 10px !important;
+               height: 50px;
+               height: 2.5rem;
+            "
+         />
+         <div class="filter-toggle">
+            <label>
+               <input type="checkbox" id="showPrivateFunctions" />
+               Show private functions
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateStructs" />
+               Show private structs
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateFields" />
+               Show private struct fields
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateGlobals" />
+               Show private globals
+            </label>
+         </div>
+         <hr style="opacity: 0" />
+         <h2 style="padding-top: 5px">Subpackages</h2>
+         <hr />
+         
+         <span style="color: rgba(177, 175, 175, 0.5)">
+            No subpackages
+         </span>
+         
+      </aside>
+      <main>
+         <h1>
+            Package
+            <code>benchmark</code>
+         </h1>
+         <hr />
+         
+         <article class="global" data-name="GC">
+            <h2>GC</h2>
+            <hr />
+            
+            <pre><code>GC</code></pre>
+         </article>
+         
+         <article class="global" data-name="NoGC">
+            <h2>NoGC</h2>
+            <hr />
+            
+            <pre><code>NoGC Flags</code></pre>
+         </article>
+          
+         <article class="struct" data-name="Metrics">
+            <h2>type Metrics struct</h2>
+            <hr />
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">gc Flags
+marks []*mark
+curMark *mark
+filebase string
+pprofFile *os.File</code></pre>
+         </article>
+         
+         <article class="struct" data-name="mark">
+            <h2>type mark struct</h2>
+            <hr />
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">name string
+startM runtime.MemStats
+endM runtime.MemStats
+gcM runtime.MemStats
+startT time.Time
+endT time.Time</code></pre>
+         </article>
+          
+         <article class="function" data-name="New">
+            <h2>New</h2>
+            <hr />
+            
+            <p>New creates a new Metrics object.
+
+Typical usage should look like:
+
+	func main() {
+	  filename := "" // Set to enable per-phase pprof file output.
+	  bench := benchmark.New(benchmark.GC, filename)
+	  defer bench.Report(os.Stdout)
+	  // etc
+	  bench.Start("foo")
+	  foo()
+	  bench.Start("bar")
+	  bar()
+	}
+
+Note that a nil Metrics object won't cause any errors, so one could write
+code like:
+
+	func main() {
+	  enableBenchmarking := flag.Bool("enable", true, "enables benchmarking")
+	  flag.Parse()
+	  var bench *benchmark.Metrics
+	  if *enableBenchmarking {
+	    bench = benchmark.New(benchmark.GC)
+	  }
+	  bench.Start("foo")
+	  // etc.
+	}</p>
+            
+            <pre><code>func New(gc Flags, filebase string) *Metrics</code></pre>
+         </article>
+         
+         <article class="function" data-name="Report">
+            <h2>Report</h2>
+            <hr />
+            
+            <p>Report reports the metrics.
+Closes the currently Start(ed) range, and writes the report to the given io.Writer.</p>
+            
+            <pre><code>func Report(w io.Writer)</code></pre>
+         </article>
+         
+         <article class="function" data-name="Start">
+            <h2>Start</h2>
+            <hr />
+            
+            <p>Start marks the beginning of a new measurement phase.
+Once a metric is started, it continues until either a Report is issued, or another Start is called.</p>
+            
+            <pre><code>func Start(name string)</code></pre>
+         </article>
+         
+         <article class="function" data-name="closeMark">
+            <h2>closeMark</h2>
+            <hr />
+            
+            <pre><code>func closeMark()</code></pre>
+         </article>
+         
+         <article class="function" data-name="shouldPProf">
+            <h2>shouldPProf</h2>
+            <hr />
+            
+            <p>shouldPProf returns true if we should be doing pprof runs.</p>
+            
+            <pre><code>func shouldPProf() bool</code></pre>
+         </article>
+         
+         <article class="function" data-name="makeBenchString">
+            <h2>makeBenchString</h2>
+            <hr />
+            
+            <p>makeBenchString makes a benchmark string consumable by Go's benchmarking tools.</p>
+            
+            <pre><code>func makeBenchString(name string) string</code></pre>
+         </article>
+         
+         <article class="function" data-name="makePProfFilename">
+            <h2>makePProfFilename</h2>
+            <hr />
+            
+            <pre><code>func makePProfFilename(filebase string, name string, typ string) string</code></pre>
+         </article>
+         
+         <article class="function" data-name="TestMakeBenchString">
+            <h2>TestMakeBenchString</h2>
+            <hr />
+            
+            <pre><code>func TestMakeBenchString(t *testing.T)</code></pre>
+         </article>
+         
+         <article class="function" data-name="TestPProfFlag">
+            <h2>TestPProfFlag</h2>
+            <hr />
+            
+            <pre><code>func TestPProfFlag(t *testing.T)</code></pre>
+         </article>
+         
+         <article class="function" data-name="TestPProfNames">
+            <h2>TestPProfNames</h2>
+            <hr />
+            
+            <pre><code>func TestPProfNames(t *testing.T)</code></pre>
+         </article>
+         
+         <article class="function" data-name="TestNilBenchmarkObject">
+            <h2>TestNilBenchmarkObject</h2>
+            <hr />
+            
+            <p>Ensure that public APIs work with a nil Metrics object.</p>
+            
+            <pre><code>func TestNilBenchmarkObject(t *testing.T)</code></pre>
+         </article>
+         
+      </main>
+      <script>
+         function isPrivate(name) {
+            return /^[a-z]/.test(name);
+         }
+         document.addEventListener("DOMContentLoaded", () => {
+            const toggles = {
+               functions: document.getElementById("showPrivateFunctions"),
+               structs: document.getElementById("showPrivateStructs"),
+               fields: document.getElementById("showPrivateFields"),
+               globals: document.getElementById("showPrivateGlobals"),
+            };
+            const hideInitial = (selector, toggle) => {
+               document.querySelectorAll(selector).forEach((el) => {
+                  const name = el.dataset.name;
+                  if (isPrivate(name)) {
+                     el.classList.add("private", "hidden");
+                  }
+               });
+               toggle.addEventListener("change", () => {
+                  const show = toggle.checked;
+                  document
+                     .querySelectorAll(`${selector}.private`)
+                     .forEach((el) => {
+                        el.classList.toggle("hidden", !show);
+                     });
+               });
+            };
+            hideInitial("article.function", toggles.functions);
+            hideInitial("article.struct", toggles.structs);
+            hideInitial("article.global", toggles.globals);
+            document
+               .querySelectorAll("article.struct")
+               .forEach((article) => {
+                  const codeBlock =
+                     article.querySelector("code.fields-code");
+                  if (!codeBlock) return;
+                  const lines = codeBlock.innerText.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
+                        );
+                        if (!nameMatch)
+                           return `<span class=\"field-line\">${line}</span>`;
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class=\"field-line${
+                           isPriv ? " hidden private" : ""
+                        }\" data-name=\"${name}\">${line}</span>`;
+                     })
+                     .join("");
+                  codeBlock.innerHTML = newContent;
+                  toggles.fields.addEventListener("change", () => {
+                     const show = toggles.fields.checked;
+                     article
+                        .querySelectorAll(".field-line.private")
+                        .forEach((el) =>
+                           el.classList.toggle("hidden", !show)
+                        );
+                  });
+               });
+            const searchInput = document.getElementById("searchInput");
+            searchInput.addEventListener("input", () => {
+               const query = searchInput.value.trim().toLowerCase();
+               document.querySelectorAll("article").forEach((el) => {
+                  const name = el.dataset.name.toLowerCase();
+                  if (query === "" || name.includes(query)) {
+                     el.classList.remove("hidden");
+                  } else {
+                     el.classList.add("hidden");
+                  }
+               });
+            });
+         });
+      </script>
+   </body>
+</html>

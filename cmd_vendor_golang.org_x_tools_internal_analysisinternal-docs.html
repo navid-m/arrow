@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+   <head>
+      <meta charset="UTF-8" />
+      <meta
+         name="viewport"
+         content="width=device-width, initial-scale=1.0"
+      />
+      <title>Docs - analysisinternal</title>
+      <link
+         href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
+         rel="stylesheet"
+      />
+      <style>
+         html {
+            font-size: 13px;
+         }
+         body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+         }
+         .sidebar {
+            width: 200px;
+            background: rgba(59, 56, 56, 0.1);
+            padding: 1.2rem;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            overflow-y: auto;
+            margin-right: 7px;
+         }
+         main {
+            flex: 0.9;
+            padding: 1rem;
+            margin: 0;
+            max-width: calc(100% - 220px);
+         }
+         h1 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+         }
+         h2 {
+            font-size: 1.2rem;
+            margin: 0.3rem 0 0.2rem;
+         }
+         pre {
+            background: #1e1e1e;
+            color: #dcdcdc;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            margin: 0 0 1rem;
+            font-size: 0.85rem;
+            overflow-x: auto;
+         }
+         code {
+            color: #f0dbdb;
+            white-space: pre-wrap;
+         }
+         p {
+            font-size: 15px;
+            padding-top: 10px;
+         }
+         article {
+            margin-bottom: 0.5rem;
+            padding: 0.4rem 0.9rem;
+            background: rgba(59, 56, 56, 0.5);
+            border-radius: 10px;
+            max-width: 99%;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+         }
+         .hidden {
+            display: none;
+         }
+         .filter-toggle label {
+            display: block;
+            margin-bottom: 0.5rem;
+         }
+         .field-line {
+            display: block;
+         }
+      </style>
+   </head>
+   <body>
+      <aside class="sidebar">
+         <a href="index.html">⌂</a>
+         |
+         <a href="#" onclick="history.back()">←</a>
+         <hr style="opacity: 0" />
+         <h2>Filters</h2>
+         <hr />
+         <input
+            type="search"
+            id="searchInput"
+            placeholder="Search symbols..."
+            style="
+               width: 100%;
+               margin-bottom: 1rem;
+               margin-top: 0.8rem;
+               border-radius: 10px !important;
+               height: 50px;
+               height: 2.5rem;
+            "
+         />
+         <div class="filter-toggle">
+            <label>
+               <input type="checkbox" id="showPrivateFunctions" />
+               Show private functions
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateStructs" />
+               Show private structs
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateFields" />
+               Show private struct fields
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateGlobals" />
+               Show private globals
+            </label>
+         </div>
+         <hr style="opacity: 0" />
+         <h2 style="padding-top: 5px">Subpackages</h2>
+         <hr />
+         
+         <span style="color: rgba(177, 175, 175, 0.5)">
+            No subpackages
+         </span>
+         
+      </aside>
+      <main>
+         <h1>
+            Package
+            <code>analysisinternal</code>
+         </h1>
+         <hr />
+           
+         <article class="function" data-name="TypeErrorEndPos">
+            <h2>TypeErrorEndPos</h2>
+            <hr />
+            
+            <pre><code>func TypeErrorEndPos(fset *token.FileSet, src []byte, start token.Pos) token.Pos</code></pre>
+         </article>
+         
+         <article class="function" data-name="StmtToInsertVarBefore">
+            <h2>StmtToInsertVarBefore</h2>
+            <hr />
+            
+            <p>StmtToInsertVarBefore returns the ast.Stmt before which we can
+safely insert a new var declaration, or nil if the path denotes a
+node outside any statement.
+
+Basic Example:
+
+	z := 1
+	y := z + x
+
+If x is undeclared, then this function would return `y := z + x`, so that we
+can insert `x := ` on the line before `y := z + x`.
+
+If stmt example:
+
+	if z == 1 {
+	} else if z == y {}
+
+If y is undeclared, then this function would return `if z == 1 {`, because we cannot
+insert a statement between an if and an else if statement. As a result, we need to find
+the top of the if chain to insert `y := ` before.</p>
+            
+            <pre><code>func StmtToInsertVarBefore(path []ast.Node) ast.Stmt</code></pre>
+         </article>
+         
+         <article class="function" data-name="baseIfStmt">
+            <h2>baseIfStmt</h2>
+            <hr />
+            
+            <p>baseIfStmt walks up the if/else-if chain until we get to
+the top of the current if chain.</p>
+            
+            <pre><code>func baseIfStmt(path []ast.Node, index int) ast.Stmt</code></pre>
+         </article>
+         
+         <article class="function" data-name="WalkASTWithParent">
+            <h2>WalkASTWithParent</h2>
+            <hr />
+            
+            <p>WalkASTWithParent walks the AST rooted at n. The semantics are
+similar to ast.Inspect except it does not call f(nil).</p>
+            
+            <pre><code>func WalkASTWithParent(n ast.Node, f func)</code></pre>
+         </article>
+         
+         <article class="function" data-name="MatchingIdents">
+            <h2>MatchingIdents</h2>
+            <hr />
+            
+            <p>MatchingIdents finds the names of all identifiers in 'node' that match any of the given types.
+'pos' represents the position at which the identifiers may be inserted. 'pos' must be within
+the scope of each of identifier we select. Otherwise, we will insert a variable at 'pos' that
+is unrecognized.</p>
+            
+            <pre><code>func MatchingIdents(typs []types.Type, node ast.Node, pos token.Pos, info *types.Info, pkg *types.Package) *ast.MapType</code></pre>
+         </article>
+         
+         <article class="function" data-name="equivalentTypes">
+            <h2>equivalentTypes</h2>
+            <hr />
+            
+            <pre><code>func equivalentTypes(want types.Type, got types.Type) bool</code></pre>
+         </article>
+         
+         <article class="function" data-name="MakeReadFile">
+            <h2>MakeReadFile</h2>
+            <hr />
+            
+            <p>MakeReadFile returns a simple implementation of the Pass.ReadFile function.</p>
+            
+            <pre><code>func MakeReadFile(pass *analysis.Pass) func</code></pre>
+         </article>
+         
+         <article class="function" data-name="CheckReadable">
+            <h2>CheckReadable</h2>
+            <hr />
+            
+            <p>CheckReadable enforces the access policy defined by the ReadFile field of [analysis.Pass].</p>
+            
+            <pre><code>func CheckReadable(pass *analysis.Pass, filename string) error</code></pre>
+         </article>
+         
+         <article class="function" data-name="slicesContains">
+            <h2>slicesContains</h2>
+            <hr />
+            
+            <p>TODO(adonovan): use go1.21 slices.Contains.</p>
+            
+            <pre><code>func slicesContains(slice S, x E) bool</code></pre>
+         </article>
+         
+         <article class="function" data-name="AddImport">
+            <h2>AddImport</h2>
+            <hr />
+            
+            <p>AddImport checks whether this file already imports pkgpath and
+that import is in scope at pos. If so, it returns the name under
+which it was imported and a zero edit. Otherwise, it adds a new
+import of pkgpath, using a name derived from the preferred name,
+and returns the chosen name along with the edit for the new import.
+
+It does not mutate its arguments.</p>
+            
+            <pre><code>func AddImport(info *types.Info, file *ast.File, pos token.Pos, pkgpath string, preferredName string) (name string, newImport []analysis.TextEdit)</code></pre>
+         </article>
+         
+         <article class="function" data-name="importedPkgName">
+            <h2>importedPkgName</h2>
+            <hr />
+            
+            <p>importedPkgName returns the PkgName object declared by an ImportSpec.
+TODO(adonovan): use go1.22's Info.PkgNameOf.</p>
+            
+            <pre><code>func importedPkgName(info *types.Info, imp *ast.ImportSpec) (*types.PkgName, bool)</code></pre>
+         </article>
+         
+         <article class="function" data-name="MustExtractDoc">
+            <h2>MustExtractDoc</h2>
+            <hr />
+            
+            <p>MustExtractDoc is like [ExtractDoc] but it panics on error.
+
+To use, define a doc.go file such as:
+
+	// Package halting defines an analyzer of program termination.
+	//
+	// # Analyzer halting
+	//
+	// halting: reports whether execution will halt.
+	//
+	// The halting analyzer reports a diagnostic for functions
+	// that run forever. To suppress the diagnostics, try inserting
+	// a 'break' statement into each loop.
+	package halting
+
+	import _ "embed"
+
+	//go:embed doc.go
+	var doc string
+
+And declare your analyzer as:
+
+	var Analyzer = &analysis.Analyzer{
+		Name:             "halting",
+		Doc:              analysisutil.MustExtractDoc(doc, "halting"),
+		...
+	}</p>
+            
+            <pre><code>func MustExtractDoc(content string, name string) string</code></pre>
+         </article>
+         
+         <article class="function" data-name="ExtractDoc">
+            <h2>ExtractDoc</h2>
+            <hr />
+            
+            <p>ExtractDoc extracts a section of a package doc comment from the
+provided contents of an analyzer package's doc.go file.
+
+A section is a portion of the comment between one heading and
+the next, using this form:
+
+	# Analyzer NAME
+
+	NAME: SUMMARY
+
+	Full description...
+
+where NAME matches the name argument, and SUMMARY is a brief
+verb-phrase that describes the analyzer. The following lines, up
+until the next heading or the end of the comment, contain the full
+description. ExtractDoc returns the portion following the colon,
+which is the form expected by Analyzer.Doc.
+
+Example:
+
+	# Analyzer printf
+
+	printf: checks consistency of calls to printf
+
+	The printf analyzer checks consistency of calls to printf.
+	Here is the complete description...
+
+This notation allows a single doc comment to provide documentation
+for multiple analyzers, each in its own section.
+The HTML anchors generated for each heading are predictable.
+
+It returns an error if the content was not a valid Go source file
+containing a package doc comment with a heading of the required
+form.
+
+This machinery enables the package documentation (typically
+accessible via the web at https://pkg.go.dev/) and the command
+documentation (typically printed to a terminal) to be derived from
+the same source and formatted appropriately.</p>
+            
+            <pre><code>func ExtractDoc(content string, name string) (string, error)</code></pre>
+         </article>
+         
+      </main>
+      <script>
+         function isPrivate(name) {
+            return /^[a-z]/.test(name);
+         }
+         document.addEventListener("DOMContentLoaded", () => {
+            const toggles = {
+               functions: document.getElementById("showPrivateFunctions"),
+               structs: document.getElementById("showPrivateStructs"),
+               fields: document.getElementById("showPrivateFields"),
+               globals: document.getElementById("showPrivateGlobals"),
+            };
+            const hideInitial = (selector, toggle) => {
+               document.querySelectorAll(selector).forEach((el) => {
+                  const name = el.dataset.name;
+                  if (isPrivate(name)) {
+                     el.classList.add("private", "hidden");
+                  }
+               });
+               toggle.addEventListener("change", () => {
+                  const show = toggle.checked;
+                  document
+                     .querySelectorAll(`${selector}.private`)
+                     .forEach((el) => {
+                        el.classList.toggle("hidden", !show);
+                     });
+               });
+            };
+            hideInitial("article.function", toggles.functions);
+            hideInitial("article.struct", toggles.structs);
+            hideInitial("article.global", toggles.globals);
+            document
+               .querySelectorAll("article.struct")
+               .forEach((article) => {
+                  const codeBlock =
+                     article.querySelector("code.fields-code");
+                  if (!codeBlock) return;
+                  const lines = codeBlock.innerText.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
+                        );
+                        if (!nameMatch)
+                           return `<span class=\"field-line\">${line}</span>`;
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class=\"field-line${
+                           isPriv ? " hidden private" : ""
+                        }\" data-name=\"${name}\">${line}</span>`;
+                     })
+                     .join("");
+                  codeBlock.innerHTML = newContent;
+                  toggles.fields.addEventListener("change", () => {
+                     const show = toggles.fields.checked;
+                     article
+                        .querySelectorAll(".field-line.private")
+                        .forEach((el) =>
+                           el.classList.toggle("hidden", !show)
+                        );
+                  });
+               });
+            const searchInput = document.getElementById("searchInput");
+            searchInput.addEventListener("input", () => {
+               const query = searchInput.value.trim().toLowerCase();
+               document.querySelectorAll("article").forEach((el) => {
+                  const name = el.dataset.name.toLowerCase();
+                  if (query === "" || name.includes(query)) {
+                     el.classList.remove("hidden");
+                  } else {
+                     el.classList.add("hidden");
+                  }
+               });
+            });
+         });
+      </script>
+   </body>
+</html>

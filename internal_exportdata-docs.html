@@ -1,0 +1,346 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+   <head>
+      <meta charset="UTF-8" />
+      <meta
+         name="viewport"
+         content="width=device-width, initial-scale=1.0"
+      />
+      <title>Docs - exportdata</title>
+      <link
+         href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
+         rel="stylesheet"
+      />
+      <style>
+         html {
+            font-size: 13px;
+         }
+         body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+         }
+         .sidebar {
+            width: 200px;
+            background: rgba(59, 56, 56, 0.1);
+            padding: 1.2rem;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            overflow-y: auto;
+            margin-right: 7px;
+         }
+         main {
+            flex: 0.9;
+            padding: 1rem;
+            margin: 0;
+            max-width: calc(100% - 220px);
+         }
+         h1 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+         }
+         h2 {
+            font-size: 1.2rem;
+            margin: 0.3rem 0 0.2rem;
+         }
+         pre {
+            background: #1e1e1e;
+            color: #dcdcdc;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            margin: 0 0 1rem;
+            font-size: 0.85rem;
+            overflow-x: auto;
+         }
+         code {
+            color: #f0dbdb;
+            white-space: pre-wrap;
+         }
+         p {
+            font-size: 15px;
+            padding-top: 10px;
+         }
+         article {
+            margin-bottom: 0.5rem;
+            padding: 0.4rem 0.9rem;
+            background: rgba(59, 56, 56, 0.5);
+            border-radius: 10px;
+            max-width: 99%;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+         }
+         .hidden {
+            display: none;
+         }
+         .filter-toggle label {
+            display: block;
+            margin-bottom: 0.5rem;
+         }
+         .field-line {
+            display: block;
+         }
+      </style>
+   </head>
+   <body>
+      <aside class="sidebar">
+         <a href="index.html">⌂</a>
+         |
+         <a href="#" onclick="history.back()">←</a>
+         <hr style="opacity: 0" />
+         <h2>Filters</h2>
+         <hr />
+         <input
+            type="search"
+            id="searchInput"
+            placeholder="Search symbols..."
+            style="
+               width: 100%;
+               margin-bottom: 1rem;
+               margin-top: 0.8rem;
+               border-radius: 10px !important;
+               height: 50px;
+               height: 2.5rem;
+            "
+         />
+         <div class="filter-toggle">
+            <label>
+               <input type="checkbox" id="showPrivateFunctions" />
+               Show private functions
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateStructs" />
+               Show private structs
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateFields" />
+               Show private struct fields
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateGlobals" />
+               Show private globals
+            </label>
+         </div>
+         <hr style="opacity: 0" />
+         <h2 style="padding-top: 5px">Subpackages</h2>
+         <hr />
+         
+         <span style="color: rgba(177, 175, 175, 0.5)">
+            No subpackages
+         </span>
+         
+      </aside>
+      <main>
+         <h1>
+            Package
+            <code>exportdata</code>
+         </h1>
+         <hr />
+         
+         <article class="global" data-name="pkgExts">
+            <h2>pkgExts</h2>
+            <hr />
+            
+            <pre><code>pkgExts</code></pre>
+         </article>
+         
+         <article class="global" data-name="exportMap">
+            <h2>exportMap</h2>
+            <hr />
+            
+            <pre><code>exportMap sync.Map</code></pre>
+         </article>
+           
+         <article class="function" data-name="readArchiveHeader">
+            <h2>readArchiveHeader</h2>
+            <hr />
+            
+            <p>Copy of cmd/internal/archive.ReadHeader.</p>
+            
+            <pre><code>func readArchiveHeader(b *bufio.Reader, name string) int</code></pre>
+         </article>
+         
+         <article class="function" data-name="ReadUnified">
+            <h2>ReadUnified</h2>
+            <hr />
+            
+            <p>ReadUnified reads the contents of the unified export data from a reader r
+that contains the contents of a GC-created archive file.
+
+On success, the reader will be positioned after the end-of-section marker "\n$$\n".
+
+Supported GC-created archive files have 4 layers of nesting:
+  - An archive file containing a package definition file.
+  - The package definition file contains headers followed by a data section.
+    Headers are lines (≤ 4kb) that do not start with "$$".
+  - The data section starts with "$$B\n" followed by export data followed
+    by an end of section marker "\n$$\n". (The section start "$$\n" is no
+    longer supported.)
+  - The export data starts with a format byte ('u') followed by the <data> in
+    the given format. (See ReadExportDataHeader for older formats.)
+
+Putting this together, the bytes in a GC-created archive files are expected
+to look like the following.
+See cmd/internal/archive for more details on ar file headers.
+
+| <!arch>\n             | ar file signature
+| __.PKGDEF...size...\n | ar header for __.PKGDEF including size.
+| go object <...>\n     | objabi header
+| <optional headers>\n  | other headers such as build id
+| $$B\n                 | binary format marker
+| u<data>\n             | unified export <data>
+| $$\n                  | end-of-section marker
+| [optional padding]    | padding byte (0x0A) if size is odd
+| [ar file header]      | other ar files
+| [ar file data]        |</p>
+            
+            <pre><code>func ReadUnified(r *bufio.Reader) (data []byte, err error)</code></pre>
+         </article>
+         
+         <article class="function" data-name="FindPackageDefinition">
+            <h2>FindPackageDefinition</h2>
+            <hr />
+            
+            <p>FindPackageDefinition positions the reader r at the beginning of a package
+definition file ("__.PKGDEF") within a GC-created archive by reading
+from it, and returns the size of the package definition file in the archive.
+
+The reader must be positioned at the start of the archive file before calling
+this function, and "__.PKGDEF" is assumed to be the first file in the archive.
+
+See cmd/internal/archive for details on the archive format.</p>
+            
+            <pre><code>func FindPackageDefinition(r *bufio.Reader) (size int, err error)</code></pre>
+         </article>
+         
+         <article class="function" data-name="ReadObjectHeaders">
+            <h2>ReadObjectHeaders</h2>
+            <hr />
+            
+            <p>ReadObjectHeaders reads object headers from the reader. Object headers are
+lines that do not start with an end-of-section marker "$$". The first header
+is the objabi header. On success, the reader will be positioned at the beginning
+of the end-of-section marker.
+
+It returns an error if any header does not fit in r.Size() bytes.</p>
+            
+            <pre><code>func ReadObjectHeaders(r *bufio.Reader) (objapi string, headers []string, err error)</code></pre>
+         </article>
+         
+         <article class="function" data-name="ReadExportDataHeader">
+            <h2>ReadExportDataHeader</h2>
+            <hr />
+            
+            <p>ReadExportDataHeader reads the export data header and format from r.
+It returns the number of bytes read, or an error if the format is no longer
+supported or it failed to read.
+
+The only currently supported format is binary export data in the
+unified export format.</p>
+            
+            <pre><code>func ReadExportDataHeader(r *bufio.Reader) (n int, err error)</code></pre>
+         </article>
+         
+         <article class="function" data-name="FindPkg">
+            <h2>FindPkg</h2>
+            <hr />
+            
+            <p>FindPkg returns the filename and unique package id for an import
+path based on package information provided by build.Import (using
+the build.Default build.Context). A relative srcDir is interpreted
+relative to the current working directory.</p>
+            
+            <pre><code>func FindPkg(path string, srcDir string) (filename string, id string, err error)</code></pre>
+         </article>
+         
+         <article class="function" data-name="lookupGorootExport">
+            <h2>lookupGorootExport</h2>
+            <hr />
+            
+            <p>lookupGorootExport returns the location of the export data
+(normally found in the build cache, but located in GOROOT/pkg
+in prior Go releases) for the package located in pkgDir.
+
+(We use the package's directory instead of its import path
+mainly to simplify handling of the packages in src/vendor
+and cmd/vendor.)</p>
+            
+            <pre><code>func lookupGorootExport(pkgDir string) (string, error)</code></pre>
+         </article>
+         
+      </main>
+      <script>
+         function isPrivate(name) {
+            return /^[a-z]/.test(name);
+         }
+         document.addEventListener("DOMContentLoaded", () => {
+            const toggles = {
+               functions: document.getElementById("showPrivateFunctions"),
+               structs: document.getElementById("showPrivateStructs"),
+               fields: document.getElementById("showPrivateFields"),
+               globals: document.getElementById("showPrivateGlobals"),
+            };
+            const hideInitial = (selector, toggle) => {
+               document.querySelectorAll(selector).forEach((el) => {
+                  const name = el.dataset.name;
+                  if (isPrivate(name)) {
+                     el.classList.add("private", "hidden");
+                  }
+               });
+               toggle.addEventListener("change", () => {
+                  const show = toggle.checked;
+                  document
+                     .querySelectorAll(`${selector}.private`)
+                     .forEach((el) => {
+                        el.classList.toggle("hidden", !show);
+                     });
+               });
+            };
+            hideInitial("article.function", toggles.functions);
+            hideInitial("article.struct", toggles.structs);
+            hideInitial("article.global", toggles.globals);
+            document
+               .querySelectorAll("article.struct")
+               .forEach((article) => {
+                  const codeBlock =
+                     article.querySelector("code.fields-code");
+                  if (!codeBlock) return;
+                  const lines = codeBlock.innerText.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
+                        );
+                        if (!nameMatch)
+                           return `<span class=\"field-line\">${line}</span>`;
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class=\"field-line${
+                           isPriv ? " hidden private" : ""
+                        }\" data-name=\"${name}\">${line}</span>`;
+                     })
+                     .join("");
+                  codeBlock.innerHTML = newContent;
+                  toggles.fields.addEventListener("change", () => {
+                     const show = toggles.fields.checked;
+                     article
+                        .querySelectorAll(".field-line.private")
+                        .forEach((el) =>
+                           el.classList.toggle("hidden", !show)
+                        );
+                  });
+               });
+            const searchInput = document.getElementById("searchInput");
+            searchInput.addEventListener("input", () => {
+               const query = searchInput.value.trim().toLowerCase();
+               document.querySelectorAll("article").forEach((el) => {
+                  const name = el.dataset.name.toLowerCase();
+                  if (query === "" || name.includes(query)) {
+                     el.classList.remove("hidden");
+                  } else {
+                     el.classList.add("hidden");
+                  }
+               });
+            });
+         });
+      </script>
+   </body>
+</html>

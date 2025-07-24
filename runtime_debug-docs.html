@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+   <head>
+      <meta charset="UTF-8" />
+      <meta
+         name="viewport"
+         content="width=device-width, initial-scale=1.0"
+      />
+      <title>Docs - debug</title>
+      <link
+         href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
+         rel="stylesheet"
+      />
+      <style>
+         html {
+            font-size: 13px;
+         }
+         body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+         }
+         .sidebar {
+            width: 200px;
+            background: rgba(59, 56, 56, 0.1);
+            padding: 1.2rem;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            overflow-y: auto;
+            margin-right: 7px;
+         }
+         main {
+            flex: 0.9;
+            padding: 1rem;
+            margin: 0;
+            max-width: calc(100% - 220px);
+         }
+         h1 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+         }
+         h2 {
+            font-size: 1.2rem;
+            margin: 0.3rem 0 0.2rem;
+         }
+         pre {
+            background: #1e1e1e;
+            color: #dcdcdc;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            margin: 0 0 1rem;
+            font-size: 0.85rem;
+            overflow-x: auto;
+         }
+         code {
+            color: #f0dbdb;
+            white-space: pre-wrap;
+         }
+         p {
+            font-size: 15px;
+            padding-top: 10px;
+         }
+         article {
+            margin-bottom: 0.5rem;
+            padding: 0.4rem 0.9rem;
+            background: rgba(59, 56, 56, 0.5);
+            border-radius: 10px;
+            max-width: 99%;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+         }
+         .hidden {
+            display: none;
+         }
+         .filter-toggle label {
+            display: block;
+            margin-bottom: 0.5rem;
+         }
+         .field-line {
+            display: block;
+         }
+      </style>
+   </head>
+   <body>
+      <aside class="sidebar">
+         <a href="index.html">⌂</a>
+         |
+         <a href="#" onclick="history.back()">←</a>
+         <hr style="opacity: 0" />
+         <h2>Filters</h2>
+         <hr />
+         <input
+            type="search"
+            id="searchInput"
+            placeholder="Search symbols..."
+            style="
+               width: 100%;
+               margin-bottom: 1rem;
+               margin-top: 0.8rem;
+               border-radius: 10px !important;
+               height: 50px;
+               height: 2.5rem;
+            "
+         />
+         <div class="filter-toggle">
+            <label>
+               <input type="checkbox" id="showPrivateFunctions" />
+               Show private functions
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateStructs" />
+               Show private structs
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateFields" />
+               Show private struct fields
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateGlobals" />
+               Show private globals
+            </label>
+         </div>
+         <hr style="opacity: 0" />
+         <h2 style="padding-top: 5px">Subpackages</h2>
+         <hr />
+         
+         <span style="color: rgba(177, 175, 175, 0.5)">
+            No subpackages
+         </span>
+         
+      </aside>
+      <main>
+         <h1>
+            Package
+            <code>debug</code>
+         </h1>
+         <hr />
+          
+         <article class="struct" data-name="GCStats">
+            <h2>type GCStats struct</h2>
+            <hr />
+            
+            <p>GCStats collect information about recent garbage collections.</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">LastGC time.Time
+NumGC int64
+PauseTotal time.Duration
+Pause []time.Duration
+PauseEnd []time.Time
+PauseQuantiles []time.Duration</code></pre>
+         </article>
+         
+         <article class="struct" data-name="BuildInfo">
+            <h2>type BuildInfo struct</h2>
+            <hr />
+            
+            <p>BuildInfo represents the build information read from a Go binary.</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">GoVersion string
+Path string
+Main Module
+Deps []*Module
+Settings []BuildSetting</code></pre>
+         </article>
+         
+         <article class="struct" data-name="Module">
+            <h2>type Module struct</h2>
+            <hr />
+            
+            <p>A Module describes a single module included in a build.</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">Path string
+Version string
+Sum string
+Replace *Module</code></pre>
+         </article>
+         
+         <article class="struct" data-name="BuildSetting">
+            <h2>type BuildSetting struct</h2>
+            <hr />
+            
+            <p>A BuildSetting is a key-value pair describing one setting that influenced a build.
+
+Defined keys include:
+
+  - -buildmode: the buildmode flag used (typically "exe")
+  - -compiler: the compiler toolchain flag used (typically "gc")
+  - CGO_ENABLED: the effective CGO_ENABLED environment variable
+  - CGO_CFLAGS: the effective CGO_CFLAGS environment variable
+  - CGO_CPPFLAGS: the effective CGO_CPPFLAGS environment variable
+  - CGO_CXXFLAGS:  the effective CGO_CXXFLAGS environment variable
+  - CGO_LDFLAGS: the effective CGO_LDFLAGS environment variable
+  - DefaultGODEBUG: the effective GODEBUG settings
+  - GOARCH: the architecture target
+  - GOAMD64/GOARM/GO386/etc: the architecture feature level for GOARCH
+  - GOOS: the operating system target
+  - vcs: the version control system for the source tree where the build ran
+  - vcs.revision: the revision identifier for the current commit or checkout
+  - vcs.time: the modification time associated with vcs.revision, in RFC3339 format
+  - vcs.modified: true or false indicating whether the source tree had local modifications</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">Key string
+Value string</code></pre>
+         </article>
+         
+         <article class="struct" data-name="CrashOptions">
+            <h2>type CrashOptions struct</h2>
+            <hr />
+            
+            <p>CrashOptions provides options that control the formatting of the
+fatal crash message.</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code"></code></pre>
+         </article>
+          
+         <article class="function" data-name="ReadGCStats">
+            <h2>ReadGCStats</h2>
+            <hr />
+            
+            <p>ReadGCStats reads statistics about garbage collection into stats.
+The number of entries in the pause history is system-dependent;
+stats.Pause slice will be reused if large enough, reallocated otherwise.
+ReadGCStats may use the full capacity of the stats.Pause slice.
+If stats.PauseQuantiles is non-empty, ReadGCStats fills it with quantiles
+summarizing the distribution of pause time. For example, if
+len(stats.PauseQuantiles) is 5, it will be filled with the minimum,
+25%, 50%, 75%, and maximum pause times.</p>
+            
+            <pre><code>func ReadGCStats(stats *GCStats)</code></pre>
+         </article>
+         
+         <article class="function" data-name="SetGCPercent">
+            <h2>SetGCPercent</h2>
+            <hr />
+            
+            <p>SetGCPercent sets the garbage collection target percentage:
+a collection is triggered when the ratio of freshly allocated data
+to live data remaining after the previous collection reaches this percentage.
+SetGCPercent returns the previous setting.
+The initial setting is the value of the GOGC environment variable
+at startup, or 100 if the variable is not set.
+This setting may be effectively reduced in order to maintain a memory
+limit.
+A negative percentage effectively disables garbage collection, unless
+the memory limit is reached.
+See SetMemoryLimit for more details.</p>
+            
+            <pre><code>func SetGCPercent(percent int) int</code></pre>
+         </article>
+         
+         <article class="function" data-name="FreeOSMemory">
+            <h2>FreeOSMemory</h2>
+            <hr />
+            
+            <p>FreeOSMemory forces a garbage collection followed by an
+attempt to return as much memory to the operating system
+as possible. (Even if this is not called, the runtime gradually
+returns memory to the operating system in a background task.)</p>
+            
+            <pre><code>func FreeOSMemory()</code></pre>
+         </article>
+         
+         <article class="function" data-name="SetMaxStack">
+            <h2>SetMaxStack</h2>
+            <hr />
+            
+            <p>SetMaxStack sets the maximum amount of memory that
+can be used by a single goroutine stack.
+If any goroutine exceeds this limit while growing its stack,
+the program crashes.
+SetMaxStack returns the previous setting.
+The initial setting is 1 GB on 64-bit systems, 250 MB on 32-bit systems.
+There may be a system-imposed maximum stack limit regardless
+of the value provided to SetMaxStack.
+
+SetMaxStack is useful mainly for limiting the damage done by
+goroutines that enter an infinite recursion. It only limits future
+stack growth.</p>
+            
+            <pre><code>func SetMaxStack(bytes int) int</code></pre>
+         </article>
+         
+         <article class="function" data-name="SetMaxThreads">
+            <h2>SetMaxThreads</h2>
+            <hr />
+            
+            <p>SetMaxThreads sets the maximum number of operating system
+threads that the Go program can use. If it attempts to use more than
+this many, the program crashes.
+SetMaxThreads returns the previous setting.
+The initial setting is 10,000 threads.
+
+The limit controls the number of operating system threads, not the number
+of goroutines. A Go program creates a new thread only when a goroutine
+is ready to run but all the existing threads are blocked in system calls, cgo calls,
+or are locked to other goroutines due to use of runtime.LockOSThread.
+
+SetMaxThreads is useful mainly for limiting the damage done by
+programs that create an unbounded number of threads. The idea is
+to take down the program before it takes down the operating system.</p>
+            
+            <pre><code>func SetMaxThreads(threads int) int</code></pre>
+         </article>
+         
+         <article class="function" data-name="SetPanicOnFault">
+            <h2>SetPanicOnFault</h2>
+            <hr />
+            
+            <p>SetPanicOnFault controls the runtime's behavior when a program faults
+at an unexpected (non-nil) address. Such faults are typically caused by
+bugs such as runtime memory corruption, so the default response is to crash
+the program. Programs working with memory-mapped files or unsafe
+manipulation of memory may cause faults at non-nil addresses in less
+dramatic situations; SetPanicOnFault allows such programs to request
+that the runtime trigger only a panic, not a crash.
+The runtime.Error that the runtime panics with may have an additional method:
+
+	Addr() uintptr
+
+If that method exists, it returns the memory address which triggered the fault.
+The results of Addr are best-effort and the veracity of the result
+may depend on the platform.
+SetPanicOnFault applies only to the current goroutine.
+It returns the previous setting.</p>
+            
+            <pre><code>func SetPanicOnFault(enabled bool) bool</code></pre>
+         </article>
+         
+         <article class="function" data-name="WriteHeapDump">
+            <h2>WriteHeapDump</h2>
+            <hr />
+            
+            <p>WriteHeapDump writes a description of the heap and the objects in
+it to the given file descriptor.
+
+WriteHeapDump suspends the execution of all goroutines until the heap
+dump is completely written.  Thus, the file descriptor must not be
+connected to a pipe or socket whose other end is in the same Go
+process; instead, use a temporary file or network socket.
+
+The heap dump format is defined at https://golang.org/s/go15heapdump.</p>
+            
+            <pre><code>func WriteHeapDump(fd uintptr)</code></pre>
+         </article>
+         
+         <article class="function" data-name="SetTraceback">
+            <h2>SetTraceback</h2>
+            <hr />
+            
+            <p>SetTraceback sets the amount of detail printed by the runtime in
+the traceback it prints before exiting due to an unrecovered panic
+or an internal runtime error.
+The level argument takes the same values as the GOTRACEBACK
+environment variable. For example, SetTraceback("all") ensure
+that the program prints all goroutines when it crashes.
+See the package runtime documentation for details.
+If SetTraceback is called with a level lower than that of the
+environment variable, the call is ignored.</p>
+            
+            <pre><code>func SetTraceback(level string)</code></pre>
+         </article>
+         
+         <article class="function" data-name="SetMemoryLimit">
+            <h2>SetMemoryLimit</h2>
+            <hr />
+            
+            <p>SetMemoryLimit provides the runtime with a soft memory limit.
+
+The runtime undertakes several processes to try to respect this
+memory limit, including adjustments to the frequency of garbage
+collections and returning memory to the underlying system more
+aggressively. This limit will be respected even if GOGC=off (or,
+if SetGCPercent(-1) is executed).
+
+The input limit is provided as bytes, and includes all memory
+mapped, managed, and not released by the Go runtime. Notably, it
+does not account for space used by the Go binary and memory
+external to Go, such as memory managed by the underlying system
+on behalf of the process, or memory managed by non-Go code inside
+the same process. Examples of excluded memory sources include: OS
+kernel memory held on behalf of the process, memory allocated by
+C code, and memory mapped by syscall.Mmap (because it is not
+managed by the Go runtime).
+
+More specifically, the following expression accurately reflects
+the value the runtime attempts to maintain as the limit:
+
+	runtime.MemStats.Sys - runtime.MemStats.HeapReleased
+
+or in terms of the runtime/metrics package:
+
+	/memory/classes/total:bytes - /memory/classes/heap/released:bytes
+
+A zero limit or a limit that's lower than the amount of memory
+used by the Go runtime may cause the garbage collector to run
+nearly continuously. However, the application may still make
+progress.
+
+The memory limit is always respected by the Go runtime, so to
+effectively disable this behavior, set the limit very high.
+[math.MaxInt64] is the canonical value for disabling the limit,
+but values much greater than the available memory on the underlying
+system work just as well.
+
+See https://go.dev/doc/gc-guide for a detailed guide explaining
+the soft memory limit in more detail, as well as a variety of common
+use-cases and scenarios.
+
+The initial setting is math.MaxInt64 unless the GOMEMLIMIT
+environment variable is set, in which case it provides the initial
+setting. GOMEMLIMIT is a numeric value in bytes with an optional
+unit suffix. The supported suffixes include B, KiB, MiB, GiB, and
+TiB. These suffixes represent quantities of bytes as defined by
+the IEC 80000-13 standard. That is, they are based on powers of
+two: KiB means 2^10 bytes, MiB means 2^20 bytes, and so on.
+
+SetMemoryLimit returns the previously set memory limit.
+A negative input does not adjust the limit, and allows for
+retrieval of the currently set memory limit.</p>
+            
+            <pre><code>func SetMemoryLimit(limit int64) int64</code></pre>
+         </article>
+         
+         <article class="function" data-name="modinfo">
+            <h2>modinfo</h2>
+            <hr />
+            
+            <p>exported from runtime.</p>
+            
+            <pre><code>func modinfo() string</code></pre>
+         </article>
+         
+         <article class="function" data-name="ReadBuildInfo">
+            <h2>ReadBuildInfo</h2>
+            <hr />
+            
+            <p>ReadBuildInfo returns the build information embedded
+in the running binary. The information is available only
+in binaries built with module support.</p>
+            
+            <pre><code>func ReadBuildInfo() (info *BuildInfo, ok bool)</code></pre>
+         </article>
+         
+         <article class="function" data-name="quoteKey">
+            <h2>quoteKey</h2>
+            <hr />
+            
+            <p>quoteKey reports whether key is required to be quoted.</p>
+            
+            <pre><code>func quoteKey(key string) bool</code></pre>
+         </article>
+         
+         <article class="function" data-name="quoteValue">
+            <h2>quoteValue</h2>
+            <hr />
+            
+            <p>quoteValue reports whether value is required to be quoted.</p>
+            
+            <pre><code>func quoteValue(value string) bool</code></pre>
+         </article>
+         
+         <article class="function" data-name="String">
+            <h2>String</h2>
+            <hr />
+            
+            <p>String returns a string representation of a [BuildInfo].</p>
+            
+            <pre><code>func String() string</code></pre>
+         </article>
+         
+         <article class="function" data-name="ParseBuildInfo">
+            <h2>ParseBuildInfo</h2>
+            <hr />
+            
+            <p>ParseBuildInfo parses the string returned by [*BuildInfo.String],
+restoring the original BuildInfo,
+except that the GoVersion field is not set.
+Programs should normally not call this function,
+but instead call [ReadBuildInfo], [debug/buildinfo.ReadFile],
+or [debug/buildinfo.Read].</p>
+            
+            <pre><code>func ParseBuildInfo(data string) (bi *BuildInfo, err error)</code></pre>
+         </article>
+         
+         <article class="function" data-name="PrintStack">
+            <h2>PrintStack</h2>
+            <hr />
+            
+            <p>PrintStack prints to standard error the stack trace returned by runtime.Stack.</p>
+            
+            <pre><code>func PrintStack()</code></pre>
+         </article>
+         
+         <article class="function" data-name="Stack">
+            <h2>Stack</h2>
+            <hr />
+            
+            <p>Stack returns a formatted stack trace of the goroutine that calls it.
+It calls [runtime.Stack] with a large enough buffer to capture the entire trace.</p>
+            
+            <pre><code>func Stack() []byte</code></pre>
+         </article>
+         
+         <article class="function" data-name="SetCrashOutput">
+            <h2>SetCrashOutput</h2>
+            <hr />
+            
+            <p>SetCrashOutput configures a single additional file where unhandled
+panics and other fatal errors are printed, in addition to standard error.
+There is only one additional file: calling SetCrashOutput again overrides
+any earlier call.
+SetCrashOutput duplicates f's file descriptor, so the caller may safely
+close f as soon as SetCrashOutput returns.
+To disable this additional crash output, call SetCrashOutput(nil).
+If called concurrently with a crash, some in-progress output may be written
+to the old file even after an overriding SetCrashOutput returns.</p>
+            
+            <pre><code>func SetCrashOutput(f *os.File, opts CrashOptions) error</code></pre>
+         </article>
+         
+         <article class="function" data-name="runtime_setCrashFD">
+            <h2>runtime_setCrashFD</h2>
+            <hr />
+            
+            <pre><code>func runtime_setCrashFD(uintptr) uintptr</code></pre>
+         </article>
+         
+         <article class="function" data-name="readGCStats">
+            <h2>readGCStats</h2>
+            <hr />
+            
+            <p>Implemented in package runtime.</p>
+            
+            <pre><code>func readGCStats(*[]time.Duration)</code></pre>
+         </article>
+         
+         <article class="function" data-name="freeOSMemory">
+            <h2>freeOSMemory</h2>
+            <hr />
+            
+            <pre><code>func freeOSMemory()</code></pre>
+         </article>
+         
+         <article class="function" data-name="setMaxStack">
+            <h2>setMaxStack</h2>
+            <hr />
+            
+            <pre><code>func setMaxStack(int) int</code></pre>
+         </article>
+         
+         <article class="function" data-name="setGCPercent">
+            <h2>setGCPercent</h2>
+            <hr />
+            
+            <pre><code>func setGCPercent(int32) int32</code></pre>
+         </article>
+         
+         <article class="function" data-name="setPanicOnFault">
+            <h2>setPanicOnFault</h2>
+            <hr />
+            
+            <pre><code>func setPanicOnFault(bool) bool</code></pre>
+         </article>
+         
+         <article class="function" data-name="setMaxThreads">
+            <h2>setMaxThreads</h2>
+            <hr />
+            
+            <pre><code>func setMaxThreads(int) int</code></pre>
+         </article>
+         
+         <article class="function" data-name="setMemoryLimit">
+            <h2>setMemoryLimit</h2>
+            <hr />
+            
+            <pre><code>func setMemoryLimit(int64) int64</code></pre>
+         </article>
+         
+      </main>
+      <script>
+         function isPrivate(name) {
+            return /^[a-z]/.test(name);
+         }
+         document.addEventListener("DOMContentLoaded", () => {
+            const toggles = {
+               functions: document.getElementById("showPrivateFunctions"),
+               structs: document.getElementById("showPrivateStructs"),
+               fields: document.getElementById("showPrivateFields"),
+               globals: document.getElementById("showPrivateGlobals"),
+            };
+            const hideInitial = (selector, toggle) => {
+               document.querySelectorAll(selector).forEach((el) => {
+                  const name = el.dataset.name;
+                  if (isPrivate(name)) {
+                     el.classList.add("private", "hidden");
+                  }
+               });
+               toggle.addEventListener("change", () => {
+                  const show = toggle.checked;
+                  document
+                     .querySelectorAll(`${selector}.private`)
+                     .forEach((el) => {
+                        el.classList.toggle("hidden", !show);
+                     });
+               });
+            };
+            hideInitial("article.function", toggles.functions);
+            hideInitial("article.struct", toggles.structs);
+            hideInitial("article.global", toggles.globals);
+            document
+               .querySelectorAll("article.struct")
+               .forEach((article) => {
+                  const codeBlock =
+                     article.querySelector("code.fields-code");
+                  if (!codeBlock) return;
+                  const lines = codeBlock.innerText.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
+                        );
+                        if (!nameMatch)
+                           return `<span class=\"field-line\">${line}</span>`;
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class=\"field-line${
+                           isPriv ? " hidden private" : ""
+                        }\" data-name=\"${name}\">${line}</span>`;
+                     })
+                     .join("");
+                  codeBlock.innerHTML = newContent;
+                  toggles.fields.addEventListener("change", () => {
+                     const show = toggles.fields.checked;
+                     article
+                        .querySelectorAll(".field-line.private")
+                        .forEach((el) =>
+                           el.classList.toggle("hidden", !show)
+                        );
+                  });
+               });
+            const searchInput = document.getElementById("searchInput");
+            searchInput.addEventListener("input", () => {
+               const query = searchInput.value.trim().toLowerCase();
+               document.querySelectorAll("article").forEach((el) => {
+                  const name = el.dataset.name.toLowerCase();
+                  if (query === "" || name.includes(query)) {
+                     el.classList.remove("hidden");
+                  } else {
+                     el.classList.add("hidden");
+                  }
+               });
+            });
+         });
+      </script>
+   </body>
+</html>

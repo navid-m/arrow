@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+   <head>
+      <meta charset="UTF-8" />
+      <meta
+         name="viewport"
+         content="width=device-width, initial-scale=1.0"
+      />
+      <title>Docs - abi</title>
+      <link
+         href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
+         rel="stylesheet"
+      />
+      <style>
+         html {
+            font-size: 13px;
+         }
+         body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+         }
+         .sidebar {
+            width: 200px;
+            background: rgba(59, 56, 56, 0.1);
+            padding: 1.2rem;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            overflow-y: auto;
+            margin-right: 7px;
+         }
+         main {
+            flex: 0.9;
+            padding: 1rem;
+            margin: 0;
+            max-width: calc(100% - 220px);
+         }
+         h1 {
+            font-size: 1.4rem;
+            margin-bottom: 1rem;
+         }
+         h2 {
+            font-size: 1.2rem;
+            margin: 0.3rem 0 0.2rem;
+         }
+         pre {
+            background: #1e1e1e;
+            color: #dcdcdc;
+            padding: 0.4rem 0.6rem;
+            border-radius: 6px;
+            margin: 0 0 1rem;
+            font-size: 0.85rem;
+            overflow-x: auto;
+         }
+         code {
+            color: #f0dbdb;
+            white-space: pre-wrap;
+         }
+         p {
+            font-size: 15px;
+            padding-top: 10px;
+         }
+         article {
+            margin-bottom: 0.5rem;
+            padding: 0.4rem 0.9rem;
+            background: rgba(59, 56, 56, 0.5);
+            border-radius: 10px;
+            max-width: 99%;
+            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+         }
+         .hidden {
+            display: none;
+         }
+         .filter-toggle label {
+            display: block;
+            margin-bottom: 0.5rem;
+         }
+         .field-line {
+            display: block;
+         }
+      </style>
+   </head>
+   <body>
+      <aside class="sidebar">
+         <a href="index.html">⌂</a>
+         |
+         <a href="#" onclick="history.back()">←</a>
+         <hr style="opacity: 0" />
+         <h2>Filters</h2>
+         <hr />
+         <input
+            type="search"
+            id="searchInput"
+            placeholder="Search symbols..."
+            style="
+               width: 100%;
+               margin-bottom: 1rem;
+               margin-top: 0.8rem;
+               border-radius: 10px !important;
+               height: 50px;
+               height: 2.5rem;
+            "
+         />
+         <div class="filter-toggle">
+            <label>
+               <input type="checkbox" id="showPrivateFunctions" />
+               Show private functions
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateStructs" />
+               Show private structs
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateFields" />
+               Show private struct fields
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateGlobals" />
+               Show private globals
+            </label>
+         </div>
+         <hr style="opacity: 0" />
+         <h2 style="padding-top: 5px">Subpackages</h2>
+         <hr />
+         
+         <span style="color: rgba(177, 175, 175, 0.5)">
+            No subpackages
+         </span>
+         
+      </aside>
+      <main>
+         <h1>
+            Package
+            <code>abi</code>
+         </h1>
+         <hr />
+         
+         <article class="global" data-name="synthOnce">
+            <h2>synthOnce</h2>
+            <hr />
+            
+            <p>synthOnce ensures that we only create the synth* fake types once.</p>
+            
+            <pre><code>synthOnce sync.Once</code></pre>
+         </article>
+         
+         <article class="global" data-name="synthSlice">
+            <h2>synthSlice</h2>
+            <hr />
+            
+            <p>synthSlice, synthString, and syncIface are synthesized struct types
+meant to capture the underlying implementations of string/slice/interface.</p>
+            
+            <pre><code>synthSlice *types.Type</code></pre>
+         </article>
+         
+         <article class="global" data-name="synthString">
+            <h2>synthString</h2>
+            <hr />
+            
+            <pre><code>synthString *types.Type</code></pre>
+         </article>
+         
+         <article class="global" data-name="synthIface">
+            <h2>synthIface</h2>
+            <hr />
+            
+            <pre><code>synthIface *types.Type</code></pre>
+         </article>
+          
+         <article class="struct" data-name="ABIParamResultInfo">
+            <h2>type ABIParamResultInfo struct</h2>
+            <hr />
+            
+            <p>ABIParamResultInfo stores the results of processing a given
+function type to compute stack layout and register assignments. For
+each input and output parameter we capture whether the param was
+register-assigned (and to which register(s)) or the stack offset
+for the param if is not going to be passed in registers according
+to the rules in the Go internal ABI specification (1.17).</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">inparams []ABIParamAssignment
+outparams []ABIParamAssignment
+offsetToSpillArea int64
+spillAreaSize int64
+inRegistersUsed int
+outRegistersUsed int
+config *ABIConfig</code></pre>
+         </article>
+         
+         <article class="struct" data-name="ABIParamAssignment">
+            <h2>type ABIParamAssignment struct</h2>
+            <hr />
+            
+            <p>ABIParamAssignment holds information about how a specific param or
+result will be passed: in registers (in which case 'Registers' is
+populated) or on the stack (in which case 'Offset' is set to a
+non-negative stack offset). The values in 'Registers' are indices
+(as described above), not architected registers.</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">Type *types.Type
+Name *ir.Name
+Registers []RegIndex
+offset int32</code></pre>
+         </article>
+         
+         <article class="struct" data-name="RegAmounts">
+            <h2>type RegAmounts struct</h2>
+            <hr />
+            
+            <p>RegAmounts holds a specified number of integer/float registers.</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">intRegs int
+floatRegs int</code></pre>
+         </article>
+         
+         <article class="struct" data-name="ABIConfig">
+            <h2>type ABIConfig struct</h2>
+            <hr />
+            
+            <p>ABIConfig captures the number of registers made available
+by the ABI rules for parameter passing and result returning.</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">offsetForLocals int64
+regAmounts RegAmounts
+which obj.ABI</code></pre>
+         </article>
+         
+         <article class="struct" data-name="assignState">
+            <h2>type assignState struct</h2>
+            <hr />
+            
+            <p>assignState holds intermediate state during the register assigning process
+for a given function signature.</p>
+            
+            <pre
+               class="fields-block"
+            ><code class="fields-code">rTotal RegAmounts
+rUsed RegAmounts
+stackOffset int64
+spillOffset int64</code></pre>
+         </article>
+          
+         <article class="function" data-name="Config">
+            <h2>Config</h2>
+            <hr />
+            
+            <pre><code>func Config() *ABIConfig</code></pre>
+         </article>
+         
+         <article class="function" data-name="InParams">
+            <h2>InParams</h2>
+            <hr />
+            
+            <pre><code>func InParams() []ABIParamAssignment</code></pre>
+         </article>
+         
+         <article class="function" data-name="OutParams">
+            <h2>OutParams</h2>
+            <hr />
+            
+            <pre><code>func OutParams() []ABIParamAssignment</code></pre>
+         </article>
+         
+         <article class="function" data-name="InRegistersUsed">
+            <h2>InRegistersUsed</h2>
+            <hr />
+            
+            <pre><code>func InRegistersUsed() int</code></pre>
+         </article>
+         
+         <article class="function" data-name="OutRegistersUsed">
+            <h2>OutRegistersUsed</h2>
+            <hr />
+            
+            <pre><code>func OutRegistersUsed() int</code></pre>
+         </article>
+         
+         <article class="function" data-name="InParam">
+            <h2>InParam</h2>
+            <hr />
+            
+            <pre><code>func InParam(i int) *ABIParamAssignment</code></pre>
+         </article>
+         
+         <article class="function" data-name="OutParam">
+            <h2>OutParam</h2>
+            <hr />
+            
+            <pre><code>func OutParam(i int) *ABIParamAssignment</code></pre>
+         </article>
+         
+         <article class="function" data-name="SpillAreaOffset">
+            <h2>SpillAreaOffset</h2>
+            <hr />
+            
+            <pre><code>func SpillAreaOffset() int64</code></pre>
+         </article>
+         
+         <article class="function" data-name="SpillAreaSize">
+            <h2>SpillAreaSize</h2>
+            <hr />
+            
+            <pre><code>func SpillAreaSize() int64</code></pre>
+         </article>
+         
+         <article class="function" data-name="ArgWidth">
+            <h2>ArgWidth</h2>
+            <hr />
+            
+            <p>ArgWidth returns the amount of stack needed for all the inputs
+and outputs of a function or method, including ABI-defined parameter
+slots and ABI-defined spill slots for register-resident parameters.
+The name is inherited from (*Type).ArgWidth(), which it replaces.</p>
+            
+            <pre><code>func ArgWidth() int64</code></pre>
+         </article>
+         
+         <article class="function" data-name="Offset">
+            <h2>Offset</h2>
+            <hr />
+            
+            <p>Offset returns the stack offset for addressing the parameter that "a" describes.
+This will panic if "a" describes a register-allocated parameter.</p>
+            
+            <pre><code>func Offset() int32</code></pre>
+         </article>
+         
+         <article class="function" data-name="RegisterTypes">
+            <h2>RegisterTypes</h2>
+            <hr />
+            
+            <p>RegisterTypes returns a slice of the types of the registers
+corresponding to a slice of parameters.  The returned slice
+has capacity for one more, likely a memory type.</p>
+            
+            <pre><code>func RegisterTypes(apa []ABIParamAssignment) []*types.Type</code></pre>
+         </article>
+         
+         <article class="function" data-name="RegisterTypesAndOffsets">
+            <h2>RegisterTypesAndOffsets</h2>
+            <hr />
+            
+            <pre><code>func RegisterTypesAndOffsets() ([]*types.Type, []int64)</code></pre>
+         </article>
+         
+         <article class="function" data-name="appendParamTypes">
+            <h2>appendParamTypes</h2>
+            <hr />
+            
+            <pre><code>func appendParamTypes(rts []*types.Type, t *types.Type) []*types.Type</code></pre>
+         </article>
+         
+         <article class="function" data-name="appendParamOffsets">
+            <h2>appendParamOffsets</h2>
+            <hr />
+            
+            <p>appendParamOffsets appends the offset(s) of type t, starting from "at",
+to input offsets, and returns the longer slice and the next unused offset.
+at should already be aligned for t.</p>
+            
+            <pre><code>func appendParamOffsets(offsets []int64, at int64, t *types.Type) ([]int64, int64)</code></pre>
+         </article>
+         
+         <article class="function" data-name="FrameOffset">
+            <h2>FrameOffset</h2>
+            <hr />
+            
+            <p>FrameOffset returns the frame-pointer-relative location that a function
+would spill its input or output parameter to, if such a spill slot exists.
+If there is none defined (e.g., register-allocated outputs) it panics.
+For register-allocated inputs that is their spill offset reserved for morestack;
+for stack-allocated inputs and outputs, that is their location on the stack.
+(In a future version of the ABI, register-resident inputs may lose their defined
+spill area to help reduce stack sizes.)</p>
+            
+            <pre><code>func FrameOffset(i *ABIParamResultInfo) int64</code></pre>
+         </article>
+         
+         <article class="function" data-name="NewABIConfig">
+            <h2>NewABIConfig</h2>
+            <hr />
+            
+            <p>NewABIConfig returns a new ABI configuration for an architecture with
+iRegsCount integer/pointer registers and fRegsCount floating point registers.</p>
+            
+            <pre><code>func NewABIConfig(iRegsCount int, fRegsCount int, offsetForLocals int64, which uint8) *ABIConfig</code></pre>
+         </article>
+         
+         <article class="function" data-name="Copy">
+            <h2>Copy</h2>
+            <hr />
+            
+            <p>Copy returns config.
+
+TODO(mdempsky): Remove.</p>
+            
+            <pre><code>func Copy() *ABIConfig</code></pre>
+         </article>
+         
+         <article class="function" data-name="Which">
+            <h2>Which</h2>
+            <hr />
+            
+            <p>Which returns the ABI number</p>
+            
+            <pre><code>func Which() obj.ABI</code></pre>
+         </article>
+         
+         <article class="function" data-name="LocalsOffset">
+            <h2>LocalsOffset</h2>
+            <hr />
+            
+            <p>LocalsOffset returns the architecture-dependent offset from SP for args and results.
+In theory this is only used for debugging; it ought to already be incorporated into
+results from the ABI-related methods</p>
+            
+            <pre><code>func LocalsOffset() int64</code></pre>
+         </article>
+         
+         <article class="function" data-name="FloatIndexFor">
+            <h2>FloatIndexFor</h2>
+            <hr />
+            
+            <p>FloatIndexFor translates r into an index in the floating point parameter
+registers.  If the result is negative, the input index was actually for the
+integer parameter registers.</p>
+            
+            <pre><code>func FloatIndexFor(r RegIndex) int64</code></pre>
+         </article>
+         
+         <article class="function" data-name="NumParamRegs">
+            <h2>NumParamRegs</h2>
+            <hr />
+            
+            <p>NumParamRegs returns the total number of registers used to
+represent a parameter of the given type, which must be register
+assignable.</p>
+            
+            <pre><code>func NumParamRegs(typ *types.Type) int</code></pre>
+         </article>
+         
+         <article class="function" data-name="ABIAnalyzeTypes">
+            <h2>ABIAnalyzeTypes</h2>
+            <hr />
+            
+            <p>ABIAnalyzeTypes takes slices of parameter and result types, and returns an ABIParamResultInfo,
+based on the given configuration.  This is the same result computed by config.ABIAnalyze applied to the
+corresponding method/function type, except that all the embedded parameter names are nil.
+This is intended for use by ssagen/ssa.go:(*state).rtcall, for runtime functions that lack a parsed function type.</p>
+            
+            <pre><code>func ABIAnalyzeTypes(params []*types.Type, results []*types.Type) *ABIParamResultInfo</code></pre>
+         </article>
+         
+         <article class="function" data-name="ABIAnalyzeFuncType">
+            <h2>ABIAnalyzeFuncType</h2>
+            <hr />
+            
+            <p>ABIAnalyzeFuncType takes a function type 'ft' and an ABI rules description
+'config' and analyzes the function to determine how its parameters
+and results will be passed (in registers or on the stack), returning
+an ABIParamResultInfo object that holds the results of the analysis.</p>
+            
+            <pre><code>func ABIAnalyzeFuncType(ft *types.Type) *ABIParamResultInfo</code></pre>
+         </article>
+         
+         <article class="function" data-name="ABIAnalyze">
+            <h2>ABIAnalyze</h2>
+            <hr />
+            
+            <p>ABIAnalyze returns the same result as ABIAnalyzeFuncType, but also
+updates the offsets of all the receiver, input, and output fields.
+If setNname is true, it also sets the FrameOffset of the Nname for
+the field(s); this is for use when compiling a function and figuring out
+spill locations.  Doing this for callers can cause races for register
+outputs because their frame location transitions from BOGUS_FUNARG_OFFSET
+to zero to an as-if-AUTO offset that has no use for callers.</p>
+            
+            <pre><code>func ABIAnalyze(t *types.Type, setNname bool) *ABIParamResultInfo</code></pre>
+         </article>
+         
+         <article class="function" data-name="updateOffset">
+            <h2>updateOffset</h2>
+            <hr />
+            
+            <pre><code>func updateOffset(result *ABIParamResultInfo, f *types.Field, a ABIParamAssignment, isResult bool, setNname bool)</code></pre>
+         </article>
+         
+         <article class="function" data-name="regString">
+            <h2>regString</h2>
+            <hr />
+            
+            <p>regString produces a human-readable version of a RegIndex.</p>
+            
+            <pre><code>func regString(r RegIndex) string</code></pre>
+         </article>
+         
+         <article class="function" data-name="ToString">
+            <h2>ToString</h2>
+            <hr />
+            
+            <p>ToString method renders an ABIParamAssignment in human-readable
+form, suitable for debugging or unit testing.</p>
+            
+            <pre><code>func ToString(config *ABIConfig, extra bool) string</code></pre>
+         </article>
+         
+         <article class="function" data-name="String">
+            <h2>String</h2>
+            <hr />
+            
+            <p>String method renders an ABIParamResultInfo in human-readable
+form, suitable for debugging or unit testing.</p>
+            
+            <pre><code>func String() string</code></pre>
+         </article>
+         
+         <article class="function" data-name="align">
+            <h2>align</h2>
+            <hr />
+            
+            <p>align returns a rounded up to t's alignment.</p>
+            
+            <pre><code>func align(a int64, t *types.Type) int64</code></pre>
+         </article>
+         
+         <article class="function" data-name="alignTo">
+            <h2>alignTo</h2>
+            <hr />
+            
+            <p>alignTo returns a rounded up to t, where t must be 0 or a power of 2.</p>
+            
+            <pre><code>func alignTo(a int64, t int) int64</code></pre>
+         </article>
+         
+         <article class="function" data-name="nextSlot">
+            <h2>nextSlot</h2>
+            <hr />
+            
+            <p>nextSlot allocates the next available slot for typ.</p>
+            
+            <pre><code>func nextSlot(offsetp *int64, typ *types.Type) int64</code></pre>
+         </article>
+         
+         <article class="function" data-name="allocateRegs">
+            <h2>allocateRegs</h2>
+            <hr />
+            
+            <p>allocateRegs returns an ordered list of register indices for a parameter or result
+that we've just determined to be register-assignable. The number of registers
+needed is assumed to be stored in state.pUsed.</p>
+            
+            <pre><code>func allocateRegs(regs []RegIndex, t *types.Type) []RegIndex</code></pre>
+         </article>
+         
+         <article class="function" data-name="setup">
+            <h2>setup</h2>
+            <hr />
+            
+            <p>setup performs setup for the register assignment utilities, manufacturing
+a small set of synthesized types that we'll need along the way.</p>
+            
+            <pre><code>func setup()</code></pre>
+         </article>
+         
+         <article class="function" data-name="assignParam">
+            <h2>assignParam</h2>
+            <hr />
+            
+            <p>assignParam processes a given receiver, param, or result
+of field f to determine whether it can be register assigned.
+The result of the analysis is recorded in the result
+ABIParamResultInfo held in 'state'.</p>
+            
+            <pre><code>func assignParam(typ *types.Type, name *ir.Name, isResult bool) ABIParamAssignment</code></pre>
+         </article>
+         
+         <article class="function" data-name="tryAllocRegs">
+            <h2>tryAllocRegs</h2>
+            <hr />
+            
+            <p>tryAllocRegs attempts to allocate registers to represent a
+parameter of the given type. If unsuccessful, it returns nil.</p>
+            
+            <pre><code>func tryAllocRegs(typ *types.Type) []RegIndex</code></pre>
+         </article>
+         
+         <article class="function" data-name="ComputePadding">
+            <h2>ComputePadding</h2>
+            <hr />
+            
+            <p>ComputePadding returns a list of "post element" padding values in
+the case where we have a structure being passed in registers. Given
+a param assignment corresponding to a struct, it returns a list
+containing padding values for each field, e.g. the Kth element in
+the list is the amount of padding between field K and the following
+field. For things that are not structs (or structs without padding)
+it returns a list of zeros. Example:
+
+	type small struct {
+		x uint16
+		y uint8
+		z int32
+		w int32
+	}
+
+For this struct we would return a list [0, 1, 0, 0], meaning that
+we have one byte of padding after the second field, and no bytes of
+padding after any of the other fields. Input parameter "storage" is
+a slice with enough capacity to accommodate padding elements for
+the architected register set in question.</p>
+            
+            <pre><code>func ComputePadding(storage []uint64) []uint64</code></pre>
+         </article>
+         
+      </main>
+      <script>
+         function isPrivate(name) {
+            return /^[a-z]/.test(name);
+         }
+         document.addEventListener("DOMContentLoaded", () => {
+            const toggles = {
+               functions: document.getElementById("showPrivateFunctions"),
+               structs: document.getElementById("showPrivateStructs"),
+               fields: document.getElementById("showPrivateFields"),
+               globals: document.getElementById("showPrivateGlobals"),
+            };
+            const hideInitial = (selector, toggle) => {
+               document.querySelectorAll(selector).forEach((el) => {
+                  const name = el.dataset.name;
+                  if (isPrivate(name)) {
+                     el.classList.add("private", "hidden");
+                  }
+               });
+               toggle.addEventListener("change", () => {
+                  const show = toggle.checked;
+                  document
+                     .querySelectorAll(`${selector}.private`)
+                     .forEach((el) => {
+                        el.classList.toggle("hidden", !show);
+                     });
+               });
+            };
+            hideInitial("article.function", toggles.functions);
+            hideInitial("article.struct", toggles.structs);
+            hideInitial("article.global", toggles.globals);
+            document
+               .querySelectorAll("article.struct")
+               .forEach((article) => {
+                  const codeBlock =
+                     article.querySelector("code.fields-code");
+                  if (!codeBlock) return;
+                  const lines = codeBlock.innerText.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
+                        );
+                        if (!nameMatch)
+                           return `<span class=\"field-line\">${line}</span>`;
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class=\"field-line${
+                           isPriv ? " hidden private" : ""
+                        }\" data-name=\"${name}\">${line}</span>`;
+                     })
+                     .join("");
+                  codeBlock.innerHTML = newContent;
+                  toggles.fields.addEventListener("change", () => {
+                     const show = toggles.fields.checked;
+                     article
+                        .querySelectorAll(".field-line.private")
+                        .forEach((el) =>
+                           el.classList.toggle("hidden", !show)
+                        );
+                  });
+               });
+            const searchInput = document.getElementById("searchInput");
+            searchInput.addEventListener("input", () => {
+               const query = searchInput.value.trim().toLowerCase();
+               document.querySelectorAll("article").forEach((el) => {
+                  const name = el.dataset.name.toLowerCase();
+                  if (query === "" || name.includes(query)) {
+                     el.classList.remove("hidden");
+                  } else {
+                     el.classList.add("hidden");
+                  }
+               });
+            });
+         });
+      </script>
+   </body>
+</html>
