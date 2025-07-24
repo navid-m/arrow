@@ -58,8 +58,6 @@ Arrow is different in that it is stateless, extremely fast, and modern both in d
 
 It can be plugged into CI, hosted statically, or used offline as a personal reference.
 
----
-
 ## License
 
 GPL v3 only.
