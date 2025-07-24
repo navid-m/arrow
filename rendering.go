@@ -30,7 +30,6 @@ func renderDocs(
 
 	for pkgName, pkg := range pkgs {
 		pageData := models.PageData{PackageName: pkgName}
-
 		subItems, err := os.ReadDir(filepath.Join(srcPath, relPath))
 		if err == nil {
 			for _, item := range subItems {
