@@ -7,6 +7,7 @@ import (
 	"go/parser"
 	"go/token"
 	"os"
+	"path/filepath"
 	"strings"
 	"text/template"
 )
@@ -41,99 +42,131 @@ func main() {
 	}
 
 	srcPath := os.Args[1]
-	fileset := token.NewFileSet()
+	fset := token.NewFileSet()
 
-	pkgs, err := parser.ParseDir(fileset, srcPath, nil, parser.ParseComments)
-	if err != nil {
-		panic(err)
-	}
+	// Walk all subdirectories
+	err := filepath.Walk(srcPath, func(path string, info os.FileInfo, err error) error {
+		if err != nil {
+			return err
+		}
 
-	var pageData PageData
-	for pkgName, pkg := range pkgs {
-		pageData.PackageName = pkgName
+		// Only consider directories
+		if !info.IsDir() {
+			return nil
+		}
 
-		for _, file := range pkg.Files {
-			for _, decl := range file.Decls {
-				switch d := decl.(type) {
-				case *ast.FuncDecl:
-					params := extractFieldList(d.Type.Params)
-					results := extractFieldList(d.Type.Results)
+		// Parse Go files in this directory
+		pkgs, err := parser.ParseDir(fset, path, func(fi os.FileInfo) bool {
+			// include only .go files (exclude test files if desired)
+			return strings.HasSuffix(fi.Name(), ".go")
+		}, parser.ParseComments)
+		if err != nil {
+			// skip directories that can't be parsed
+			return nil
+		}
 
-					fullSig := fmt.Sprintf("func %s(%s)", d.Name.Name, params)
-					if results != "" {
-						if strings.Contains(results, ",") {
-							fullSig += " (" + results + ")"
-						} else {
-							fullSig += " " + results
+		// No packages here
+		if len(pkgs) == 0 {
+			return nil
+		}
+
+		// Generate an HTML file for each package in this dir
+		for pkgName, pkg := range pkgs {
+			pageData := PageData{PackageName: pkgName}
+
+			// Collect functions and structs
+			for _, file := range pkg.Files {
+				for _, decl := range file.Decls {
+					switch d := decl.(type) {
+					case *ast.FuncDecl:
+						params := extractFieldList(d.Type.Params)
+						results := extractFieldList(d.Type.Results)
+
+						fullSig := fmt.Sprintf("func %s(%s)", d.Name.Name, params)
+						if results != "" {
+							if strings.Contains(results, ",") {
+								fullSig += " (" + results + ")"
+							} else {
+								fullSig += " " + results
+							}
 						}
-					}
 
-					doc := ""
-					if d.Doc != nil {
-						doc = strings.TrimSpace(d.Doc.Text())
-					}
+						doc := ""
+						if d.Doc != nil {
+							doc = strings.TrimSpace(d.Doc.Text())
+						}
 
-					pageData.Functions = append(pageData.Functions, Function{
-						Name:    d.Name.Name,
-						Params:  params,
-						Results: results,
-						FullSig: fullSig,
-						Doc:     doc,
-					})
+						pageData.Functions = append(pageData.Functions, Function{
+							Name:    d.Name.Name,
+							Params:  params,
+							Results: results,
+							FullSig: fullSig,
+							Doc:     doc,
+						})
 
-				case *ast.GenDecl:
-					if d.Tok == token.TYPE {
-						for _, spec := range d.Specs {
-							typeSpec, ok := spec.(*ast.TypeSpec)
-							if !ok {
-								continue
-							}
-							structType, ok := typeSpec.Type.(*ast.StructType)
-							if !ok {
-								continue
-							}
+					case *ast.GenDecl:
+						if d.Tok == token.TYPE {
+							for _, spec := range d.Specs {
+								typeSpec, ok := spec.(*ast.TypeSpec)
+								if !ok {
+									continue
+								}
+								structType, ok := typeSpec.Type.(*ast.StructType)
+								if !ok {
+									continue
+								}
 
-							var fields []string
-							for _, field := range structType.Fields.List {
-								typeStr := exprToString(field.Type)
-								if len(field.Names) == 0 {
-									fields = append(fields, typeStr)
-								} else {
-									for _, name := range field.Names {
-										fields = append(fields, name.Name+" "+typeStr)
+								var fields []string
+								for _, field := range structType.Fields.List {
+									typeStr := exprToString(field.Type)
+									if len(field.Names) == 0 {
+										fields = append(fields, typeStr)
+									} else {
+										for _, name := range field.Names {
+											fields = append(fields, name.Name+" "+typeStr)
+										}
 									}
 								}
-							}
 
-							doc := ""
-							if d.Doc != nil {
-								doc = strings.TrimSpace(d.Doc.Text())
-							}
+								doc := ""
+								if d.Doc != nil {
+									doc = strings.TrimSpace(d.Doc.Text())
+								}
 
-							pageData.Structs = append(pageData.Structs, Struct{
-								Name:   typeSpec.Name.Name,
-								Fields: strings.Join(fields, "\n"),
-								Doc:    doc,
-							})
+								pageData.Structs = append(pageData.Structs, Struct{
+									Name:   typeSpec.Name.Name,
+									Fields: strings.Join(fields, "\n"),
+									Doc:    doc,
+								})
+							}
 						}
 					}
 				}
 			}
-		}
-	}
 
-	output, err := os.Create("docs.html")
+			// Create output file in the same directory
+			outFile := filepath.Join(path, fmt.Sprintf("%s-docs.html", pkgName))
+			f, err := os.Create(outFile)
+			if err != nil {
+				fmt.Printf("Failed to create %s: %v\n", outFile, err)
+				continue
+			}
+			defer f.Close()
+
+			t := template.Must(template.New("doc").Parse(tmpl))
+			if err := t.Execute(f, pageData); err != nil {
+				fmt.Printf("Error executing template for %s: %v\n", outFile, err)
+			}
+
+			fmt.Printf("Generated %s\n", outFile)
+		}
+
+		return nil
+	})
+
 	if err != nil {
 		panic(err)
 	}
-	defer output.Close()
-
-	t := template.Must(template.New("doc").Parse(tmpl))
-	if err := t.Execute(output, pageData); err != nil {
-		panic(err)
-	}
-
-	fmt.Println("Generated docs.html")
 }
 
 // Extract fields from the function signature
