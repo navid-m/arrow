@@ -1,7 +1,6 @@
 package main
 
 import (
-	"arrow/models"
 	"fmt"
 	"go/ast"
 	"go/token"
@@ -9,6 +8,8 @@ import (
 	"path/filepath"
 	"strings"
 	"text/template"
+
+	"github.com/navid-m/arrow/models"
 )
 
 // Render the documentation, return a slice of index entries.

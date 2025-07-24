@@ -1,7 +1,6 @@
 package main
 
 import (
-	"arrow/models"
 	_ "embed"
 	"fmt"
 	"go/ast"
@@ -12,6 +11,8 @@ import (
 	"strings"
 	"sync"
 	"text/template"
+
+	"github.com/navid-m/arrow/models"
 )
 
 //go:embed views/template.html
