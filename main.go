@@ -26,10 +26,17 @@ type Struct struct {
 	Doc    string
 }
 
+type Global struct {
+	Name        string
+	Declaration string
+	Doc         string
+}
+
 type PageData struct {
 	PackageName string
 	Functions   []Function
 	Structs     []Struct
+	Globals     []Global
 }
 
 type IndexEntry struct {
@@ -118,7 +125,8 @@ func main() {
 						})
 
 					case *ast.GenDecl:
-						if d.Tok == token.TYPE {
+						switch d.Tok {
+						case token.TYPE:
 							for _, spec := range d.Specs {
 								typeSpec, ok := spec.(*ast.TypeSpec)
 								if !ok {
@@ -151,6 +159,38 @@ func main() {
 									Fields: strings.Join(fields, "\n"),
 									Doc:    doc,
 								})
+							}
+
+						case token.VAR, token.CONST:
+							for _, spec := range d.Specs {
+								valueSpec, ok := spec.(*ast.ValueSpec)
+								if !ok {
+									continue
+								}
+
+								doc := ""
+								if valueSpec.Doc != nil {
+									doc = strings.TrimSpace(valueSpec.Doc.Text())
+								} else if d.Doc != nil {
+									doc = strings.TrimSpace(d.Doc.Text())
+								}
+
+								typeStr := ""
+								if valueSpec.Type != nil {
+									typeStr = exprToString(valueSpec.Type)
+								}
+
+								for _, name := range valueSpec.Names {
+									decl := name.Name
+									if typeStr != "" {
+										decl += " " + typeStr
+									}
+									pageData.Globals = append(pageData.Globals, Global{
+										Name:        name.Name,
+										Declaration: decl,
+										Doc:         doc,
+									})
+								}
 							}
 						}
 					}
