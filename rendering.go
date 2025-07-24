@@ -20,11 +20,13 @@ func renderDocs(
 	docDir string,
 	srcPath string,
 ) []models.IndexEntry {
-	docFile := fmt.Sprintf("%s-docs.html", docFileName)
-	indexEntry := models.IndexEntry{
-		PackageName: relPath,
-		DocFile:     docFile,
-	}
+	var (
+		docFile    = fmt.Sprintf("%s-docs.html", docFileName)
+		indexEntry = models.IndexEntry{
+			PackageName: relPath,
+			DocFile:     docFile,
+		}
+	)
 
 	for pkgName, pkg := range pkgs {
 		pageData := models.PageData{PackageName: pkgName}
