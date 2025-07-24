@@ -36,16 +36,6 @@ arrow .
 
 This creates a folder named "docs" of `.html` files (one per package), which one can open locally or serve statically (e.g. via GitHub Pages, `python3 -m http.server`, etc.).
 
-## Performance
-
-| Task                        | Time     |
-| --------------------------- | -------- |
-| Stdlib (150+ packages)      | \~5 sec  |
-| Medium project (10–20 pkgs) | <1 sec   |
-| Output size (HTML)          | \~1–30MB |
-
-> Some packages like `sys/unix` may generate large HTML due to thousands of constants.
-
 ## Why Another Go Doc Tool?
 
 Most Go documentation tools are either:
