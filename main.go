@@ -52,7 +52,7 @@ var indexTmpl string
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: arrow <path-to-go-source>")
+		fmt.Println("Usage: arrow <path-to-go-source-directory>")
 		return
 	}
 
