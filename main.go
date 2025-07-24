@@ -40,41 +40,33 @@ func main() {
 		fmt.Println("Usage: arrow <path-to-go-source>")
 		return
 	}
-
-	srcPath := os.Args[1]
-	fset := token.NewFileSet()
-
-	// Walk all subdirectories
+	var (
+		srcPath = os.Args[1]
+		fset    = token.NewFileSet()
+	)
 	err := filepath.Walk(srcPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil {
 			return err
 		}
-
-		// Only consider directories
 		if !info.IsDir() {
 			return nil
 		}
 
-		// Parse Go files in this directory
 		pkgs, err := parser.ParseDir(fset, path, func(fi os.FileInfo) bool {
-			// include only .go files (exclude test files if desired)
 			return strings.HasSuffix(fi.Name(), ".go")
 		}, parser.ParseComments)
+
 		if err != nil {
-			// skip directories that can't be parsed
 			return nil
 		}
 
-		// No packages here
 		if len(pkgs) == 0 {
 			return nil
 		}
 
-		// Generate an HTML file for each package in this dir
 		for pkgName, pkg := range pkgs {
 			pageData := PageData{PackageName: pkgName}
 
-			// Collect functions and structs
 			for _, file := range pkg.Files {
 				for _, decl := range file.Decls {
 					switch d := decl.(type) {
@@ -144,7 +136,6 @@ func main() {
 				}
 			}
 
-			// Create output file in the same directory
 			outFile := filepath.Join(path, fmt.Sprintf("%s-docs.html", pkgName))
 			f, err := os.Create(outFile)
 			if err != nil {
@@ -188,6 +179,7 @@ func extractFieldList(fl *ast.FieldList) string {
 	return strings.Join(parts, ", ")
 }
 
+// Convert some expression to its string value
 func exprToString(expr ast.Expr) string {
 	switch e := expr.(type) {
 	case *ast.Ident:
