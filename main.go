@@ -26,9 +26,11 @@ func main() {
 		return
 	}
 
-	srcPath := os.Args[1]
-	fset := token.NewFileSet()
-	docDir := filepath.Join(".", "docs")
+	var (
+		srcPath = os.Args[1]
+		fset    = token.NewFileSet()
+		docDir  = filepath.Join(".", "docs")
+	)
 
 	if err := os.MkdirAll(docDir, 0755); err != nil {
 		fmt.Printf("Failed to create docs directory: %v\n", err)
