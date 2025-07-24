@@ -19,9 +19,16 @@ type Function struct {
 	Doc     string
 }
 
+type Struct struct {
+	Name   string
+	Fields string
+	Doc    string
+}
+
 type PageData struct {
 	PackageName string
 	Functions   []Function
+	Structs     []Struct
 }
 
 //go:embed views/template.html
@@ -47,11 +54,12 @@ func main() {
 
 		for _, file := range pkg.Files {
 			for _, decl := range file.Decls {
-				if fn, isFn := decl.(*ast.FuncDecl); isFn {
-					params := extractFieldList(fn.Type.Params)
-					results := extractFieldList(fn.Type.Results)
+				switch d := decl.(type) {
+				case *ast.FuncDecl:
+					params := extractFieldList(d.Type.Params)
+					results := extractFieldList(d.Type.Results)
 
-					fullSig := fmt.Sprintf("func %s(%s)", fn.Name.Name, params)
+					fullSig := fmt.Sprintf("func %s(%s)", d.Name.Name, params)
 					if results != "" {
 						if strings.Contains(results, ",") {
 							fullSig += " (" + results + ")"
@@ -61,17 +69,54 @@ func main() {
 					}
 
 					doc := ""
-					if fn.Doc != nil {
-						doc = strings.TrimSpace(fn.Doc.Text())
+					if d.Doc != nil {
+						doc = strings.TrimSpace(d.Doc.Text())
 					}
 
 					pageData.Functions = append(pageData.Functions, Function{
-						Name:    fn.Name.Name,
+						Name:    d.Name.Name,
 						Params:  params,
 						Results: results,
 						FullSig: fullSig,
 						Doc:     doc,
 					})
+
+				case *ast.GenDecl:
+					if d.Tok == token.TYPE {
+						for _, spec := range d.Specs {
+							typeSpec, ok := spec.(*ast.TypeSpec)
+							if !ok {
+								continue
+							}
+							structType, ok := typeSpec.Type.(*ast.StructType)
+							if !ok {
+								continue
+							}
+
+							var fields []string
+							for _, field := range structType.Fields.List {
+								typeStr := exprToString(field.Type)
+								if len(field.Names) == 0 {
+									fields = append(fields, typeStr)
+								} else {
+									for _, name := range field.Names {
+										fields = append(fields, name.Name+" "+typeStr)
+									}
+								}
+							}
+
+							doc := ""
+							if d.Doc != nil {
+								doc = strings.TrimSpace(d.Doc.Text())
+							}
+
+							pageData.Structs = append(pageData.Structs, Struct{
+								Name:   typeSpec.Name.Name,
+								Fields: strings.Join(fields, "\n"),
+								Doc:    doc,
+							})
+						}
+					}
 				}
 			}
 		}
