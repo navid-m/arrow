@@ -52,6 +52,12 @@
             border-radius: 10px;
             box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
          }
+         .hidden {
+            display: none;
+         }
+         .filter-toggle {
+            margin-bottom: 1rem;
+         }
       </style>
    </head>
    <body>
@@ -61,6 +67,12 @@
             <code>{{.PackageName}}</code>
             Documentation
          </h1>
+         <div class="filter-toggle">
+            <label>
+               <input type="checkbox" id="showPrivate" />
+               Show private (unexported) functions
+            </label>
+         </div>
          <hr />
          {{range .Structs}}
          <article>
@@ -72,7 +84,7 @@
             <pre><code>{{.Fields}}</code></pre>
          </article>
          {{end}} {{range .Functions}}
-         <article>
+         <article class="function" data-func="{{.Name}}">
             <h2>{{.Name}}</h2>
             <hr />
             {{if .Doc}}
@@ -82,5 +94,30 @@
          </article>
          {{end}}
       </main>
+
+      <script>
+         document.addEventListener("DOMContentLoaded", () => {
+            const showPrivateCheckbox =
+               document.getElementById("showPrivate");
+            const functionArticles =
+               document.querySelectorAll("article.function");
+
+            functionArticles.forEach((el) => {
+               const funcName = el.dataset.func;
+               if (funcName && /^[a-z]/.test(funcName)) {
+                  el.classList.add("private", "hidden");
+               }
+            });
+
+            showPrivateCheckbox.addEventListener("change", (e) => {
+               const showPrivate = e.target.checked;
+               document
+                  .querySelectorAll("article.function.private")
+                  .forEach((el) => {
+                     el.classList.toggle("hidden", !showPrivate);
+                  });
+            });
+         });
+      </script>
    </body>
 </html>
