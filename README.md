@@ -54,9 +54,7 @@ Most Go documentation tools are either:
 -  Clunky to run locally
 -  Not ideal for static export or fast browsing
 
-Arrow is different in that it is stateless, extremely fast, and modern both in design and UX.
-
-It can be plugged into CI, hosted statically, or used offline as a personal reference.
+Arrow is different in that it is stateless, extremely fast, and modern both in design and UX. It can be plugged into CI, hosted statically, or used offline as a personal reference.
 
 ## License
 
