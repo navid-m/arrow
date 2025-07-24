@@ -16,9 +16,23 @@
             font-size: 13px;
          }
          body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+         }
+         .sidebar {
+            width: 200px;
+            background: rgba(59, 56, 56, 0.1);
+            padding: 1.2rem;
+            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            overflow-y: auto;
+            margin-right: 7px;
+         }
+         main {
+            flex: 1;
             padding: 1rem;
-            margin: 0 auto;
-            max-width: 960px;
+            margin: 0;
+            max-width: calc(100% - 220px);
          }
          h1 {
             font-size: 1.4rem;
@@ -55,8 +69,9 @@
          .hidden {
             display: none;
          }
-         .filter-toggle {
-            margin-bottom: 1rem;
+         .filter-toggle label {
+            display: block;
+            margin-bottom: 0.5rem;
          }
          .field-line {
             display: block;
@@ -64,36 +79,35 @@
       </style>
    </head>
    <body>
+      <aside class="sidebar">
+         <h2>Filters</h2>
+         <hr />
+         <div class="filter-toggle">
+            <label>
+               <input type="checkbox" id="showPrivateFunctions" />
+               Show private functions
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateStructs" />
+               Show private structs
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateFields" />
+               Show private struct fields
+            </label>
+            <label>
+               <input type="checkbox" id="showPrivateGlobals" />
+               Show private globals
+            </label>
+         </div>
+      </aside>
       <main>
          <h1>
             Package
             <code>{{.PackageName}}</code>
             Documentation
          </h1>
-
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <br />
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <br />
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <br />
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
-         </div>
          <hr />
-
          {{range .Globals}}
          <article class="global" data-name="{{.Name}}">
             <h2>{{.Name}}</h2>
@@ -125,12 +139,10 @@
          </article>
          {{end}}
       </main>
-
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
-
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
@@ -138,7 +150,6 @@
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
             };
-
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -146,7 +157,6 @@
                      el.classList.add("private", "hidden");
                   }
                });
-
                toggle.addEventListener("change", () => {
                   const show = toggle.checked;
                   document
@@ -156,45 +166,41 @@
                      });
                });
             };
-
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
-
-            const structArticles =
-               document.querySelectorAll("article.struct");
-            structArticles.forEach((article) => {
-               const codeBlock = article.querySelector("code.fields-code");
-               if (!codeBlock) return;
-
-               const lines = codeBlock.innerText.split("\n");
-               const newContent = lines
-                  .map((line) => {
-                     const trimmed = line.trim();
-                     const nameMatch = trimmed.match(
-                        /^([A-Za-z_][A-Za-z0-9_]*)\b/
-                     );
-                     if (!nameMatch)
-                        return `<span class="field-line">${line}</span>`;
-                     const name = nameMatch[1];
-                     const isPriv = isPrivate(name);
-                     return `<span class="field-line${
-                        isPriv ? " hidden private" : ""
-                     }" data-name="${name}">${line}</span>`;
-                  })
-                  .join("");
-
-               codeBlock.innerHTML = newContent;
-
-               toggles.fields.addEventListener("change", () => {
-                  const show = toggles.fields.checked;
-                  article
-                     .querySelectorAll(".field-line.private")
-                     .forEach((el) =>
-                        el.classList.toggle("hidden", !show)
-                     );
+            document
+               .querySelectorAll("article.struct")
+               .forEach((article) => {
+                  const codeBlock =
+                     article.querySelector("code.fields-code");
+                  if (!codeBlock) return;
+                  const lines = codeBlock.innerText.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
+                        );
+                        if (!nameMatch)
+                           return `<span class=\"field-line\">${line}</span>`;
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class=\"field-line${
+                           isPriv ? " hidden private" : ""
+                        }\" data-name=\"${name}\">${line}</span>`;
+                     })
+                     .join("");
+                  codeBlock.innerHTML = newContent;
+                  toggles.fields.addEventListener("change", () => {
+                     const show = toggles.fields.checked;
+                     article
+                        .querySelectorAll(".field-line.private")
+                        .forEach((el) =>
+                           el.classList.toggle("hidden", !show)
+                        );
+                  });
                });
-            });
          });
       </script>
    </body>
