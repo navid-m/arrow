@@ -1,6 +1,7 @@
 package main
 
 import (
+	"arrow/models"
 	_ "embed"
 	"fmt"
 	"go/ast"
@@ -11,38 +12,6 @@ import (
 	"strings"
 	"text/template"
 )
-
-type Function struct {
-	Name    string
-	Params  string
-	Results string
-	FullSig string
-	Doc     string
-}
-
-type Struct struct {
-	Name   string
-	Fields string
-	Doc    string
-}
-
-type Global struct {
-	Name        string
-	Declaration string
-	Doc         string
-}
-
-type PageData struct {
-	PackageName string
-	Functions   []Function
-	Structs     []Struct
-	Globals     []Global
-}
-
-type IndexEntry struct {
-	PackageName string
-	DocFile     string
-}
 
 //go:embed views/template.html
 var tmpl string
@@ -60,7 +29,7 @@ func main() {
 		srcPath      = os.Args[1]
 		fset         = token.NewFileSet()
 		docDir       = filepath.Join(".", "docs")
-		indexEntries []IndexEntry
+		indexEntries []models.IndexEntry
 	)
 
 	if err := os.MkdirAll(docDir, 0755); err != nil {
@@ -90,13 +59,13 @@ func main() {
 		}
 
 		docFile := fmt.Sprintf("%s-docs.html", docFileName)
-		indexEntries = append(indexEntries, IndexEntry{
+		indexEntries = append(indexEntries, models.IndexEntry{
 			PackageName: relPath,
 			DocFile:     docFile,
 		})
 
 		for pkgName, pkg := range pkgs {
-			pageData := PageData{PackageName: pkgName}
+			pageData := models.PageData{PackageName: pkgName}
 
 			for _, file := range pkg.Files {
 				for _, decl := range file.Decls {
@@ -119,7 +88,7 @@ func main() {
 							doc = strings.TrimSpace(d.Doc.Text())
 						}
 
-						pageData.Functions = append(pageData.Functions, Function{
+						pageData.Functions = append(pageData.Functions, models.Function{
 							Name:    d.Name.Name,
 							Params:  params,
 							Results: results,
@@ -157,7 +126,7 @@ func main() {
 									doc = strings.TrimSpace(d.Doc.Text())
 								}
 
-								pageData.Structs = append(pageData.Structs, Struct{
+								pageData.Structs = append(pageData.Structs, models.Struct{
 									Name:   typeSpec.Name.Name,
 									Fields: strings.Join(fields, "\n"),
 									Doc:    doc,
@@ -188,7 +157,7 @@ func main() {
 									if typeStr != "" {
 										decl += " " + typeStr
 									}
-									pageData.Globals = append(pageData.Globals, Global{
+									pageData.Globals = append(pageData.Globals, models.Global{
 										Name:        name.Name,
 										Declaration: decl,
 										Doc:         doc,
