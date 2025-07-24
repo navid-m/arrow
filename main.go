@@ -57,17 +57,16 @@ func main() {
 	}
 
 	var (
-		srcPath = os.Args[1]
-		fset    = token.NewFileSet()
-		docDir  = filepath.Join(".", "docs")
+		srcPath      = os.Args[1]
+		fset         = token.NewFileSet()
+		docDir       = filepath.Join(".", "docs")
+		indexEntries []IndexEntry
 	)
 
 	if err := os.MkdirAll(docDir, 0755); err != nil {
 		fmt.Printf("Failed to create docs directory: %v\n", err)
 		return
 	}
-
-	var indexEntries []IndexEntry
 
 	err := filepath.Walk(srcPath, func(path string, info os.FileInfo, err error) error {
 		if err != nil || !info.IsDir() {
