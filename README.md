@@ -44,7 +44,7 @@ This creates a folder named "docs" of `.html` files (one per package), which one
 | Medium project (10–20 pkgs) | <1 sec   |
 | Output size (HTML)          | \~1–30MB |
 
-> Note: Some packages like `sys/unix` may generate large HTML due to thousands of constants.
+> Some packages like `sys/unix` may generate large HTML due to thousands of constants.
 
 ## Why Another Go Doc Tool?
 
