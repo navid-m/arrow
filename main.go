@@ -81,8 +81,10 @@ func main() {
 			return nil
 		}
 
-		relPath, _ := filepath.Rel(srcPath, path)
-		docFileName := strings.ReplaceAll(relPath, string(filepath.Separator), "_")
+		var (
+			relPath, _  = filepath.Rel(srcPath, path)
+			docFileName = strings.ReplaceAll(relPath, string(filepath.Separator), "_")
+		)
 		if docFileName == "." || docFileName == "" {
 			docFileName = "main"
 		}
