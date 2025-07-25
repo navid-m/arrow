@@ -369,6 +369,10 @@
             <h3>Filters</h3>
             <div class="filter-toggle">
                <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
                   <input type="checkbox" id="showPrivateFunctions" />
                   Show private functions
                </label>
@@ -439,7 +443,7 @@
          {{if .Imports}}
          <section id="imports">
             <h2>Imports</h2>
-            <article>
+            <article class="imports" data-name="imports">
                <pre><code>{{range .Imports}}{{if .Name}}{{.Name}} {{end}}"{{.Path}}"
 {{end}}</code></pre>
             </article>
@@ -549,6 +553,7 @@
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
@@ -578,6 +583,7 @@
                }
             };
 
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
@@ -711,11 +717,12 @@
                   return toggles.types?.checked || false;
                } else if (element.classList.contains("interface")) {
                   return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
                }
                return false;
             }
 
-            // Smooth scrolling for navigation links
             document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
                anchor.addEventListener("click", function (e) {
                   e.preventDefault();
