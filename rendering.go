@@ -330,10 +330,11 @@ func extractInterfaceMethods(interfaceType *ast.InterfaceType) string {
 		} else {
 			for _, name := range method.Names {
 				if funcType, ok := method.Type.(*ast.FuncType); ok {
-					params := extractFieldList(funcType.Params)
-					results := extractFieldList(funcType.Results)
-
-					sig := name.Name + "(" + params + ")"
+					var (
+						params  = extractFieldList(funcType.Params)
+						results = extractFieldList(funcType.Results)
+						sig     = name.Name + "(" + params + ")"
+					)
 					if results != "" {
 						if strings.Contains(results, ",") {
 							sig += " (" + results + ")"
