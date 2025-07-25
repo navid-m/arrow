@@ -1,38 +1,67 @@
 package models
 
-// Some function signature with the output type, params, and documentation.
+// Represents a function or method declaration
 type Function struct {
-	Name    string
-	Params  string
-	Results string
-	FullSig string
-	Doc     string
+	Name     string
+	Params   string
+	Results  string
+	FullSig  string
+	Doc      string
+	Receiver string
+	IsMethod bool
 }
 
-// A struct declaration, with fields and a documentation comment.
+// Represents a struct type declaration
 type Struct struct {
 	Name   string
 	Fields string
 	Doc    string
+	Kind   string
 }
 
-// A top-level declared variable.
+// Represents an interface type declaration
+type Interface struct {
+	Name    string
+	Methods string
+	Doc     string
+}
+
+// Represents a type alias or type definition
+type TypeAlias struct {
+	Name string
+	Type string
+	Doc  string
+}
+
+// Represents a top-level variable or constant
+//
+// Kind can be var or const
 type Global struct {
 	Name        string
 	Declaration string
 	Doc         string
+	Kind        string
 }
 
-// Data to be stored on a documentation template.
+// Represents an import declaration
+type Import struct {
+	Name string
+	Path string
+}
+
+// Contains all data for a documentation page
 type PageData struct {
 	PackageName string
 	Functions   []Function
 	Structs     []Struct
+	Interfaces  []Interface
+	Types       []TypeAlias
 	Globals     []Global
+	Imports     []Import
 	SubPackages []IndexEntry
 }
 
-// A single index entry for documentation root.
+// Represents a single entry in the documentation index
 type IndexEntry struct {
 	PackageName string
 	DocFile     string
