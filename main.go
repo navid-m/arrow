@@ -12,6 +12,7 @@ import (
 	"sync"
 	"text/template"
 
+	"github.com/navid-m/arrow/building"
 	"github.com/navid-m/arrow/models"
 )
 
@@ -66,8 +67,7 @@ func main() {
 		wg.Add(1)
 		go func(docFileName, relPath string, pkgs map[string]*ast.Package) {
 			defer wg.Done()
-			entries := renderDocs(docFileName, relPath, pkgs, docDir, srcPath)
-
+			entries := building.RenderDocs(tmpl, docFileName, relPath, pkgs, docDir, srcPath)
 			mu.Lock()
 			indexEntries = append(indexEntries, entries...)
 			mu.Unlock()

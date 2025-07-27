@@ -1,4 +1,4 @@
-package main
+package building
 
 import (
 	"fmt"
@@ -10,13 +10,13 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/navid-m/arrow/building"
 	"github.com/navid-m/arrow/models"
 	"github.com/navid-m/arrow/parsing"
 )
 
 // Render the documentation, return a slice of index entries.
-func renderDocs(
+func RenderDocs(
+	tmpl string,
 	docFileName string,
 	relPath string,
 	pkgs map[string]*ast.Package,
@@ -73,7 +73,7 @@ func renderDocs(
 					var (
 						params   = parsing.ExtractFieldList(d.Type.Params)
 						results  = parsing.ExtractFieldList(d.Type.Results)
-						fullSig  = building.BuildFunctionSignature(d, params, results)
+						fullSig  = BuildFunctionSignature(d, params, results)
 						doc      = parsing.ExtractDocumentation(d.Doc)
 						receiver string
 					)
@@ -154,7 +154,7 @@ func renderDocs(
 							}
 
 							for i, name := range valueSpec.Names {
-								decl := building.BuildVariableDeclaration(d.Tok, name.Name, typeStr, values, i)
+								decl := BuildVariableDeclaration(d.Tok, name.Name, typeStr, values, i)
 
 								global := models.Global{
 									Name:        name.Name,
