@@ -16,10 +16,10 @@ import (
 	"github.com/navid-m/arrow/models"
 )
 
-//go:embed views/template.html
+//go:embed views/template.htmx
 var tmpl string
 
-//go:embed views/index.html
+//go:embed views/index.htmx
 var indexTmpl string
 
 func main() {
