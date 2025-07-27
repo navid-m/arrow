@@ -69,7 +69,6 @@ func main() {
 		for pkgName, pkg := range pkgs {
 			if !strings.HasSuffix(pkgName, "_test") {
 				filteredPkgs[pkgName] = pkg
-				fmt.Printf("Found package: %s at %s\n", pkgName, path)
 			}
 		}
 
