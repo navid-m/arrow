@@ -11,6 +11,7 @@ import (
 	"text/template"
 
 	"github.com/navid-m/arrow/models"
+	"github.com/navid-m/arrow/parsing"
 )
 
 // Render the documentation, return a slice of index entries.
@@ -68,14 +69,14 @@ func renderDocs(
 						continue
 					}
 
-					params := extractFieldList(d.Type.Params)
-					results := extractFieldList(d.Type.Results)
+					params := parsing.ExtractFieldList(d.Type.Params)
+					results := parsing.ExtractFieldList(d.Type.Results)
 					fullSig := buildFunctionSignature(d, params, results)
-					doc := extractDocumentation(d.Doc)
+					doc := parsing.ExtractDocumentation(d.Doc)
 
 					var receiver string
 					if d.Recv != nil {
-						receiver = extractFieldList(d.Recv)
+						receiver = parsing.ExtractFieldList(d.Recv)
 					}
 
 					pageData.Functions = append(pageData.Functions, models.Function{
@@ -97,16 +98,16 @@ func renderDocs(
 								continue
 							}
 
-							doc := extractDocumentation(d.Doc)
+							doc := parsing.ExtractDocumentation(d.Doc)
 							if typeSpec.Doc != nil {
-								doc = extractDocumentation(typeSpec.Doc)
+								doc = parsing.ExtractDocumentation(typeSpec.Doc)
 							}
 
 							switch t := typeSpec.Type.(type) {
 							case *ast.StructType:
 								pageData.Structs = append(pageData.Structs, models.Struct{
 									Name:   typeSpec.Name.Name,
-									Fields: extractStructFields(t),
+									Fields: parsing.ExtractStructFields(t),
 									Doc:    doc,
 									Kind:   "struct",
 								})
@@ -114,12 +115,12 @@ func renderDocs(
 							case *ast.InterfaceType:
 								pageData.Interfaces = append(pageData.Interfaces, models.Interface{
 									Name:    typeSpec.Name.Name,
-									Methods: extractInterfaceMethods(t),
+									Methods: parsing.ExtractInterfaceMethods(t),
 									Doc:     doc,
 								})
 
 							default:
-								typeStr := exprToString(typeSpec.Type)
+								typeStr := parsing.ExprToString(typeSpec.Type)
 								pageData.Types = append(pageData.Types, models.TypeAlias{
 									Name: typeSpec.Name.Name,
 									Type: typeStr,
@@ -135,19 +136,19 @@ func renderDocs(
 								continue
 							}
 
-							doc := extractDocumentation(d.Doc)
+							doc := parsing.ExtractDocumentation(d.Doc)
 							if valueSpec.Doc != nil {
-								doc = extractDocumentation(valueSpec.Doc)
+								doc = parsing.ExtractDocumentation(valueSpec.Doc)
 							}
 
 							typeStr := ""
 							if valueSpec.Type != nil {
-								typeStr = exprToString(valueSpec.Type)
+								typeStr = parsing.ExprToString(valueSpec.Type)
 							}
 
 							var values []string
 							for _, val := range valueSpec.Values {
-								values = append(values, exprToString(val))
+								values = append(values, parsing.ExprToString(val))
 							}
 
 							for i, name := range valueSpec.Names {
@@ -221,25 +222,6 @@ func renderDocs(
 	return []models.IndexEntry{indexEntry}
 }
 
-// Extract fields from the function signature
-func extractFieldList(fl *ast.FieldList) string {
-	if fl == nil {
-		return ""
-	}
-	var parts []string
-	for _, field := range fl.List {
-		typeStr := exprToString(field.Type)
-		if len(field.Names) == 0 {
-			parts = append(parts, typeStr)
-		} else {
-			for _, name := range field.Names {
-				parts = append(parts, name.Name+" "+typeStr)
-			}
-		}
-	}
-	return strings.Join(parts, ", ")
-}
-
 // Build a comprehensive function signature
 func buildFunctionSignature(d *ast.FuncDecl, params, results string) string {
 	var sig strings.Builder
@@ -248,7 +230,7 @@ func buildFunctionSignature(d *ast.FuncDecl, params, results string) string {
 
 	if d.Recv != nil {
 		sig.WriteString("(")
-		sig.WriteString(extractFieldList(d.Recv))
+		sig.WriteString(parsing.ExtractFieldList(d.Recv))
 		sig.WriteString(") ")
 	}
 
@@ -290,143 +272,4 @@ func buildVariableDeclaration(tok token.Token, name, typeStr string, values []st
 	}
 
 	return decl.String()
-}
-
-// Extract struct fields
-func extractStructFields(structType *ast.StructType) string {
-	if structType.Fields == nil {
-		return ""
-	}
-
-	var fields []string
-	for _, field := range structType.Fields.List {
-		typeStr := exprToString(field.Type)
-		if len(field.Names) == 0 {
-			fields = append(fields, typeStr)
-		} else {
-			for _, name := range field.Names {
-				fieldStr := name.Name + " " + typeStr
-				if field.Tag != nil {
-					fieldStr += " " + field.Tag.Value
-				}
-				fields = append(fields, fieldStr)
-			}
-		}
-	}
-
-	return strings.Join(fields, "\n")
-}
-
-// Extract interface methods
-func extractInterfaceMethods(interfaceType *ast.InterfaceType) string {
-	if interfaceType.Methods == nil {
-		return ""
-	}
-
-	var methods []string
-	for _, method := range interfaceType.Methods.List {
-		if len(method.Names) == 0 {
-			methods = append(methods, exprToString(method.Type))
-		} else {
-			for _, name := range method.Names {
-				if funcType, ok := method.Type.(*ast.FuncType); ok {
-					var (
-						params  = extractFieldList(funcType.Params)
-						results = extractFieldList(funcType.Results)
-						sig     = name.Name + "(" + params + ")"
-					)
-					if results != "" {
-						if strings.Contains(results, ",") {
-							sig += " (" + results + ")"
-						} else {
-							sig += " " + results
-						}
-					}
-					methods = append(methods, sig)
-				}
-			}
-		}
-	}
-
-	return strings.Join(methods, "\n")
-}
-
-// Extract documentation with formatting
-func extractDocumentation(docGroup *ast.CommentGroup) string {
-	if docGroup == nil {
-		return ""
-	}
-
-	var lines []string
-	for _, comment := range docGroup.List {
-		line := strings.TrimPrefix(comment.Text, "//")
-		line = strings.TrimPrefix(line, "/*")
-		line = strings.TrimSuffix(line, "*/")
-		line = strings.TrimSpace(line)
-		if line != "" {
-			lines = append(lines, line)
-		}
-	}
-
-	return strings.Join(lines, "\n")
-}
-
-// Convert expression to string with type handling
-func exprToString(expr ast.Expr) string {
-	if expr == nil {
-		return ""
-	}
-	switch e := expr.(type) {
-	case *ast.Ident:
-		return e.Name
-	case *ast.SelectorExpr:
-		return exprToString(e.X) + "." + e.Sel.Name
-	case *ast.StarExpr:
-		return "*" + exprToString(e.X)
-	case *ast.ArrayType:
-		if e.Len == nil {
-			return "[]" + exprToString(e.Elt)
-		}
-		return "[" + exprToString(e.Len) + "]" + exprToString(e.Elt)
-	case *ast.Ellipsis:
-		return "..." + exprToString(e.Elt)
-	case *ast.FuncType:
-		params := extractFieldList(e.Params)
-		results := extractFieldList(e.Results)
-		sig := "func(" + params + ")"
-		if results != "" {
-			if strings.Contains(results, ",") {
-				sig += " (" + results + ")"
-			} else {
-				sig += " " + results
-			}
-		}
-		return sig
-	case *ast.MapType:
-		return "map[" + exprToString(e.Key) + "]" + exprToString(e.Value)
-	case *ast.ChanType:
-		dir := ""
-		switch e.Dir {
-		case ast.SEND:
-			dir = "chan<- "
-		case ast.RECV:
-			dir = "<-chan "
-		default:
-			dir = "chan "
-		}
-		return dir + exprToString(e.Value)
-	case *ast.InterfaceType:
-		if e.Methods == nil || len(e.Methods.List) == 0 {
-			return "interface{}"
-		}
-		return "interface{...}"
-	case *ast.StructType:
-		return "struct{...}"
-	case *ast.BasicLit:
-		return e.Value
-	case *ast.CompositeLit:
-		return exprToString(e.Type) + "{...}"
-	default:
-		return fmt.Sprintf("%T", expr)
-	}
 }
