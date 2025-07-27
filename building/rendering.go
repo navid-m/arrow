@@ -248,8 +248,7 @@ func RenderDocs(
 		if err := t.Execute(f, pageData); err != nil {
 			fmt.Printf("Error executing template for %s: %v\n", outFile, err)
 		}
-
-		fmt.Printf("Generated %s with %d subpackages\n", outFile, len(pageData.SubPackages))
+		fmt.Printf("Generated %s", outFile)
 	}
 	return []models.IndexEntry{indexEntry}
 }
