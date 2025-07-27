@@ -51,10 +51,22 @@ func main() {
 		}
 
 		pkgs, err := parser.ParseDir(fset, path, func(fi os.FileInfo) bool {
-			return strings.HasSuffix(fi.Name(), ".go")
+			return strings.HasSuffix(fi.Name(), ".go") && !strings.HasSuffix(fi.Name(), "_test.go")
 		}, parser.ParseComments)
 
 		if err != nil || len(pkgs) == 0 {
+			return nil
+		}
+
+		filteredPkgs := make(map[string]*ast.Package)
+		for pkgName, pkg := range pkgs {
+			if !strings.HasSuffix(pkgName, "_test") {
+				filteredPkgs[pkgName] = pkg
+				fmt.Printf("Found package: %s at %s\n", pkgName, path)
+			}
+		}
+
+		if len(filteredPkgs) == 0 {
 			return nil
 		}
 
@@ -71,8 +83,7 @@ func main() {
 			mu.Lock()
 			indexEntries = append(indexEntries, entries...)
 			mu.Unlock()
-		}(docFileName, relPath, pkgs)
-
+		}(docFileName, relPath, filteredPkgs)
 		return nil
 	})
 
@@ -96,8 +107,8 @@ func main() {
 		fmt.Printf("Failed to get working directory: %v\n", err)
 		return
 	}
-	workingDirName := filepath.Base(wd)
 
+	workingDirName := filepath.Base(wd)
 	data := struct {
 		IndexEntries   []models.IndexEntry
 		WorkingDirName string

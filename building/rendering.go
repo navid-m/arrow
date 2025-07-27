@@ -14,6 +14,55 @@ import (
 	"github.com/navid-m/arrow/parsing"
 )
 
+// Find the immediate subpackages relative to current location (one level deep)
+func findImmediateSubpackages(srcPath, relPath string) []models.IndexEntry {
+	var subPackages []models.IndexEntry
+
+	searchPath := filepath.Join(srcPath, relPath)
+	subItems, err := os.ReadDir(searchPath)
+	if err != nil {
+		return subPackages
+	}
+
+	for _, item := range subItems {
+		if !item.IsDir() || strings.HasPrefix(item.Name(), ".") {
+			continue
+		}
+
+		if item.Name() == "vendor" || item.Name() == "testdata" {
+			continue
+		}
+
+		subPkgPath := filepath.Join(relPath, item.Name())
+		subPkgFullPath := filepath.Join(srcPath, subPkgPath)
+		goFiles, err := filepath.Glob(filepath.Join(subPkgFullPath, "*.go"))
+		if err != nil {
+			continue
+		}
+
+		var nonTestFiles []string
+		for _, file := range goFiles {
+			if !strings.HasSuffix(filepath.Base(file), "_test.go") {
+				nonTestFiles = append(nonTestFiles, file)
+			}
+		}
+
+		if len(nonTestFiles) > 0 {
+			subDocFile := strings.ReplaceAll(subPkgPath, string(filepath.Separator), "_") + "-docs.html"
+			if relPath == "." || relPath == "" {
+				subDocFile = item.Name() + "-docs.html"
+			}
+
+			subPackages = append(subPackages, models.IndexEntry{
+				PackageName: item.Name(),
+				DocFile:     subDocFile,
+			})
+		}
+	}
+
+	return subPackages
+}
+
 // Render the documentation, return a slice of index entries.
 func RenderDocs(
 	tmpl string,
@@ -33,34 +82,12 @@ func RenderDocs(
 
 	for pkgName, pkg := range pkgs {
 		pageData := models.PageData{PackageName: pkgName}
-		subItems, err := os.ReadDir(filepath.Join(srcPath, relPath))
-		if err == nil {
-			for _, item := range subItems {
-				if item.IsDir() && !strings.HasPrefix(item.Name(), ".") {
-					subPkgPath := filepath.Join(relPath, item.Name())
-					goFiles, _ := filepath.Glob(filepath.Join(srcPath, subPkgPath, "*.go"))
-					var nonTestFiles []string
-					for _, file := range goFiles {
-						if !strings.HasSuffix(filepath.Base(file), "_test.go") {
-							nonTestFiles = append(nonTestFiles, file)
-						}
-					}
-					if len(nonTestFiles) > 0 {
-						subDocFile := strings.ReplaceAll(subPkgPath, string(filepath.Separator), "_") + "-docs.html"
-						pageData.SubPackages = append(pageData.SubPackages, models.IndexEntry{
-							PackageName: item.Name(),
-							DocFile:     subDocFile,
-						})
-					}
-				}
-			}
-		}
+		pageData.SubPackages = findImmediateSubpackages(srcPath, relPath)
 
 		for fileName, file := range pkg.Files {
 			if strings.HasSuffix(fileName, "_test.go") {
 				continue
 			}
-
 			for _, decl := range file.Decls {
 				switch d := decl.(type) {
 				case *ast.FuncDecl:
@@ -205,6 +232,9 @@ func RenderDocs(
 		sort.Slice(pageData.Globals, func(i, j int) bool {
 			return pageData.Globals[i].Name < pageData.Globals[j].Name
 		})
+		sort.Slice(pageData.SubPackages, func(i, j int) bool {
+			return pageData.SubPackages[i].PackageName < pageData.SubPackages[j].PackageName
+		})
 
 		outFile := filepath.Join(docDir, docFile)
 		f, err := os.Create(outFile)
@@ -219,7 +249,7 @@ func RenderDocs(
 			fmt.Printf("Error executing template for %s: %v\n", outFile, err)
 		}
 
-		fmt.Printf("Generated %s\n", outFile)
+		fmt.Printf("Generated %s with %d subpackages\n", outFile, len(pageData.SubPackages))
 	}
 	return []models.IndexEntry{indexEntry}
 }

@@ -65,4 +65,5 @@ type PageData struct {
 type IndexEntry struct {
 	PackageName string
 	DocFile     string
+	FullPath    string
 }
