@@ -22,9 +22,11 @@ var tmpl string
 //go:embed views/index.htmx
 var indexTmpl string
 
+const ver = "v1.1.2"
+
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("Usage: arrow <path-to-go-source-directory>")
+		fmt.Println("usage: arrow <path-to-go-src-dir> | -v | --version")
 		return
 	}
 
@@ -33,6 +35,11 @@ func main() {
 		fset    = token.NewFileSet()
 		docDir  = filepath.Join(".", "docs")
 	)
+
+	if srcPath == "--version" || srcPath == "-v" {
+		fmt.Println("arrow " + ver)
+		return
+	}
 
 	if err := os.MkdirAll(docDir, 0755); err != nil {
 		fmt.Printf("Failed to create docs directory: %v\n", err)
