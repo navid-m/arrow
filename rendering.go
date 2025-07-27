@@ -10,6 +10,7 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/navid-m/arrow/building"
 	"github.com/navid-m/arrow/models"
 	"github.com/navid-m/arrow/parsing"
 )
@@ -69,12 +70,13 @@ func renderDocs(
 						continue
 					}
 
-					params := parsing.ExtractFieldList(d.Type.Params)
-					results := parsing.ExtractFieldList(d.Type.Results)
-					fullSig := buildFunctionSignature(d, params, results)
-					doc := parsing.ExtractDocumentation(d.Doc)
-
-					var receiver string
+					var (
+						params   = parsing.ExtractFieldList(d.Type.Params)
+						results  = parsing.ExtractFieldList(d.Type.Results)
+						fullSig  = building.BuildFunctionSignature(d, params, results)
+						doc      = parsing.ExtractDocumentation(d.Doc)
+						receiver string
+					)
 					if d.Recv != nil {
 						receiver = parsing.ExtractFieldList(d.Recv)
 					}
@@ -152,7 +154,7 @@ func renderDocs(
 							}
 
 							for i, name := range valueSpec.Names {
-								decl := buildVariableDeclaration(d.Tok, name.Name, typeStr, values, i)
+								decl := building.BuildVariableDeclaration(d.Tok, name.Name, typeStr, values, i)
 
 								global := models.Global{
 									Name:        name.Name,
@@ -220,56 +222,4 @@ func renderDocs(
 		fmt.Printf("Generated %s\n", outFile)
 	}
 	return []models.IndexEntry{indexEntry}
-}
-
-// Build a comprehensive function signature
-func buildFunctionSignature(d *ast.FuncDecl, params, results string) string {
-	var sig strings.Builder
-
-	sig.WriteString("func ")
-
-	if d.Recv != nil {
-		sig.WriteString("(")
-		sig.WriteString(parsing.ExtractFieldList(d.Recv))
-		sig.WriteString(") ")
-	}
-
-	sig.WriteString(d.Name.Name)
-	sig.WriteString("(")
-	sig.WriteString(params)
-	sig.WriteString(")")
-
-	if results != "" {
-		if strings.Contains(results, ",") || strings.Contains(results, " ") {
-			sig.WriteString(" (")
-			sig.WriteString(results)
-			sig.WriteString(")")
-		} else {
-			sig.WriteString(" ")
-			sig.WriteString(results)
-		}
-	}
-
-	return sig.String()
-}
-
-// Build variable/constant declaration
-func buildVariableDeclaration(tok token.Token, name, typeStr string, values []string, index int) string {
-	var decl strings.Builder
-
-	decl.WriteString(strings.ToLower(tok.String()))
-	decl.WriteString(" ")
-	decl.WriteString(name)
-
-	if typeStr != "" {
-		decl.WriteString(" ")
-		decl.WriteString(typeStr)
-	}
-
-	if len(values) > index && values[index] != "" {
-		decl.WriteString(" = ")
-		decl.WriteString(values[index])
-	}
-
-	return decl.String()
 }
