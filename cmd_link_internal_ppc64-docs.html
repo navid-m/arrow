@@ -13,772 +13,1338 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                   
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>ppc64</code>
-         </h1>
-         <hr />
+         <h1>ppc64</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="hasPCrel">
-            <h2>hasPCrel</h2>
-            <hr />
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"cmd/internal/objabi"
+"cmd/internal/sys"
+"cmd/link/internal/ld"
+"cmd/link/internal/loader"
+"cmd/link/internal/sym"
+"debug/elf"
+"encoding/binary"
+"fmt"
+"internal/buildcfg"
+"log"
+"strconv"
+"strings"
+"cmd/internal/objabi"
+"cmd/internal/sys"
+"cmd/link/internal/ld"
+"internal/buildcfg"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <p>The build configuration supports PC-relative instructions and relocations (limited to tested targets).</p>
+            <article class="global" data-name="MASK_OP_ADDIS">
+               <h3>
+                  MASK_OP_ADDIS 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const MASK_OP_ADDIS = 0xfc000000</code></pre>
+            </article>
             
-            <pre><code>hasPCrel</code></pre>
-         </article>
-         
-         <article class="global" data-name="STUB_TOC">
-            <h2>STUB_TOC</h2>
-            <hr />
+            <article class="global" data-name="MASK_OP_LD">
+               <h3>
+                  MASK_OP_LD 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const MASK_OP_LD = 0xfc000003</code></pre>
+            </article>
             
-            <p>For genstub, the type of stub required by the caller.</p>
+            <article class="global" data-name="MASK_PLD_PFX">
+               <h3>
+                  MASK_PLD_PFX 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Masks to match opcodes</p>
+               
+               <pre><code>const MASK_PLD_PFX = 0xfff70000</code></pre>
+            </article>
             
-            <pre><code>STUB_TOC</code></pre>
-         </article>
-         
-         <article class="global" data-name="STUB_PCREL">
-            <h2>STUB_PCREL</h2>
-            <hr />
+            <article class="global" data-name="MASK_PLD_RT">
+               <h3>
+                  MASK_PLD_RT 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const MASK_PLD_RT = 0x03e00000</code></pre>
+            </article>
             
-            <pre><code>STUB_PCREL</code></pre>
-         </article>
-         
-         <article class="global" data-name="stubStrs">
-            <h2>stubStrs</h2>
-            <hr />
+            <article class="global" data-name="MASK_PLD_SFX">
+               <h3>
+                  MASK_PLD_SFX 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const MASK_PLD_SFX = 0xfc1f0000</code></pre>
+            </article>
             
-            <pre><code>stubStrs</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_TOCRESTORE">
-            <h2>OP_TOCRESTORE</h2>
-            <hr />
+            <article class="global" data-name="OP_ADDI">
+               <h3>
+                  OP_ADDI 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_ADDI = 0x38000000</code></pre>
+            </article>
             
-            <pre><code>OP_TOCRESTORE</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_TOCSAVE">
-            <h2>OP_TOCSAVE</h2>
-            <hr />
+            <article class="global" data-name="OP_ADDIS">
+               <h3>
+                  OP_ADDIS 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_ADDIS = 0x3c000000</code></pre>
+            </article>
             
-            <pre><code>OP_TOCSAVE</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_NOP">
-            <h2>OP_NOP</h2>
-            <hr />
+            <article class="global" data-name="OP_ADDIS_R12_R12">
+               <h3>
+                  OP_ADDIS_R12_R12 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_ADDIS_R12_R12 = *ast.BinaryExpr</code></pre>
+            </article>
             
-            <pre><code>OP_NOP</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_BL">
-            <h2>OP_BL</h2>
-            <hr />
+            <article class="global" data-name="OP_ADDIS_R12_R2">
+               <h3>
+                  OP_ADDIS_R12_R2 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_ADDIS_R12_R2 = *ast.BinaryExpr</code></pre>
+            </article>
             
-            <pre><code>OP_BL</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_BCTR">
-            <h2>OP_BCTR</h2>
-            <hr />
+            <article class="global" data-name="OP_ADDI_R12_R12">
+               <h3>
+                  OP_ADDI_R12_R12 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_ADDI_R12_R12 = *ast.BinaryExpr</code></pre>
+            </article>
             
-            <pre><code>OP_BCTR</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_BCTRL">
-            <h2>OP_BCTRL</h2>
-            <hr />
+            <article class="global" data-name="OP_BCL">
+               <h3>
+                  OP_BCL 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_BCL = 0x40000001</code></pre>
+            </article>
             
-            <pre><code>OP_BCTRL</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_BCL">
-            <h2>OP_BCL</h2>
-            <hr />
-            
-            <pre><code>OP_BCL</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_ADDI">
-            <h2>OP_ADDI</h2>
-            <hr />
-            
-            <pre><code>OP_ADDI</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_ADDIS">
-            <h2>OP_ADDIS</h2>
-            <hr />
-            
-            <pre><code>OP_ADDIS</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_LD">
-            <h2>OP_LD</h2>
-            <hr />
-            
-            <pre><code>OP_LD</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_PLA_PFX">
-            <h2>OP_PLA_PFX</h2>
-            <hr />
-            
-            <pre><code>OP_PLA_PFX</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_PLA_SFX">
-            <h2>OP_PLA_SFX</h2>
-            <hr />
-            
-            <pre><code>OP_PLA_SFX</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_PLD_PFX_PCREL">
-            <h2>OP_PLD_PFX_PCREL</h2>
-            <hr />
-            
-            <pre><code>OP_PLD_PFX_PCREL</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_PLD_SFX">
-            <h2>OP_PLD_SFX</h2>
-            <hr />
-            
-            <pre><code>OP_PLD_SFX</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_MFLR">
-            <h2>OP_MFLR</h2>
-            <hr />
-            
-            <pre><code>OP_MFLR</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_MTLR">
-            <h2>OP_MTLR</h2>
-            <hr />
-            
-            <pre><code>OP_MTLR</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_MFCTR">
-            <h2>OP_MFCTR</h2>
-            <hr />
-            
-            <pre><code>OP_MFCTR</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_MTCTR">
-            <h2>OP_MTCTR</h2>
-            <hr />
-            
-            <pre><code>OP_MTCTR</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_ADDIS_R12_R2">
-            <h2>OP_ADDIS_R12_R2</h2>
-            <hr />
-            
-            <pre><code>OP_ADDIS_R12_R2</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_ADDIS_R12_R12">
-            <h2>OP_ADDIS_R12_R12</h2>
-            <hr />
-            
-            <pre><code>OP_ADDIS_R12_R12</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_ADDI_R12_R12">
-            <h2>OP_ADDI_R12_R12</h2>
-            <hr />
-            
-            <pre><code>OP_ADDI_R12_R12</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_PLD_SFX_R12">
-            <h2>OP_PLD_SFX_R12</h2>
-            <hr />
-            
-            <pre><code>OP_PLD_SFX_R12</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_PLA_SFX_R12">
-            <h2>OP_PLA_SFX_R12</h2>
-            <hr />
-            
-            <pre><code>OP_PLA_SFX_R12</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_LIS_R12">
-            <h2>OP_LIS_R12</h2>
-            <hr />
-            
-            <pre><code>OP_LIS_R12</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_LD_R12_R12">
-            <h2>OP_LD_R12_R12</h2>
-            <hr />
-            
-            <pre><code>OP_LD_R12_R12</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_MTCTR_R12">
-            <h2>OP_MTCTR_R12</h2>
-            <hr />
-            
-            <pre><code>OP_MTCTR_R12</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_MFLR_R12">
-            <h2>OP_MFLR_R12</h2>
-            <hr />
-            
-            <pre><code>OP_MFLR_R12</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_MFLR_R0">
-            <h2>OP_MFLR_R0</h2>
-            <hr />
-            
-            <pre><code>OP_MFLR_R0</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_MTLR_R0">
-            <h2>OP_MTLR_R0</h2>
-            <hr />
-            
-            <pre><code>OP_MTLR_R0</code></pre>
-         </article>
-         
-         <article class="global" data-name="OP_BCL_NIA">
-            <h2>OP_BCL_NIA</h2>
-            <hr />
-            
-            <p>This is a special, preferred form of bcl to obtain the next
+            <article class="global" data-name="OP_BCL_NIA">
+               <h3>
+                  OP_BCL_NIA 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>This is a special, preferred form of bcl to obtain the next
 instruction address (NIA, aka PC+4) in LR.</p>
+               
+               <pre><code>const OP_BCL_NIA = *ast.BinaryExpr</code></pre>
+            </article>
             
-            <pre><code>OP_BCL_NIA</code></pre>
-         </article>
-         
-         <article class="global" data-name="MASK_PLD_PFX">
-            <h2>MASK_PLD_PFX</h2>
-            <hr />
+            <article class="global" data-name="OP_BCTR">
+               <h3>
+                  OP_BCTR 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_BCTR = 0x4e800420</code></pre>
+            </article>
             
-            <p>Masks to match opcodes</p>
+            <article class="global" data-name="OP_BCTRL">
+               <h3>
+                  OP_BCTRL 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_BCTRL = 0x4e800421</code></pre>
+            </article>
             
-            <pre><code>MASK_PLD_PFX</code></pre>
-         </article>
-         
-         <article class="global" data-name="MASK_PLD_SFX">
-            <h2>MASK_PLD_SFX</h2>
-            <hr />
+            <article class="global" data-name="OP_BL">
+               <h3>
+                  OP_BL 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_BL = 0x48000001</code></pre>
+            </article>
             
-            <pre><code>MASK_PLD_SFX</code></pre>
-         </article>
-         
-         <article class="global" data-name="MASK_PLD_RT">
-            <h2>MASK_PLD_RT</h2>
-            <hr />
+            <article class="global" data-name="OP_LD">
+               <h3>
+                  OP_LD 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_LD = 0xe8000000</code></pre>
+            </article>
             
-            <pre><code>MASK_PLD_RT</code></pre>
-         </article>
-         
-         <article class="global" data-name="MASK_OP_LD">
-            <h2>MASK_OP_LD</h2>
-            <hr />
+            <article class="global" data-name="OP_LD_R12_R12">
+               <h3>
+                  OP_LD_R12_R12 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_LD_R12_R12 = *ast.BinaryExpr</code></pre>
+            </article>
             
-            <pre><code>MASK_OP_LD</code></pre>
-         </article>
-         
-         <article class="global" data-name="MASK_OP_ADDIS">
-            <h2>MASK_OP_ADDIS</h2>
-            <hr />
+            <article class="global" data-name="OP_LIS_R12">
+               <h3>
+                  OP_LIS_R12 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_LIS_R12 = *ast.BinaryExpr</code></pre>
+            </article>
             
-            <pre><code>MASK_OP_ADDIS</code></pre>
-         </article>
-         
-         <article class="global" data-name="maxAlign">
-            <h2>maxAlign</h2>
-            <hr />
+            <article class="global" data-name="OP_MFCTR">
+               <h3>
+                  OP_MFCTR 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_MFCTR = 0x7c0902a6</code></pre>
+            </article>
             
-            <pre><code>maxAlign</code></pre>
-         </article>
-         
-         <article class="global" data-name="minAlign">
-            <h2>minAlign</h2>
-            <hr />
+            <article class="global" data-name="OP_MFLR">
+               <h3>
+                  OP_MFLR 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_MFLR = 0x7c0802a6</code></pre>
+            </article>
             
-            <pre><code>minAlign</code></pre>
-         </article>
-         
-         <article class="global" data-name="funcAlign">
-            <h2>funcAlign</h2>
-            <hr />
+            <article class="global" data-name="OP_MFLR_R0">
+               <h3>
+                  OP_MFLR_R0 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_MFLR_R0 = *ast.BinaryExpr</code></pre>
+            </article>
             
-            <pre><code>funcAlign</code></pre>
-         </article>
-         
-         <article class="global" data-name="dwarfRegSP">
-            <h2>dwarfRegSP</h2>
-            <hr />
+            <article class="global" data-name="OP_MFLR_R12">
+               <h3>
+                  OP_MFLR_R12 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_MFLR_R12 = *ast.BinaryExpr</code></pre>
+            </article>
             
-            <p>Used by ../internal/ld/dwarf.go</p>
+            <article class="global" data-name="OP_MTCTR">
+               <h3>
+                  OP_MTCTR 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_MTCTR = 0x7c0903a6</code></pre>
+            </article>
             
-            <pre><code>dwarfRegSP</code></pre>
-         </article>
-         
-         <article class="global" data-name="dwarfRegLR">
-            <h2>dwarfRegLR</h2>
-            <hr />
+            <article class="global" data-name="OP_MTCTR_R12">
+               <h3>
+                  OP_MTCTR_R12 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_MTCTR_R12 = *ast.BinaryExpr</code></pre>
+            </article>
             
-            <p>Used by ../internal/ld/dwarf.go</p>
+            <article class="global" data-name="OP_MTLR">
+               <h3>
+                  OP_MTLR 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_MTLR = 0x7c0803a6</code></pre>
+            </article>
             
-            <pre><code>dwarfRegLR</code></pre>
-         </article>
-           
-         <article class="function" data-name="genstub">
-            <h2>genstub</h2>
-            <hr />
+            <article class="global" data-name="OP_MTLR_R0">
+               <h3>
+                  OP_MTLR_R0 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_MTLR_R0 = *ast.BinaryExpr</code></pre>
+            </article>
             
-            <p>Generate a stub to call between TOC and NOTOC functions. See genpltstub for more details about calling stubs.
+            <article class="global" data-name="OP_NOP">
+               <h3>
+                  OP_NOP 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_NOP = 0x60000000</code></pre>
+            </article>
+            
+            <article class="global" data-name="OP_PLA_PFX">
+               <h3>
+                  OP_PLA_PFX 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_PLA_PFX = 0x06100000</code></pre>
+            </article>
+            
+            <article class="global" data-name="OP_PLA_SFX">
+               <h3>
+                  OP_PLA_SFX 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_PLA_SFX = 0x38000000</code></pre>
+            </article>
+            
+            <article class="global" data-name="OP_PLA_SFX_R12">
+               <h3>
+                  OP_PLA_SFX_R12 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_PLA_SFX_R12 = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="OP_PLD_PFX_PCREL">
+               <h3>
+                  OP_PLD_PFX_PCREL 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_PLD_PFX_PCREL = 0x04100000</code></pre>
+            </article>
+            
+            <article class="global" data-name="OP_PLD_SFX">
+               <h3>
+                  OP_PLD_SFX 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_PLD_SFX = 0xe4000000</code></pre>
+            </article>
+            
+            <article class="global" data-name="OP_PLD_SFX_R12">
+               <h3>
+                  OP_PLD_SFX_R12 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_PLD_SFX_R12 = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="OP_TOCRESTORE">
+               <h3>
+                  OP_TOCRESTORE 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_TOCRESTORE = 0xe8410018</code></pre>
+            </article>
+            
+            <article class="global" data-name="OP_TOCSAVE">
+               <h3>
+                  OP_TOCSAVE 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const OP_TOCSAVE = 0xf8410018</code></pre>
+            </article>
+            
+            <article class="global" data-name="STUB_PCREL">
+               <h3>
+                  STUB_PCREL 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const STUB_PCREL</code></pre>
+            </article>
+            
+            <article class="global" data-name="STUB_TOC">
+               <h3>
+                  STUB_TOC 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>For genstub, the type of stub required by the caller.</p>
+               
+               <pre><code>const STUB_TOC = iota</code></pre>
+            </article>
+            
+            <article class="global" data-name="dwarfRegLR">
+               <h3>
+                  dwarfRegLR 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Used by ../internal/ld/dwarf.go</p>
+               
+               <pre><code>const dwarfRegLR = 65</code></pre>
+            </article>
+            
+            <article class="global" data-name="dwarfRegSP">
+               <h3>
+                  dwarfRegSP 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Used by ../internal/ld/dwarf.go</p>
+               
+               <pre><code>const dwarfRegSP = 1</code></pre>
+            </article>
+            
+            <article class="global" data-name="funcAlign">
+               <h3>
+                  funcAlign 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const funcAlign = 16</code></pre>
+            </article>
+            
+            <article class="global" data-name="hasPCrel">
+               <h3>
+                  hasPCrel 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>The build configuration supports PC-relative instructions and relocations (limited to tested targets).</p>
+               
+               <pre><code>var hasPCrel = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="maxAlign">
+               <h3>
+                  maxAlign 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const maxAlign = 32</code></pre>
+            </article>
+            
+            <article class="global" data-name="minAlign">
+               <h3>
+                  minAlign 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const minAlign = 1</code></pre>
+            </article>
+            
+            <article class="global" data-name="stubStrs">
+               <h3>
+                  stubStrs 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var stubStrs = []string{...}</code></pre>
+            </article>
+            
+         </section>
+             
+         <section id="functions">
+            <h2>Functions</h2>
+            
+            <article class="function" data-name="Init">
+               <h3>
+                  Init 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func Init() (*sys.Arch, ld.Arch)</code></pre>
+            </article>
+            
+            <article class="function" data-name="adddynrel">
+               <h3>
+                  adddynrel 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func adddynrel(target *ld.Target, ldr *loader.Loader, syms *ld.ArchSyms, s loader.Sym, r loader.Reloc, rIdx int) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="addelfdynrel">
+               <h3>
+                  addelfdynrel 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func addelfdynrel(target *ld.Target, ldr *loader.Loader, syms *ld.ArchSyms, s loader.Sym, r loader.Reloc, rIdx int) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="addpltsym">
+               <h3>
+                  addpltsym 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func addpltsym(ctxt *ld.Link, ldr *loader.Loader, s loader.Sym)</code></pre>
+            </article>
+            
+            <article class="function" data-name="archinit">
+               <h3>
+                  archinit 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func archinit(ctxt *ld.Link)</code></pre>
+            </article>
+            
+            <article class="function" data-name="archreloc">
+               <h3>
+                  archreloc 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func archreloc(target *ld.Target, ldr *loader.Loader, syms *ld.ArchSyms, r loader.Reloc, s loader.Sym, val int64) (relocatedOffset int64, nExtReloc int, ok bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="archrelocaddr">
+               <h3>
+                  archrelocaddr 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>archrelocaddr relocates a symbol address.
+This code is for linux only.</p>
+               
+               <pre><code>func archrelocaddr(ldr *loader.Loader, target *ld.Target, syms *ld.ArchSyms, r loader.Reloc, s loader.Sym, val int64) int64</code></pre>
+            </article>
+            
+            <article class="function" data-name="archreloctoc">
+               <h3>
+                  archreloctoc 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>archreloctoc relocates a TOC relative symbol.</p>
+               
+               <pre><code>func archreloctoc(ldr *loader.Loader, target *ld.Target, syms *ld.ArchSyms, r loader.Reloc, s loader.Sym, val int64) int64</code></pre>
+            </article>
+            
+            <article class="function" data-name="archrelocvariant">
+               <h3>
+                  archrelocvariant 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func archrelocvariant(target *ld.Target, ldr *loader.Loader, r loader.Reloc, rv sym.RelocVariant, s loader.Sym, t int64, p []byte) (relocatedOffset int64)</code></pre>
+            </article>
+            
+            <article class="function" data-name="computeHA">
+               <h3>
+                  computeHA 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Compute the high-adjusted value (always a signed 32b value) per the ELF ABI.
+The returned value is always 0 <= x <= 0xFFFF.</p>
+               
+               <pre><code>func computeHA(val int32) uint32</code></pre>
+            </article>
+            
+            <article class="function" data-name="computeLO">
+               <h3>
+                  computeLO 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Compute the low value (the lower 16 bits of any 32b value) per the ELF ABI.
+The returned value is always 0 <= x <= 0xFFFF.</p>
+               
+               <pre><code>func computeLO(val int32) uint32</code></pre>
+            </article>
+            
+            <article class="function" data-name="computePrefix34HI">
+               <h3>
+                  computePrefix34HI 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Compute the high 18 bits of a signed 34b constant. Used to pack the high 18 bits
+of a prefix34 relocation field. This assumes the input is already restricted to
+34 bits.</p>
+               
+               <pre><code>func computePrefix34HI(val int64) uint32</code></pre>
+            </article>
+            
+            <article class="function" data-name="computeTLSLEReloc">
+               <h3>
+                  computeTLSLEReloc 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func computeTLSLEReloc(target *ld.Target, ldr *loader.Loader, rs loader.Sym, s loader.Sym) int64</code></pre>
+            </article>
+            
+            <article class="function" data-name="elfreloc1">
+               <h3>
+                  elfreloc1 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func elfreloc1(ctxt *ld.Link, out *ld.OutBuf, ldr *loader.Loader, s loader.Sym, r loader.ExtReloc, ri int, sectoff int64) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="elfsetupplt">
+               <h3>
+                  elfsetupplt 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func elfsetupplt(ctxt *ld.Link, ldr *loader.Loader, plt *loader.SymbolBuilder, got *loader.SymbolBuilder, dynamic loader.Sym)</code></pre>
+            </article>
+            
+            <article class="function" data-name="ensureglinkresolver">
+               <h3>
+                  ensureglinkresolver 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Generate the glink resolver stub if necessary and return the .glink section.</p>
+               
+               <pre><code>func ensureglinkresolver(ctxt *ld.Link, ldr *loader.Loader) *loader.SymbolBuilder</code></pre>
+            </article>
+            
+            <article class="function" data-name="extreloc">
+               <h3>
+                  extreloc 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func extreloc(target *ld.Target, ldr *loader.Loader, r loader.Reloc, s loader.Sym) (loader.ExtReloc, bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="genaddmoduledata">
+               <h3>
+                  genaddmoduledata 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func genaddmoduledata(ctxt *ld.Link, ldr *loader.Loader)</code></pre>
+            </article>
+            
+            <article class="function" data-name="gencallstub">
+               <h3>
+                  gencallstub 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Create a calling stub. The stubType maps directly to the properties listed in the ELFv2 1.5
+section 4.2.5.3.
+There are 3 cases today (as paraphrased from the ELFv2 document):
+1. R2 holds the TOC pointer on entry. The call stub must save R2 into the ELFv2 TOC stack save slot.
+2. R2 holds the TOC pointer on entry. The caller has already saved R2 to the TOC stack save slot.
+3. R2 does not hold the TOC pointer on entry. The caller has no expectations of R2.
+Go only needs case 1 and 3 today. Go symbols which have AttrShare set could use case 2, but case 1 always
+works in those cases too.</p>
+               
+               <pre><code>func gencallstub(ctxt *ld.Link, ldr *loader.Loader, stubType int, stub *loader.SymbolBuilder, targ loader.Sym)</code></pre>
+            </article>
+            
+            <article class="function" data-name="genpltstub">
+               <h3>
+                  genpltstub 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func genpltstub(ctxt *ld.Link, ldr *loader.Loader, r loader.Reloc, ri int, s loader.Sym) (sym loader.Sym, firstUse bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="genstub">
+               <h3>
+                  genstub 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Generate a stub to call between TOC and NOTOC functions. See genpltstub for more details about calling stubs.
 This is almost identical to genpltstub, except the location of the target symbol is known at link time.</p>
+               
+               <pre><code>func genstub(ctxt *ld.Link, ldr *loader.Loader, r loader.Reloc, ri int, s loader.Sym, stubType int) (ssym loader.Sym, firstUse bool)</code></pre>
+            </article>
             
-            <pre><code>func genstub(ctxt *ld.Link, ldr *loader.Loader, r loader.Reloc, ri int, s loader.Sym, stubType int) (ssym loader.Sym, firstUse bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="genpltstub">
-            <h2>genpltstub</h2>
-            <hr />
+            <article class="function" data-name="genstubs">
+               <h3>
+                  genstubs 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Scan relocs and generate PLT stubs and generate/fixup ABI defined functions created by the linker.</p>
+               
+               <pre><code>func genstubs(ctxt *ld.Link, ldr *loader.Loader)</code></pre>
+            </article>
             
-            <pre><code>func genpltstub(ctxt *ld.Link, ldr *loader.Loader, r loader.Reloc, ri int, s loader.Sym) (sym loader.Sym, firstUse bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="genstubs">
-            <h2>genstubs</h2>
-            <hr />
+            <article class="function" data-name="gentext">
+               <h3>
+                  gentext 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func gentext(ctxt *ld.Link, ldr *loader.Loader)</code></pre>
+            </article>
             
-            <p>Scan relocs and generate PLT stubs and generate/fixup ABI defined functions created by the linker.</p>
+            <article class="function" data-name="gentramp">
+               <h3>
+                  gentramp 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func gentramp(ctxt *ld.Link, ldr *loader.Loader, tramp *loader.SymbolBuilder, target loader.Sym, offset int64)</code></pre>
+            </article>
             
-            <pre><code>func genstubs(ctxt *ld.Link, ldr *loader.Loader)</code></pre>
-         </article>
-         
-         <article class="function" data-name="genaddmoduledata">
-            <h2>genaddmoduledata</h2>
-            <hr />
+            <article class="function" data-name="isLinkingPIC">
+               <h3>
+                  isLinkingPIC 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Determine if this is linking a position-independent binary.</p>
+               
+               <pre><code>func isLinkingPIC(ctxt *ld.Link) bool</code></pre>
+            </article>
             
-            <pre><code>func genaddmoduledata(ctxt *ld.Link, ldr *loader.Loader)</code></pre>
-         </article>
-         
-         <article class="function" data-name="rewriteABIFuncReloc">
-            <h2>rewriteABIFuncReloc</h2>
-            <hr />
+            <article class="function" data-name="machoreloc1">
+               <h3>
+                  machoreloc1 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func machoreloc1(*sys.Arch, *ld.OutBuf, *loader.Loader, loader.Sym, loader.ExtReloc, int64) bool</code></pre>
+            </article>
             
-            <p>Rewrite ELF (v1 or v2) calls to _savegpr0_n, _savegpr1_n, _savefpr_n, _restfpr_n, _savevr_m, or
+            <article class="function" data-name="packInstPair">
+               <h3>
+                  packInstPair 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Pack a pair of 32 bit instruction words o1, o2 into 64 bit relocation
+in endian order.</p>
+               
+               <pre><code>func packInstPair(target *ld.Target, o1 uint32, o2 uint32) int64</code></pre>
+            </article>
+            
+            <article class="function" data-name="r2Valid">
+               <h3>
+                  r2Valid 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Determine if the code was compiled so that the TOC register R2 is initialized and maintained.</p>
+               
+               <pre><code>func r2Valid(ctxt *ld.Link) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="rewriteABIFuncReloc">
+               <h3>
+                  rewriteABIFuncReloc 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Rewrite ELF (v1 or v2) calls to _savegpr0_n, _savegpr1_n, _savefpr_n, _restfpr_n, _savevr_m, or
 _restvr_m (14<=n<=31, 20<=m<=31). Redirect them to runtime.elf_restgpr0+(n-14)*4,
 runtime.elf_restvr+(m-20)*8, and similar.
-
 These functions are defined in the ELFv2 ABI (generated when using gcc -Os option) to save and
 restore callee-saved registers (as defined in the PPC64 ELF ABIs) from registers n or m to 31 of
 the named type. R12 and R0 are sometimes used in exceptional ways described in the ABI.
-
 Final note, this is only needed when linking internally. The external linker will generate these
 functions if they are used.</p>
+               
+               <pre><code>func rewriteABIFuncReloc(ctxt *ld.Link, ldr *loader.Loader, tname string, r loader.Reloc) (sym loader.Sym, firstUse bool)</code></pre>
+            </article>
             
-            <pre><code>func rewriteABIFuncReloc(ctxt *ld.Link, ldr *loader.Loader, tname string, r loader.Reloc) (sym loader.Sym, firstUse bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="gentext">
-            <h2>gentext</h2>
-            <hr />
-            
-            <pre><code>func gentext(ctxt *ld.Link, ldr *loader.Loader)</code></pre>
-         </article>
-         
-         <article class="function" data-name="gencallstub">
-            <h2>gencallstub</h2>
-            <hr />
-            
-            <p>Create a calling stub. The stubType maps directly to the properties listed in the ELFv2 1.5
-section 4.2.5.3.
-
-There are 3 cases today (as paraphrased from the ELFv2 document):
-
- 1. R2 holds the TOC pointer on entry. The call stub must save R2 into the ELFv2 TOC stack save slot.
-
- 2. R2 holds the TOC pointer on entry. The caller has already saved R2 to the TOC stack save slot.
-
- 3. R2 does not hold the TOC pointer on entry. The caller has no expectations of R2.
-
-Go only needs case 1 and 3 today. Go symbols which have AttrShare set could use case 2, but case 1 always
-works in those cases too.</p>
-            
-            <pre><code>func gencallstub(ctxt *ld.Link, ldr *loader.Loader, stubType int, stub *loader.SymbolBuilder, targ loader.Sym)</code></pre>
-         </article>
-         
-         <article class="function" data-name="rewritetoinsn">
-            <h2>rewritetoinsn</h2>
-            <hr />
-            
-            <p>Rewrite the instruction at offset into newinsn. Also, verify the
+            <article class="function" data-name="rewritetoinsn">
+               <h3>
+                  rewritetoinsn 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Rewrite the instruction at offset into newinsn. Also, verify the
 existing instruction under mask matches the check value.</p>
+               
+               <pre><code>func rewritetoinsn(target *ld.Target, ldr *loader.Loader, su *loader.SymbolBuilder, offset int64, mask uint32, check uint32, newinsn uint32)</code></pre>
+            </article>
             
-            <pre><code>func rewritetoinsn(target *ld.Target, ldr *loader.Loader, su *loader.SymbolBuilder, offset int64, mask uint32, check uint32, newinsn uint32)</code></pre>
-         </article>
-         
-         <article class="function" data-name="rewritetonop">
-            <h2>rewritetonop</h2>
-            <hr />
-            
-            <p>Rewrite the instruction at offset into a hardware nop instruction. Also, verify the
+            <article class="function" data-name="rewritetonop">
+               <h3>
+                  rewritetonop 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Rewrite the instruction at offset into a hardware nop instruction. Also, verify the
 existing instruction under mask matches the check value.</p>
+               
+               <pre><code>func rewritetonop(target *ld.Target, ldr *loader.Loader, su *loader.SymbolBuilder, offset int64, mask uint32, check uint32)</code></pre>
+            </article>
             
-            <pre><code>func rewritetonop(target *ld.Target, ldr *loader.Loader, su *loader.SymbolBuilder, offset int64, mask uint32, check uint32)</code></pre>
-         </article>
-         
-         <article class="function" data-name="adddynrel">
-            <h2>adddynrel</h2>
-            <hr />
+            <article class="function" data-name="symtoc">
+               <h3>
+                  symtoc 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Return the value of .TOC. for symbol s</p>
+               
+               <pre><code>func symtoc(ldr *loader.Loader, syms *ld.ArchSyms, s loader.Sym) int64</code></pre>
+            </article>
             
-            <pre><code>func adddynrel(target *ld.Target, ldr *loader.Loader, syms *ld.ArchSyms, s loader.Sym, r loader.Reloc, rIdx int) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="addelfdynrel">
-            <h2>addelfdynrel</h2>
-            <hr />
+            <article class="function" data-name="trampoline">
+               <h3>
+                  trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>resolve direct jump relocation r in s, and add trampoline if necessary.</p>
+               
+               <pre><code>func trampoline(ctxt *ld.Link, ldr *loader.Loader, ri int, rs loader.Sym, s loader.Sym)</code></pre>
+            </article>
             
-            <pre><code>func addelfdynrel(target *ld.Target, ldr *loader.Loader, syms *ld.ArchSyms, s loader.Sym, r loader.Reloc, rIdx int) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="xcoffreloc1">
-            <h2>xcoffreloc1</h2>
-            <hr />
-            
-            <pre><code>func xcoffreloc1(arch *sys.Arch, out *ld.OutBuf, ldr *loader.Loader, s loader.Sym, r loader.ExtReloc, sectoff int64) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="elfreloc1">
-            <h2>elfreloc1</h2>
-            <hr />
-            
-            <pre><code>func elfreloc1(ctxt *ld.Link, out *ld.OutBuf, ldr *loader.Loader, s loader.Sym, r loader.ExtReloc, ri int, sectoff int64) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="elfsetupplt">
-            <h2>elfsetupplt</h2>
-            <hr />
-            
-            <pre><code>func elfsetupplt(ctxt *ld.Link, ldr *loader.Loader, plt *loader.SymbolBuilder, got *loader.SymbolBuilder, dynamic loader.Sym)</code></pre>
-         </article>
-         
-         <article class="function" data-name="machoreloc1">
-            <h2>machoreloc1</h2>
-            <hr />
-            
-            <pre><code>func machoreloc1(*sys.Arch, *ld.OutBuf, *loader.Loader, loader.Sym, loader.ExtReloc, int64) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="symtoc">
-            <h2>symtoc</h2>
-            <hr />
-            
-            <p>Return the value of .TOC. for symbol s</p>
-            
-            <pre><code>func symtoc(ldr *loader.Loader, syms *ld.ArchSyms, s loader.Sym) int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="archreloctoc">
-            <h2>archreloctoc</h2>
-            <hr />
-            
-            <p>archreloctoc relocates a TOC relative symbol.</p>
-            
-            <pre><code>func archreloctoc(ldr *loader.Loader, target *ld.Target, syms *ld.ArchSyms, r loader.Reloc, s loader.Sym, val int64) int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="archrelocaddr">
-            <h2>archrelocaddr</h2>
-            <hr />
-            
-            <p>archrelocaddr relocates a symbol address.
-This code is for linux only.</p>
-            
-            <pre><code>func archrelocaddr(ldr *loader.Loader, target *ld.Target, syms *ld.ArchSyms, r loader.Reloc, s loader.Sym, val int64) int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="r2Valid">
-            <h2>r2Valid</h2>
-            <hr />
-            
-            <p>Determine if the code was compiled so that the TOC register R2 is initialized and maintained.</p>
-            
-            <pre><code>func r2Valid(ctxt *ld.Link) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="isLinkingPIC">
-            <h2>isLinkingPIC</h2>
-            <hr />
-            
-            <p>Determine if this is linking a position-independent binary.</p>
-            
-            <pre><code>func isLinkingPIC(ctxt *ld.Link) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="trampoline">
-            <h2>trampoline</h2>
-            <hr />
-            
-            <p>resolve direct jump relocation r in s, and add trampoline if necessary.</p>
-            
-            <pre><code>func trampoline(ctxt *ld.Link, ldr *loader.Loader, ri int, rs loader.Sym, s loader.Sym)</code></pre>
-         </article>
-         
-         <article class="function" data-name="gentramp">
-            <h2>gentramp</h2>
-            <hr />
-            
-            <pre><code>func gentramp(ctxt *ld.Link, ldr *loader.Loader, tramp *loader.SymbolBuilder, target loader.Sym, offset int64)</code></pre>
-         </article>
-         
-         <article class="function" data-name="unpackInstPair">
-            <h2>unpackInstPair</h2>
-            <hr />
-            
-            <p>Unpack a pair of 32 bit instruction words from
+            <article class="function" data-name="unpackInstPair">
+               <h3>
+                  unpackInstPair 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Unpack a pair of 32 bit instruction words from
 a 64 bit relocation into instN and instN+1 in endian order.</p>
+               
+               <pre><code>func unpackInstPair(target *ld.Target, r int64) (uint32, uint32)</code></pre>
+            </article>
             
-            <pre><code>func unpackInstPair(target *ld.Target, r int64) (uint32, uint32)</code></pre>
-         </article>
-         
-         <article class="function" data-name="packInstPair">
-            <h2>packInstPair</h2>
-            <hr />
+            <article class="function" data-name="xcoffreloc1">
+               <h3>
+                  xcoffreloc1 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func xcoffreloc1(arch *sys.Arch, out *ld.OutBuf, ldr *loader.Loader, s loader.Sym, r loader.ExtReloc, sectoff int64) bool</code></pre>
+            </article>
             
-            <p>Pack a pair of 32 bit instruction words o1, o2 into 64 bit relocation
-in endian order.</p>
-            
-            <pre><code>func packInstPair(target *ld.Target, o1 uint32, o2 uint32) int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="computeHA">
-            <h2>computeHA</h2>
-            <hr />
-            
-            <p>Compute the high-adjusted value (always a signed 32b value) per the ELF ABI.
-The returned value is always 0 <= x <= 0xFFFF.</p>
-            
-            <pre><code>func computeHA(val int32) uint32</code></pre>
-         </article>
-         
-         <article class="function" data-name="computeLO">
-            <h2>computeLO</h2>
-            <hr />
-            
-            <p>Compute the low value (the lower 16 bits of any 32b value) per the ELF ABI.
-The returned value is always 0 <= x <= 0xFFFF.</p>
-            
-            <pre><code>func computeLO(val int32) uint32</code></pre>
-         </article>
-         
-         <article class="function" data-name="computePrefix34HI">
-            <h2>computePrefix34HI</h2>
-            <hr />
-            
-            <p>Compute the high 18 bits of a signed 34b constant. Used to pack the high 18 bits
-of a prefix34 relocation field. This assumes the input is already restricted to
-34 bits.</p>
-            
-            <pre><code>func computePrefix34HI(val int64) uint32</code></pre>
-         </article>
-         
-         <article class="function" data-name="computeTLSLEReloc">
-            <h2>computeTLSLEReloc</h2>
-            <hr />
-            
-            <pre><code>func computeTLSLEReloc(target *ld.Target, ldr *loader.Loader, rs loader.Sym, s loader.Sym) int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="archreloc">
-            <h2>archreloc</h2>
-            <hr />
-            
-            <pre><code>func archreloc(target *ld.Target, ldr *loader.Loader, syms *ld.ArchSyms, r loader.Reloc, s loader.Sym, val int64) (relocatedOffset int64, nExtReloc int, ok bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="archrelocvariant">
-            <h2>archrelocvariant</h2>
-            <hr />
-            
-            <pre><code>func archrelocvariant(target *ld.Target, ldr *loader.Loader, r loader.Reloc, rv sym.RelocVariant, s loader.Sym, t int64, p []byte) relocatedOffset int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="extreloc">
-            <h2>extreloc</h2>
-            <hr />
-            
-            <pre><code>func extreloc(target *ld.Target, ldr *loader.Loader, r loader.Reloc, s loader.Sym) (loader.ExtReloc, bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="addpltsym">
-            <h2>addpltsym</h2>
-            <hr />
-            
-            <pre><code>func addpltsym(ctxt *ld.Link, ldr *loader.Loader, s loader.Sym)</code></pre>
-         </article>
-         
-         <article class="function" data-name="ensureglinkresolver">
-            <h2>ensureglinkresolver</h2>
-            <hr />
-            
-            <p>Generate the glink resolver stub if necessary and return the .glink section.</p>
-            
-            <pre><code>func ensureglinkresolver(ctxt *ld.Link, ldr *loader.Loader) *loader.SymbolBuilder</code></pre>
-         </article>
-         
-         <article class="function" data-name="Init">
-            <h2>Init</h2>
-            <hr />
-            
-            <pre><code>func Init() (*sys.Arch, ld.Arch)</code></pre>
-         </article>
-         
-         <article class="function" data-name="archinit">
-            <h2>archinit</h2>
-            <hr />
-            
-            <pre><code>func archinit(ctxt *ld.Link)</code></pre>
-         </article>
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -786,59 +1352,170 @@ of a prefix34 relocation field. This assumes the input is already restricted to
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

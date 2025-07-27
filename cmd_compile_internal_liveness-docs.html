@@ -13,206 +13,647 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                 
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>liveness</code>
-         </h1>
-         <hr />
+         <h1>liveness</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="seedflag">
-            <h2>seedflag</h2>
-            <hr />
-            
-            <pre><code>seedflag</code></pre>
-         </article>
-         
-         <article class="global" data-name="trialsflag">
-            <h2>trialsflag</h2>
-            <hr />
-            
-            <pre><code>trialsflag</code></pre>
-         </article>
-         
-         <article class="global" data-name="segsflag">
-            <h2>segsflag</h2>
-            <hr />
-            
-            <pre><code>segsflag</code></pre>
-         </article>
-         
-         <article class="global" data-name="limitflag">
-            <h2>limitflag</h2>
-            <hr />
-            
-            <pre><code>limitflag</code></pre>
-         </article>
-         
-         <article class="global" data-name="uevar">
-            <h2>uevar</h2>
-            <hr />
-            
-            <pre><code>uevar liveEffect</code></pre>
-         </article>
-         
-         <article class="global" data-name="varkill">
-            <h2>varkill</h2>
-            <hr />
-            
-            <pre><code>varkill</code></pre>
-         </article>
-         
-         <article class="global" data-name="allLiveIdx">
-            <h2>allLiveIdx</h2>
-            <hr />
-            
-            <pre><code>allLiveIdx</code></pre>
-         </article>
-         
-         <article class="global" data-name="h0">
-            <h2>h0</h2>
-            <hr />
-            
-            <p>FNV-1 hash function constants.</p>
-            
-            <pre><code>h0</code></pre>
-         </article>
-         
-         <article class="global" data-name="hp">
-            <h2>hp</h2>
-            <hr />
-            
-            <p>FNV-1 hash function constants.</p>
-            
-            <pre><code>hp</code></pre>
-         </article>
-         
-         <article class="global" data-name="debugtrace">
-            <h2>debugtrace</h2>
-            <hr />
-            
-            <pre><code>debugtrace</code></pre>
-         </article>
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"fmt"
+"internal/abi"
+"cmd/compile/internal/base"
+"cmd/compile/internal/bitvec"
+"cmd/compile/internal/ir"
+"cmd/compile/internal/objw"
+"cmd/compile/internal/ssa"
+"cmd/internal/obj"
+"cmd/compile/internal/bitvec"
+"fmt"
+"os"
+"slices"
+"strings"
+"cmd/compile/internal/base"
+"cmd/compile/internal/bitvec"
+"cmd/compile/internal/ir"
+"cmd/compile/internal/ssa"
+"cmd/internal/src"
+"fmt"
+"os"
+"path/filepath"
+"slices"
+"sort"
+"strings"
+"cmp"
+"fmt"
+"os"
+"slices"
+"sort"
+"strings"
+"cmd/compile/internal/abi"
+"cmd/compile/internal/base"
+"cmd/compile/internal/bitvec"
+"cmd/compile/internal/ir"
+"cmd/compile/internal/objw"
+"cmd/compile/internal/reflectdata"
+"cmd/compile/internal/ssa"
+"cmd/compile/internal/typebits"
+"cmd/compile/internal/types"
+"cmd/internal/hash"
+"cmd/internal/obj"
+"cmd/internal/src"
+rtabi "internal/abi"
+</code></pre>
+            </article>
+         </section>
           
-         <article class="struct" data-name="MergeLocalsState">
-            <h2>type MergeLocalsState struct</h2>
-            <hr />
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <p>MergeLocalsState encapsulates information about which AUTO
+            <article class="global" data-name="allLiveIdx">
+               <h3>
+                  allLiveIdx 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const allLiveIdx = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="debugtrace">
+               <h3>
+                  debugtrace 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const debugtrace = false</code></pre>
+            </article>
+            
+            <article class="global" data-name="h0">
+               <h3>
+                  h0 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>FNV-1 hash function constants.</p>
+               
+               <pre><code>const h0 = 2166136261</code></pre>
+            </article>
+            
+            <article class="global" data-name="hp">
+               <h3>
+                  hp 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>FNV-1 hash function constants.</p>
+               
+               <pre><code>const hp = 16777619</code></pre>
+            </article>
+            
+            <article class="global" data-name="uevar">
+               <h3>
+                  uevar 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const uevar liveEffect = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="varkill">
+               <h3>
+                  varkill 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const varkill</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="types">
+            <h2>Type Aliases</h2>
+            
+            <article class="type" data-name="Intervals">
+               <h3>
+                  Intervals
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>Intervals is a sequence of sorted, disjoint intervals.</p>
+               
+               <pre><code>type Intervals []Interval</code></pre>
+            </article>
+            
+            <article class="type" data-name="liveEffect">
+               <h3>
+                  liveEffect
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>A liveEffect is a set of flags that describe an instruction's
+liveness effects on a variable.
+The possible flags are:
+uevar - used by the instruction
+varkill - killed by the instruction (set)
+A kill happens after the use (for an instruction that updates a value, for example).</p>
+               
+               <pre><code>type liveEffect int</code></pre>
+            </article>
+            
+         </section>
+           
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="Interval">
+               <h3>
+                  Interval
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Interval hols the range [st,en).</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Interval struct {
+st int
+en int
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="IntervalsBuilder">
+               <h3>
+                  IntervalsBuilder
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>IntervalsBuilder is a helper for constructing intervals based on
+live dataflow sets for a series of BBs where we're making a
+backwards pass over each BB looking for uses and kills. The
+expected use case is:
+- invoke MakeIntervalsBuilder to create a new object "b"
+- series of calls to b.Live/b.Kill based on a backwards reverse layout
+order scan over instructions
+- invoke b.Finish() to produce final set
+See the Live method comment for an IR example.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type IntervalsBuilder struct {
+s Intervals
+lidx int
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="Map">
+               <h3>
+                  Map
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Map maps from *ssa.Value to StackMapIndex.
+Also keeps track of unsafe ssa.Values and ssa.Blocks.
+(unsafe = can't be interrupted during GC.)</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Map struct {
+Vals map[ssa.ID]objw.StackMapIndex
+UnsafeVals map[ssa.ID]bool
+UnsafeBlocks map[ssa.ID]bool
+DeferReturn objw.StackMapIndex
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="MergeLocalsState">
+               <h3>
+                  MergeLocalsState
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>MergeLocalsState encapsulates information about which AUTO
 (stack-allocated) variables within a function can be safely
 merged/overlapped, e.g. share a stack slot with some other auto).
 An instance of MergeLocalsState is produced by MergeLocals() below
@@ -224,91 +665,166 @@ element in the partition, which we'll call the "leader". For
 example, if a function contains five variables where v1/v2/v3 are
 safe to overlap and v4/v5 are safe to overlap, the MergeLocalsState
 content might look like
-
-	vars: [v1, v2, v3, v4, v5]
-	partition: v1 -> [1, 0, 2], v2 -> [1, 0, 2], v3 -> [1, 0, 2]
-	           v4 -> [3, 4], v5 -> [3, 4]
-
+vars: [v1, v2, v3, v4, v5]
+partition: v1 -> [1, 0, 2], v2 -> [1, 0, 2], v3 -> [1, 0, 2]
+v4 -> [3, 4], v5 -> [3, 4]
 A nil MergeLocalsState indicates that no local variables meet the
 necessary criteria for overlap.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type MergeLocalsState struct {
+vars []*ir.Name
+partition map[*ir.Name][]int
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">vars []*ir.Name
-partition *ast.MapType</code></pre>
-         </article>
-         
-         <article class="struct" data-name="candRegion">
-            <h2>type candRegion struct</h2>
-            <hr />
+            <article class="struct" data-name="argLiveness">
+               <h3>
+                  argLiveness
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type argLiveness struct {
+fn *ir.Func
+f *ssa.Func
+args []nameOff
+idx map[nameOff]int32
+be []blockArgEffects
+bvset bvecSet
+blockIdx map[ssa.ID]int
+valueIdx map[ssa.ID]int
+}</code></pre>
+            </article>
             
-            <p>candRegion is a sub-range (start, end) corresponding to an interval
+            <article class="struct" data-name="blockArgEffects">
+               <h3>
+                  blockArgEffects
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type blockArgEffects struct {
+livein bitvec.BitVec
+liveout bitvec.BitVec
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="blockEffects">
+               <h3>
+                  blockEffects
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>blockEffects summarizes the liveness effects on an SSA block.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type blockEffects struct {
+uevar bitvec.BitVec
+varkill bitvec.BitVec
+livein bitvec.BitVec
+liveout bitvec.BitVec
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="bvecSet">
+               <h3>
+                  bvecSet
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>bvecSet is a set of bvecs, in initial insertion order.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type bvecSet struct {
+index []int
+uniq []bitvec.BitVec
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="candRegion">
+               <h3>
+                  candRegion
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>candRegion is a sub-range (start, end) corresponding to an interval
 [st,en] within the list of candidate variables.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type candRegion struct {
+st int
+en int
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">st int
-en int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="cstate">
-            <h2>type cstate struct</h2>
-            <hr />
-            
-            <p>cstate holds state information we'll need during the analysis
+            <article class="struct" data-name="cstate">
+               <h3>
+                  cstate
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>cstate holds state information we'll need during the analysis
 phase of stack slot merging but can be discarded when the analysis
 is done.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">fn *ir.Func
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type cstate struct {
+fn *ir.Func
 f *ssa.Func
 lv *liveness
 cands []*ir.Name
-nameToSlot *ast.MapType
+nameToSlot map[*ir.Name]int32
 regions []candRegion
-indirectUE *ast.MapType
+indirectUE map[ssa.ID][]*ir.Name
 ivs []Intervals
-hashDeselected *ast.MapType
-trace int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="nameCount">
-            <h2>type nameCount struct</h2>
-            <hr />
+hashDeselected map[*ir.Name]bool
+trace int
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">n *ir.Name
-count int32</code></pre>
-         </article>
-         
-         <article class="struct" data-name="blockEffects">
-            <h2>type blockEffects struct</h2>
-            <hr />
+            <article class="struct" data-name="intWithIdx">
+               <h3>
+                  intWithIdx
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>intWithIdx holds an interval i and an index pairIndex storing i's
+position (either 0 or 1) within some previously specified interval
+pair <I1,I2>; a pairIndex of -1 is used to signal "end of
+iteration". Used for Intervals operations, not expected to be
+exported.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type intWithIdx struct {
+i Interval
+pairIndex int
+}</code></pre>
+            </article>
             
-            <p>blockEffects summarizes the liveness effects on an SSA block.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">uevar bitvec.BitVec
-varkill bitvec.BitVec
-livein bitvec.BitVec
-liveout bitvec.BitVec</code></pre>
-         </article>
-         
-         <article class="struct" data-name="liveness">
-            <h2>type liveness struct</h2>
-            <hr />
-            
-            <p>A collection of global state used by liveness analysis.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">fn *ir.Func
+            <article class="struct" data-name="liveness">
+               <h3>
+                  liveness
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A collection of global state used by liveness analysis.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type liveness struct {
+fn *ir.Func
 f *ssa.Func
 vars []*ir.Name
-idx *ast.MapType
+idx map[*ir.Name]int32
 stkptrsize int64
 be []blockEffects
 allUnsafe bool
@@ -319,332 +835,581 @@ livenessMap Map
 stackMapSet bvecSet
 stackMaps []bitvec.BitVec
 cache progeffectscache
-partLiveArgs *ast.MapType
+partLiveArgs map[*ir.Name]bool
 doClobber bool
 noClobberArgs bool
-conservativeWrites bool</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Map">
-            <h2>type Map struct</h2>
-            <hr />
+conservativeWrites bool
+}</code></pre>
+            </article>
             
-            <p>Map maps from *ssa.Value to StackMapIndex.
-Also keeps track of unsafe ssa.Values and ssa.Blocks.
-(unsafe = can't be interrupted during GC.)</p>
+            <article class="struct" data-name="livenessFuncCache">
+               <h3>
+                  livenessFuncCache
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type livenessFuncCache struct {
+be []blockEffects
+livenessMap Map
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Vals *ast.MapType
-UnsafeVals *ast.MapType
-UnsafeBlocks *ast.MapType
-DeferReturn objw.StackMapIndex</code></pre>
-         </article>
-         
-         <article class="struct" data-name="progeffectscache">
-            <h2>type progeffectscache struct</h2>
-            <hr />
+            <article class="struct" data-name="nameCount">
+               <h3>
+                  nameCount
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type nameCount struct {
+n *ir.Name
+count int32
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">retuevar []int32
-tailuevar []int32
-initialized bool</code></pre>
-         </article>
-         
-         <article class="struct" data-name="livenessFuncCache">
-            <h2>type livenessFuncCache struct</h2>
-            <hr />
+            <article class="struct" data-name="nameOff">
+               <h3>
+                  nameOff
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>name and offset</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type nameOff struct {
+n *ir.Name
+off int64
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">be []blockEffects
-livenessMap Map</code></pre>
-         </article>
-         
-         <article class="struct" data-name="nameOff">
-            <h2>type nameOff struct</h2>
-            <hr />
-            
-            <p>name and offset</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">n *ir.Name
-off int64</code></pre>
-         </article>
-         
-         <article class="struct" data-name="blockArgEffects">
-            <h2>type blockArgEffects struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">livein bitvec.BitVec
-liveout bitvec.BitVec</code></pre>
-         </article>
-         
-         <article class="struct" data-name="argLiveness">
-            <h2>type argLiveness struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">fn *ir.Func
-f *ssa.Func
-args []nameOff
-idx *ast.MapType
-be []blockArgEffects
-bvset bvecSet
-blockIdx *ast.MapType
-valueIdx *ast.MapType</code></pre>
-         </article>
-         
-         <article class="struct" data-name="bvecSet">
-            <h2>type bvecSet struct</h2>
-            <hr />
-            
-            <p>bvecSet is a set of bvecs, in initial insertion order.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">index []int
-uniq []bitvec.BitVec</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Interval">
-            <h2>type Interval struct</h2>
-            <hr />
-            
-            <p>Interval hols the range [st,en).</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">st int
-en int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="IntervalsBuilder">
-            <h2>type IntervalsBuilder struct</h2>
-            <hr />
-            
-            <p>IntervalsBuilder is a helper for constructing intervals based on
-live dataflow sets for a series of BBs where we're making a
-backwards pass over each BB looking for uses and kills. The
-expected use case is:
-
-  - invoke MakeIntervalsBuilder to create a new object "b"
-  - series of calls to b.Live/b.Kill based on a backwards reverse layout
-    order scan over instructions
-  - invoke b.Finish() to produce final set
-
-See the Live method comment for an IR example.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">s Intervals
-lidx int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="intWithIdx">
-            <h2>type intWithIdx struct</h2>
-            <hr />
-            
-            <p>intWithIdx holds an interval i and an index pairIndex storing i's
-position (either 0 or 1) within some previously specified interval
-pair <I1,I2>; a pairIndex of -1 is used to signal "end of
-iteration". Used for Intervals operations, not expected to be
-exported.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">i Interval
-pairIndex int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="pairVisitor">
-            <h2>type pairVisitor struct</h2>
-            <hr />
-            
-            <p>pairVisitor provides a way to visit (iterate through) each interval
+            <article class="struct" data-name="pairVisitor">
+               <h3>
+                  pairVisitor
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>pairVisitor provides a way to visit (iterate through) each interval
 within a pair of Intervals in order of increasing start time. Expected
 usage model:
-
-	func example(i1, i2 Intervals) {
-	  var pairVisitor pv
-	  cur := pv.init(i1, i2);
-	  for !cur.done() {
-	     fmt.Printf("interval %s from i%d", cur.i.String(), cur.pairIndex+1)
-	     cur = pv.nxt()
-	  }
-	}
-
+func example(i1, i2 Intervals) {
+var pairVisitor pv
+cur := pv.init(i1, i2);
+for !cur.done() {
+fmt.Printf("interval %s from i%d", cur.i.String(), cur.pairIndex+1)
+cur = pv.nxt()
+}
+}
 Used internally for Intervals operations, not expected to be exported.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">cur intWithIdx
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type pairVisitor struct {
+cur intWithIdx
 i1pos int
 i2pos int
 i1 Intervals
-i2 Intervals</code></pre>
-         </article>
+i2 Intervals
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="progeffectscache">
+               <h3>
+                  progeffectscache
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type progeffectscache struct {
+retuevar []int32
+tailuevar []int32
+initialized bool
+}</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="function" data-name="TestMain">
-            <h2>TestMain</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <pre><code>func TestMain(m *testing.M)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestMakeAndPrint">
-            <h2>TestMakeAndPrint</h2>
-            <hr />
+            <article class="function" data-name="ArgLiveness">
+               <h3>
+                  ArgLiveness 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>ArgLiveness computes the liveness information of register argument spill slots.
+An argument's spill slot is "live" if we know it contains a meaningful value,
+that is, we have stored the register value to it.
+Returns the liveness map indices at each Block entry and at each Value (where
+it changes).</p>
+               
+               <pre><code>func ArgLiveness(fn *ir.Func, f *ssa.Func, pp *objw.Progs) (blockIdx map[ssa.ID]int, valueIdx map[ssa.ID]int)</code></pre>
+            </article>
             
-            <pre><code>func TestMakeAndPrint(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestIntervalOverlap">
-            <h2>TestIntervalOverlap</h2>
-            <hr />
+            <article class="function" data-name="Compute">
+               <h3>
+                  Compute 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Entry pointer for Compute analysis. Solves for the Compute of
+pointer variables in the function and emits a runtime data
+structure read by the garbage collector.
+Returns a map from GC safe points to their corresponding stack map index,
+and a map that contains all input parameters that may be partially live.</p>
+               
+               <pre><code>func Compute(curfn *ir.Func, f *ssa.Func, stkptrsize int64, pp *objw.Progs) (Map, map[*ir.Name]bool)</code></pre>
+            </article>
             
-            <pre><code>func TestIntervalOverlap(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestIntervalAdjacent">
-            <h2>TestIntervalAdjacent</h2>
-            <hr />
+            <article class="function" data-name="EstSavings">
+               <h3>
+                  EstSavings 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>EstSavings returns the estimated reduction in stack size (number of bytes) for
+the given merge locals state via a pair of ints, the first for non-pointer types and the second for pointer types.</p>
+               
+               <pre><code>func (mls *MergeLocalsState) EstSavings() (int, int)</code></pre>
+            </article>
             
-            <pre><code>func TestIntervalAdjacent(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestIntervalMerge">
-            <h2>TestIntervalMerge</h2>
-            <hr />
+            <article class="function" data-name="Finish">
+               <h3>
+                  Finish 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *IntervalsBuilder) Finish() (Intervals, error)</code></pre>
+            </article>
             
-            <pre><code>func TestIntervalMerge(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestIntervalsOverlap">
-            <h2>TestIntervalsOverlap</h2>
-            <hr />
+            <article class="function" data-name="Followers">
+               <h3>
+                  Followers 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Followers writes a list of the followers for leader n into the slice tmp.</p>
+               
+               <pre><code>func (mls *MergeLocalsState) Followers(n *ir.Name, tmp []*ir.Name) []*ir.Name</code></pre>
+            </article>
             
-            <pre><code>func TestIntervalsOverlap(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestRandomIntervalsOverlap">
-            <h2>TestRandomIntervalsOverlap</h2>
-            <hr />
+            <article class="function" data-name="FrameOffset">
+               <h3>
+                  FrameOffset 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (a nameOff) FrameOffset() int64</code></pre>
+            </article>
             
-            <pre><code>func TestRandomIntervalsOverlap(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestIntervalsMerge">
-            <h2>TestIntervalsMerge</h2>
-            <hr />
+            <article class="function" data-name="Get">
+               <h3>
+                  Get 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (m Map) Get(v *ssa.Value) objw.StackMapIndex</code></pre>
+            </article>
             
-            <pre><code>func TestIntervalsMerge(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestBuilder">
-            <h2>TestBuilder</h2>
-            <hr />
+            <article class="function" data-name="GetUnsafe">
+               <h3>
+                  GetUnsafe 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (m Map) GetUnsafe(v *ssa.Value) bool</code></pre>
+            </article>
             
-            <pre><code>func TestBuilder(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="makeIntervals">
-            <h2>makeIntervals</h2>
-            <hr />
+            <article class="function" data-name="GetUnsafeBlock">
+               <h3>
+                  GetUnsafeBlock 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (m Map) GetUnsafeBlock(b *ssa.Block) bool</code></pre>
+            </article>
             
-            <p>makeIntervals constructs an Intervals object from the start/end
-sequence in nums, expected to be of the form
-s1,en1,st2,en2,...,stk,enk. Used only for unit testing.</p>
+            <article class="function" data-name="IsLeader">
+               <h3>
+                  IsLeader 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>IsLeader returns whether a variable n is the leader (first element)
+in a sharing partition.</p>
+               
+               <pre><code>func (mls *MergeLocalsState) IsLeader(n *ir.Name) bool</code></pre>
+            </article>
             
-            <pre><code>func makeIntervals(nums ...int) (Intervals, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="MergeLocals">
-            <h2>MergeLocals</h2>
-            <hr />
+            <article class="function" data-name="IsUnsafe">
+               <h3>
+                  IsUnsafe 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>IsUnsafe indicates that all points in this function are
+unsafe-points.</p>
+               
+               <pre><code>func IsUnsafe(f *ssa.Func) bool</code></pre>
+            </article>
             
-            <p>MergeLocals analyzes the specified ssa function f to determine which
+            <article class="function" data-name="Kill">
+               <h3>
+                  Kill 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Kill method should be invoked on instruction at position p if instr
+should be treated as having a kill (lifetime end) for the
+resource. See the example in the comment at the beginning of this
+file for an example. Note that if we see a kill at position K for a
+resource currently live since J, this will result in a lifetime
+segment of [K+1,J+1), the assumption being that the first live
+instruction will be the one after the kill position, not the kill
+position itself.</p>
+               
+               <pre><code>func (c *IntervalsBuilder) Kill(pos int) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="Leader">
+               <h3>
+                  Leader 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Leader returns the leader variable for subsumed var n.</p>
+               
+               <pre><code>func (mls *MergeLocalsState) Leader(n *ir.Name) *ir.Name</code></pre>
+            </article>
+            
+            <article class="function" data-name="Live">
+               <h3>
+                  Live 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Live method should be invoked on instruction at position p if instr
+contains an upwards-exposed use of a resource. See the example in
+the comment at the beginning of this file for an example.</p>
+               
+               <pre><code>func (c *IntervalsBuilder) Live(pos int) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="MakeMergeLocalsState">
+               <h3>
+                  MakeMergeLocalsState 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>for unit testing only.</p>
+               
+               <pre><code>func MakeMergeLocalsState(partition map[*ir.Name][]int, vars []*ir.Name) (*MergeLocalsState, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Merge">
+               <h3>
+                  Merge 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Merge combines the intervals from "is" and "is2" and returns
+a new Intervals object containing all combined ranges from the
+two inputs.</p>
+               
+               <pre><code>func (is Intervals) Merge(is2 Intervals) Intervals</code></pre>
+            </article>
+            
+            <article class="function" data-name="MergeInto">
+               <h3>
+                  MergeInto 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>MergeInto merges interval i2 into i1. This version happens to
+require that the two intervals either overlap or are adjacent.</p>
+               
+               <pre><code>func (i1 *Interval) MergeInto(i2 Interval) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="MergeLocals">
+               <h3>
+                  MergeLocals 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>MergeLocals analyzes the specified ssa function f to determine which
 of its auto variables can safely share the same stack slot, returning
 a state object that describes how the overlap should be done.</p>
+               
+               <pre><code>func MergeLocals(fn *ir.Func, f *ssa.Func) *MergeLocalsState</code></pre>
+            </article>
             
-            <pre><code>func MergeLocals(fn *ir.Func, f *ssa.Func) *MergeLocalsState</code></pre>
-         </article>
-         
-         <article class="function" data-name="Subsumed">
-            <h2>Subsumed</h2>
-            <hr />
+            <article class="function" data-name="Overlaps">
+               <h3>
+                  Overlaps 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Overlaps returns true if here is any overlap between i and i2.</p>
+               
+               <pre><code>func (i Interval) Overlaps(i2 Interval) bool</code></pre>
+            </article>
             
-            <p>Subsumed returns whether variable n is subsumed, e.g. appears
+            <article class="function" data-name="Overlaps">
+               <h3>
+                  Overlaps 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Overlaps returns whether any of the component ranges in is overlaps
+with some range in is2.</p>
+               
+               <pre><code>func (is Intervals) Overlaps(is2 Intervals) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (i Interval) String() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (a nameOff) String() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (mls *MergeLocalsState) String() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (is *Intervals) String() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="Subsumed">
+               <h3>
+                  Subsumed 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Subsumed returns whether variable n is subsumed, e.g. appears
 in an overlap position but is not the leader in that partition.</p>
+               
+               <pre><code>func (mls *MergeLocalsState) Subsumed(n *ir.Name) bool</code></pre>
+            </article>
             
-            <pre><code>func Subsumed(n *ir.Name) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="IsLeader">
-            <h2>IsLeader</h2>
-            <hr />
+            <article class="function" data-name="WriteFuncMap">
+               <h3>
+                  WriteFuncMap 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>WriteFuncMap writes the pointer bitmaps for bodyless function fn's
+inputs and outputs as the value of symbol <fn>.args_stackmap.
+If fn has outputs, two bitmaps are written, otherwise just one.</p>
+               
+               <pre><code>func WriteFuncMap(fn *ir.Func, abiInfo *abi.ABIParamResultInfo)</code></pre>
+            </article>
             
-            <p>IsLeader returns whether a variable n is the leader (first element)
-in a sharing partition.</p>
+            <article class="function" data-name="add">
+               <h3>
+                  add 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>add adds bv to the set and returns its index in m.extractUnique,
+and whether it is newly added.
+If it is newly added, the caller must not modify bv after this.</p>
+               
+               <pre><code>func (m *bvecSet) add(bv bitvec.BitVec) (int, bool)</code></pre>
+            </article>
             
-            <pre><code>func IsLeader(n *ir.Name) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="Leader">
-            <h2>Leader</h2>
-            <hr />
+            <article class="function" data-name="adjacent">
+               <h3>
+                  adjacent 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>adjacent returns true if the start of one interval is equal to the
+end of another interval (e.g. they represent consecutive ranges).</p>
+               
+               <pre><code>func (i1 Interval) adjacent(i2 Interval) bool</code></pre>
+            </article>
             
-            <p>Leader returns the leader variable for subsumed var n.</p>
+            <article class="function" data-name="affectedVar">
+               <h3>
+                  affectedVar 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>affectedVar returns the *ir.Name node affected by v.</p>
+               
+               <pre><code>func affectedVar(v *ssa.Value) (*ir.Name, ssa.SymEffect)</code></pre>
+            </article>
             
-            <pre><code>func Leader(n *ir.Name) *ir.Name</code></pre>
-         </article>
-         
-         <article class="function" data-name="Followers">
-            <h2>Followers</h2>
-            <hr />
+            <article class="function" data-name="blockEffects">
+               <h3>
+                  blockEffects 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (lv *liveness) blockEffects(b *ssa.Block) *blockEffects</code></pre>
+            </article>
             
-            <p>Followers writes a list of the followers for leader n into the slice tmp.</p>
-            
-            <pre><code>func Followers(n *ir.Name, tmp []*ir.Name) []*ir.Name</code></pre>
-         </article>
-         
-         <article class="function" data-name="EstSavings">
-            <h2>EstSavings</h2>
-            <hr />
-            
-            <p>EstSavings returns the estimated reduction in stack size (number of bytes) for
-the given merge locals state via a pair of ints, the first for non-pointer types and the second for pointer types.</p>
-            
-            <pre><code>func EstSavings() (int, int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="check">
-            <h2>check</h2>
-            <hr />
-            
-            <p>check tests for various inconsistencies and problems in mls,
+            <article class="function" data-name="check">
+               <h3>
+                  check 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>check tests for various inconsistencies and problems in mls,
 returning an error if any problems are found.</p>
+               
+               <pre><code>func (mls *MergeLocalsState) check() error</code></pre>
+            </article>
             
-            <pre><code>func check() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="String">
-            <h2>String</h2>
-            <hr />
+            <article class="function" data-name="check">
+               <h3>
+                  check 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>check examines the intervals in "is" to try to find internal
+inconsistencies or problems.</p>
+               
+               <pre><code>func check(is Intervals) error</code></pre>
+            </article>
             
-            <pre><code>func String() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="collectMergeCandidates">
-            <h2>collectMergeCandidates</h2>
-            <hr />
+            <article class="function" data-name="clobber">
+               <h3>
+                  clobber 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Inserts code to clobber pointer slots in all the dead variables (locals and args)
+at every synchronous safepoint in b.</p>
+               
+               <pre><code>func (lv *liveness) clobber(b *ssa.Block)</code></pre>
+            </article>
             
-            <p>collectMergeCandidates visits all of the AUTO vars declared in
+            <article class="function" data-name="clobber">
+               <h3>
+                  clobber 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>clobber generates code to clobber pointer slots in all dead variables
+(those not marked in live). Clobbering instructions are added to the end
+of b.Values.</p>
+               
+               <pre><code>func clobber(lv *liveness, b *ssa.Block, live bitvec.BitVec)</code></pre>
+            </article>
+            
+            <article class="function" data-name="clobberPtr">
+               <h3>
+                  clobberPtr 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>clobberPtr generates a clobber of the pointer at offset offset in v.
+The clobber instruction is added at the end of b.</p>
+               
+               <pre><code>func clobberPtr(b *ssa.Block, v *ir.Name, offset int64)</code></pre>
+            </article>
+            
+            <article class="function" data-name="clobberVar">
+               <h3>
+                  clobberVar 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>clobberVar generates code to trash the pointers in v.
+Clobbering instructions are added to the end of b.Values.</p>
+               
+               <pre><code>func clobberVar(b *ssa.Block, v *ir.Name)</code></pre>
+            </article>
+            
+            <article class="function" data-name="clobberWalk">
+               <h3>
+                  clobberWalk 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>b = block to which we append instructions
+v = variable
+offset = offset of (sub-portion of) variable to clobber (in bytes)
+t = type of sub-portion of v.</p>
+               
+               <pre><code>func clobberWalk(b *ssa.Block, v *ir.Name, offset int64, t *types.Type)</code></pre>
+            </article>
+            
+            <article class="function" data-name="collectMergeCandidates">
+               <h3>
+                  collectMergeCandidates 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>collectMergeCandidates visits all of the AUTO vars declared in
 function fn and identifies a list of candidate variables for
 merging / overlapping. On return the "cands" field of cs will be
 filled in with our set of potentially overlappable candidate
@@ -652,120 +1417,340 @@ variables, the "regions" field will hold regions/sequence of
 compatible vars within the candidates list, "nameToSlot" field will
 be populated, and the "indirectUE" field will be filled in with
 information about indirect upwards-exposed uses in the func.</p>
+               
+               <pre><code>func (cs *cstate) collectMergeCandidates()</code></pre>
+            </article>
             
-            <pre><code>func collectMergeCandidates()</code></pre>
-         </article>
-         
-         <article class="function" data-name="genRegions">
-            <h2>genRegions</h2>
-            <hr />
+            <article class="function" data-name="compact">
+               <h3>
+                  compact 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Compact coalesces identical bitmaps from lv.livevars into the sets
+lv.stackMapSet.
+Compact clears lv.livevars.
+There are actually two lists of bitmaps, one list for the local variables and one
+list for the function arguments. Both lists are indexed by the same PCDATA
+index, so the corresponding pairs must be considered together when
+merging duplicates. The argument bitmaps change much less often during
+function execution than the local variable bitmaps, so it is possible that
+we could introduce a separate PCDATA index for arguments vs locals and
+then compact the set of argument bitmaps separately from the set of
+local variable bitmaps. As of 2014-04-02, doing this to the godoc binary
+is actually a net loss: we save about 50k of argument bitmaps but the new
+PCDATA tables cost about 100k. So for now we keep using a single index for
+both bitmap lists.</p>
+               
+               <pre><code>func (lv *liveness) compact(b *ssa.Block)</code></pre>
+            </article>
             
-            <p>genRegions generates a set of regions within cands corresponding
+            <article class="function" data-name="computeIntervals">
+               <h3>
+                  computeIntervals 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>computeIntervals performs a backwards sweep over the instructions
+of the function we're compiling, building up an Intervals object
+for each candidate variable by looking for upwards exposed uses
+and kills.</p>
+               
+               <pre><code>func (cs *cstate) computeIntervals()</code></pre>
+            </article>
+            
+            <article class="function" data-name="done">
+               <h3>
+                  done 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (iwi intWithIdx) done() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="dumpCand">
+               <h3>
+                  dumpCand 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func dumpCand(c *ir.Name, i int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="dumpFunc">
+               <h3>
+                  dumpFunc 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (cs *cstate) dumpFunc()</code></pre>
+            </article>
+            
+            <article class="function" data-name="dumpFuncIfSelected">
+               <h3>
+                  dumpFuncIfSelected 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (cs *cstate) dumpFuncIfSelected()</code></pre>
+            </article>
+            
+            <article class="function" data-name="emit">
+               <h3>
+                  emit 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (lv *argLiveness) emit() *obj.LSym</code></pre>
+            </article>
+            
+            <article class="function" data-name="emit">
+               <h3>
+                  emit 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Dumps a slice of bitmaps to a symbol as a sequence of uint32 values. The
+first word dumped is the total number of bitmaps. The second word is the
+length of the bitmaps. All bitmaps are assumed to be of equal length. The
+remaining bytes are the raw bitmaps.</p>
+               
+               <pre><code>func (lv *liveness) emit() (argsSym *obj.LSym, liveSym *obj.LSym)</code></pre>
+            </article>
+            
+            <article class="function" data-name="emitStackObjects">
+               <h3>
+                  emitStackObjects 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (lv *liveness) emitStackObjects() *obj.LSym</code></pre>
+            </article>
+            
+            <article class="function" data-name="enableClobber">
+               <h3>
+                  enableClobber 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (lv *liveness) enableClobber()</code></pre>
+            </article>
+            
+            <article class="function" data-name="epilogue">
+               <h3>
+                  epilogue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Visits all instructions in a basic block and computes a bit vector of live
+variables at each safe point locations.</p>
+               
+               <pre><code>func (lv *liveness) epilogue()</code></pre>
+            </article>
+            
+            <article class="function" data-name="extractUnique">
+               <h3>
+                  extractUnique 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>extractUnique returns this slice of unique bit vectors in m, as
+indexed by the result of bvecSet.add.</p>
+               
+               <pre><code>func (m *bvecSet) extractUnique() []bitvec.BitVec</code></pre>
+            </article>
+            
+            <article class="function" data-name="fmtFullPos">
+               <h3>
+                  fmtFullPos 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func fmtFullPos(p src.XPos) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="genRegions">
+               <h3>
+                  genRegions 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>genRegions generates a set of regions within cands corresponding
 to potentially overlappable/mergeable variables.</p>
+               
+               <pre><code>func (cs *cstate) genRegions(cands []*ir.Name) ([]*ir.Name, []candRegion)</code></pre>
+            </article>
             
-            <pre><code>func genRegions(cands []*ir.Name) ([]*ir.Name, []candRegion)</code></pre>
-         </article>
-         
-         <article class="function" data-name="dumpFunc">
-            <h2>dumpFunc</h2>
-            <hr />
+            <article class="function" data-name="getvariables">
+               <h3>
+                  getvariables 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>getvariables returns the list of on-stack variables that we need to track
+and a map for looking up indices by *Node.</p>
+               
+               <pre><code>func getvariables(fn *ir.Func) ([]*ir.Name, map[*ir.Name]int32)</code></pre>
+            </article>
             
-            <pre><code>func dumpFunc()</code></pre>
-         </article>
-         
-         <article class="function" data-name="dumpFuncIfSelected">
-            <h2>dumpFuncIfSelected</h2>
-            <hr />
+            <article class="function" data-name="grow">
+               <h3>
+                  grow 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (m *bvecSet) grow()</code></pre>
+            </article>
             
-            <pre><code>func dumpFuncIfSelected()</code></pre>
-         </article>
-         
-         <article class="function" data-name="setupHashBisection">
-            <h2>setupHashBisection</h2>
-            <hr />
+            <article class="function" data-name="hasStackMap">
+               <h3>
+                  hasStackMap 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Returns true for instructions that must have a stack map.
+This does not necessarily mean the instruction is a safe-point. In
+particular, call Values can have a stack map in case the callee
+grows the stack, but not themselves be a safe-point.</p>
+               
+               <pre><code>func (lv *liveness) hasStackMap(v *ssa.Value) bool</code></pre>
+            </article>
             
-            <p>setupHashBisection checks to see if any of the candidate
-variables have been de-selected by our hash debug. Here
-we also implement the -d=mergelocalshtrace flag, which turns
-on debug tracing only if we have at least two candidates
-selected by the hash debug for this function.</p>
+            <article class="function" data-name="hashbitmap">
+               <h3>
+                  hashbitmap 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func hashbitmap(h uint32, bv bitvec.BitVec) uint32</code></pre>
+            </article>
             
-            <pre><code>func setupHashBisection(cands []*ir.Name)</code></pre>
-         </article>
-         
-         <article class="function" data-name="populateIndirectUseTable">
-            <h2>populateIndirectUseTable</h2>
-            <hr />
+            <article class="function" data-name="imax">
+               <h3>
+                  imax 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>TEMPORARY until bootstrap version catches up.</p>
+               
+               <pre><code>func imax(i int, j int) int</code></pre>
+            </article>
             
-            <p>populateIndirectUseTable creates and populates the "indirectUE" table
-within cs by doing some additional analysis of how the vars in
-cands are accessed in the function.
-
-It is possible to have situations where a given ir.Name is
-non-address-taken at the source level, but whose address is
-materialized in order to accommodate the needs of
-architecture-dependent operations or one sort or another (examples
-include things like LoweredZero/DuffZero, etc). The issue here is
-that the SymAddr op will show up as touching a variable of
-interest, but the subsequent memory op will not. This is generally
-not an issue for computing whether something is live across a call,
-but it is problematic for collecting the more fine-grained live
-interval info that drives stack slot merging.
-
-To handle this problem, make a forward pass over each basic block
-looking for instructions of the form vK := SymAddr(N) where N is a
-raw candidate. Create an entry in a map at that point from vK to
-its use count. Continue the walk, looking for uses of vK: when we
-see one, record it in a side table as an upwards exposed use of N.
-Each time we see a use, decrement the use count in the map, and if
-we hit zero, remove the map entry. If we hit the end of the basic
-block and we still have map entries, then evict the name in
-question from the candidate set.</p>
+            <article class="function" data-name="imin">
+               <h3>
+                  imin 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>TEMPORARY until bootstrap version catches up.</p>
+               
+               <pre><code>func imin(i int, j int) int</code></pre>
+            </article>
             
-            <pre><code>func populateIndirectUseTable(cands []*ir.Name) ([]*ir.Name, []candRegion)</code></pre>
-         </article>
-         
-         <article class="function" data-name="nameLess">
-            <h2>nameLess</h2>
-            <hr />
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>init initializes a pairVisitor for the specified pair of intervals
+i1 and i2 and returns an intWithIdx object that points to the first
+interval by start position within i1/i2.</p>
+               
+               <pre><code>func (pv *pairVisitor) init(i1 Intervals, i2 Intervals) intWithIdx</code></pre>
+            </article>
             
-            <p>nameLess compares ci with cj to see if ci should be less than cj in
-a relative ordering of candidate variables. This is used to sort
-vars by pointerness (variables with pointers first), then in order
-of decreasing alignment, then by decreasing size. We are assuming a
-merging algorithm that merges later entries in the list into
-earlier entries. An example ordered candidate list produced by
-nameLess:
-
-	idx   name    type       align    size
-	0:    abc     [10]*int   8        80
-	1:    xyz     [9]*int    8        72
-	2:    qrs     [2]*int    8        16
-	3:    tuv     [9]int     8        72
-	4:    wxy     [9]int32   4        36
-	5:    jkl     [8]int32   4        32</p>
+            <article class="function" data-name="initcache">
+               <h3>
+                  initcache 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (lv *liveness) initcache()</code></pre>
+            </article>
             
-            <pre><code>func nameLess(ci *ir.Name, cj *ir.Name) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="nextRegion">
-            <h2>nextRegion</h2>
-            <hr />
+            <article class="function" data-name="isfat">
+               <h3>
+                  isfat 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>isfat reports whether a variable of type t needs multiple assignments to initialize.
+For example:
+type T struct { x, y int }
+x := T{x: 0, y: 1}
+Then we need:
+var t T
+t.x = 0
+t.y = 1
+to fully initialize t.</p>
+               
+               <pre><code>func isfat(t *types.Type) bool</code></pre>
+            </article>
             
-            <p>nextRegion starts at location idx and walks forward in the cands
-slice looking for variables that are "compatible" (potentially
-overlappable, in the sense that they could potentially share the
-stack slot of cands[idx]); it returns the end of the new region
-(range of compatible variables starting at idx).</p>
+            <article class="function" data-name="last">
+               <h3>
+                  last 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *IntervalsBuilder) last() int</code></pre>
+            </article>
             
-            <pre><code>func nextRegion(cands []*ir.Name, idx int) int</code></pre>
-         </article>
-         
-         <article class="function" data-name="mergeVisitRegion">
-            <h2>mergeVisitRegion</h2>
-            <hr />
+            <article class="function" data-name="markUnsafePoints">
+               <h3>
+                  markUnsafePoints 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>markUnsafePoints finds unsafe points and computes lv.unsafePoints.</p>
+               
+               <pre><code>func (lv *liveness) markUnsafePoints()</code></pre>
+            </article>
             
-            <p>mergeVisitRegion tries to perform overlapping of variables with a
+            <article class="function" data-name="mayFault">
+               <h3>
+                  mayFault 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func mayFault(v *ssa.Value) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="mergeVisitRegion">
+               <h3>
+                  mergeVisitRegion 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>mergeVisitRegion tries to perform overlapping of variables with a
 given subrange of cands described by st and en (indices into our
 candidate var list), where the variables within this range have
 already been determined to be compatible with respect to type,
@@ -779,721 +1764,378 @@ X and Y where X precedes Y in the list, we need to make X the
 "leader" (keep X's slot and set Y's frame offset to X's) as opposed
 to the other way around, since it's possible that Y is smaller in
 size than X.</p>
+               
+               <pre><code>func (cs *cstate) mergeVisitRegion(mls *MergeLocalsState, st int, en int)</code></pre>
+            </article>
             
-            <pre><code>func mergeVisitRegion(mls *MergeLocalsState, st int, en int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="performMerging">
-            <h2>performMerging</h2>
-            <hr />
+            <article class="function" data-name="nameLess">
+               <h3>
+                  nameLess 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>nameLess compares ci with cj to see if ci should be less than cj in
+a relative ordering of candidate variables. This is used to sort
+vars by pointerness (variables with pointers first), then in order
+of decreasing alignment, then by decreasing size. We are assuming a
+merging algorithm that merges later entries in the list into
+earlier entries. An example ordered candidate list produced by
+nameLess:
+idx   name    type       align    size
+0:    abc     [10]*int   8        80
+1:    xyz     [9]*int    8        72
+2:    qrs     [2]*int    8        16
+3:    tuv     [9]int     8        72
+4:    wxy     [9]int32   4        36
+5:    jkl     [8]int32   4        32</p>
+               
+               <pre><code>func nameLess(ci *ir.Name, cj *ir.Name) bool</code></pre>
+            </article>
             
-            <p>performMerging carries out variable merging within each of the
+            <article class="function" data-name="newliveness">
+               <h3>
+                  newliveness 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Constructs a new liveness structure used to hold the global state of the
+liveness computation. The cfg argument is a slice of *BasicBlocks and the
+vars argument is a slice of *Nodes.</p>
+               
+               <pre><code>func newliveness(fn *ir.Func, f *ssa.Func, vars []*ir.Name, idx map[*ir.Name]int32, stkptrsize int64) *liveness</code></pre>
+            </article>
+            
+            <article class="function" data-name="nextRegion">
+               <h3>
+                  nextRegion 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>nextRegion starts at location idx and walks forward in the cands
+slice looking for variables that are "compatible" (potentially
+overlappable, in the sense that they could potentially share the
+stack slot of cands[idx]); it returns the end of the new region
+(range of compatible variables starting at idx).</p>
+               
+               <pre><code>func nextRegion(cands []*ir.Name, idx int) int</code></pre>
+            </article>
+            
+            <article class="function" data-name="nxt">
+               <h3>
+                  nxt 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>nxt advances the pairVisitor to the next interval by starting
+position within the pair, returning an intWithIdx that describes
+the interval.</p>
+               
+               <pre><code>func (pv *pairVisitor) nxt() intWithIdx</code></pre>
+            </article>
+            
+            <article class="function" data-name="performMerging">
+               <h3>
+                  performMerging 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>performMerging carries out variable merging within each of the
 candidate ranges in regions, returning a state object
 that describes the variable overlaps.</p>
+               
+               <pre><code>func (cs *cstate) performMerging() *MergeLocalsState</code></pre>
+            </article>
             
-            <pre><code>func performMerging() *MergeLocalsState</code></pre>
-         </article>
-         
-         <article class="function" data-name="computeIntervals">
-            <h2>computeIntervals</h2>
-            <hr />
+            <article class="function" data-name="pointerMap">
+               <h3>
+                  pointerMap 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Generates live pointer value maps for arguments and local variables. The
+this argument and the in arguments are always assumed live. The vars
+argument is a slice of *Nodes.</p>
+               
+               <pre><code>func (lv *liveness) pointerMap(liveout bitvec.BitVec, vars []*ir.Name, args bitvec.BitVec, locals bitvec.BitVec)</code></pre>
+            </article>
             
-            <p>computeIntervals performs a backwards sweep over the instructions
-of the function we're compiling, building up an Intervals object
-for each candidate variable by looking for upwards exposed uses
-and kills.</p>
+            <article class="function" data-name="populateIndirectUseTable">
+               <h3>
+                  populateIndirectUseTable 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>populateIndirectUseTable creates and populates the "indirectUE" table
+within cs by doing some additional analysis of how the vars in
+cands are accessed in the function.
+It is possible to have situations where a given ir.Name is
+non-address-taken at the source level, but whose address is
+materialized in order to accommodate the needs of
+architecture-dependent operations or one sort or another (examples
+include things like LoweredZero/DuffZero, etc). The issue here is
+that the SymAddr op will show up as touching a variable of
+interest, but the subsequent memory op will not. This is generally
+not an issue for computing whether something is live across a call,
+but it is problematic for collecting the more fine-grained live
+interval info that drives stack slot merging.
+To handle this problem, make a forward pass over each basic block
+looking for instructions of the form vK := SymAddr(N) where N is a
+raw candidate. Create an entry in a map at that point from vK to
+its use count. Continue the walk, looking for uses of vK: when we
+see one, record it in a side table as an upwards exposed use of N.
+Each time we see a use, decrement the use count in the map, and if
+we hit zero, remove the map entry. If we hit the end of the basic
+block and we still have map entries, then evict the name in
+question from the candidate set.</p>
+               
+               <pre><code>func (cs *cstate) populateIndirectUseTable(cands []*ir.Name) ([]*ir.Name, []candRegion)</code></pre>
+            </article>
             
-            <pre><code>func computeIntervals()</code></pre>
-         </article>
-         
-         <article class="function" data-name="fmtFullPos">
-            <h2>fmtFullPos</h2>
-            <hr />
+            <article class="function" data-name="print">
+               <h3>
+                  print 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (lv *argLiveness) print()</code></pre>
+            </article>
             
-            <pre><code>func fmtFullPos(p src.XPos) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="dumpCand">
-            <h2>dumpCand</h2>
-            <hr />
+            <article class="function" data-name="printDebug">
+               <h3>
+                  printDebug 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Prints the computed liveness information and inputs, for debugging.
+This format synthesizes the information used during the multiple passes
+into a single presentation.</p>
+               
+               <pre><code>func (lv *liveness) printDebug()</code></pre>
+            </article>
             
-            <pre><code>func dumpCand(c *ir.Name, i int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="MakeMergeLocalsState">
-            <h2>MakeMergeLocalsState</h2>
-            <hr />
+            <article class="function" data-name="printLivenessVec">
+               <h3>
+                  printLivenessVec 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (lv *argLiveness) printLivenessVec(bv bitvec.BitVec)</code></pre>
+            </article>
             
-            <p>for unit testing only.</p>
+            <article class="function" data-name="printbvec">
+               <h3>
+                  printbvec 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (lv *liveness) printbvec(printed bool, name string, live bitvec.BitVec) bool</code></pre>
+            </article>
             
-            <pre><code>func MakeMergeLocalsState(partition *ast.MapType, vars []*ir.Name) (*MergeLocalsState, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="reset">
-            <h2>reset</h2>
-            <hr />
+            <article class="function" data-name="printeffect">
+               <h3>
+                  printeffect 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>printeffect is like printbvec, but for valueEffects.</p>
+               
+               <pre><code>func (lv *liveness) printeffect(printed bool, name string, pos int32, x bool) bool</code></pre>
+            </article>
             
-            <pre><code>func reset()</code></pre>
-         </article>
-         
-         <article class="function" data-name="set">
-            <h2>set</h2>
-            <hr />
+            <article class="function" data-name="prologue">
+               <h3>
+                  prologue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Initializes the sets for solving the live variables. Visits all the
+instructions in each basic block to summarizes the information at each basic
+block</p>
+               
+               <pre><code>func (lv *liveness) prologue()</code></pre>
+            </article>
             
-            <pre><code>func set(v *ssa.Value, i objw.StackMapIndex)</code></pre>
-         </article>
-         
-         <article class="function" data-name="setUnsafeVal">
-            <h2>setUnsafeVal</h2>
-            <hr />
+            <article class="function" data-name="reset">
+               <h3>
+                  reset 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (m *Map) reset()</code></pre>
+            </article>
             
-            <pre><code>func setUnsafeVal(v *ssa.Value)</code></pre>
-         </article>
-         
-         <article class="function" data-name="setUnsafeBlock">
-            <h2>setUnsafeBlock</h2>
-            <hr />
+            <article class="function" data-name="sel">
+               <h3>
+                  sel 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>sel is a helper function used by 'init' and 'nxt' above; it selects
+the earlier of the two intervals at the current positions within i1
+and i2, or a degenerate (pairIndex -1) intWithIdx if we have no
+more intervals to visit.</p>
+               
+               <pre><code>func (pv *pairVisitor) sel() intWithIdx</code></pre>
+            </article>
             
-            <pre><code>func setUnsafeBlock(b *ssa.Block)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Get">
-            <h2>Get</h2>
-            <hr />
+            <article class="function" data-name="set">
+               <h3>
+                  set 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (m *Map) set(v *ssa.Value, i objw.StackMapIndex)</code></pre>
+            </article>
             
-            <pre><code>func Get(v *ssa.Value) objw.StackMapIndex</code></pre>
-         </article>
-         
-         <article class="function" data-name="GetUnsafe">
-            <h2>GetUnsafe</h2>
-            <hr />
+            <article class="function" data-name="setLast">
+               <h3>
+                  setLast 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *IntervalsBuilder) setLast(x int)</code></pre>
+            </article>
             
-            <pre><code>func GetUnsafe(v *ssa.Value) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="GetUnsafeBlock">
-            <h2>GetUnsafeBlock</h2>
-            <hr />
+            <article class="function" data-name="setUnsafeBlock">
+               <h3>
+                  setUnsafeBlock 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (m *Map) setUnsafeBlock(b *ssa.Block)</code></pre>
+            </article>
             
-            <pre><code>func GetUnsafeBlock(b *ssa.Block) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="shouldTrack">
-            <h2>shouldTrack</h2>
-            <hr />
+            <article class="function" data-name="setUnsafeVal">
+               <h3>
+                  setUnsafeVal 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (m *Map) setUnsafeVal(v *ssa.Value)</code></pre>
+            </article>
             
-            <p>shouldTrack reports whether the liveness analysis
+            <article class="function" data-name="setupHashBisection">
+               <h3>
+                  setupHashBisection 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>setupHashBisection checks to see if any of the candidate
+variables have been de-selected by our hash debug. Here
+we also implement the -d=mergelocalshtrace flag, which turns
+on debug tracing only if we have at least two candidates
+selected by the hash debug for this function.</p>
+               
+               <pre><code>func (cs *cstate) setupHashBisection(cands []*ir.Name)</code></pre>
+            </article>
+            
+            <article class="function" data-name="shouldTrack">
+               <h3>
+                  shouldTrack 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>shouldTrack reports whether the liveness analysis
 should track the variable n.
 We don't care about variables that have no pointers,
 nor do we care about non-local variables,
 nor do we care about empty structs (handled by the pointer check),
 nor do we care about the fake PAUTOHEAP variables.</p>
+               
+               <pre><code>func shouldTrack(n *ir.Name) bool</code></pre>
+            </article>
             
-            <pre><code>func shouldTrack(n *ir.Name) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="getvariables">
-            <h2>getvariables</h2>
-            <hr />
+            <article class="function" data-name="showlive">
+               <h3>
+                  showlive 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (lv *liveness) showlive(v *ssa.Value, live bitvec.BitVec)</code></pre>
+            </article>
             
-            <p>getvariables returns the list of on-stack variables that we need to track
-and a map for looking up indices by *Node.</p>
+            <article class="function" data-name="solve">
+               <h3>
+                  solve 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Solve the liveness dataflow equations.</p>
+               
+               <pre><code>func (lv *liveness) solve()</code></pre>
+            </article>
             
-            <pre><code>func getvariables(fn *ir.Func) ([]*ir.Name, *ast.MapType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="initcache">
-            <h2>initcache</h2>
-            <hr />
+            <article class="function" data-name="valueEffect">
+               <h3>
+                  valueEffect 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>valueEffect applies the effect of v to live, return whether it is changed.</p>
+               
+               <pre><code>func (lv *argLiveness) valueEffect(v *ssa.Value, live bitvec.BitVec) bool</code></pre>
+            </article>
             
-            <pre><code>func initcache()</code></pre>
-         </article>
-         
-         <article class="function" data-name="valueEffects">
-            <h2>valueEffects</h2>
-            <hr />
-            
-            <p>valueEffects returns the index of a variable in lv.vars and the
+            <article class="function" data-name="valueEffects">
+               <h3>
+                  valueEffects 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>valueEffects returns the index of a variable in lv.vars and the
 liveness effects v has on that variable.
 If v does not affect any tracked variables, it returns -1, 0.</p>
-            
-            <pre><code>func valueEffects(v *ssa.Value) (int32, liveEffect)</code></pre>
-         </article>
-         
-         <article class="function" data-name="affectedVar">
-            <h2>affectedVar</h2>
-            <hr />
-            
-            <p>affectedVar returns the *ir.Name node affected by v.</p>
-            
-            <pre><code>func affectedVar(v *ssa.Value) (*ir.Name, ssa.SymEffect)</code></pre>
-         </article>
-         
-         <article class="function" data-name="newliveness">
-            <h2>newliveness</h2>
-            <hr />
-            
-            <p>Constructs a new liveness structure used to hold the global state of the
-liveness computation. The cfg argument is a slice of *BasicBlocks and the
-vars argument is a slice of *Nodes.</p>
-            
-            <pre><code>func newliveness(fn *ir.Func, f *ssa.Func, vars []*ir.Name, idx *ast.MapType, stkptrsize int64) *liveness</code></pre>
-         </article>
-         
-         <article class="function" data-name="blockEffects">
-            <h2>blockEffects</h2>
-            <hr />
-            
-            <pre><code>func blockEffects(b *ssa.Block) *blockEffects</code></pre>
-         </article>
-         
-         <article class="function" data-name="pointerMap">
-            <h2>pointerMap</h2>
-            <hr />
-            
-            <p>Generates live pointer value maps for arguments and local variables. The
-this argument and the in arguments are always assumed live. The vars
-argument is a slice of *Nodes.</p>
-            
-            <pre><code>func pointerMap(liveout bitvec.BitVec, vars []*ir.Name, args bitvec.BitVec, locals bitvec.BitVec)</code></pre>
-         </article>
-         
-         <article class="function" data-name="IsUnsafe">
-            <h2>IsUnsafe</h2>
-            <hr />
-            
-            <p>IsUnsafe indicates that all points in this function are
-unsafe-points.</p>
-            
-            <pre><code>func IsUnsafe(f *ssa.Func) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="markUnsafePoints">
-            <h2>markUnsafePoints</h2>
-            <hr />
-            
-            <p>markUnsafePoints finds unsafe points and computes lv.unsafePoints.</p>
-            
-            <pre><code>func markUnsafePoints()</code></pre>
-         </article>
-         
-         <article class="function" data-name="hasStackMap">
-            <h2>hasStackMap</h2>
-            <hr />
-            
-            <p>Returns true for instructions that must have a stack map.
-
-This does not necessarily mean the instruction is a safe-point. In
-particular, call Values can have a stack map in case the callee
-grows the stack, but not themselves be a safe-point.</p>
-            
-            <pre><code>func hasStackMap(v *ssa.Value) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="prologue">
-            <h2>prologue</h2>
-            <hr />
-            
-            <p>Initializes the sets for solving the live variables. Visits all the
-instructions in each basic block to summarizes the information at each basic
-block</p>
-            
-            <pre><code>func prologue()</code></pre>
-         </article>
-         
-         <article class="function" data-name="solve">
-            <h2>solve</h2>
-            <hr />
-            
-            <p>Solve the liveness dataflow equations.</p>
-            
-            <pre><code>func solve()</code></pre>
-         </article>
-         
-         <article class="function" data-name="epilogue">
-            <h2>epilogue</h2>
-            <hr />
-            
-            <p>Visits all instructions in a basic block and computes a bit vector of live
-variables at each safe point locations.</p>
-            
-            <pre><code>func epilogue()</code></pre>
-         </article>
-         
-         <article class="function" data-name="compact">
-            <h2>compact</h2>
-            <hr />
-            
-            <p>Compact coalesces identical bitmaps from lv.livevars into the sets
-lv.stackMapSet.
-
-Compact clears lv.livevars.
-
-There are actually two lists of bitmaps, one list for the local variables and one
-list for the function arguments. Both lists are indexed by the same PCDATA
-index, so the corresponding pairs must be considered together when
-merging duplicates. The argument bitmaps change much less often during
-function execution than the local variable bitmaps, so it is possible that
-we could introduce a separate PCDATA index for arguments vs locals and
-then compact the set of argument bitmaps separately from the set of
-local variable bitmaps. As of 2014-04-02, doing this to the godoc binary
-is actually a net loss: we save about 50k of argument bitmaps but the new
-PCDATA tables cost about 100k. So for now we keep using a single index for
-both bitmap lists.</p>
-            
-            <pre><code>func compact(b *ssa.Block)</code></pre>
-         </article>
-         
-         <article class="function" data-name="enableClobber">
-            <h2>enableClobber</h2>
-            <hr />
-            
-            <pre><code>func enableClobber()</code></pre>
-         </article>
-         
-         <article class="function" data-name="clobber">
-            <h2>clobber</h2>
-            <hr />
-            
-            <p>Inserts code to clobber pointer slots in all the dead variables (locals and args)
-at every synchronous safepoint in b.</p>
-            
-            <pre><code>func clobber(b *ssa.Block)</code></pre>
-         </article>
-         
-         <article class="function" data-name="clobber">
-            <h2>clobber</h2>
-            <hr />
-            
-            <p>clobber generates code to clobber pointer slots in all dead variables
-(those not marked in live). Clobbering instructions are added to the end
-of b.Values.</p>
-            
-            <pre><code>func clobber(lv *liveness, b *ssa.Block, live bitvec.BitVec)</code></pre>
-         </article>
-         
-         <article class="function" data-name="clobberVar">
-            <h2>clobberVar</h2>
-            <hr />
-            
-            <p>clobberVar generates code to trash the pointers in v.
-Clobbering instructions are added to the end of b.Values.</p>
-            
-            <pre><code>func clobberVar(b *ssa.Block, v *ir.Name)</code></pre>
-         </article>
-         
-         <article class="function" data-name="clobberWalk">
-            <h2>clobberWalk</h2>
-            <hr />
-            
-            <p>b = block to which we append instructions
-v = variable
-offset = offset of (sub-portion of) variable to clobber (in bytes)
-t = type of sub-portion of v.</p>
-            
-            <pre><code>func clobberWalk(b *ssa.Block, v *ir.Name, offset int64, t *types.Type)</code></pre>
-         </article>
-         
-         <article class="function" data-name="clobberPtr">
-            <h2>clobberPtr</h2>
-            <hr />
-            
-            <p>clobberPtr generates a clobber of the pointer at offset offset in v.
-The clobber instruction is added at the end of b.</p>
-            
-            <pre><code>func clobberPtr(b *ssa.Block, v *ir.Name, offset int64)</code></pre>
-         </article>
-         
-         <article class="function" data-name="showlive">
-            <h2>showlive</h2>
-            <hr />
-            
-            <pre><code>func showlive(v *ssa.Value, live bitvec.BitVec)</code></pre>
-         </article>
-         
-         <article class="function" data-name="printbvec">
-            <h2>printbvec</h2>
-            <hr />
-            
-            <pre><code>func printbvec(printed bool, name string, live bitvec.BitVec) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="printeffect">
-            <h2>printeffect</h2>
-            <hr />
-            
-            <p>printeffect is like printbvec, but for valueEffects.</p>
-            
-            <pre><code>func printeffect(printed bool, name string, pos int32, x bool) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="printDebug">
-            <h2>printDebug</h2>
-            <hr />
-            
-            <p>Prints the computed liveness information and inputs, for debugging.
-This format synthesizes the information used during the multiple passes
-into a single presentation.</p>
-            
-            <pre><code>func printDebug()</code></pre>
-         </article>
-         
-         <article class="function" data-name="emit">
-            <h2>emit</h2>
-            <hr />
-            
-            <p>Dumps a slice of bitmaps to a symbol as a sequence of uint32 values. The
-first word dumped is the total number of bitmaps. The second word is the
-length of the bitmaps. All bitmaps are assumed to be of equal length. The
-remaining bytes are the raw bitmaps.</p>
-            
-            <pre><code>func emit() (argsSym *obj.LSym, liveSym *obj.LSym)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Compute">
-            <h2>Compute</h2>
-            <hr />
-            
-            <p>Entry pointer for Compute analysis. Solves for the Compute of
-pointer variables in the function and emits a runtime data
-structure read by the garbage collector.
-Returns a map from GC safe points to their corresponding stack map index,
-and a map that contains all input parameters that may be partially live.</p>
-            
-            <pre><code>func Compute(curfn *ir.Func, f *ssa.Func, stkptrsize int64, pp *objw.Progs) (Map, *ast.MapType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="emitStackObjects">
-            <h2>emitStackObjects</h2>
-            <hr />
-            
-            <pre><code>func emitStackObjects() *obj.LSym</code></pre>
-         </article>
-         
-         <article class="function" data-name="isfat">
-            <h2>isfat</h2>
-            <hr />
-            
-            <p>isfat reports whether a variable of type t needs multiple assignments to initialize.
-For example:
-
-	type T struct { x, y int }
-	x := T{x: 0, y: 1}
-
-Then we need:
-
-	var t T
-	t.x = 0
-	t.y = 1
-
-to fully initialize t.</p>
-            
-            <pre><code>func isfat(t *types.Type) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="WriteFuncMap">
-            <h2>WriteFuncMap</h2>
-            <hr />
-            
-            <p>WriteFuncMap writes the pointer bitmaps for bodyless function fn's
-inputs and outputs as the value of symbol <fn>.args_stackmap.
-If fn has outputs, two bitmaps are written, otherwise just one.</p>
-            
-            <pre><code>func WriteFuncMap(fn *ir.Func, abiInfo *abi.ABIParamResultInfo)</code></pre>
-         </article>
-         
-         <article class="function" data-name="FrameOffset">
-            <h2>FrameOffset</h2>
-            <hr />
-            
-            <pre><code>func FrameOffset() int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="String">
-            <h2>String</h2>
-            <hr />
-            
-            <pre><code>func String() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="ArgLiveness">
-            <h2>ArgLiveness</h2>
-            <hr />
-            
-            <p>ArgLiveness computes the liveness information of register argument spill slots.
-An argument's spill slot is "live" if we know it contains a meaningful value,
-that is, we have stored the register value to it.
-Returns the liveness map indices at each Block entry and at each Value (where
-it changes).</p>
-            
-            <pre><code>func ArgLiveness(fn *ir.Func, f *ssa.Func, pp *objw.Progs) (blockIdx *ast.MapType, valueIdx *ast.MapType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="valueEffect">
-            <h2>valueEffect</h2>
-            <hr />
-            
-            <p>valueEffect applies the effect of v to live, return whether it is changed.</p>
-            
-            <pre><code>func valueEffect(v *ssa.Value, live bitvec.BitVec) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="mayFault">
-            <h2>mayFault</h2>
-            <hr />
-            
-            <pre><code>func mayFault(v *ssa.Value) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="print">
-            <h2>print</h2>
-            <hr />
-            
-            <pre><code>func print()</code></pre>
-         </article>
-         
-         <article class="function" data-name="printLivenessVec">
-            <h2>printLivenessVec</h2>
-            <hr />
-            
-            <pre><code>func printLivenessVec(bv bitvec.BitVec)</code></pre>
-         </article>
-         
-         <article class="function" data-name="emit">
-            <h2>emit</h2>
-            <hr />
-            
-            <pre><code>func emit() *obj.LSym</code></pre>
-         </article>
-         
-         <article class="function" data-name="grow">
-            <h2>grow</h2>
-            <hr />
-            
-            <pre><code>func grow()</code></pre>
-         </article>
-         
-         <article class="function" data-name="add">
-            <h2>add</h2>
-            <hr />
-            
-            <p>add adds bv to the set and returns its index in m.extractUnique,
-and whether it is newly added.
-If it is newly added, the caller must not modify bv after this.</p>
-            
-            <pre><code>func add(bv bitvec.BitVec) (int, bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="extractUnique">
-            <h2>extractUnique</h2>
-            <hr />
-            
-            <p>extractUnique returns this slice of unique bit vectors in m, as
-indexed by the result of bvecSet.add.</p>
-            
-            <pre><code>func extractUnique() []bitvec.BitVec</code></pre>
-         </article>
-         
-         <article class="function" data-name="hashbitmap">
-            <h2>hashbitmap</h2>
-            <hr />
-            
-            <pre><code>func hashbitmap(h uint32, bv bitvec.BitVec) uint32</code></pre>
-         </article>
-         
-         <article class="function" data-name="String">
-            <h2>String</h2>
-            <hr />
-            
-            <pre><code>func String() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="imin">
-            <h2>imin</h2>
-            <hr />
-            
-            <p>TEMPORARY until bootstrap version catches up.</p>
-            
-            <pre><code>func imin(i int, j int) int</code></pre>
-         </article>
-         
-         <article class="function" data-name="imax">
-            <h2>imax</h2>
-            <hr />
-            
-            <p>TEMPORARY until bootstrap version catches up.</p>
-            
-            <pre><code>func imax(i int, j int) int</code></pre>
-         </article>
-         
-         <article class="function" data-name="Overlaps">
-            <h2>Overlaps</h2>
-            <hr />
-            
-            <p>Overlaps returns true if here is any overlap between i and i2.</p>
-            
-            <pre><code>func Overlaps(i2 Interval) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="adjacent">
-            <h2>adjacent</h2>
-            <hr />
-            
-            <p>adjacent returns true if the start of one interval is equal to the
-end of another interval (e.g. they represent consecutive ranges).</p>
-            
-            <pre><code>func adjacent(i2 Interval) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="MergeInto">
-            <h2>MergeInto</h2>
-            <hr />
-            
-            <p>MergeInto merges interval i2 into i1. This version happens to
-require that the two intervals either overlap or are adjacent.</p>
-            
-            <pre><code>func MergeInto(i2 Interval) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="last">
-            <h2>last</h2>
-            <hr />
-            
-            <pre><code>func last() int</code></pre>
-         </article>
-         
-         <article class="function" data-name="setLast">
-            <h2>setLast</h2>
-            <hr />
-            
-            <pre><code>func setLast(x int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Finish">
-            <h2>Finish</h2>
-            <hr />
-            
-            <pre><code>func Finish() (Intervals, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Live">
-            <h2>Live</h2>
-            <hr />
-            
-            <p>Live method should be invoked on instruction at position p if instr
-contains an upwards-exposed use of a resource. See the example in
-the comment at the beginning of this file for an example.</p>
-            
-            <pre><code>func Live(pos int) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="Kill">
-            <h2>Kill</h2>
-            <hr />
-            
-            <p>Kill method should be invoked on instruction at position p if instr
-should be treated as having a kill (lifetime end) for the
-resource. See the example in the comment at the beginning of this
-file for an example. Note that if we see a kill at position K for a
-resource currently live since J, this will result in a lifetime
-segment of [K+1,J+1), the assumption being that the first live
-instruction will be the one after the kill position, not the kill
-position itself.</p>
-            
-            <pre><code>func Kill(pos int) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="check">
-            <h2>check</h2>
-            <hr />
-            
-            <p>check examines the intervals in "is" to try to find internal
-inconsistencies or problems.</p>
-            
-            <pre><code>func check(is Intervals) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="String">
-            <h2>String</h2>
-            <hr />
-            
-            <pre><code>func String() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="done">
-            <h2>done</h2>
-            <hr />
-            
-            <pre><code>func done() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="init">
-            <h2>init</h2>
-            <hr />
-            
-            <p>init initializes a pairVisitor for the specified pair of intervals
-i1 and i2 and returns an intWithIdx object that points to the first
-interval by start position within i1/i2.</p>
-            
-            <pre><code>func init(i1 Intervals, i2 Intervals) intWithIdx</code></pre>
-         </article>
-         
-         <article class="function" data-name="nxt">
-            <h2>nxt</h2>
-            <hr />
-            
-            <p>nxt advances the pairVisitor to the next interval by starting
-position within the pair, returning an intWithIdx that describes
-the interval.</p>
-            
-            <pre><code>func nxt() intWithIdx</code></pre>
-         </article>
-         
-         <article class="function" data-name="sel">
-            <h2>sel</h2>
-            <hr />
-            
-            <p>sel is a helper function used by 'init' and 'nxt' above; it selects
-the earlier of the two intervals at the current positions within i1
-and i2, or a degenerate (pairIndex -1) intWithIdx if we have no
-more intervals to visit.</p>
-            
-            <pre><code>func sel() intWithIdx</code></pre>
-         </article>
-         
-         <article class="function" data-name="Overlaps">
-            <h2>Overlaps</h2>
-            <hr />
-            
-            <p>Overlaps returns whether any of the component ranges in is overlaps
-with some range in is2.</p>
-            
-            <pre><code>func Overlaps(is2 Intervals) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="Merge">
-            <h2>Merge</h2>
-            <hr />
-            
-            <p>Merge combines the intervals from "is" and "is2" and returns
-a new Intervals object containing all combined ranges from the
-two inputs.</p>
-            
-            <pre><code>func Merge(is2 Intervals) Intervals</code></pre>
-         </article>
+               
+               <pre><code>func (lv *liveness) valueEffects(v *ssa.Value) (int32, liveEffect)</code></pre>
+            </article>
+            
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -1501,59 +2143,170 @@ two inputs.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

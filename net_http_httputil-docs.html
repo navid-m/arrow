@@ -6,174 +6,1603 @@
          name="viewport"
          content="width=device-width, initial-scale=1.0"
       />
-      <title>Docs - httputil_test</title>
+      <title>Docs - httputil</title>
       <link
          href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
          rel="stylesheet"
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                
+               <li><a href="#interfaces">Interfaces</a></li>
+                
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>httputil_test</code>
-         </h1>
-         <hr />
-           
-         <article class="function" data-name="ExampleDumpRequest">
-            <h2>ExampleDumpRequest</h2>
-            <hr />
-            
-            <pre><code>func ExampleDumpRequest()</code></pre>
-         </article>
+         <h1>httputil</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="function" data-name="ExampleDumpRequestOut">
-            <h2>ExampleDumpRequestOut</h2>
-            <hr />
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"bufio"
+"errors"
+"io"
+"net"
+"net/http"
+"net/textproto"
+"sync"
+"context"
+"errors"
+"fmt"
+"io"
+"log"
+"mime"
+"net"
+"net/http"
+"net/http/httptrace"
+"net/http/internal/ascii"
+"net/textproto"
+"net/url"
+"strings"
+"sync"
+"time"
+"golang.org/x/net/http/httpguts"
+"bufio"
+"bytes"
+"errors"
+"fmt"
+"io"
+"net"
+"net/http"
+"net/url"
+"strings"
+"time"
+"io"
+"net/http/internal"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <pre><code>func ExampleDumpRequestOut()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleDumpResponse">
-            <h2>ExampleDumpResponse</h2>
-            <hr />
+            <article class="global" data-name="ErrClosed">
+               <h3>
+                  ErrClosed 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Deprecated: No longer used.</p>
+               
+               <pre><code>var ErrClosed = *ast.UnaryExpr</code></pre>
+            </article>
             
-            <pre><code>func ExampleDumpResponse()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleReverseProxy">
-            <h2>ExampleReverseProxy</h2>
-            <hr />
+            <article class="global" data-name="ErrLineTooLong">
+               <h3>
+                  ErrLineTooLong 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>ErrLineTooLong is returned when reading malformed chunked data
+with lines that are too long.</p>
+               
+               <pre><code>var ErrLineTooLong = internal.ErrLineTooLong</code></pre>
+            </article>
             
-            <pre><code>func ExampleReverseProxy()</code></pre>
-         </article>
+            <article class="global" data-name="ErrPersistEOF">
+               <h3>
+                  ErrPersistEOF 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Deprecated: No longer used.</p>
+               
+               <pre><code>var ErrPersistEOF = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="ErrPipeline">
+               <h3>
+                  ErrPipeline 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Deprecated: No longer used.</p>
+               
+               <pre><code>var ErrPipeline = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="emptyBody">
+               <h3>
+                  emptyBody 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>emptyBody is an instance of empty reader.</p>
+               
+               <pre><code>var emptyBody = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="errClosed">
+               <h3>
+                  errClosed 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>This is an API usage error - the local side is closed.
+ErrPersistEOF (above) reports that the remote side is closed.</p>
+               
+               <pre><code>var errClosed = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="errNoBody">
+               <h3>
+                  errNoBody 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>errNoBody is a sentinel error value used by failureToReadBody so we
+can detect that the lack of body was intentional.</p>
+               
+               <pre><code>var errNoBody = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="hopHeaders">
+               <h3>
+                  hopHeaders 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Hop-by-hop headers. These are removed when sent to the backend.
+As of RFC 7230, hop-by-hop headers are required to appear in the
+Connection header field. These are the headers defined by the
+obsoleted RFC 2616 (section 13.5.1) and are used for backward
+compatibility.</p>
+               
+               <pre><code>var hopHeaders = []string{...}</code></pre>
+            </article>
+            
+            <article class="global" data-name="inOurTests">
+               <h3>
+                  inOurTests 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var inOurTests bool</code></pre>
+            </article>
+            
+            <article class="global" data-name="reqWriteExcludeHeaderDump">
+               <h3>
+                  reqWriteExcludeHeaderDump 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var reqWriteExcludeHeaderDump = map[string]bool{...}</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="types">
+            <h2>Type Aliases</h2>
+            
+            <article class="type" data-name="neverEnding">
+               <h3>
+                  neverEnding
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <pre><code>type neverEnding byte</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="interfaces">
+            <h2>Interfaces</h2>
+            
+            <article class="interface" data-name="BufferPool">
+               <h3>
+                  BufferPool
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>A BufferPool is an interface for getting and returning temporary
+byte slices for use by [io.CopyBuffer].</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type BufferPool interface {
+Get() []byte
+Put([]byte)
+}</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="ClientConn">
+               <h3>
+                  ClientConn
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>ClientConn is an artifact of Go's early HTTP implementation.
+It is low-level, old, and unused by Go's current HTTP stack.
+We should have deleted it before Go 1.
+Deprecated: Use Client or Transport in package [net/http] instead.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type ClientConn struct {
+mu sync.Mutex
+c net.Conn
+r *bufio.Reader
+re error
+we error
+lastbody io.ReadCloser
+nread int
+nwritten int
+pipereq map[*http.Request]uint
+pipe textproto.Pipeline
+writeReq func(*http.Request, io.Writer) error
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="ProxyRequest">
+               <h3>
+                  ProxyRequest
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A ProxyRequest contains a request to be rewritten by a [ReverseProxy].</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type ProxyRequest struct {
+In *http.Request
+Out *http.Request
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="ReverseProxy">
+               <h3>
+                  ReverseProxy
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>ReverseProxy is an HTTP Handler that takes an incoming request and
+sends it to another server, proxying the response back to the
+client.
+1xx responses are forwarded to the client if the underlying
+transport supports ClientTrace.Got1xxResponse.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type ReverseProxy struct {
+Rewrite func(*ProxyRequest)
+Director func(*http.Request)
+Transport http.RoundTripper
+FlushInterval time.Duration
+ErrorLog *log.Logger
+BufferPool BufferPool
+ModifyResponse func(*http.Response) error
+ErrorHandler func(http.ResponseWriter, *http.Request, error)
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="ServerConn">
+               <h3>
+                  ServerConn
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>ServerConn is an artifact of Go's early HTTP implementation.
+It is low-level, old, and unused by Go's current HTTP stack.
+We should have deleted it before Go 1.
+Deprecated: Use the Server in package [net/http] instead.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type ServerConn struct {
+mu sync.Mutex
+c net.Conn
+r *bufio.Reader
+re error
+we error
+lastbody io.ReadCloser
+nread int
+nwritten int
+pipereq map[*http.Request]uint
+pipe textproto.Pipeline
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="delegateReader">
+               <h3>
+                  delegateReader
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>delegateReader is a reader that delegates to another reader,
+once it arrives on a channel.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type delegateReader struct {
+c chan io.Reader
+err error
+r io.Reader
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="dumpConn">
+               <h3>
+                  dumpConn
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>dumpConn is a net.Conn which writes to Writer and reads from Reader</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type dumpConn struct {
+io.Writer
+io.Reader
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="failureToReadBody">
+               <h3>
+                  failureToReadBody
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>failureToReadBody is an io.ReadCloser that just returns errNoBody on
+Read. It's swapped in when we don't actually want to consume
+the body, but need a non-nil one, and want to distinguish the
+error from reading the dummy body.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type failureToReadBody struct {
+
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="maxLatencyWriter">
+               <h3>
+                  maxLatencyWriter
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type maxLatencyWriter struct {
+dst io.Writer
+flush func() error
+latency time.Duration
+mu sync.Mutex
+t *time.Timer
+flushPending bool
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="switchProtocolCopier">
+               <h3>
+                  switchProtocolCopier
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>switchProtocolCopier exists so goroutines proxying data back and
+forth have nice names in stacks.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type switchProtocolCopier struct {
+user io.ReadWriter
+backend io.ReadWriter
+}</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="functions">
+            <h2>Functions</h2>
+            
+            <article class="function" data-name="Close">
+               <h3>
+                  Close 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Close calls [ServerConn.Hijack] and then also closes the underlying connection.</p>
+               
+               <pre><code>func (sc *ServerConn) Close() error</code></pre>
+            </article>
+            
+            <article class="function" data-name="Close">
+               <h3>
+                  Close 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (failureToReadBody) Close() error</code></pre>
+            </article>
+            
+            <article class="function" data-name="Close">
+               <h3>
+                  Close 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *dumpConn) Close() error</code></pre>
+            </article>
+            
+            <article class="function" data-name="Close">
+               <h3>
+                  Close 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Close calls [ClientConn.Hijack] and then also closes the underlying connection.</p>
+               
+               <pre><code>func (cc *ClientConn) Close() error</code></pre>
+            </article>
+            
+            <article class="function" data-name="Do">
+               <h3>
+                  Do 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Do is convenience method that writes a request and reads a response.</p>
+               
+               <pre><code>func (cc *ClientConn) Do(req *http.Request) (*http.Response, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="DumpRequest">
+               <h3>
+                  DumpRequest 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>DumpRequest returns the given request in its HTTP/1.x wire
+representation. It should only be used by servers to debug client
+requests. The returned representation is an approximation only;
+some details of the initial request are lost while parsing it into
+an [http.Request]. In particular, the order and case of header field
+names are lost. The order of values in multi-valued headers is kept
+intact. HTTP/2 requests are dumped in HTTP/1.x form, not in their
+original binary representations.
+If body is true, DumpRequest also returns the body. To do so, it
+consumes req.Body and then replaces it with a new [io.ReadCloser]
+that yields the same bytes. If DumpRequest returns an error,
+the state of req is undefined.
+The documentation for [http.Request.Write] details which fields
+of req are included in the dump.</p>
+               
+               <pre><code>func DumpRequest(req *http.Request, body bool) ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="DumpRequestOut">
+               <h3>
+                  DumpRequestOut 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>DumpRequestOut is like [DumpRequest] but for outgoing client requests. It
+includes any headers that the standard [http.Transport] adds, such as
+User-Agent.</p>
+               
+               <pre><code>func DumpRequestOut(req *http.Request, body bool) ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="DumpResponse">
+               <h3>
+                  DumpResponse 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>DumpResponse is like DumpRequest but dumps a response.</p>
+               
+               <pre><code>func DumpResponse(resp *http.Response, body bool) ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Hijack">
+               <h3>
+                  Hijack 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Hijack detaches the [ServerConn] and returns the underlying connection as well
+as the read-side bufio which may have some left over data. Hijack may be
+called before Read has signaled the end of the keep-alive logic. The user
+should not call Hijack while [ServerConn.Read] or [ServerConn.Write] is in progress.</p>
+               
+               <pre><code>func (sc *ServerConn) Hijack() (net.Conn, *bufio.Reader)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Hijack">
+               <h3>
+                  Hijack 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Hijack detaches the [ClientConn] and returns the underlying connection as well
+as the read-side bufio which may have some left over data. Hijack may be
+called before the user or Read have signaled the end of the keep-alive
+logic. The user should not call Hijack while [ClientConn.Read] or ClientConn.Write is in progress.</p>
+               
+               <pre><code>func (cc *ClientConn) Hijack() (c net.Conn, r *bufio.Reader)</code></pre>
+            </article>
+            
+            <article class="function" data-name="LocalAddr">
+               <h3>
+                  LocalAddr 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *dumpConn) LocalAddr() net.Addr</code></pre>
+            </article>
+            
+            <article class="function" data-name="NewChunkedReader">
+               <h3>
+                  NewChunkedReader 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewChunkedReader returns a new chunkedReader that translates the data read from r
+out of HTTP "chunked" format before returning it.
+The chunkedReader returns [io.EOF] when the final 0-length chunk is read.
+NewChunkedReader is not needed by normal applications. The http package
+automatically decodes chunking when reading response bodies.</p>
+               
+               <pre><code>func NewChunkedReader(r io.Reader) io.Reader</code></pre>
+            </article>
+            
+            <article class="function" data-name="NewChunkedWriter">
+               <h3>
+                  NewChunkedWriter 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewChunkedWriter returns a new chunkedWriter that translates writes into HTTP
+"chunked" format before writing them to w. Closing the returned chunkedWriter
+sends the final 0-length chunk that marks the end of the stream but does
+not send the final CRLF that appears after trailers; trailers and the last
+CRLF must be written separately.
+NewChunkedWriter is not needed by normal applications. The http
+package adds chunking automatically if handlers don't set a
+Content-Length header. Using NewChunkedWriter inside a handler
+would result in double chunking or chunking with a Content-Length
+length, both of which are wrong.</p>
+               
+               <pre><code>func NewChunkedWriter(w io.Writer) io.WriteCloser</code></pre>
+            </article>
+            
+            <article class="function" data-name="NewClientConn">
+               <h3>
+                  NewClientConn 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewClientConn is an artifact of Go's early HTTP implementation.
+It is low-level, old, and unused by Go's current HTTP stack.
+We should have deleted it before Go 1.
+Deprecated: Use the Client or Transport in package [net/http] instead.</p>
+               
+               <pre><code>func NewClientConn(c net.Conn, r *bufio.Reader) *ClientConn</code></pre>
+            </article>
+            
+            <article class="function" data-name="NewProxyClientConn">
+               <h3>
+                  NewProxyClientConn 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewProxyClientConn is an artifact of Go's early HTTP implementation.
+It is low-level, old, and unused by Go's current HTTP stack.
+We should have deleted it before Go 1.
+Deprecated: Use the Client or Transport in package [net/http] instead.</p>
+               
+               <pre><code>func NewProxyClientConn(c net.Conn, r *bufio.Reader) *ClientConn</code></pre>
+            </article>
+            
+            <article class="function" data-name="NewServerConn">
+               <h3>
+                  NewServerConn 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewServerConn is an artifact of Go's early HTTP implementation.
+It is low-level, old, and unused by Go's current HTTP stack.
+We should have deleted it before Go 1.
+Deprecated: Use the Server in package [net/http] instead.</p>
+               
+               <pre><code>func NewServerConn(c net.Conn, r *bufio.Reader) *ServerConn</code></pre>
+            </article>
+            
+            <article class="function" data-name="NewSingleHostReverseProxy">
+               <h3>
+                  NewSingleHostReverseProxy 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewSingleHostReverseProxy returns a new [ReverseProxy] that routes
+URLs to the scheme, host, and base path provided in target. If the
+target's path is "/base" and the incoming request was for "/dir",
+the target request will be for /base/dir.
+NewSingleHostReverseProxy does not rewrite the Host header.
+To customize the ReverseProxy behavior beyond what
+NewSingleHostReverseProxy provides, use ReverseProxy directly
+with a Rewrite function. The ProxyRequest SetURL method
+may be used to route the outbound request. (Note that SetURL,
+unlike NewSingleHostReverseProxy, rewrites the Host header
+of the outbound request by default.)
+proxy := &ReverseProxy{
+Rewrite: func(r *ProxyRequest) {
+r.SetURL(target)
+r.Out.Host = r.In.Host // if desired
+},
+}</p>
+               
+               <pre><code>func NewSingleHostReverseProxy(target *url.URL) *ReverseProxy</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pending">
+               <h3>
+                  Pending 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Pending returns the number of unanswered requests
+that have been received on the connection.</p>
+               
+               <pre><code>func (sc *ServerConn) Pending() int</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pending">
+               <h3>
+                  Pending 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Pending returns the number of unanswered requests
+that have been sent on the connection.</p>
+               
+               <pre><code>func (cc *ClientConn) Pending() int</code></pre>
+            </article>
+            
+            <article class="function" data-name="Read">
+               <h3>
+                  Read 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (failureToReadBody) Read([]byte) (int, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Read">
+               <h3>
+                  Read 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *delegateReader) Read(p []byte) (int, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Read">
+               <h3>
+                  Read 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Read reads the next response from the wire. A valid response might be
+returned together with an [ErrPersistEOF], which means that the remote
+requested that this be the last request serviced. Read can be called
+concurrently with [ClientConn.Write], but not with another Read.</p>
+               
+               <pre><code>func (cc *ClientConn) Read(req *http.Request) (resp *http.Response, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Read">
+               <h3>
+                  Read 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (b neverEnding) Read(p []byte) (n int, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Read">
+               <h3>
+                  Read 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Read returns the next request on the wire. An [ErrPersistEOF] is returned if
+it is gracefully determined that there are no more requests (e.g. after the
+first request on an HTTP/1.0 connection, or after a Connection:close on a
+HTTP/1.1 connection).</p>
+               
+               <pre><code>func (sc *ServerConn) Read() (*http.Request, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="RemoteAddr">
+               <h3>
+                  RemoteAddr 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *dumpConn) RemoteAddr() net.Addr</code></pre>
+            </article>
+            
+            <article class="function" data-name="ServeHTTP">
+               <h3>
+                  ServeHTTP 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *ReverseProxy) ServeHTTP(rw http.ResponseWriter, req *http.Request)</code></pre>
+            </article>
+            
+            <article class="function" data-name="SetDeadline">
+               <h3>
+                  SetDeadline 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *dumpConn) SetDeadline(t time.Time) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="SetReadDeadline">
+               <h3>
+                  SetReadDeadline 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *dumpConn) SetReadDeadline(t time.Time) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="SetURL">
+               <h3>
+                  SetURL 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>SetURL routes the outbound request to the scheme, host, and base path
+provided in target. If the target's path is "/base" and the incoming
+request was for "/dir", the target request will be for "/base/dir".
+SetURL rewrites the outbound Host header to match the target's host.
+To preserve the inbound request's Host header (the default behavior
+of [NewSingleHostReverseProxy]):
+rewriteFunc := func(r *httputil.ProxyRequest) {
+r.SetURL(url)
+r.Out.Host = r.In.Host
+}</p>
+               
+               <pre><code>func (r *ProxyRequest) SetURL(target *url.URL)</code></pre>
+            </article>
+            
+            <article class="function" data-name="SetWriteDeadline">
+               <h3>
+                  SetWriteDeadline 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *dumpConn) SetWriteDeadline(t time.Time) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="SetXForwarded">
+               <h3>
+                  SetXForwarded 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>SetXForwarded sets the X-Forwarded-For, X-Forwarded-Host, and
+X-Forwarded-Proto headers of the outbound request.
+- The X-Forwarded-For header is set to the client IP address.
+- The X-Forwarded-Host header is set to the host name requested
+by the client.
+- The X-Forwarded-Proto header is set to "http" or "https", depending
+on whether the inbound request was made on a TLS-enabled connection.
+If the outbound request contains an existing X-Forwarded-For header,
+SetXForwarded appends the client IP address to it. To append to the
+inbound request's X-Forwarded-For header (the default behavior of
+[ReverseProxy] when using a Director function), copy the header
+from the inbound request before calling SetXForwarded:
+rewriteFunc := func(r *httputil.ProxyRequest) {
+r.Out.Header["X-Forwarded-For"] = r.In.Header["X-Forwarded-For"]
+r.SetXForwarded()
+}</p>
+               
+               <pre><code>func (r *ProxyRequest) SetXForwarded()</code></pre>
+            </article>
+            
+            <article class="function" data-name="Write">
+               <h3>
+                  Write 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Write writes resp in response to req. To close the connection gracefully, set the
+Response.Close field to true. Write should be considered operational until
+it returns an error, regardless of any errors returned on the [ServerConn.Read] side.</p>
+               
+               <pre><code>func (sc *ServerConn) Write(req *http.Request, resp *http.Response) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="Write">
+               <h3>
+                  Write 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (m *maxLatencyWriter) Write(p []byte) (n int, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Write">
+               <h3>
+                  Write 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Write writes a request. An [ErrPersistEOF] error is returned if the connection
+has been closed in an HTTP keep-alive sense. If req.Close equals true, the
+keep-alive connection is logically closed after this request and the opposing
+server is informed. An ErrUnexpectedEOF indicates the remote closed the
+underlying TCP connection, which is usually considered as graceful close.</p>
+               
+               <pre><code>func (cc *ClientConn) Write(req *http.Request) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="cleanQueryParams">
+               <h3>
+                  cleanQueryParams 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func cleanQueryParams(s string) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="copyBuffer">
+               <h3>
+                  copyBuffer 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>copyBuffer returns any write errors or non-EOF read errors, and the amount
+of bytes written.</p>
+               
+               <pre><code>func (p *ReverseProxy) copyBuffer(dst io.Writer, src io.Reader, buf []byte) (int64, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="copyFromBackend">
+               <h3>
+                  copyFromBackend 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c switchProtocolCopier) copyFromBackend(errc chan<- error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="copyHeader">
+               <h3>
+                  copyHeader 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func copyHeader(dst http.Header, src http.Header)</code></pre>
+            </article>
+            
+            <article class="function" data-name="copyResponse">
+               <h3>
+                  copyResponse 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *ReverseProxy) copyResponse(dst http.ResponseWriter, src io.Reader, flushInterval time.Duration) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="copyToBackend">
+               <h3>
+                  copyToBackend 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c switchProtocolCopier) copyToBackend(errc chan<- error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="defaultErrorHandler">
+               <h3>
+                  defaultErrorHandler 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *ReverseProxy) defaultErrorHandler(rw http.ResponseWriter, req *http.Request, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="delayedFlush">
+               <h3>
+                  delayedFlush 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (m *maxLatencyWriter) delayedFlush()</code></pre>
+            </article>
+            
+            <article class="function" data-name="drainBody">
+               <h3>
+                  drainBody 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>drainBody reads all of b to memory and then returns two equivalent
+ReadClosers yielding the same bytes.
+It returns an error if the initial slurp of all bytes fails. It does not attempt
+to make the returned ReadClosers have identical error-matching behavior.</p>
+               
+               <pre><code>func drainBody(b io.ReadCloser) (r1 io.ReadCloser, r2 io.ReadCloser, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="flushInterval">
+               <h3>
+                  flushInterval 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>flushInterval returns the p.FlushInterval value, conditionally
+overriding its value for a specific request/response.</p>
+               
+               <pre><code>func (p *ReverseProxy) flushInterval(res *http.Response) time.Duration</code></pre>
+            </article>
+            
+            <article class="function" data-name="getErrorHandler">
+               <h3>
+                  getErrorHandler 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *ReverseProxy) getErrorHandler() (func(http.ResponseWriter, *http.Request, error))</code></pre>
+            </article>
+            
+            <article class="function" data-name="handleUpgradeResponse">
+               <h3>
+                  handleUpgradeResponse 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *ReverseProxy) handleUpgradeResponse(rw http.ResponseWriter, req *http.Request, res *http.Response)</code></pre>
+            </article>
+            
+            <article class="function" data-name="ishex">
+               <h3>
+                  ishex 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func ishex(c byte) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="joinURLPath">
+               <h3>
+                  joinURLPath 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func joinURLPath(a *url.URL, b *url.URL) (path string, rawpath string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="logf">
+               <h3>
+                  logf 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *ReverseProxy) logf(format string, args ...any)</code></pre>
+            </article>
+            
+            <article class="function" data-name="modifyResponse">
+               <h3>
+                  modifyResponse 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>modifyResponse conditionally runs the optional ModifyResponse hook
+and reports whether the request should proceed.</p>
+               
+               <pre><code>func (p *ReverseProxy) modifyResponse(rw http.ResponseWriter, res *http.Response, req *http.Request) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="outgoingLength">
+               <h3>
+                  outgoingLength 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>outgoingLength is a copy of the unexported
+(*http.Request).outgoingLength method.</p>
+               
+               <pre><code>func outgoingLength(req *http.Request) int64</code></pre>
+            </article>
+            
+            <article class="function" data-name="removeHopByHopHeaders">
+               <h3>
+                  removeHopByHopHeaders 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>removeHopByHopHeaders removes hop-by-hop headers.</p>
+               
+               <pre><code>func removeHopByHopHeaders(h http.Header)</code></pre>
+            </article>
+            
+            <article class="function" data-name="rewriteRequestURL">
+               <h3>
+                  rewriteRequestURL 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func rewriteRequestURL(req *http.Request, target *url.URL)</code></pre>
+            </article>
+            
+            <article class="function" data-name="shouldPanicOnCopyError">
+               <h3>
+                  shouldPanicOnCopyError 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>shouldPanicOnCopyError reports whether the reverse proxy should
+panic with http.ErrAbortHandler. This is the right thing to do by
+default, but Go 1.10 and earlier did not, so existing unit tests
+weren't expecting panics. Only panic in our own tests, or when
+running under the HTTP server.</p>
+               
+               <pre><code>func shouldPanicOnCopyError(req *http.Request) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="singleJoiningSlash">
+               <h3>
+                  singleJoiningSlash 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func singleJoiningSlash(a string, b string) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="stop">
+               <h3>
+                  stop 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (m *maxLatencyWriter) stop()</code></pre>
+            </article>
+            
+            <article class="function" data-name="upgradeType">
+               <h3>
+                  upgradeType 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func upgradeType(h http.Header) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="valueOrDefault">
+               <h3>
+                  valueOrDefault 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Return value if nonempty, def otherwise.</p>
+               
+               <pre><code>func valueOrDefault(value string, def string) string</code></pre>
+            </article>
+            
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -181,59 +1610,170 @@
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

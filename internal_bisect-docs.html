@@ -13,448 +13,893 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                 
+               <li><a href="#interfaces">Interfaces</a></li>
+                
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>bisect</code>
-         </h1>
-         <hr />
+         <h1>bisect</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="offset64">
-            <h2>offset64</h2>
-            <hr />
-            
-            <pre><code>offset64 uint64</code></pre>
-         </article>
-         
-         <article class="global" data-name="prime64">
-            <h2>prime64</h2>
-            <hr />
-            
-            <pre><code>prime64 uint64</code></pre>
-         </article>
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"runtime"
+"sync"
+"sync/atomic"
+</code></pre>
+            </article>
+         </section>
           
-         <article class="struct" data-name="Matcher">
-            <h2>type Matcher struct</h2>
-            <hr />
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <p>A Matcher is the parsed, compiled form of a PATTERN string.
+            <article class="global" data-name="offset64">
+               <h3>
+                  offset64 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const offset64 uint64 = 14695981039346656037</code></pre>
+            </article>
+            
+            <article class="global" data-name="prime64">
+               <h3>
+                  prime64 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const prime64 uint64 = 1099511628211</code></pre>
+            </article>
+            
+         </section>
+           
+         <section id="interfaces">
+            <h2>Interfaces</h2>
+            
+            <article class="interface" data-name="Writer">
+               <h3>
+                  Writer
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>Writer is the same interface as io.Writer.
+It is duplicated here to avoid importing io.</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type Writer interface {
+Write([]byte) (int, error)
+}</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="Matcher">
+               <h3>
+                  Matcher
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Matcher is the parsed, compiled form of a PATTERN string.
 The nil *Matcher is valid: it has all changes enabled but none reported.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">verbose bool
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Matcher struct {
+verbose bool
 quiet bool
 enable bool
 list []cond
-dedup *ast.IndexExpr</code></pre>
-         </article>
-         
-         <article class="struct" data-name="cond">
-            <h2>type cond struct</h2>
-            <hr />
+dedup *ast.IndexExpr
+}</code></pre>
+            </article>
             
-            <p>A cond is a single condition in the matcher.
+            <article class="struct" data-name="cond">
+               <h3>
+                  cond
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A cond is a single condition in the matcher.
 Given an input id, if id&mask == bits, return the result.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">mask uint64
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type cond struct {
+mask uint64
 bits uint64
-result bool</code></pre>
-         </article>
-         
-         <article class="struct" data-name="parseError">
-            <h2>type parseError struct</h2>
-            <hr />
+result bool
+}</code></pre>
+            </article>
             
-            <p>parseError is a trivial error implementation,
-defined here to avoid importing errors.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">text string</code></pre>
-         </article>
-         
-         <article class="struct" data-name="dedup">
-            <h2>type dedup struct</h2>
-            <hr />
-            
-            <p>A dedup is a deduplicator for call stacks, so that we only print
+            <article class="struct" data-name="dedup">
+               <h3>
+                  dedup
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A dedup is a deduplicator for call stacks, so that we only print
 a report for new call stacks, not for call stacks we've already
 reported.
-
 It has two modes: an approximate but lock-free mode that
 may still emit some duplicates, and a precise mode that uses
 a lock and never emits duplicates.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">recent [][]uint64
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type dedup struct {
+recent [128][4]uint64
 mu sync.Mutex
-m *ast.MapType</code></pre>
-         </article>
-          
-         <article class="function" data-name="New">
-            <h2>New</h2>
-            <hr />
+m map[uint64]bool
+}</code></pre>
+            </article>
             
-            <p>New creates and returns a new Matcher implementing the given pattern.
+            <article class="struct" data-name="parseError">
+               <h3>
+                  parseError
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>parseError is a trivial error implementation,
+defined here to avoid importing errors.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type parseError struct {
+text string
+}</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="functions">
+            <h2>Functions</h2>
+            
+            <article class="function" data-name="AppendMarker">
+               <h3>
+                  AppendMarker 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>AppendMarker is like [Marker] but appends the marker to dst.</p>
+               
+               <pre><code>func AppendMarker(dst []byte, id uint64) []byte</code></pre>
+            </article>
+            
+            <article class="function" data-name="CutMarker">
+               <h3>
+                  CutMarker 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>CutMarker finds the first match marker in line and removes it,
+returning the shortened line (with the marker removed),
+the ID from the match marker,
+and whether a marker was found at all.
+If there is no marker, CutMarker returns line, 0, false.</p>
+               
+               <pre><code>func CutMarker(line string) (short string, id uint64, ok bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *parseError) Error() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="FileLine">
+               <h3>
+                  FileLine 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>FileLine reports whether the change identified by file and line should be enabled.
+If the change should be printed, FileLine prints a one-line report to w.</p>
+               
+               <pre><code>func (m *Matcher) FileLine(w Writer, file string, line int) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="Hash">
+               <h3>
+                  Hash 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Hash computes a hash of the data arguments,
+each of which must be of type string, byte, int, uint, int32, uint32, int64, uint64, uintptr, or a slice of one of those types.</p>
+               
+               <pre><code>func Hash(data ...any) uint64</code></pre>
+            </article>
+            
+            <article class="function" data-name="Marker">
+               <h3>
+                  Marker 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Marker returns the match marker text to use on any line reporting details
+about a match of the given ID.
+It always returns the hexadecimal format.</p>
+               
+               <pre><code>func Marker(id uint64) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="MarkerOnly">
+               <h3>
+                  MarkerOnly 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>MarkerOnly reports whether it is okay to print only the marker for
+a given change, omitting the identifying information.
+MarkerOnly returns true when bisect is using the printed reports
+only for an intermediate search step, not for showing to users.</p>
+               
+               <pre><code>func (m *Matcher) MarkerOnly() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="New">
+               <h3>
+                  New 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>New creates and returns a new Matcher implementing the given pattern.
 The pattern syntax is defined in the package doc comment.
-
 In addition to the pattern syntax syntax, New("") returns nil, nil.
 The nil *Matcher is valid for use: it returns true from ShouldEnable
 and false from ShouldPrint for all changes. Callers can avoid calling
 [Hash], [Matcher.ShouldEnable], and [Matcher.ShouldPrint] entirely
 when they recognize the nil Matcher.</p>
+               
+               <pre><code>func New(pattern string) (*Matcher, error)</code></pre>
+            </article>
             
-            <pre><code>func New(pattern string) (*Matcher, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="MarkerOnly">
-            <h2>MarkerOnly</h2>
-            <hr />
+            <article class="function" data-name="PrintMarker">
+               <h3>
+                  PrintMarker 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>PrintMarker prints to w a one-line report containing only the marker for h.
+It is appropriate to use when [Matcher.ShouldPrint] and [Matcher.MarkerOnly] both return true.</p>
+               
+               <pre><code>func PrintMarker(w Writer, h uint64) error</code></pre>
+            </article>
             
-            <p>MarkerOnly reports whether it is okay to print only the marker for
-a given change, omitting the identifying information.
-MarkerOnly returns true when bisect is using the printed reports
-only for an intermediate search step, not for showing to users.</p>
+            <article class="function" data-name="ShouldEnable">
+               <h3>
+                  ShouldEnable 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ShouldEnable reports whether the change with the given id should be enabled.</p>
+               
+               <pre><code>func (m *Matcher) ShouldEnable(id uint64) bool</code></pre>
+            </article>
             
-            <pre><code>func MarkerOnly() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="ShouldEnable">
-            <h2>ShouldEnable</h2>
-            <hr />
+            <article class="function" data-name="ShouldPrint">
+               <h3>
+                  ShouldPrint 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ShouldPrint reports whether to print identifying information about the change with the given id.</p>
+               
+               <pre><code>func (m *Matcher) ShouldPrint(id uint64) bool</code></pre>
+            </article>
             
-            <p>ShouldEnable reports whether the change with the given id should be enabled.</p>
-            
-            <pre><code>func ShouldEnable(id uint64) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="ShouldPrint">
-            <h2>ShouldPrint</h2>
-            <hr />
-            
-            <p>ShouldPrint reports whether to print identifying information about the change with the given id.</p>
-            
-            <pre><code>func ShouldPrint(id uint64) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="matchResult">
-            <h2>matchResult</h2>
-            <hr />
-            
-            <p>matchResult returns the result from the first condition that matches id.</p>
-            
-            <pre><code>func matchResult(id uint64) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="FileLine">
-            <h2>FileLine</h2>
-            <hr />
-            
-            <p>FileLine reports whether the change identified by file and line should be enabled.
-If the change should be printed, FileLine prints a one-line report to w.</p>
-            
-            <pre><code>func FileLine(w Writer, file string, line int) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="fileLine">
-            <h2>fileLine</h2>
-            <hr />
-            
-            <p>fileLine does the real work for FileLine.
-This lets FileLine's body handle m == nil and potentially be inlined.</p>
-            
-            <pre><code>func fileLine(w Writer, file string, line int) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="printFileLine">
-            <h2>printFileLine</h2>
-            <hr />
-            
-            <p>printFileLine prints a non-marker-only report for file:line to w.</p>
-            
-            <pre><code>func printFileLine(w Writer, h uint64, file string, line int) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="appendFileLine">
-            <h2>appendFileLine</h2>
-            <hr />
-            
-            <p>appendFileLine appends file:line to dst, returning the extended slice.</p>
-            
-            <pre><code>func appendFileLine(dst []byte, file string, line int) []byte</code></pre>
-         </article>
-         
-         <article class="function" data-name="Stack">
-            <h2>Stack</h2>
-            <hr />
-            
-            <p>MatchStack assigns the current call stack a change ID.
+            <article class="function" data-name="Stack">
+               <h3>
+                  Stack 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>MatchStack assigns the current call stack a change ID.
 If the stack should be printed, MatchStack prints it.
 Then MatchStack reports whether a change at the current call stack should be enabled.</p>
+               
+               <pre><code>func (m *Matcher) Stack(w Writer) bool</code></pre>
+            </article>
             
-            <pre><code>func Stack(w Writer) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="stack">
-            <h2>stack</h2>
-            <hr />
+            <article class="function" data-name="appendFileLine">
+               <h3>
+                  appendFileLine 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>appendFileLine appends file:line to dst, returning the extended slice.</p>
+               
+               <pre><code>func appendFileLine(dst []byte, file string, line int) []byte</code></pre>
+            </article>
             
-            <p>stack does the real work for Stack.
-This lets stack's body handle m == nil and potentially be inlined.</p>
+            <article class="function" data-name="fileLine">
+               <h3>
+                  fileLine 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>fileLine does the real work for FileLine.
+This lets FileLine's body handle m == nil and potentially be inlined.</p>
+               
+               <pre><code>func (m *Matcher) fileLine(w Writer, file string, line int) bool</code></pre>
+            </article>
             
-            <pre><code>func stack(w Writer) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="PrintMarker">
-            <h2>PrintMarker</h2>
-            <hr />
+            <article class="function" data-name="fnv">
+               <h3>
+                  fnv 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func fnv(h uint64, x byte) uint64</code></pre>
+            </article>
             
-            <p>PrintMarker prints to w a one-line report containing only the marker for h.
-It is appropriate to use when [Matcher.ShouldPrint] and [Matcher.MarkerOnly] both return true.</p>
+            <article class="function" data-name="fnvString">
+               <h3>
+                  fnvString 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func fnvString(h uint64, x string) uint64</code></pre>
+            </article>
             
-            <pre><code>func PrintMarker(w Writer, h uint64) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="printStack">
-            <h2>printStack</h2>
-            <hr />
+            <article class="function" data-name="fnvUint32">
+               <h3>
+                  fnvUint32 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func fnvUint32(h uint64, x uint32) uint64</code></pre>
+            </article>
             
-            <p>printStack prints to w a multi-line report containing a formatting of the call stack stk,
+            <article class="function" data-name="fnvUint64">
+               <h3>
+                  fnvUint64 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func fnvUint64(h uint64, x uint64) uint64</code></pre>
+            </article>
+            
+            <article class="function" data-name="matchResult">
+               <h3>
+                  matchResult 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>matchResult returns the result from the first condition that matches id.</p>
+               
+               <pre><code>func (m *Matcher) matchResult(id uint64) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="printFileLine">
+               <h3>
+                  printFileLine 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>printFileLine prints a non-marker-only report for file:line to w.</p>
+               
+               <pre><code>func printFileLine(w Writer, h uint64, file string, line int) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="printStack">
+               <h3>
+                  printStack 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>printStack prints to w a multi-line report containing a formatting of the call stack stk,
 with each line preceded by the marker for h.</p>
+               
+               <pre><code>func printStack(w Writer, h uint64, stk []uintptr) error</code></pre>
+            </article>
             
-            <pre><code>func printStack(w Writer, h uint64, stk []uintptr) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="Marker">
-            <h2>Marker</h2>
-            <hr />
-            
-            <p>Marker returns the match marker text to use on any line reporting details
-about a match of the given ID.
-It always returns the hexadecimal format.</p>
-            
-            <pre><code>func Marker(id uint64) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="AppendMarker">
-            <h2>AppendMarker</h2>
-            <hr />
-            
-            <p>AppendMarker is like [Marker] but appends the marker to dst.</p>
-            
-            <pre><code>func AppendMarker(dst []byte, id uint64) []byte</code></pre>
-         </article>
-         
-         <article class="function" data-name="CutMarker">
-            <h2>CutMarker</h2>
-            <hr />
-            
-            <p>CutMarker finds the first match marker in line and removes it,
-returning the shortened line (with the marker removed),
-the ID from the match marker,
-and whether a marker was found at all.
-If there is no marker, CutMarker returns line, 0, false.</p>
-            
-            <pre><code>func CutMarker(line string) (short string, id uint64, ok bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Hash">
-            <h2>Hash</h2>
-            <hr />
-            
-            <p>Hash computes a hash of the data arguments,
-each of which must be of type string, byte, int, uint, int32, uint32, int64, uint64, uintptr, or a slice of one of those types.</p>
-            
-            <pre><code>func Hash(data ...any) uint64</code></pre>
-         </article>
-         
-         <article class="function" data-name="Error">
-            <h2>Error</h2>
-            <hr />
-            
-            <pre><code>func Error() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="fnv">
-            <h2>fnv</h2>
-            <hr />
-            
-            <pre><code>func fnv(h uint64, x byte) uint64</code></pre>
-         </article>
-         
-         <article class="function" data-name="fnvString">
-            <h2>fnvString</h2>
-            <hr />
-            
-            <pre><code>func fnvString(h uint64, x string) uint64</code></pre>
-         </article>
-         
-         <article class="function" data-name="fnvUint64">
-            <h2>fnvUint64</h2>
-            <hr />
-            
-            <pre><code>func fnvUint64(h uint64, x uint64) uint64</code></pre>
-         </article>
-         
-         <article class="function" data-name="fnvUint32">
-            <h2>fnvUint32</h2>
-            <hr />
-            
-            <pre><code>func fnvUint32(h uint64, x uint32) uint64</code></pre>
-         </article>
-         
-         <article class="function" data-name="seen">
-            <h2>seen</h2>
-            <hr />
-            
-            <p>seen records that h has now been seen and reports whether it was seen before.
+            <article class="function" data-name="seen">
+               <h3>
+                  seen 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>seen records that h has now been seen and reports whether it was seen before.
 When seen returns false, the caller is expected to print a report for h.</p>
+               
+               <pre><code>func (d *dedup) seen(h uint64) bool</code></pre>
+            </article>
             
-            <pre><code>func seen(h uint64) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="seenLossy">
-            <h2>seenLossy</h2>
-            <hr />
-            
-            <p>seenLossy is a variant of seen that avoids a lock by using a cache of recently seen hashes.
+            <article class="function" data-name="seenLossy">
+               <h3>
+                  seenLossy 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>seenLossy is a variant of seen that avoids a lock by using a cache of recently seen hashes.
 Each cache entry is N-way set-associative: h can appear in any of the slots.
 If h does not appear in any of them, then it is inserted into a random slot,
 overwriting whatever was there before.</p>
+               
+               <pre><code>func (d *dedup) seenLossy(h uint64) bool</code></pre>
+            </article>
             
-            <pre><code>func seenLossy(h uint64) bool</code></pre>
-         </article>
+            <article class="function" data-name="stack">
+               <h3>
+                  stack 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>stack does the real work for Stack.
+This lets stack's body handle m == nil and potentially be inlined.</p>
+               
+               <pre><code>func (m *Matcher) stack(w Writer) bool</code></pre>
+            </article>
+            
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -462,59 +907,170 @@ overwriting whatever was there before.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

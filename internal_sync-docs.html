@@ -6,364 +6,1220 @@
          name="viewport"
          content="width=device-width, initial-scale=1.0"
       />
-      <title>Docs - sync_test</title>
+      <title>Docs - sync</title>
       <link
          href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
          rel="stylesheet"
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                 
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
-      <main>
-         <h1>
-            Package
-            <code>sync_test</code>
-         </h1>
-         <hr />
-         
-         <article class="global" data-name="testDataSmall">
-            <h2>testDataSmall</h2>
-            <hr />
-            
-            <pre><code>testDataSmall []string</code></pre>
-         </article>
-         
-         <article class="global" data-name="testData">
-            <h2>testData</h2>
-            <hr />
-            
-            <pre><code>testData []string</code></pre>
-         </article>
-         
-         <article class="global" data-name="testDataLarge">
-            <h2>testDataLarge</h2>
-            <hr />
-            
-            <pre><code>testDataLarge []string</code></pre>
-         </article>
-           
-         <article class="function" data-name="BenchmarkHashTrieMapLoadSmall">
-            <h2>BenchmarkHashTrieMapLoadSmall</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkHashTrieMapLoadSmall(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkHashTrieMapLoad">
-            <h2>BenchmarkHashTrieMapLoad</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkHashTrieMapLoad(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkHashTrieMapLoadLarge">
-            <h2>BenchmarkHashTrieMapLoadLarge</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkHashTrieMapLoadLarge(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="benchmarkHashTrieMapLoad">
-            <h2>benchmarkHashTrieMapLoad</h2>
-            <hr />
-            
-            <pre><code>func benchmarkHashTrieMapLoad(b *testing.B, data []string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkHashTrieMapLoadOrStore">
-            <h2>BenchmarkHashTrieMapLoadOrStore</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkHashTrieMapLoadOrStore(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkHashTrieMapLoadOrStoreLarge">
-            <h2>BenchmarkHashTrieMapLoadOrStoreLarge</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkHashTrieMapLoadOrStoreLarge(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="benchmarkHashTrieMapLoadOrStore">
-            <h2>benchmarkHashTrieMapLoadOrStore</h2>
-            <hr />
-            
-            <pre><code>func benchmarkHashTrieMapLoadOrStore(b *testing.B, data []string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestHashTrieMap">
-            <h2>TestHashTrieMap</h2>
-            <hr />
-            
-            <pre><code>func TestHashTrieMap(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestHashTrieMapBadHash">
-            <h2>TestHashTrieMapBadHash</h2>
-            <hr />
-            
-            <pre><code>func TestHashTrieMapBadHash(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestHashTrieMapTruncHash">
-            <h2>TestHashTrieMapTruncHash</h2>
-            <hr />
-            
-            <pre><code>func TestHashTrieMapTruncHash(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testHashTrieMap">
-            <h2>testHashTrieMap</h2>
-            <hr />
-            
-            <pre><code>func testHashTrieMap(t *testing.T, newMap func)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testAll">
-            <h2>testAll</h2>
-            <hr />
-            
-            <pre><code>func testAll(t *testing.T, m **ast.IndexListExpr, testData *ast.MapType, yield func)</code></pre>
-         </article>
-         
-         <article class="function" data-name="expectPresent">
-            <h2>expectPresent</h2>
-            <hr />
-            
-            <pre><code>func expectPresent(t *testing.T, key K, want V) func</code></pre>
-         </article>
-         
-         <article class="function" data-name="expectMissing">
-            <h2>expectMissing</h2>
-            <hr />
-            
-            <pre><code>func expectMissing(t *testing.T, key K, want V) func</code></pre>
-         </article>
-         
-         <article class="function" data-name="expectLoaded">
-            <h2>expectLoaded</h2>
-            <hr />
-            
-            <pre><code>func expectLoaded(t *testing.T, key K, want V) func</code></pre>
-         </article>
-         
-         <article class="function" data-name="expectStored">
-            <h2>expectStored</h2>
-            <hr />
-            
-            <pre><code>func expectStored(t *testing.T, key K, want V) func</code></pre>
-         </article>
-         
-         <article class="function" data-name="expectDeleted">
-            <h2>expectDeleted</h2>
-            <hr />
-            
-            <pre><code>func expectDeleted(t *testing.T, key K, old V) func</code></pre>
-         </article>
-         
-         <article class="function" data-name="expectNotDeleted">
-            <h2>expectNotDeleted</h2>
-            <hr />
-            
-            <pre><code>func expectNotDeleted(t *testing.T, key K, old V) func</code></pre>
-         </article>
-         
-         <article class="function" data-name="expectSwapped">
-            <h2>expectSwapped</h2>
-            <hr />
-            
-            <pre><code>func expectSwapped(t *testing.T, key K, old V, new V) func</code></pre>
-         </article>
-         
-         <article class="function" data-name="expectNotSwapped">
-            <h2>expectNotSwapped</h2>
-            <hr />
-            
-            <pre><code>func expectNotSwapped(t *testing.T, key K, old V, new V) func</code></pre>
-         </article>
-         
-         <article class="function" data-name="expectLoadedFromSwap">
-            <h2>expectLoadedFromSwap</h2>
-            <hr />
-            
-            <pre><code>func expectLoadedFromSwap(t *testing.T, key K, want V, new V) func</code></pre>
-         </article>
-         
-         <article class="function" data-name="expectNotLoadedFromSwap">
-            <h2>expectNotLoadedFromSwap</h2>
-            <hr />
-            
-            <pre><code>func expectNotLoadedFromSwap(t *testing.T, key K, new V) func</code></pre>
-         </article>
-         
-         <article class="function" data-name="expectLoadedFromDelete">
-            <h2>expectLoadedFromDelete</h2>
-            <hr />
-            
-            <pre><code>func expectLoadedFromDelete(t *testing.T, key K, want V) func</code></pre>
-         </article>
-         
-         <article class="function" data-name="expectNotLoadedFromDelete">
-            <h2>expectNotLoadedFromDelete</h2>
-            <hr />
-            
-            <pre><code>func expectNotLoadedFromDelete(t *testing.T, key K, _ V) func</code></pre>
-         </article>
-         
-         <article class="function" data-name="testDataMap">
-            <h2>testDataMap</h2>
-            <hr />
-            
-            <pre><code>func testDataMap(data []string) *ast.MapType</code></pre>
-         </article>
-         
-         <article class="function" data-name="init">
-            <h2>init</h2>
-            <hr />
-            
-            <pre><code>func init()</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestConcurrentCache">
-            <h2>TestConcurrentCache</h2>
-            <hr />
-            
-            <p>TestConcurrentCache tests HashTrieMap in a scenario where it is used as
-the basis of a memory-efficient concurrent cache. We're specifically
-looking to make sure that CompareAndSwap and CompareAndDelete are
-atomic with respect to one another. When competing for the same
-key-value pair, they must not both succeed.
 
-This test is a regression test for issue #70970.</p>
+      <main>
+         <h1>sync</h1>
+         <div class="section-divider"></div>
+
+         
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"internal/abi"
+"internal/goarch"
+"sync/atomic"
+"unsafe"
+"internal/race"
+"sync/atomic"
+"unsafe"
+_ "unsafe"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <pre><code>func TestConcurrentCache(t *testing.T)</code></pre>
-         </article>
+            <article class="global" data-name="mutexLocked">
+               <h3>
+                  mutexLocked 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const mutexLocked = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="mutexStarving">
+               <h3>
+                  mutexStarving 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const mutexStarving</code></pre>
+            </article>
+            
+            <article class="global" data-name="mutexWaiterShift">
+               <h3>
+                  mutexWaiterShift 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const mutexWaiterShift = iota</code></pre>
+            </article>
+            
+            <article class="global" data-name="mutexWoken">
+               <h3>
+                  mutexWoken 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const mutexWoken</code></pre>
+            </article>
+            
+            <article class="global" data-name="nChildren">
+               <h3>
+                  nChildren 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const nChildren = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="nChildrenLog2">
+               <h3>
+                  nChildrenLog2 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>16 children. This seems to be the sweet spot for
+load performance: any smaller and we lose out on
+50% or more in CPU performance. Any larger and the
+returns are minuscule (~1% improvement for 32 children).</p>
+               
+               <pre><code>const nChildrenLog2 = 4</code></pre>
+            </article>
+            
+            <article class="global" data-name="nChildrenMask">
+               <h3>
+                  nChildrenMask 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const nChildrenMask = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="starvationThresholdNs">
+               <h3>
+                  starvationThresholdNs 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Mutex fairness.
+Mutex can be in 2 modes of operations: normal and starvation.
+In normal mode waiters are queued in FIFO order, but a woken up waiter
+does not own the mutex and competes with new arriving goroutines over
+the ownership. New arriving goroutines have an advantage -- they are
+already running on CPU and there can be lots of them, so a woken up
+waiter has good chances of losing. In such case it is queued at front
+of the wait queue. If a waiter fails to acquire the mutex for more than 1ms,
+it switches mutex to the starvation mode.
+In starvation mode ownership of the mutex is directly handed off from
+the unlocking goroutine to the waiter at the front of the queue.
+New arriving goroutines don't try to acquire the mutex even if it appears
+to be unlocked, and don't try to spin. Instead they queue themselves at
+the tail of the wait queue.
+If a waiter receives ownership of the mutex and sees that either
+(1) it is the last waiter in the queue, or (2) it waited for less than 1 ms,
+it switches mutex back to normal operation mode.
+Normal mode has considerably better performance as a goroutine can acquire
+a mutex several times in a row even if there are blocked waiters.
+Starvation mode is important to prevent pathological cases of tail latency.</p>
+               
+               <pre><code>const starvationThresholdNs = 1e6</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="types">
+            <h2>Type Aliases</h2>
+            
+            <article class="type" data-name="equalFunc">
+               <h3>
+                  equalFunc
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <pre><code>type equalFunc func(unsafe.Pointer, unsafe.Pointer) bool</code></pre>
+            </article>
+            
+            <article class="type" data-name="hashFunc">
+               <h3>
+                  hashFunc
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <pre><code>type hashFunc func(unsafe.Pointer, uintptr) uintptr</code></pre>
+            </article>
+            
+         </section>
+           
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="HashTrieMap">
+               <h3>
+                  HashTrieMap
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>HashTrieMap is an implementation of a concurrent hash-trie. The implementation
+is designed around frequent loads, but offers decent performance for stores
+and deletes as well, especially if the map is larger. Its primary use-case is
+the unique package, but can be used elsewhere as well.
+The zero HashTrieMap is empty and ready to use.
+It must not be copied after first use.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type HashTrieMap struct {
+inited atomic.Uint32
+initMu Mutex
+root *ast.IndexExpr
+keyHash hashFunc
+valEqual equalFunc
+seed uintptr
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="Mutex">
+               <h3>
+                  Mutex
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Mutex is a mutual exclusion lock.
+See package [sync.Mutex] documentation.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Mutex struct {
+state int32
+sema uint32
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="entry">
+               <h3>
+                  entry
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>entry is a leaf node in the hash-trie.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type entry struct {
+*ast.IndexListExpr
+overflow *ast.IndexExpr
+key K
+value V
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="indirect">
+               <h3>
+                  indirect
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>indirect is an internal node in the hash-trie.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type indirect struct {
+*ast.IndexListExpr
+dead atomic.Bool
+mu Mutex
+parent **ast.IndexListExpr
+children [nChildren]*ast.IndexExpr
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="node">
+               <h3>
+                  node
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>node is the header for a node. It's polymorphic and
+is actually either an entry or an indirect.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type node struct {
+isEntry bool
+}</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="functions">
+            <h2>Functions</h2>
+            
+            <article class="function" data-name="All">
+               <h3>
+                  All 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>All returns an iterator over each key and value present in the map.
+The iterator does not necessarily correspond to any consistent snapshot of the
+HashTrieMap's contents: no key will be visited more than once, but if the value
+for any key is stored or deleted concurrently (including by yield), the iterator
+may reflect any mapping for that key from any point during iteration. The iterator
+does not block other methods on the receiver; even yield itself may call any
+method on the HashTrieMap.</p>
+               
+               <pre><code>func (ht **ast.IndexListExpr) All() (func(yield func(K, V) bool))</code></pre>
+            </article>
+            
+            <article class="function" data-name="Clear">
+               <h3>
+                  Clear 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Clear deletes all the entries, resulting in an empty HashTrieMap.</p>
+               
+               <pre><code>func (ht **ast.IndexListExpr) Clear()</code></pre>
+            </article>
+            
+            <article class="function" data-name="CompareAndDelete">
+               <h3>
+                  CompareAndDelete 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>CompareAndDelete deletes the entry for key if its value is equal to old.
+The value type must be comparable, otherwise this CompareAndDelete will panic.
+If there is no current value for key in the map, CompareAndDelete returns false
+(even if the old value is the nil interface value).</p>
+               
+               <pre><code>func (ht **ast.IndexListExpr) CompareAndDelete(key K, old V) (deleted bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="CompareAndSwap">
+               <h3>
+                  CompareAndSwap 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>CompareAndSwap swaps the old and new values for key
+if the value stored in the map is equal to old.
+The value type must be of a comparable type, otherwise CompareAndSwap will panic.</p>
+               
+               <pre><code>func (ht **ast.IndexListExpr) CompareAndSwap(key K, old V, new V) (swapped bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Delete">
+               <h3>
+                  Delete 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Delete deletes the value for a key.</p>
+               
+               <pre><code>func (ht **ast.IndexListExpr) Delete(key K)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Load">
+               <h3>
+                  Load 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Load returns the value stored in the map for a key, or nil if no
+value is present.
+The ok result indicates whether value was found in the map.</p>
+               
+               <pre><code>func (ht **ast.IndexListExpr) Load(key K) (value V, ok bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="LoadAndDelete">
+               <h3>
+                  LoadAndDelete 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>LoadAndDelete deletes the value for a key, returning the previous value if any.
+The loaded result reports whether the key was present.</p>
+               
+               <pre><code>func (ht **ast.IndexListExpr) LoadAndDelete(key K) (value V, loaded bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="LoadOrStore">
+               <h3>
+                  LoadOrStore 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>LoadOrStore returns the existing value for the key if present.
+Otherwise, it stores and returns the given value.
+The loaded result is true if the value was loaded, false if stored.</p>
+               
+               <pre><code>func (ht **ast.IndexListExpr) LoadOrStore(key K, value V) (result V, loaded bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Lock">
+               <h3>
+                  Lock 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Lock locks m.
+See package [sync.Mutex] documentation.</p>
+               
+               <pre><code>func (m *Mutex) Lock()</code></pre>
+            </article>
+            
+            <article class="function" data-name="Range">
+               <h3>
+                  Range 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Range calls f sequentially for each key and value present in the map.
+If f returns false, range stops the iteration.
+This exists for compatibility with sync.Map; All should be preferred.
+It provides the same guarantees as sync.Map, and All.</p>
+               
+               <pre><code>func (ht **ast.IndexListExpr) Range(yield func(K, V) bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Store">
+               <h3>
+                  Store 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Store sets the value for a key.</p>
+               
+               <pre><code>func (ht **ast.IndexListExpr) Store(key K, old V)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Swap">
+               <h3>
+                  Swap 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Swap swaps the value for a key and returns the previous value if any.
+The loaded result reports whether the key was present.</p>
+               
+               <pre><code>func (ht **ast.IndexListExpr) Swap(key K, new V) (previous V, loaded bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="TryLock">
+               <h3>
+                  TryLock 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>TryLock tries to lock m and reports whether it succeeded.
+See package [sync.Mutex] documentation.</p>
+               
+               <pre><code>func (m *Mutex) TryLock() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="Unlock">
+               <h3>
+                  Unlock 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Unlock unlocks m.
+See package [sync.Mutex] documentation.</p>
+               
+               <pre><code>func (m *Mutex) Unlock()</code></pre>
+            </article>
+            
+            <article class="function" data-name="compareAndDelete">
+               <h3>
+                  compareAndDelete 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>compareAndDelete deletes an entry in the overflow chain if both the key and value compare
+equal. Returns the new entry chain and whether or not anything was deleted.
+compareAndDelete must be called under the mutex of the indirect node which e is a child of.</p>
+               
+               <pre><code>func (head **ast.IndexListExpr) compareAndDelete(key K, value V, valEqual equalFunc) (**ast.IndexListExpr, bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="compareAndSwap">
+               <h3>
+                  compareAndSwap 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>compareAndSwap replaces an entry in the overflow chain if both the key and value compare
+equal. Returns the new entry chain and whether or not anything was swapped.
+compareAndSwap must be called under the mutex of the indirect node which e is a child of.</p>
+               
+               <pre><code>func (head **ast.IndexListExpr) compareAndSwap(key K, old V, new V, valEqual equalFunc) (**ast.IndexListExpr, bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="empty">
+               <h3>
+                  empty 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (i **ast.IndexListExpr) empty() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="entry">
+               <h3>
+                  entry 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (n **ast.IndexListExpr) entry() **ast.IndexListExpr</code></pre>
+            </article>
+            
+            <article class="function" data-name="expand">
+               <h3>
+                  expand 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>expand takes oldEntry and newEntry whose hashes conflict from bit 64 down to hashShift and
+produces a subtree of indirect nodes to hold the two new entries.</p>
+               
+               <pre><code>func (ht **ast.IndexListExpr) expand(oldEntry **ast.IndexListExpr, newEntry **ast.IndexListExpr, newHash uintptr, hashShift uint, parent **ast.IndexListExpr) **ast.IndexListExpr</code></pre>
+            </article>
+            
+            <article class="function" data-name="fatal">
+               <h3>
+                  fatal 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>go:linkname fatal</p>
+               
+               <pre><code>func fatal(string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="find">
+               <h3>
+                  find 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>find searches the tree for a node that contains key (hash must be the hash of key).
+If valEqual != nil, then it will also enforce that the values are equal as well.
+Returns a non-nil node, which will always be an entry, if found.
+If i != nil then i.mu is locked, and it is the caller's responsibility to unlock it.</p>
+               
+               <pre><code>func (ht **ast.IndexListExpr) find(key K, hash uintptr, valEqual equalFunc, value V) (i **ast.IndexListExpr, hashShift uint, slot **ast.IndexExpr, n **ast.IndexListExpr)</code></pre>
+            </article>
+            
+            <article class="function" data-name="indirect">
+               <h3>
+                  indirect 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (n **ast.IndexListExpr) indirect() **ast.IndexListExpr</code></pre>
+            </article>
+            
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (ht **ast.IndexListExpr) init()</code></pre>
+            </article>
+            
+            <article class="function" data-name="initSlow">
+               <h3>
+                  initSlow 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>go:noinline</p>
+               
+               <pre><code>func (ht **ast.IndexListExpr) initSlow()</code></pre>
+            </article>
+            
+            <article class="function" data-name="iter">
+               <h3>
+                  iter 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (ht **ast.IndexListExpr) iter(i **ast.IndexListExpr, yield func(key K, value V) bool) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="loadAndDelete">
+               <h3>
+                  loadAndDelete 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>loadAndDelete deletes an entry in the overflow chain by key. Returns the value for the key, the new
+entry chain and whether or not anything was loaded (and deleted).
+loadAndDelete must be called under the mutex of the indirect node which e is a child of.</p>
+               
+               <pre><code>func (head **ast.IndexListExpr) loadAndDelete(key K) (V, **ast.IndexListExpr, bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="lockSlow">
+               <h3>
+                  lockSlow 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (m *Mutex) lockSlow()</code></pre>
+            </article>
+            
+            <article class="function" data-name="lookup">
+               <h3>
+                  lookup 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e **ast.IndexListExpr) lookup(key K) (V, bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="lookupWithValue">
+               <h3>
+                  lookupWithValue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e **ast.IndexListExpr) lookupWithValue(key K, value V, valEqual equalFunc) (V, bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="newEntryNode">
+               <h3>
+                  newEntryNode 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func newEntryNode(key K, value V) **ast.IndexListExpr</code></pre>
+            </article>
+            
+            <article class="function" data-name="newIndirectNode">
+               <h3>
+                  newIndirectNode 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func newIndirectNode(parent **ast.IndexListExpr) **ast.IndexListExpr</code></pre>
+            </article>
+            
+            <article class="function" data-name="runtime_SemacquireMutex">
+               <h3>
+                  runtime_SemacquireMutex 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>SemacquireMutex is like Semacquire, but for profiling contended
+Mutexes and RWMutexes.
+If lifo is true, queue waiter at the head of wait queue.
+skipframes is the number of frames to omit during tracing, counting from
+runtime_SemacquireMutex's caller.
+The different forms of this function just tell the runtime how to present
+the reason for waiting in a backtrace, and is used to compute some metrics.
+Otherwise they're functionally identical.
+go:linkname runtime_SemacquireMutex</p>
+               
+               <pre><code>func runtime_SemacquireMutex(s *uint32, lifo bool, skipframes int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="runtime_Semrelease">
+               <h3>
+                  runtime_Semrelease 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Semrelease atomically increments *s and notifies a waiting goroutine
+if one is blocked in Semacquire.
+It is intended as a simple wakeup primitive for use by the synchronization
+library and should not be used directly.
+If handoff is true, pass count directly to the first waiter.
+skipframes is the number of frames to omit during tracing, counting from
+runtime_Semrelease's caller.
+go:linkname runtime_Semrelease</p>
+               
+               <pre><code>func runtime_Semrelease(s *uint32, handoff bool, skipframes int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="runtime_canSpin">
+               <h3>
+                  runtime_canSpin 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Active spinning runtime support.
+runtime_canSpin reports whether spinning makes sense at the moment.
+go:linkname runtime_canSpin</p>
+               
+               <pre><code>func runtime_canSpin(i int) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="runtime_doSpin">
+               <h3>
+                  runtime_doSpin 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>runtime_doSpin does active spinning.
+go:linkname runtime_doSpin</p>
+               
+               <pre><code>func runtime_doSpin()</code></pre>
+            </article>
+            
+            <article class="function" data-name="runtime_nanotime">
+               <h3>
+                  runtime_nanotime 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>go:linkname runtime_nanotime</p>
+               
+               <pre><code>func runtime_nanotime() int64</code></pre>
+            </article>
+            
+            <article class="function" data-name="runtime_rand">
+               <h3>
+                  runtime_rand 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Pull in runtime.rand so that we don't need to take a dependency
+on math/rand/v2.
+go:linkname runtime_rand runtime.rand</p>
+               
+               <pre><code>func runtime_rand() uint64</code></pre>
+            </article>
+            
+            <article class="function" data-name="swap">
+               <h3>
+                  swap 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>swap replaces an entry in the overflow chain if keys compare equal. Returns the new entry chain,
+the old value, and whether or not anything was swapped.
+swap must be called under the mutex of the indirect node which e is a child of.</p>
+               
+               <pre><code>func (head **ast.IndexListExpr) swap(key K, new V) (**ast.IndexListExpr, V, bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="throw">
+               <h3>
+                  throw 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>go:linkname throw</p>
+               
+               <pre><code>func throw(string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="unlockSlow">
+               <h3>
+                  unlockSlow 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (m *Mutex) unlockSlow(new int32)</code></pre>
+            </article>
+            
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -371,59 +1227,170 @@ This test is a regression test for issue #70970.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

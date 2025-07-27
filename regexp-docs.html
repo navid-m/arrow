@@ -6,362 +6,2536 @@
          name="viewport"
          content="width=device-width, initial-scale=1.0"
       />
-      <title>Docs - regexp_test</title>
+      <title>Docs - regexp</title>
       <link
          href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
          rel="stylesheet"
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
-          
-         <a href="regexp_syntax-docs.html">syntax</a>
-         <br />
-          
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <ul class="subpackage-list">
+               
+               <li><a href="regexp_syntax-docs.html">syntax</a></li>
+               
+            </ul>
+            
+         </div>
+
+         
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                
+               <li><a href="#interfaces">Interfaces</a></li>
+                
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
+         
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>regexp_test</code>
-         </h1>
-         <hr />
-           
-         <article class="function" data-name="Example">
-            <h2>Example</h2>
-            <hr />
-            
-            <pre><code>func Example()</code></pre>
-         </article>
+         <h1>regexp</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="function" data-name="ExampleMatch">
-            <h2>ExampleMatch</h2>
-            <hr />
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"regexp/syntax"
+"sync"
+"io"
+"regexp/syntax"
+"sync"
+"regexp/syntax"
+"slices"
+"strings"
+"unicode"
+"unicode/utf8"
+"bytes"
+"io"
+"regexp/syntax"
+"strconv"
+"strings"
+"sync"
+"unicode"
+"unicode/utf8"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <pre><code>func ExampleMatch()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleMatchString">
-            <h2>ExampleMatchString</h2>
-            <hr />
+            <article class="global" data-name="anyRune">
+               <h3>
+                  anyRune 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var anyRune = []rune{...}</code></pre>
+            </article>
             
-            <pre><code>func ExampleMatchString()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleQuoteMeta">
-            <h2>ExampleQuoteMeta</h2>
-            <hr />
+            <article class="global" data-name="anyRuneNotNL">
+               <h3>
+                  anyRuneNotNL 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var anyRuneNotNL = []rune{...}</code></pre>
+            </article>
             
-            <pre><code>func ExampleQuoteMeta()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_Find">
-            <h2>ExampleRegexp_Find</h2>
-            <hr />
+            <article class="global" data-name="arrayNoInts">
+               <h3>
+                  arrayNoInts 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>arrayNoInts is returned by doExecute match if nil dstCap is passed
+to it with ncap=0.</p>
+               
+               <pre><code>var arrayNoInts [0]int</code></pre>
+            </article>
             
-            <pre><code>func ExampleRegexp_Find()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_FindAll">
-            <h2>ExampleRegexp_FindAll</h2>
-            <hr />
+            <article class="global" data-name="bitStatePool">
+               <h3>
+                  bitStatePool 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var bitStatePool sync.Pool</code></pre>
+            </article>
             
-            <pre><code>func ExampleRegexp_FindAll()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_FindAllSubmatch">
-            <h2>ExampleRegexp_FindAllSubmatch</h2>
-            <hr />
+            <article class="global" data-name="endOfText">
+               <h3>
+                  endOfText 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const endOfText rune = *ast.UnaryExpr</code></pre>
+            </article>
             
-            <pre><code>func ExampleRegexp_FindAllSubmatch()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_FindSubmatch">
-            <h2>ExampleRegexp_FindSubmatch</h2>
-            <hr />
+            <article class="global" data-name="matchPool">
+               <h3>
+                  matchPool 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Pools of *machine for use during (*Regexp).doExecute,
+split up by the size of the execution queues.
+matchPool[i] machines have queue size matchSize[i].
+On a 64-bit system each queue entry is 16 bytes,
+so matchPool[0] has 16*2*128 = 4kB queues, etc.
+The final matchPool is a catch-all for very large queues.</p>
+               
+               <pre><code>var matchPool [*ast.CallExpr]sync.Pool</code></pre>
+            </article>
             
-            <pre><code>func ExampleRegexp_FindSubmatch()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_Match">
-            <h2>ExampleRegexp_Match</h2>
-            <hr />
+            <article class="global" data-name="matchSize">
+               <h3>
+                  matchSize 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Pools of *machine for use during (*Regexp).doExecute,
+split up by the size of the execution queues.
+matchPool[i] machines have queue size matchSize[i].
+On a 64-bit system each queue entry is 16 bytes,
+so matchPool[0] has 16*2*128 = 4kB queues, etc.
+The final matchPool is a catch-all for very large queues.</p>
+               
+               <pre><code>var matchSize = [...]int{...}</code></pre>
+            </article>
             
-            <pre><code>func ExampleRegexp_Match()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_FindString">
-            <h2>ExampleRegexp_FindString</h2>
-            <hr />
+            <article class="global" data-name="maxBacktrackProg">
+               <h3>
+                  maxBacktrackProg 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const maxBacktrackProg = 500</code></pre>
+            </article>
             
-            <pre><code>func ExampleRegexp_FindString()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_FindStringIndex">
-            <h2>ExampleRegexp_FindStringIndex</h2>
-            <hr />
+            <article class="global" data-name="maxBacktrackVector">
+               <h3>
+                  maxBacktrackVector 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const maxBacktrackVector = *ast.BinaryExpr</code></pre>
+            </article>
             
-            <pre><code>func ExampleRegexp_FindStringIndex()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_FindStringSubmatch">
-            <h2>ExampleRegexp_FindStringSubmatch</h2>
-            <hr />
+            <article class="global" data-name="mergeFailed">
+               <h3>
+                  mergeFailed 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>mergeRuneSets merges two non-intersecting runesets, and returns the merged result,
+and a NextIp array. The idea is that if a rune matches the OnePassRunes at index
+i, NextIp[i/2] is the target. If the input sets intersect, an empty runeset and a
+NextIp array with the single element mergeFailed is returned.
+The code assumes that both inputs contain ordered and non-intersecting rune pairs.</p>
+               
+               <pre><code>const mergeFailed = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre><code>func ExampleRegexp_FindStringSubmatch()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_FindAllString">
-            <h2>ExampleRegexp_FindAllString</h2>
-            <hr />
+            <article class="global" data-name="noNext">
+               <h3>
+                  noNext 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var noNext = []uint32{...}</code></pre>
+            </article>
             
-            <pre><code>func ExampleRegexp_FindAllString()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_FindAllStringSubmatch">
-            <h2>ExampleRegexp_FindAllStringSubmatch</h2>
-            <hr />
+            <article class="global" data-name="noRune">
+               <h3>
+                  noRune 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var noRune = []rune{...}</code></pre>
+            </article>
             
-            <pre><code>func ExampleRegexp_FindAllStringSubmatch()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_FindAllStringSubmatchIndex">
-            <h2>ExampleRegexp_FindAllStringSubmatchIndex</h2>
-            <hr />
+            <article class="global" data-name="onePassPool">
+               <h3>
+                  onePassPool 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var onePassPool sync.Pool</code></pre>
+            </article>
             
-            <pre><code>func ExampleRegexp_FindAllStringSubmatchIndex()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_FindSubmatchIndex">
-            <h2>ExampleRegexp_FindSubmatchIndex</h2>
-            <hr />
+            <article class="global" data-name="specialBytes">
+               <h3>
+                  specialBytes 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Bitmap used by func special to check whether a character needs to be escaped.</p>
+               
+               <pre><code>var specialBytes [16]byte</code></pre>
+            </article>
             
-            <pre><code>func ExampleRegexp_FindSubmatchIndex()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_Longest">
-            <h2>ExampleRegexp_Longest</h2>
-            <hr />
+            <article class="global" data-name="startSize">
+               <h3>
+                  startSize 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const startSize = 10</code></pre>
+            </article>
             
-            <pre><code>func ExampleRegexp_Longest()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_MatchString">
-            <h2>ExampleRegexp_MatchString</h2>
-            <hr />
+            <article class="global" data-name="visitedBits">
+               <h3>
+                  visitedBits 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const visitedBits = 32</code></pre>
+            </article>
             
-            <pre><code>func ExampleRegexp_MatchString()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_NumSubexp">
-            <h2>ExampleRegexp_NumSubexp</h2>
-            <hr />
+         </section>
+          
+         <section id="types">
+            <h2>Type Aliases</h2>
             
-            <pre><code>func ExampleRegexp_NumSubexp()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_ReplaceAll">
-            <h2>ExampleRegexp_ReplaceAll</h2>
-            <hr />
+            <article class="type" data-name="lazyFlag">
+               <h3>
+                  lazyFlag
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>A lazyFlag is a lazily-evaluated syntax.EmptyOp,
+for checking zero-width flags like ^ $ \A \z \B \b.
+It records the pair of relevant runes and does not
+determine the implied flags until absolutely necessary
+(most of the time, that means never).</p>
+               
+               <pre><code>type lazyFlag uint64</code></pre>
+            </article>
             
-            <pre><code>func ExampleRegexp_ReplaceAll()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_ReplaceAllLiteralString">
-            <h2>ExampleRegexp_ReplaceAllLiteralString</h2>
-            <hr />
+         </section>
+          
+         <section id="interfaces">
+            <h2>Interfaces</h2>
             
-            <pre><code>func ExampleRegexp_ReplaceAllLiteralString()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_ReplaceAllString">
-            <h2>ExampleRegexp_ReplaceAllString</h2>
-            <hr />
+            <article class="interface" data-name="input">
+               <h3>
+                  input
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>input abstracts different representations of the input text. It provides
+one-character lookahead.</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type input interface {
+step(pos int) (r rune, width int)
+canCheckPrefix() bool
+hasPrefix(re *Regexp) bool
+index(re *Regexp, pos int) int
+context(pos int) lazyFlag
+}</code></pre>
+            </article>
             
-            <pre><code>func ExampleRegexp_ReplaceAllString()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_ReplaceAllStringFunc">
-            <h2>ExampleRegexp_ReplaceAllStringFunc</h2>
-            <hr />
+         </section>
+          
+         <section id="structs">
+            <h2>Structs</h2>
             
-            <pre><code>func ExampleRegexp_ReplaceAllStringFunc()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_SubexpNames">
-            <h2>ExampleRegexp_SubexpNames</h2>
-            <hr />
+            <article class="struct" data-name="Regexp">
+               <h3>
+                  Regexp
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Regexp is the representation of a compiled regular expression.
+A Regexp is safe for concurrent use by multiple goroutines,
+except for configuration methods, such as [Regexp.Longest].</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Regexp struct {
+expr string
+prog *syntax.Prog
+onepass *onePassProg
+numSubexp int
+maxBitStateLen int
+subexpNames []string
+prefix string
+prefixBytes []byte
+prefixRune rune
+prefixEnd uint32
+mpool int
+matchcap int
+prefixComplete bool
+cond syntax.EmptyOp
+minInputLen int
+longest bool
+}</code></pre>
+            </article>
             
-            <pre><code>func ExampleRegexp_SubexpNames()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_SubexpIndex">
-            <h2>ExampleRegexp_SubexpIndex</h2>
-            <hr />
+            <article class="struct" data-name="bitState">
+               <h3>
+                  bitState
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>bitState holds state for the backtracker.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type bitState struct {
+end int
+cap []int
+matchcap []int
+jobs []job
+visited []uint32
+inputs inputs
+}</code></pre>
+            </article>
             
-            <pre><code>func ExampleRegexp_SubexpIndex()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_Split">
-            <h2>ExampleRegexp_Split</h2>
-            <hr />
+            <article class="struct" data-name="entry">
+               <h3>
+                  entry
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>An entry is an entry on a queue.
+It holds both the instruction pc and the actual thread.
+Some queue entries are just place holders so that the machine
+knows it has considered that pc. Such entries have t == nil.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type entry struct {
+pc uint32
+t *thread
+}</code></pre>
+            </article>
             
-            <pre><code>func ExampleRegexp_Split()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_Expand">
-            <h2>ExampleRegexp_Expand</h2>
-            <hr />
+            <article class="struct" data-name="inputBytes">
+               <h3>
+                  inputBytes
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>inputBytes scans a byte slice.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type inputBytes struct {
+str []byte
+}</code></pre>
+            </article>
             
-            <pre><code>func ExampleRegexp_Expand()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_ExpandString">
-            <h2>ExampleRegexp_ExpandString</h2>
-            <hr />
+            <article class="struct" data-name="inputReader">
+               <h3>
+                  inputReader
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>inputReader scans a RuneReader.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type inputReader struct {
+r io.RuneReader
+atEOT bool
+pos int
+}</code></pre>
+            </article>
             
-            <pre><code>func ExampleRegexp_ExpandString()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_FindIndex">
-            <h2>ExampleRegexp_FindIndex</h2>
-            <hr />
+            <article class="struct" data-name="inputString">
+               <h3>
+                  inputString
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>inputString scans a string.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type inputString struct {
+str string
+}</code></pre>
+            </article>
             
-            <pre><code>func ExampleRegexp_FindIndex()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_FindAllSubmatchIndex">
-            <h2>ExampleRegexp_FindAllSubmatchIndex</h2>
-            <hr />
+            <article class="struct" data-name="inputs">
+               <h3>
+                  inputs
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type inputs struct {
+bytes inputBytes
+string inputString
+reader inputReader
+}</code></pre>
+            </article>
             
-            <pre><code>func ExampleRegexp_FindAllSubmatchIndex()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleRegexp_FindAllIndex">
-            <h2>ExampleRegexp_FindAllIndex</h2>
-            <hr />
+            <article class="struct" data-name="job">
+               <h3>
+                  job
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A job is an entry on the backtracker's job stack. It holds
+the instruction pc and the position in the input.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type job struct {
+pc uint32
+arg bool
+pos int
+}</code></pre>
+            </article>
             
-            <pre><code>func ExampleRegexp_FindAllIndex()</code></pre>
-         </article>
+            <article class="struct" data-name="machine">
+               <h3>
+                  machine
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A machine holds all the state during an NFA simulation for p.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type machine struct {
+re *Regexp
+p *syntax.Prog
+q0 queue
+q1 queue
+pool []*thread
+matched bool
+matchcap []int
+inputs inputs
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="onePassInst">
+               <h3>
+                  onePassInst
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A onePassInst is a single instruction in a one-pass regular expression program.
+It is the same as syntax.Inst except for the new 'Next' field.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type onePassInst struct {
+syntax.Inst
+Next []uint32
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="onePassMachine">
+               <h3>
+                  onePassMachine
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type onePassMachine struct {
+inputs inputs
+matchcap []int
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="onePassProg">
+               <h3>
+                  onePassProg
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A onePassProg is a compiled one-pass regular expression program.
+It is the same as syntax.Prog except for the use of onePassInst.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type onePassProg struct {
+Inst []onePassInst
+Start int
+NumCap int
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="queue">
+               <h3>
+                  queue
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A queue is a 'sparse array' holding pending threads of execution.
+See https://research.swtch.com/2008/03/using-uninitialized-memory-for-fun-and.html</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type queue struct {
+sparse []uint32
+dense []entry
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="queueOnePass">
+               <h3>
+                  queueOnePass
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Sparse Array implementation is used as a queueOnePass.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type queueOnePass struct {
+sparse []uint32
+dense []uint32
+size uint32
+nextIndex uint32
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="thread">
+               <h3>
+                  thread
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A thread is the state of a single path through the machine:
+an instruction and a corresponding capture array.
+See https://swtch.com/~rsc/regexp/regexp2.html</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type thread struct {
+inst *syntax.Inst
+cap []int
+}</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="functions">
+            <h2>Functions</h2>
+            
+            <article class="function" data-name="AppendText">
+               <h3>
+                  AppendText 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>AppendText implements [encoding.TextAppender]. The output
+matches that of calling the [Regexp.String] method.
+Note that the output is lossy in some cases: This method does not indicate
+POSIX regular expressions (i.e. those compiled by calling [CompilePOSIX]), or
+those for which the [Regexp.Longest] method has been called.</p>
+               
+               <pre><code>func (re *Regexp) AppendText(b []byte) ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Compile">
+               <h3>
+                  Compile 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Compile parses a regular expression and returns, if successful,
+a [Regexp] object that can be used to match against text.
+When matching against text, the regexp returns a match that
+begins as early as possible in the input (leftmost), and among those
+it chooses the one that a backtracking search would have found first.
+This so-called leftmost-first matching is the same semantics
+that Perl, Python, and other implementations use, although this
+package implements it without the expense of backtracking.
+For POSIX leftmost-longest matching, see [CompilePOSIX].</p>
+               
+               <pre><code>func Compile(expr string) (*Regexp, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="CompilePOSIX">
+               <h3>
+                  CompilePOSIX 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>CompilePOSIX is like [Compile] but restricts the regular expression
+to POSIX ERE (egrep) syntax and changes the match semantics to
+leftmost-longest.
+That is, when matching against text, the regexp returns a match that
+begins as early as possible in the input (leftmost), and among those
+it chooses a match that is as long as possible.
+This so-called leftmost-longest matching is the same semantics
+that early regular expression implementations used and that POSIX
+specifies.
+However, there can be multiple leftmost-longest matches, with different
+submatch choices, and here this package diverges from POSIX.
+Among the possible leftmost-longest matches, this package chooses
+the one that a backtracking search would have found first, while POSIX
+specifies that the match be chosen to maximize the length of the first
+subexpression, then the second, and so on from left to right.
+The POSIX rule is computationally prohibitive and not even well-defined.
+See https://swtch.com/~rsc/regexp/regexp2.html#posix for details.</p>
+               
+               <pre><code>func CompilePOSIX(expr string) (*Regexp, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Copy">
+               <h3>
+                  Copy 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Copy returns a new [Regexp] object copied from re.
+Calling [Regexp.Longest] on one copy does not affect another.
+Deprecated: In earlier releases, when using a [Regexp] in multiple goroutines,
+giving each goroutine its own copy helped to avoid lock contention.
+As of Go 1.12, using Copy is no longer necessary to avoid lock contention.
+Copy may still be appropriate if the reason for its use is to make
+two copies with different [Regexp.Longest] settings.</p>
+               
+               <pre><code>func (re *Regexp) Copy() *Regexp</code></pre>
+            </article>
+            
+            <article class="function" data-name="Expand">
+               <h3>
+                  Expand 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Expand appends template to dst and returns the result; during the
+append, Expand replaces variables in the template with corresponding
+matches drawn from src. The match slice should have been returned by
+[Regexp.FindSubmatchIndex].
+In the template, a variable is denoted by a substring of the form
+$name or ${name}, where name is a non-empty sequence of letters,
+digits, and underscores. A purely numeric name like $1 refers to
+the submatch with the corresponding index; other names refer to
+capturing parentheses named with the (?P<name>...) syntax. A
+reference to an out of range or unmatched index or a name that is not
+present in the regular expression is replaced with an empty slice.
+In the $name form, name is taken to be as long as possible: $1x is
+equivalent to ${1x}, not ${1}x, and, $10 is equivalent to ${10}, not ${1}0.
+To insert a literal $ in the output, use $$ in the template.</p>
+               
+               <pre><code>func (re *Regexp) Expand(dst []byte, template []byte, src []byte, match []int) []byte</code></pre>
+            </article>
+            
+            <article class="function" data-name="ExpandString">
+               <h3>
+                  ExpandString 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ExpandString is like [Regexp.Expand] but the template and source are strings.
+It appends to and returns a byte slice in order to give the calling
+code control over allocation.</p>
+               
+               <pre><code>func (re *Regexp) ExpandString(dst []byte, template string, src string, match []int) []byte</code></pre>
+            </article>
+            
+            <article class="function" data-name="Find">
+               <h3>
+                  Find 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Find returns a slice holding the text of the leftmost match in b of the regular expression.
+A return value of nil indicates no match.</p>
+               
+               <pre><code>func (re *Regexp) Find(b []byte) []byte</code></pre>
+            </article>
+            
+            <article class="function" data-name="FindAll">
+               <h3>
+                  FindAll 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>FindAll is the 'All' version of [Regexp.Find]; it returns a slice of all successive
+matches of the expression, as defined by the 'All' description in the
+package comment.
+A return value of nil indicates no match.</p>
+               
+               <pre><code>func (re *Regexp) FindAll(b []byte, n int) [][]byte</code></pre>
+            </article>
+            
+            <article class="function" data-name="FindAllIndex">
+               <h3>
+                  FindAllIndex 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>FindAllIndex is the 'All' version of [Regexp.FindIndex]; it returns a slice of all
+successive matches of the expression, as defined by the 'All' description
+in the package comment.
+A return value of nil indicates no match.</p>
+               
+               <pre><code>func (re *Regexp) FindAllIndex(b []byte, n int) [][]int</code></pre>
+            </article>
+            
+            <article class="function" data-name="FindAllString">
+               <h3>
+                  FindAllString 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>FindAllString is the 'All' version of [Regexp.FindString]; it returns a slice of all
+successive matches of the expression, as defined by the 'All' description
+in the package comment.
+A return value of nil indicates no match.</p>
+               
+               <pre><code>func (re *Regexp) FindAllString(s string, n int) []string</code></pre>
+            </article>
+            
+            <article class="function" data-name="FindAllStringIndex">
+               <h3>
+                  FindAllStringIndex 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>FindAllStringIndex is the 'All' version of [Regexp.FindStringIndex]; it returns a
+slice of all successive matches of the expression, as defined by the 'All'
+description in the package comment.
+A return value of nil indicates no match.</p>
+               
+               <pre><code>func (re *Regexp) FindAllStringIndex(s string, n int) [][]int</code></pre>
+            </article>
+            
+            <article class="function" data-name="FindAllStringSubmatch">
+               <h3>
+                  FindAllStringSubmatch 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>FindAllStringSubmatch is the 'All' version of [Regexp.FindStringSubmatch]; it
+returns a slice of all successive matches of the expression, as defined by
+the 'All' description in the package comment.
+A return value of nil indicates no match.</p>
+               
+               <pre><code>func (re *Regexp) FindAllStringSubmatch(s string, n int) [][]string</code></pre>
+            </article>
+            
+            <article class="function" data-name="FindAllStringSubmatchIndex">
+               <h3>
+                  FindAllStringSubmatchIndex 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>FindAllStringSubmatchIndex is the 'All' version of
+[Regexp.FindStringSubmatchIndex]; it returns a slice of all successive matches of
+the expression, as defined by the 'All' description in the package
+comment.
+A return value of nil indicates no match.</p>
+               
+               <pre><code>func (re *Regexp) FindAllStringSubmatchIndex(s string, n int) [][]int</code></pre>
+            </article>
+            
+            <article class="function" data-name="FindAllSubmatch">
+               <h3>
+                  FindAllSubmatch 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>FindAllSubmatch is the 'All' version of [Regexp.FindSubmatch]; it returns a slice
+of all successive matches of the expression, as defined by the 'All'
+description in the package comment.
+A return value of nil indicates no match.</p>
+               
+               <pre><code>func (re *Regexp) FindAllSubmatch(b []byte, n int) [][][]byte</code></pre>
+            </article>
+            
+            <article class="function" data-name="FindAllSubmatchIndex">
+               <h3>
+                  FindAllSubmatchIndex 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>FindAllSubmatchIndex is the 'All' version of [Regexp.FindSubmatchIndex]; it returns
+a slice of all successive matches of the expression, as defined by the
+'All' description in the package comment.
+A return value of nil indicates no match.</p>
+               
+               <pre><code>func (re *Regexp) FindAllSubmatchIndex(b []byte, n int) [][]int</code></pre>
+            </article>
+            
+            <article class="function" data-name="FindIndex">
+               <h3>
+                  FindIndex 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>FindIndex returns a two-element slice of integers defining the location of
+the leftmost match in b of the regular expression. The match itself is at
+b[loc[0]:loc[1]].
+A return value of nil indicates no match.</p>
+               
+               <pre><code>func (re *Regexp) FindIndex(b []byte) (loc []int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="FindReaderIndex">
+               <h3>
+                  FindReaderIndex 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>FindReaderIndex returns a two-element slice of integers defining the
+location of the leftmost match of the regular expression in text read from
+the [io.RuneReader]. The match text was found in the input stream at
+byte offset loc[0] through loc[1]-1.
+A return value of nil indicates no match.</p>
+               
+               <pre><code>func (re *Regexp) FindReaderIndex(r io.RuneReader) (loc []int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="FindReaderSubmatchIndex">
+               <h3>
+                  FindReaderSubmatchIndex 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>FindReaderSubmatchIndex returns a slice holding the index pairs
+identifying the leftmost match of the regular expression of text read by
+the [io.RuneReader], and the matches, if any, of its subexpressions, as defined
+by the 'Submatch' and 'Index' descriptions in the package comment. A
+return value of nil indicates no match.</p>
+               
+               <pre><code>func (re *Regexp) FindReaderSubmatchIndex(r io.RuneReader) []int</code></pre>
+            </article>
+            
+            <article class="function" data-name="FindString">
+               <h3>
+                  FindString 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>FindString returns a string holding the text of the leftmost match in s of the regular
+expression. If there is no match, the return value is an empty string,
+but it will also be empty if the regular expression successfully matches
+an empty string. Use [Regexp.FindStringIndex] or [Regexp.FindStringSubmatch] if it is
+necessary to distinguish these cases.</p>
+               
+               <pre><code>func (re *Regexp) FindString(s string) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="FindStringIndex">
+               <h3>
+                  FindStringIndex 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>FindStringIndex returns a two-element slice of integers defining the
+location of the leftmost match in s of the regular expression. The match
+itself is at s[loc[0]:loc[1]].
+A return value of nil indicates no match.</p>
+               
+               <pre><code>func (re *Regexp) FindStringIndex(s string) (loc []int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="FindStringSubmatch">
+               <h3>
+                  FindStringSubmatch 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>FindStringSubmatch returns a slice of strings holding the text of the
+leftmost match of the regular expression in s and the matches, if any, of
+its subexpressions, as defined by the 'Submatch' description in the
+package comment.
+A return value of nil indicates no match.</p>
+               
+               <pre><code>func (re *Regexp) FindStringSubmatch(s string) []string</code></pre>
+            </article>
+            
+            <article class="function" data-name="FindStringSubmatchIndex">
+               <h3>
+                  FindStringSubmatchIndex 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>FindStringSubmatchIndex returns a slice holding the index pairs
+identifying the leftmost match of the regular expression in s and the
+matches, if any, of its subexpressions, as defined by the 'Submatch' and
+'Index' descriptions in the package comment.
+A return value of nil indicates no match.</p>
+               
+               <pre><code>func (re *Regexp) FindStringSubmatchIndex(s string) []int</code></pre>
+            </article>
+            
+            <article class="function" data-name="FindSubmatch">
+               <h3>
+                  FindSubmatch 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>FindSubmatch returns a slice of slices holding the text of the leftmost
+match of the regular expression in b and the matches, if any, of its
+subexpressions, as defined by the 'Submatch' descriptions in the package
+comment.
+A return value of nil indicates no match.</p>
+               
+               <pre><code>func (re *Regexp) FindSubmatch(b []byte) [][]byte</code></pre>
+            </article>
+            
+            <article class="function" data-name="FindSubmatchIndex">
+               <h3>
+                  FindSubmatchIndex 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>FindSubmatchIndex returns a slice holding the index pairs identifying the
+leftmost match of the regular expression in b and the matches, if any, of
+its subexpressions, as defined by the 'Submatch' and 'Index' descriptions
+in the package comment.
+A return value of nil indicates no match.</p>
+               
+               <pre><code>func (re *Regexp) FindSubmatchIndex(b []byte) []int</code></pre>
+            </article>
+            
+            <article class="function" data-name="LiteralPrefix">
+               <h3>
+                  LiteralPrefix 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>LiteralPrefix returns a literal string that must begin any match
+of the regular expression re. It returns the boolean true if the
+literal string comprises the entire regular expression.</p>
+               
+               <pre><code>func (re *Regexp) LiteralPrefix() (prefix string, complete bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Longest">
+               <h3>
+                  Longest 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Longest makes future searches prefer the leftmost-longest match.
+That is, when matching against text, the regexp returns a match that
+begins as early as possible in the input (leftmost), and among those
+it chooses a match that is as long as possible.
+This method modifies the [Regexp] and may not be called concurrently
+with any other methods.</p>
+               
+               <pre><code>func (re *Regexp) Longest()</code></pre>
+            </article>
+            
+            <article class="function" data-name="MarshalText">
+               <h3>
+                  MarshalText 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>MarshalText implements [encoding.TextMarshaler]. The output
+matches that of calling the [Regexp.AppendText] method.
+See [Regexp.AppendText] for more information.</p>
+               
+               <pre><code>func (re *Regexp) MarshalText() ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Match">
+               <h3>
+                  Match 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Match reports whether the byte slice b
+contains any match of the regular expression re.</p>
+               
+               <pre><code>func (re *Regexp) Match(b []byte) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="Match">
+               <h3>
+                  Match 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Match reports whether the byte slice b
+contains any match of the regular expression pattern.
+More complicated queries need to use [Compile] and the full [Regexp] interface.</p>
+               
+               <pre><code>func Match(pattern string, b []byte) (matched bool, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="MatchReader">
+               <h3>
+                  MatchReader 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>MatchReader reports whether the text returned by the [io.RuneReader]
+contains any match of the regular expression re.</p>
+               
+               <pre><code>func (re *Regexp) MatchReader(r io.RuneReader) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="MatchReader">
+               <h3>
+                  MatchReader 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>MatchReader reports whether the text returned by the [io.RuneReader]
+contains any match of the regular expression pattern.
+More complicated queries need to use [Compile] and the full [Regexp] interface.</p>
+               
+               <pre><code>func MatchReader(pattern string, r io.RuneReader) (matched bool, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="MatchString">
+               <h3>
+                  MatchString 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>MatchString reports whether the string s
+contains any match of the regular expression pattern.
+More complicated queries need to use [Compile] and the full [Regexp] interface.</p>
+               
+               <pre><code>func MatchString(pattern string, s string) (matched bool, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="MatchString">
+               <h3>
+                  MatchString 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>MatchString reports whether the string s
+contains any match of the regular expression re.</p>
+               
+               <pre><code>func (re *Regexp) MatchString(s string) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="MustCompile">
+               <h3>
+                  MustCompile 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>MustCompile is like [Compile] but panics if the expression cannot be parsed.
+It simplifies safe initialization of global variables holding compiled regular
+expressions.</p>
+               
+               <pre><code>func MustCompile(str string) *Regexp</code></pre>
+            </article>
+            
+            <article class="function" data-name="MustCompilePOSIX">
+               <h3>
+                  MustCompilePOSIX 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>MustCompilePOSIX is like [CompilePOSIX] but panics if the expression cannot be parsed.
+It simplifies safe initialization of global variables holding compiled regular
+expressions.</p>
+               
+               <pre><code>func MustCompilePOSIX(str string) *Regexp</code></pre>
+            </article>
+            
+            <article class="function" data-name="NumSubexp">
+               <h3>
+                  NumSubexp 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>NumSubexp returns the number of parenthesized subexpressions in this [Regexp].</p>
+               
+               <pre><code>func (re *Regexp) NumSubexp() int</code></pre>
+            </article>
+            
+            <article class="function" data-name="QuoteMeta">
+               <h3>
+                  QuoteMeta 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>QuoteMeta returns a string that escapes all regular expression metacharacters
+inside the argument text; the returned string is a regular expression matching
+the literal text.</p>
+               
+               <pre><code>func QuoteMeta(s string) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="ReplaceAll">
+               <h3>
+                  ReplaceAll 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ReplaceAll returns a copy of src, replacing matches of the [Regexp]
+with the replacement text repl.
+Inside repl, $ signs are interpreted as in [Regexp.Expand].</p>
+               
+               <pre><code>func (re *Regexp) ReplaceAll(src []byte, repl []byte) []byte</code></pre>
+            </article>
+            
+            <article class="function" data-name="ReplaceAllFunc">
+               <h3>
+                  ReplaceAllFunc 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ReplaceAllFunc returns a copy of src in which all matches of the
+[Regexp] have been replaced by the return value of function repl applied
+to the matched byte slice. The replacement returned by repl is substituted
+directly, without using [Regexp.Expand].</p>
+               
+               <pre><code>func (re *Regexp) ReplaceAllFunc(src []byte, repl func([]byte) []byte) []byte</code></pre>
+            </article>
+            
+            <article class="function" data-name="ReplaceAllLiteral">
+               <h3>
+                  ReplaceAllLiteral 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ReplaceAllLiteral returns a copy of src, replacing matches of the [Regexp]
+with the replacement bytes repl. The replacement repl is substituted directly,
+without using [Regexp.Expand].</p>
+               
+               <pre><code>func (re *Regexp) ReplaceAllLiteral(src []byte, repl []byte) []byte</code></pre>
+            </article>
+            
+            <article class="function" data-name="ReplaceAllLiteralString">
+               <h3>
+                  ReplaceAllLiteralString 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ReplaceAllLiteralString returns a copy of src, replacing matches of the [Regexp]
+with the replacement string repl. The replacement repl is substituted directly,
+without using [Regexp.Expand].</p>
+               
+               <pre><code>func (re *Regexp) ReplaceAllLiteralString(src string, repl string) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="ReplaceAllString">
+               <h3>
+                  ReplaceAllString 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ReplaceAllString returns a copy of src, replacing matches of the [Regexp]
+with the replacement string repl.
+Inside repl, $ signs are interpreted as in [Regexp.Expand].</p>
+               
+               <pre><code>func (re *Regexp) ReplaceAllString(src string, repl string) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="ReplaceAllStringFunc">
+               <h3>
+                  ReplaceAllStringFunc 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ReplaceAllStringFunc returns a copy of src in which all matches of the
+[Regexp] have been replaced by the return value of function repl applied
+to the matched substring. The replacement returned by repl is substituted
+directly, without using [Regexp.Expand].</p>
+               
+               <pre><code>func (re *Regexp) ReplaceAllStringFunc(src string, repl func(string) string) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="Split">
+               <h3>
+                  Split 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Split slices s into substrings separated by the expression and returns a slice of
+the substrings between those expression matches.
+The slice returned by this method consists of all the substrings of s
+not contained in the slice returned by [Regexp.FindAllString]. When called on an expression
+that contains no metacharacters, it is equivalent to [strings.SplitN].
+Example:
+s := regexp.MustCompile("a*").Split("abaabaccadaaae", 5)
+// s: ["", "b", "b", "c", "cadaaae"]
+The count determines the number of substrings to return:
+- n > 0: at most n substrings; the last substring will be the unsplit remainder;
+- n == 0: the result is nil (zero substrings);
+- n < 0: all substrings.</p>
+               
+               <pre><code>func (re *Regexp) Split(s string, n int) []string</code></pre>
+            </article>
+            
+            <article class="function" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>String returns the source text used to compile the regular expression.</p>
+               
+               <pre><code>func (re *Regexp) String() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="SubexpIndex">
+               <h3>
+                  SubexpIndex 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>SubexpIndex returns the index of the first subexpression with the given name,
+or -1 if there is no subexpression with that name.
+Note that multiple subexpressions can be written using the same name, as in
+(?P<bob>a+)(?P<bob>b+), which declares two subexpressions named "bob".
+In this case, SubexpIndex returns the index of the leftmost such subexpression
+in the regular expression.</p>
+               
+               <pre><code>func (re *Regexp) SubexpIndex(name string) int</code></pre>
+            </article>
+            
+            <article class="function" data-name="SubexpNames">
+               <h3>
+                  SubexpNames 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>SubexpNames returns the names of the parenthesized subexpressions
+in this [Regexp]. The name for the first sub-expression is names[1],
+so that if m is a match slice, the name for m[i] is SubexpNames()[i].
+Since the Regexp as a whole cannot be named, names[0] is always
+the empty string. The slice should not be modified.</p>
+               
+               <pre><code>func (re *Regexp) SubexpNames() []string</code></pre>
+            </article>
+            
+            <article class="function" data-name="UnmarshalText">
+               <h3>
+                  UnmarshalText 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>UnmarshalText implements [encoding.TextUnmarshaler] by calling
+[Compile] on the encoded value.</p>
+               
+               <pre><code>func (re *Regexp) UnmarshalText(text []byte) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="add">
+               <h3>
+                  add 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>add adds an entry to q for pc, unless the q already has such an entry.
+It also recursively adds an entry for all instructions reachable from pc by following
+empty-width conditions satisfied by cond.  pos gives the current position
+in the input.</p>
+               
+               <pre><code>func (m *machine) add(q *queue, pc uint32, pos int, cap []int, cond *lazyFlag, t *thread) *thread</code></pre>
+            </article>
+            
+            <article class="function" data-name="allMatches">
+               <h3>
+                  allMatches 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>allMatches calls deliver at most n times
+with the location of successive matches in the input text.
+The input text is b if non-nil, otherwise s.</p>
+               
+               <pre><code>func (re *Regexp) allMatches(s string, b []byte, n int, deliver func([]int))</code></pre>
+            </article>
+            
+            <article class="function" data-name="alloc">
+               <h3>
+                  alloc 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>alloc allocates a new thread with the given instruction.
+It uses the free pool if possible.</p>
+               
+               <pre><code>func (m *machine) alloc(i *syntax.Inst) *thread</code></pre>
+            </article>
+            
+            <article class="function" data-name="backtrack">
+               <h3>
+                  backtrack 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>backtrack runs a backtracking search of prog on the input starting at pos.</p>
+               
+               <pre><code>func (re *Regexp) backtrack(ib []byte, is string, pos int, ncap int, dstCap []int) []int</code></pre>
+            </article>
+            
+            <article class="function" data-name="canCheckPrefix">
+               <h3>
+                  canCheckPrefix 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (i *inputBytes) canCheckPrefix() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="canCheckPrefix">
+               <h3>
+                  canCheckPrefix 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (i *inputString) canCheckPrefix() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="canCheckPrefix">
+               <h3>
+                  canCheckPrefix 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (i *inputReader) canCheckPrefix() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="cleanupOnePass">
+               <h3>
+                  cleanupOnePass 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>cleanupOnePass drops working memory, and restores certain shortcut instructions.</p>
+               
+               <pre><code>func cleanupOnePass(prog *onePassProg, original *syntax.Prog)</code></pre>
+            </article>
+            
+            <article class="function" data-name="clear">
+               <h3>
+                  clear 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (i *inputs) clear()</code></pre>
+            </article>
+            
+            <article class="function" data-name="clear">
+               <h3>
+                  clear 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (q *queueOnePass) clear()</code></pre>
+            </article>
+            
+            <article class="function" data-name="clear">
+               <h3>
+                  clear 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>clear frees all threads on the thread queue.</p>
+               
+               <pre><code>func (m *machine) clear(q *queue)</code></pre>
+            </article>
+            
+            <article class="function" data-name="compile">
+               <h3>
+                  compile 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func compile(expr string, mode syntax.Flags, longest bool) (*Regexp, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="compileOnePass">
+               <h3>
+                  compileOnePass 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>compileOnePass returns a new *syntax.Prog suitable for onePass execution if the original Prog
+can be recharacterized as a one-pass regexp program, or syntax.nil if the
+Prog cannot be converted. For a one pass prog, the fundamental condition that must
+be true is: at any InstAlt, there must be no ambiguity about what branch to  take.</p>
+               
+               <pre><code>func compileOnePass(prog *syntax.Prog) (p *onePassProg)</code></pre>
+            </article>
+            
+            <article class="function" data-name="contains">
+               <h3>
+                  contains 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (q *queueOnePass) contains(u uint32) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="context">
+               <h3>
+                  context 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (i *inputString) context(pos int) lazyFlag</code></pre>
+            </article>
+            
+            <article class="function" data-name="context">
+               <h3>
+                  context 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (i *inputReader) context(pos int) lazyFlag</code></pre>
+            </article>
+            
+            <article class="function" data-name="context">
+               <h3>
+                  context 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (i *inputBytes) context(pos int) lazyFlag</code></pre>
+            </article>
+            
+            <article class="function" data-name="doExecute">
+               <h3>
+                  doExecute 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>doExecute finds the leftmost match in the input, appends the position
+of its subexpressions to dstCap and returns dstCap.
+nil is returned if no matches are found and non-nil if matches are found.</p>
+               
+               <pre><code>func (re *Regexp) doExecute(r io.RuneReader, b []byte, s string, pos int, ncap int, dstCap []int) []int</code></pre>
+            </article>
+            
+            <article class="function" data-name="doMatch">
+               <h3>
+                  doMatch 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>doMatch reports whether either r, b or s match the regexp.</p>
+               
+               <pre><code>func (re *Regexp) doMatch(r io.RuneReader, b []byte, s string) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="doOnePass">
+               <h3>
+                  doOnePass 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>doOnePass implements r.doExecute using the one-pass execution engine.</p>
+               
+               <pre><code>func (re *Regexp) doOnePass(ir io.RuneReader, ib []byte, is string, pos int, ncap int, dstCap []int) []int</code></pre>
+            </article>
+            
+            <article class="function" data-name="empty">
+               <h3>
+                  empty 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (q *queueOnePass) empty() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="expand">
+               <h3>
+                  expand 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (re *Regexp) expand(dst []byte, template string, bsrc []byte, src string, match []int) []byte</code></pre>
+            </article>
+            
+            <article class="function" data-name="extract">
+               <h3>
+                  extract 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>extract returns the name from a leading "name" or "{name}" in str.
+(The $ has already been removed by the caller.)
+If it is a number, extract returns num set to that number; otherwise num = -1.</p>
+               
+               <pre><code>func extract(str string) (name string, num int, rest string, ok bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="freeBitState">
+               <h3>
+                  freeBitState 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func freeBitState(b *bitState)</code></pre>
+            </article>
+            
+            <article class="function" data-name="freeOnePassMachine">
+               <h3>
+                  freeOnePassMachine 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func freeOnePassMachine(m *onePassMachine)</code></pre>
+            </article>
+            
+            <article class="function" data-name="get">
+               <h3>
+                  get 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>get returns a machine to use for matching re.
+It uses the re's machine cache if possible, to avoid
+unnecessary allocation.</p>
+               
+               <pre><code>func (re *Regexp) get() *machine</code></pre>
+            </article>
+            
+            <article class="function" data-name="hasPrefix">
+               <h3>
+                  hasPrefix 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (i *inputReader) hasPrefix(re *Regexp) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="hasPrefix">
+               <h3>
+                  hasPrefix 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (i *inputBytes) hasPrefix(re *Regexp) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="hasPrefix">
+               <h3>
+                  hasPrefix 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (i *inputString) hasPrefix(re *Regexp) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="index">
+               <h3>
+                  index 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (i *inputReader) index(re *Regexp, pos int) int</code></pre>
+            </article>
+            
+            <article class="function" data-name="index">
+               <h3>
+                  index 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (i *inputBytes) index(re *Regexp, pos int) int</code></pre>
+            </article>
+            
+            <article class="function" data-name="index">
+               <h3>
+                  index 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (i *inputString) index(re *Regexp, pos int) int</code></pre>
+            </article>
+            
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func init()</code></pre>
+            </article>
+            
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (i *inputs) init(r io.RuneReader, b []byte, s string) (input, int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (m *machine) init(ncap int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="insert">
+               <h3>
+                  insert 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (q *queueOnePass) insert(u uint32)</code></pre>
+            </article>
+            
+            <article class="function" data-name="insertNew">
+               <h3>
+                  insertNew 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (q *queueOnePass) insertNew(u uint32)</code></pre>
+            </article>
+            
+            <article class="function" data-name="iop">
+               <h3>
+                  iop 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func iop(i *syntax.Inst) syntax.InstOp</code></pre>
+            </article>
+            
+            <article class="function" data-name="makeOnePass">
+               <h3>
+                  makeOnePass 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>makeOnePass creates a onepass Prog, if possible. It is possible if at any alt,
+the match engine can always tell which branch to take. The routine may modify
+p if it is turned into a onepass Prog. If it isn't possible for this to be a
+onepass Prog, the Prog nil is returned. makeOnePass is recursive
+to the size of the Prog.</p>
+               
+               <pre><code>func makeOnePass(p *onePassProg) *onePassProg</code></pre>
+            </article>
+            
+            <article class="function" data-name="match">
+               <h3>
+                  match 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>match runs the machine over the input starting at pos.
+It reports whether a match was found.
+If so, m.matchcap holds the submatch information.</p>
+               
+               <pre><code>func (m *machine) match(i input, pos int) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="match">
+               <h3>
+                  match 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (f lazyFlag) match(op syntax.EmptyOp) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="maxBitStateLen">
+               <h3>
+                  maxBitStateLen 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>maxBitStateLen returns the maximum length of a string to search with
+the backtracker using prog.</p>
+               
+               <pre><code>func maxBitStateLen(prog *syntax.Prog) int</code></pre>
+            </article>
+            
+            <article class="function" data-name="mergeRuneSets">
+               <h3>
+                  mergeRuneSets 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func mergeRuneSets(leftRunes *[]rune, rightRunes *[]rune, leftPC uint32, rightPC uint32) ([]rune, []uint32)</code></pre>
+            </article>
+            
+            <article class="function" data-name="minInputLen">
+               <h3>
+                  minInputLen 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>minInputLen walks the regexp to find the minimum length of any matchable input.</p>
+               
+               <pre><code>func minInputLen(re *syntax.Regexp) int</code></pre>
+            </article>
+            
+            <article class="function" data-name="newBitState">
+               <h3>
+                  newBitState 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func newBitState() *bitState</code></pre>
+            </article>
+            
+            <article class="function" data-name="newBytes">
+               <h3>
+                  newBytes 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (i *inputs) newBytes(b []byte) input</code></pre>
+            </article>
+            
+            <article class="function" data-name="newLazyFlag">
+               <h3>
+                  newLazyFlag 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func newLazyFlag(r1 rune, r2 rune) lazyFlag</code></pre>
+            </article>
+            
+            <article class="function" data-name="newOnePassMachine">
+               <h3>
+                  newOnePassMachine 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func newOnePassMachine() *onePassMachine</code></pre>
+            </article>
+            
+            <article class="function" data-name="newQueue">
+               <h3>
+                  newQueue 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func newQueue(size int) (q *queueOnePass)</code></pre>
+            </article>
+            
+            <article class="function" data-name="newReader">
+               <h3>
+                  newReader 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (i *inputs) newReader(r io.RuneReader) input</code></pre>
+            </article>
+            
+            <article class="function" data-name="newString">
+               <h3>
+                  newString 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (i *inputs) newString(s string) input</code></pre>
+            </article>
+            
+            <article class="function" data-name="next">
+               <h3>
+                  next 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (q *queueOnePass) next() (n uint32)</code></pre>
+            </article>
+            
+            <article class="function" data-name="onePassCopy">
+               <h3>
+                  onePassCopy 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>onePassCopy creates a copy of the original Prog, as we'll be modifying it.</p>
+               
+               <pre><code>func onePassCopy(prog *syntax.Prog) *onePassProg</code></pre>
+            </article>
+            
+            <article class="function" data-name="onePassNext">
+               <h3>
+                  onePassNext 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>onePassNext selects the next actionable state of the prog, based on the input character.
+It should only be called when i.Op == InstAlt or InstAltMatch, and from the one-pass machine.
+One of the alternates may ultimately lead without input to end of line. If the instruction
+is InstAltMatch the path to the InstMatch is in i.Out, the normal node in i.Next.</p>
+               
+               <pre><code>func onePassNext(i *onePassInst, r rune) uint32</code></pre>
+            </article>
+            
+            <article class="function" data-name="onePassPrefix">
+               <h3>
+                  onePassPrefix 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>onePassPrefix returns a literal string that all matches for the
+regexp must start with. Complete is true if the prefix
+is the entire match. Pc is the index of the last rune instruction
+in the string. The onePassPrefix skips over the mandatory
+EmptyBeginText.</p>
+               
+               <pre><code>func onePassPrefix(p *syntax.Prog) (prefix string, complete bool, pc uint32)</code></pre>
+            </article>
+            
+            <article class="function" data-name="pad">
+               <h3>
+                  pad 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>The number of capture values in the program may correspond
+to fewer capturing expressions than are in the regexp.
+For example, "(a){0}" turns into an empty program, so the
+maximum capture in the program is 0 but we need to return
+an expression for \1.  Pad appends -1s to the slice a as needed.</p>
+               
+               <pre><code>func (re *Regexp) pad(a []int) []int</code></pre>
+            </article>
+            
+            <article class="function" data-name="push">
+               <h3>
+                  push 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>push pushes (pc, pos, arg) onto the job stack if it should be
+visited.</p>
+               
+               <pre><code>func (b *bitState) push(re *Regexp, pc uint32, pos int, arg bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="put">
+               <h3>
+                  put 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>put returns a machine to the correct machine pool.</p>
+               
+               <pre><code>func (re *Regexp) put(m *machine)</code></pre>
+            </article>
+            
+            <article class="function" data-name="quote">
+               <h3>
+                  quote 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func quote(s string) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="replaceAll">
+               <h3>
+                  replaceAll 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (re *Regexp) replaceAll(bsrc []byte, src string, nmatch int, repl func(dst []byte, m []int) []byte) []byte</code></pre>
+            </article>
+            
+            <article class="function" data-name="reset">
+               <h3>
+                  reset 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>reset resets the state of the backtracker.
+end is the end position in the input.
+ncap is the number of captures.</p>
+               
+               <pre><code>func (b *bitState) reset(prog *syntax.Prog, end int, ncap int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="shouldBacktrack">
+               <h3>
+                  shouldBacktrack 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>shouldBacktrack reports whether the program is too
+long for the backtracker to run.</p>
+               
+               <pre><code>func shouldBacktrack(prog *syntax.Prog) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="shouldVisit">
+               <h3>
+                  shouldVisit 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>shouldVisit reports whether the combination of (pc, pos) has not
+been visited yet.</p>
+               
+               <pre><code>func (b *bitState) shouldVisit(pc uint32, pos int) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="special">
+               <h3>
+                  special 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>special reports whether byte b needs to be escaped by QuoteMeta.</p>
+               
+               <pre><code>func special(b byte) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="step">
+               <h3>
+                  step 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>step executes one step of the machine, running each of the threads
+on runq and appending new threads to nextq.
+The step processes the rune c (which may be endOfText),
+which starts at position pos and ends at nextPos.
+nextCond gives the setting for the empty-width flags after c.</p>
+               
+               <pre><code>func (m *machine) step(runq *queue, nextq *queue, pos int, nextPos int, c rune, nextCond *lazyFlag)</code></pre>
+            </article>
+            
+            <article class="function" data-name="step">
+               <h3>
+                  step 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (i *inputString) step(pos int) (rune, int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="step">
+               <h3>
+                  step 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (i *inputBytes) step(pos int) (rune, int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="step">
+               <h3>
+                  step 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (i *inputReader) step(pos int) (rune, int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="tryBacktrack">
+               <h3>
+                  tryBacktrack 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>tryBacktrack runs a backtracking search starting at pos.</p>
+               
+               <pre><code>func (re *Regexp) tryBacktrack(b *bitState, i input, pc uint32, pos int) bool</code></pre>
+            </article>
+            
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -369,59 +2543,170 @@
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

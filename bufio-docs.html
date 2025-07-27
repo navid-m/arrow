@@ -6,1598 +6,1552 @@
          name="viewport"
          content="width=device-width, initial-scale=1.0"
       />
-      <title>Docs - bufio_test</title>
+      <title>Docs - bufio</title>
       <link
          href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
          rel="stylesheet"
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                 
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>bufio_test</code>
-         </h1>
-         <hr />
+         <h1>bufio</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="readMakers">
-            <h2>readMakers</h2>
-            <hr />
-            
-            <pre><code>readMakers</code></pre>
-         </article>
-         
-         <article class="global" data-name="bufreaders">
-            <h2>bufreaders</h2>
-            <hr />
-            
-            <pre><code>bufreaders</code></pre>
-         </article>
-         
-         <article class="global" data-name="minReadBufferSize">
-            <h2>minReadBufferSize</h2>
-            <hr />
-            
-            <pre><code>minReadBufferSize</code></pre>
-         </article>
-         
-         <article class="global" data-name="bufsizes">
-            <h2>bufsizes</h2>
-            <hr />
-            
-            <pre><code>bufsizes</code></pre>
-         </article>
-         
-         <article class="global" data-name="segmentList">
-            <h2>segmentList</h2>
-            <hr />
-            
-            <pre><code>segmentList</code></pre>
-         </article>
-         
-         <article class="global" data-name="errorWriterTests">
-            <h2>errorWriterTests</h2>
-            <hr />
-            
-            <pre><code>errorWriterTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="testOutput">
-            <h2>testOutput</h2>
-            <hr />
-            
-            <pre><code>testOutput</code></pre>
-         </article>
-         
-         <article class="global" data-name="testInput">
-            <h2>testInput</h2>
-            <hr />
-            
-            <pre><code>testInput</code></pre>
-         </article>
-         
-         <article class="global" data-name="testInputrn">
-            <h2>testInputrn</h2>
-            <hr />
-            
-            <pre><code>testInputrn</code></pre>
-         </article>
-         
-         <article class="global" data-name="readLineNewlinesTests">
-            <h2>readLineNewlinesTests</h2>
-            <hr />
-            
-            <pre><code>readLineNewlinesTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="errorWriterToTests">
-            <h2>errorWriterToTests</h2>
-            <hr />
-            
-            <pre><code>errorWriterToTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="errorReaderFromTests">
-            <h2>errorReaderFromTests</h2>
-            <hr />
-            
-            <pre><code>errorReaderFromTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="errFake">
-            <h2>errFake</h2>
-            <hr />
-            
-            <pre><code>errFake</code></pre>
-         </article>
-         
-         <article class="global" data-name="smallMaxTokenSize">
-            <h2>smallMaxTokenSize</h2>
-            <hr />
-            
-            <pre><code>smallMaxTokenSize</code></pre>
-         </article>
-         
-         <article class="global" data-name="scanTests">
-            <h2>scanTests</h2>
-            <hr />
-            
-            <pre><code>scanTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="wordScanTests">
-            <h2>wordScanTests</h2>
-            <hr />
-            
-            <pre><code>wordScanTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="testError">
-            <h2>testError</h2>
-            <hr />
-            
-            <pre><code>testError</code></pre>
-         </article>
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"bytes"
+"errors"
+"io"
+"strings"
+"unicode/utf8"
+"bytes"
+"errors"
+"io"
+"unicode/utf8"
+</code></pre>
+            </article>
+         </section>
           
-         <article class="struct" data-name="rot13Reader">
-            <h2>type rot13Reader struct</h2>
-            <hr />
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <p>Reads from a reader and rot13s the result.</p>
+            <article class="global" data-name="ErrAdvanceTooFar">
+               <h3>
+                  ErrAdvanceTooFar 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Errors returned by Scanner.</p>
+               
+               <pre><code>var ErrAdvanceTooFar = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">r io.Reader</code></pre>
-         </article>
-         
-         <article class="struct" data-name="readMaker">
-            <h2>type readMaker struct</h2>
-            <hr />
+            <article class="global" data-name="ErrBadReadCount">
+               <h3>
+                  ErrBadReadCount 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Errors returned by Scanner.</p>
+               
+               <pre><code>var ErrBadReadCount = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">name string
-fn func</code></pre>
-         </article>
-         
-         <article class="struct" data-name="bufReader">
-            <h2>type bufReader struct</h2>
-            <hr />
+            <article class="global" data-name="ErrBufferFull">
+               <h3>
+                  ErrBufferFull 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var ErrBufferFull = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">name string
-fn func</code></pre>
-         </article>
-         
-         <article class="struct" data-name="zeroReader">
-            <h2>type zeroReader struct</h2>
-            <hr />
+            <article class="global" data-name="ErrFinalToken">
+               <h3>
+                  ErrFinalToken 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>ErrFinalToken is a special sentinel error value. It is intended to be
+returned by a Split function to indicate that the scanning should stop
+with no error. If the token being delivered with this error is not nil,
+the token is the last token.
+The value is useful to stop processing early or when it is necessary to
+deliver a final empty token (which is different from a nil token).
+One could achieve the same behavior with a custom error value but
+providing one here is tidier.
+See the emptyFinalToken example for a use of this value.</p>
+               
+               <pre><code>var ErrFinalToken = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code"></code></pre>
-         </article>
-         
-         <article class="struct" data-name="StringReader">
-            <h2>type StringReader struct</h2>
-            <hr />
+            <article class="global" data-name="ErrInvalidUnreadByte">
+               <h3>
+                  ErrInvalidUnreadByte 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var ErrInvalidUnreadByte = *ast.CallExpr</code></pre>
+            </article>
             
-            <p>A StringReader delivers its data one string segment at a time via Read.</p>
+            <article class="global" data-name="ErrInvalidUnreadRune">
+               <h3>
+                  ErrInvalidUnreadRune 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var ErrInvalidUnreadRune = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">data []string
-step int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="errorWriterTest">
-            <h2>type errorWriterTest struct</h2>
-            <hr />
+            <article class="global" data-name="ErrNegativeAdvance">
+               <h3>
+                  ErrNegativeAdvance 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Errors returned by Scanner.</p>
+               
+               <pre><code>var ErrNegativeAdvance = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">n int
-m int
+            <article class="global" data-name="ErrNegativeCount">
+               <h3>
+                  ErrNegativeCount 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var ErrNegativeCount = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="ErrTooLong">
+               <h3>
+                  ErrTooLong 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Errors returned by Scanner.</p>
+               
+               <pre><code>var ErrTooLong = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="MaxScanTokenSize">
+               <h3>
+                  MaxScanTokenSize 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>MaxScanTokenSize is the maximum size used to buffer a token
+unless the user provides an explicit buffer with [Scanner.Buffer].
+The actual maximum token size may be smaller as the buffer
+may need to include, for instance, a newline.</p>
+               
+               <pre><code>const MaxScanTokenSize = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="defaultBufSize">
+               <h3>
+                  defaultBufSize 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const defaultBufSize = 4096</code></pre>
+            </article>
+            
+            <article class="global" data-name="errNegativeRead">
+               <h3>
+                  errNegativeRead 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var errNegativeRead = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="errNegativeWrite">
+               <h3>
+                  errNegativeWrite 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var errNegativeWrite = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="errorRune">
+               <h3>
+                  errorRune 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var errorRune = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="maxConsecutiveEmptyReads">
+               <h3>
+                  maxConsecutiveEmptyReads 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const maxConsecutiveEmptyReads = 100</code></pre>
+            </article>
+            
+            <article class="global" data-name="minReadBufferSize">
+               <h3>
+                  minReadBufferSize 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const minReadBufferSize = 16</code></pre>
+            </article>
+            
+            <article class="global" data-name="startBufSize">
+               <h3>
+                  startBufSize 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const startBufSize = 4096</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="types">
+            <h2>Type Aliases</h2>
+            
+            <article class="type" data-name="SplitFunc">
+               <h3>
+                  SplitFunc
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>SplitFunc is the signature of the split function used to tokenize the
+input. The arguments are an initial substring of the remaining unprocessed
+data and a flag, atEOF, that reports whether the [Reader] has no more data
+to give. The return values are the number of bytes to advance the input
+and the next token to return to the user, if any, plus an error, if any.
+Scanning stops if the function returns an error, in which case some of
+the input may be discarded. If that error is [ErrFinalToken], scanning
+stops with no error. A non-nil token delivered with [ErrFinalToken]
+will be the last token, and a nil token with [ErrFinalToken]
+immediately stops the scanning.
+Otherwise, the [Scanner] advances the input. If the token is not nil,
+the [Scanner] returns it to the user. If the token is nil, the
+Scanner reads more data and continues scanning; if there is no more
+data--if atEOF was true--the [Scanner] returns. If the data does not
+yet hold a complete token, for instance if it has no newline while
+scanning lines, a [SplitFunc] can return (0, nil, nil) to signal the
+[Scanner] to read more data into the slice and try again with a
+longer slice starting at the same point in the input.
+The function is never called with an empty data slice unless atEOF
+is true. If atEOF is true, however, data may be non-empty and,
+as always, holds unprocessed text.</p>
+               
+               <pre><code>type SplitFunc func(data []byte, atEOF bool) (advance int, token []byte, err error)</code></pre>
+            </article>
+            
+         </section>
+           
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="ReadWriter">
+               <h3>
+                  ReadWriter
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>ReadWriter stores pointers to a [Reader] and a [Writer].
+It implements [io.ReadWriter].</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type ReadWriter struct {
+*Reader
+*Writer
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="Reader">
+               <h3>
+                  Reader
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Reader implements buffering for an io.Reader object.
+A new Reader is created by calling [NewReader] or [NewReaderSize];
+alternatively the zero value of a Reader may be used after calling [Reset]
+on it.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Reader struct {
+buf []byte
+rd io.Reader
+r int
+w int
 err error
-expect error</code></pre>
-         </article>
-         
-         <article class="struct" data-name="teststringwriter">
-            <h2>type teststringwriter struct</h2>
-            <hr />
+lastByte int
+lastRuneSize int
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">write string
-writeString string</code></pre>
-         </article>
-         
-         <article class="struct" data-name="testReader">
-            <h2>type testReader struct</h2>
-            <hr />
+            <article class="struct" data-name="Scanner">
+               <h3>
+                  Scanner
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Scanner provides a convenient interface for reading data such as
+a file of newline-delimited lines of text. Successive calls to
+the [Scanner.Scan] method will step through the 'tokens' of a file, skipping
+the bytes between the tokens. The specification of a token is
+defined by a split function of type [SplitFunc]; the default split
+function breaks the input into lines with line termination stripped. [Scanner.Split]
+functions are defined in this package for scanning a file into
+lines, bytes, UTF-8-encoded runes, and space-delimited words. The
+client may instead provide a custom split function.
+Scanning stops unrecoverably at EOF, the first I/O error, or a token too
+large to fit in the [Scanner.Buffer]. When a scan stops, the reader may have
+advanced arbitrarily far past the last token. Programs that need more
+control over error handling or large tokens, or must run sequential scans
+on a reader, should use [bufio.Reader] instead.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Scanner struct {
+r io.Reader
+split SplitFunc
+maxTokenSize int
+token []byte
+buf []byte
+start int
+end int
+err error
+empties int
+scanCalled bool
+done bool
+}</code></pre>
+            </article>
             
-            <p>TestReader wraps a []byte and returns reads of a specific length.</p>
+            <article class="struct" data-name="Writer">
+               <h3>
+                  Writer
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Writer implements buffering for an [io.Writer] object.
+If an error occurs writing to a [Writer], no more data will be
+accepted and all subsequent writes, and [Writer.Flush], will return the error.
+After all data has been written, the client should call the
+[Writer.Flush] method to guarantee all data has been forwarded to
+the underlying [io.Writer].</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Writer struct {
+err error
+buf []byte
+n int
+wr io.Writer
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">data []byte
-stride int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="readLineResult">
-            <h2>type readLineResult struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">line []byte
-isPrefix bool
-err error</code></pre>
-         </article>
-         
-         <article class="struct" data-name="errorWriterToTest">
-            <h2>type errorWriterToTest struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">rn int
-wn int
-rerr error
-werr error
-expected error</code></pre>
-         </article>
-         
-         <article class="struct" data-name="errorReaderFromTest">
-            <h2>type errorReaderFromTest struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">rn int
-wn int
-rerr error
-werr error
-expected error</code></pre>
-         </article>
-         
-         <article class="struct" data-name="errorThenGoodReader">
-            <h2>type errorThenGoodReader struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">didErr bool
-nread int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="emptyThenNonEmptyReader">
-            <h2>type emptyThenNonEmptyReader struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">r io.Reader
-n int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="readFromWriter">
-            <h2>type readFromWriter struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">buf []byte
-writeBytes int
-readFromBytes int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="onlyReader">
-            <h2>type onlyReader struct</h2>
-            <hr />
-            
-            <p>An onlyReader only implements io.Reader, no matter what other methods the underlying implementation may have.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">io.Reader</code></pre>
-         </article>
-         
-         <article class="struct" data-name="onlyWriter">
-            <h2>type onlyWriter struct</h2>
-            <hr />
-            
-            <p>An onlyWriter only implements io.Writer, no matter what other methods the underlying implementation may have.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">io.Writer</code></pre>
-         </article>
-         
-         <article class="struct" data-name="eofReader">
-            <h2>type eofReader struct</h2>
-            <hr />
-            
-            <p>eofReader returns the number of bytes read and io.EOF for the read that consumes the last of the content.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">buf []byte</code></pre>
-         </article>
-         
-         <article class="struct" data-name="writerWithReadFromError">
-            <h2>type writerWithReadFromError struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code"></code></pre>
-         </article>
-         
-         <article class="struct" data-name="writeErrorOnlyWriter">
-            <h2>type writeErrorOnlyWriter struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code"></code></pre>
-         </article>
-         
-         <article class="struct" data-name="slowReader">
-            <h2>type slowReader struct</h2>
-            <hr />
-            
-            <p>slowReader is a reader that returns only a few bytes at a time, to test the incremental
-reads in Scanner.Scan.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">max int
-buf io.Reader</code></pre>
-         </article>
-         
-         <article class="struct" data-name="alwaysError">
-            <h2>type alwaysError struct</h2>
-            <hr />
-            
-            <p>Test for issue 5268.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code"></code></pre>
-         </article>
-         
-         <article class="struct" data-name="endlessZeros">
-            <h2>type endlessZeros struct</h2>
-            <hr />
-            
-            <p>Test that Scan finishes if we have endless empty reads.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code"></code></pre>
-         </article>
-         
-         <article class="struct" data-name="largeReader">
-            <h2>type largeReader struct</h2>
-            <hr />
-            
-            <p>largeReader returns an invalid count that is larger than the number
-of bytes requested.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code"></code></pre>
-         </article>
+         </section>
           
-         <article class="function" data-name="newRot13Reader">
-            <h2>newRot13Reader</h2>
-            <hr />
-            
-            <pre><code>func newRot13Reader(r io.Reader) *rot13Reader</code></pre>
-         </article>
-         
-         <article class="function" data-name="Read">
-            <h2>Read</h2>
-            <hr />
-            
-            <pre><code>func Read(p []byte) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="readBytes">
-            <h2>readBytes</h2>
-            <hr />
-            
-            <p>Call ReadByte to accumulate the text of a file</p>
-            
-            <pre><code>func readBytes(buf *Reader) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestReaderSimple">
-            <h2>TestReaderSimple</h2>
-            <hr />
-            
-            <pre><code>func TestReaderSimple(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="readLines">
-            <h2>readLines</h2>
-            <hr />
-            
-            <p>Call ReadString (which ends up calling everything else)
-to accumulate the text of a file.</p>
-            
-            <pre><code>func readLines(b *Reader) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="reads">
-            <h2>reads</h2>
-            <hr />
-            
-            <p>Call Read to accumulate the text of a file</p>
-            
-            <pre><code>func reads(buf *Reader, m int) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestReader">
-            <h2>TestReader</h2>
-            <hr />
-            
-            <pre><code>func TestReader(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Read">
-            <h2>Read</h2>
-            <hr />
-            
-            <pre><code>func Read(p []byte) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestZeroReader">
-            <h2>TestZeroReader</h2>
-            <hr />
-            
-            <pre><code>func TestZeroReader(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Read">
-            <h2>Read</h2>
-            <hr />
-            
-            <pre><code>func Read(p []byte) (n int, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="readRuneSegments">
-            <h2>readRuneSegments</h2>
-            <hr />
-            
-            <pre><code>func readRuneSegments(t *testing.T, segments []string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestReadRune">
-            <h2>TestReadRune</h2>
-            <hr />
-            
-            <pre><code>func TestReadRune(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestUnreadRune">
-            <h2>TestUnreadRune</h2>
-            <hr />
-            
-            <pre><code>func TestUnreadRune(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestNoUnreadRuneAfterPeek">
-            <h2>TestNoUnreadRuneAfterPeek</h2>
-            <hr />
-            
-            <pre><code>func TestNoUnreadRuneAfterPeek(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestNoUnreadByteAfterPeek">
-            <h2>TestNoUnreadByteAfterPeek</h2>
-            <hr />
-            
-            <pre><code>func TestNoUnreadByteAfterPeek(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestNoUnreadRuneAfterDiscard">
-            <h2>TestNoUnreadRuneAfterDiscard</h2>
-            <hr />
-            
-            <pre><code>func TestNoUnreadRuneAfterDiscard(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestNoUnreadByteAfterDiscard">
-            <h2>TestNoUnreadByteAfterDiscard</h2>
-            <hr />
-            
-            <pre><code>func TestNoUnreadByteAfterDiscard(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestNoUnreadRuneAfterWriteTo">
-            <h2>TestNoUnreadRuneAfterWriteTo</h2>
-            <hr />
-            
-            <pre><code>func TestNoUnreadRuneAfterWriteTo(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestNoUnreadByteAfterWriteTo">
-            <h2>TestNoUnreadByteAfterWriteTo</h2>
-            <hr />
-            
-            <pre><code>func TestNoUnreadByteAfterWriteTo(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestUnreadByte">
-            <h2>TestUnreadByte</h2>
-            <hr />
-            
-            <pre><code>func TestUnreadByte(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestUnreadByteMultiple">
-            <h2>TestUnreadByteMultiple</h2>
-            <hr />
-            
-            <pre><code>func TestUnreadByteMultiple(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestUnreadByteOthers">
-            <h2>TestUnreadByteOthers</h2>
-            <hr />
-            
-            <pre><code>func TestUnreadByteOthers(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestUnreadRuneError">
-            <h2>TestUnreadRuneError</h2>
-            <hr />
-            
-            <p>Test that UnreadRune fails if the preceding operation was not a ReadRune.</p>
-            
-            <pre><code>func TestUnreadRuneError(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestUnreadRuneAtEOF">
-            <h2>TestUnreadRuneAtEOF</h2>
-            <hr />
-            
-            <pre><code>func TestUnreadRuneAtEOF(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestReadWriteRune">
-            <h2>TestReadWriteRune</h2>
-            <hr />
-            
-            <pre><code>func TestReadWriteRune(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWriteInvalidRune">
-            <h2>TestWriteInvalidRune</h2>
-            <hr />
-            
-            <pre><code>func TestWriteInvalidRune(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestReadStringAllocs">
-            <h2>TestReadStringAllocs</h2>
-            <hr />
-            
-            <pre><code>func TestReadStringAllocs(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWriter">
-            <h2>TestWriter</h2>
-            <hr />
-            
-            <pre><code>func TestWriter(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWriterAppend">
-            <h2>TestWriterAppend</h2>
-            <hr />
-            
-            <pre><code>func TestWriterAppend(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Write">
-            <h2>Write</h2>
-            <hr />
-            
-            <pre><code>func Write(p []byte) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWriteErrors">
-            <h2>TestWriteErrors</h2>
-            <hr />
-            
-            <pre><code>func TestWriteErrors(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestNewReaderSizeIdempotent">
-            <h2>TestNewReaderSizeIdempotent</h2>
-            <hr />
-            
-            <pre><code>func TestNewReaderSizeIdempotent(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestNewWriterSizeIdempotent">
-            <h2>TestNewWriterSizeIdempotent</h2>
-            <hr />
-            
-            <pre><code>func TestNewWriterSizeIdempotent(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWriteString">
-            <h2>TestWriteString</h2>
-            <hr />
-            
-            <pre><code>func TestWriteString(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWriteStringStringWriter">
-            <h2>TestWriteStringStringWriter</h2>
-            <hr />
-            
-            <pre><code>func TestWriteStringStringWriter(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Write">
-            <h2>Write</h2>
-            <hr />
-            
-            <pre><code>func Write(b []byte) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="WriteString">
-            <h2>WriteString</h2>
-            <hr />
-            
-            <pre><code>func WriteString(s string) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="check">
-            <h2>check</h2>
-            <hr />
-            
-            <pre><code>func check(t *testing.T, write string, writeString string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestBufferFull">
-            <h2>TestBufferFull</h2>
-            <hr />
-            
-            <pre><code>func TestBufferFull(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestPeek">
-            <h2>TestPeek</h2>
-            <hr />
-            
-            <pre><code>func TestPeek(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Read">
-            <h2>Read</h2>
-            <hr />
-            
-            <pre><code>func Read(p []byte) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestPeekThenUnreadRune">
-            <h2>TestPeekThenUnreadRune</h2>
-            <hr />
-            
-            <pre><code>func TestPeekThenUnreadRune(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Read">
-            <h2>Read</h2>
-            <hr />
-            
-            <pre><code>func Read(buf []byte) (n int, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testReadLine">
-            <h2>testReadLine</h2>
-            <hr />
-            
-            <pre><code>func testReadLine(t *testing.T, input []byte)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestReadLine">
-            <h2>TestReadLine</h2>
-            <hr />
-            
-            <pre><code>func TestReadLine(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestLineTooLong">
-            <h2>TestLineTooLong</h2>
-            <hr />
-            
-            <pre><code>func TestLineTooLong(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestReadAfterLines">
-            <h2>TestReadAfterLines</h2>
-            <hr />
-            
-            <pre><code>func TestReadAfterLines(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestReadEmptyBuffer">
-            <h2>TestReadEmptyBuffer</h2>
-            <hr />
-            
-            <pre><code>func TestReadEmptyBuffer(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestLinesAfterRead">
-            <h2>TestLinesAfterRead</h2>
-            <hr />
-            
-            <pre><code>func TestLinesAfterRead(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestReadLineNonNilLineOrError">
-            <h2>TestReadLineNonNilLineOrError</h2>
-            <hr />
-            
-            <pre><code>func TestReadLineNonNilLineOrError(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestReadLineNewlines">
-            <h2>TestReadLineNewlines</h2>
-            <hr />
-            
-            <pre><code>func TestReadLineNewlines(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testReadLineNewlines">
-            <h2>testReadLineNewlines</h2>
-            <hr />
-            
-            <pre><code>func testReadLineNewlines(t *testing.T, input string, expect []readLineResult)</code></pre>
-         </article>
-         
-         <article class="function" data-name="createTestInput">
-            <h2>createTestInput</h2>
-            <hr />
-            
-            <pre><code>func createTestInput(n int) []byte</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestReaderWriteTo">
-            <h2>TestReaderWriteTo</h2>
-            <hr />
-            
-            <pre><code>func TestReaderWriteTo(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Read">
-            <h2>Read</h2>
-            <hr />
-            
-            <pre><code>func Read(p []byte) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Write">
-            <h2>Write</h2>
-            <hr />
-            
-            <pre><code>func Write(p []byte) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestReaderWriteToErrors">
-            <h2>TestReaderWriteToErrors</h2>
-            <hr />
-            
-            <pre><code>func TestReaderWriteToErrors(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWriterReadFrom">
-            <h2>TestWriterReadFrom</h2>
-            <hr />
-            
-            <pre><code>func TestWriterReadFrom(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Read">
-            <h2>Read</h2>
-            <hr />
-            
-            <pre><code>func Read(p []byte) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Write">
-            <h2>Write</h2>
-            <hr />
-            
-            <pre><code>func Write(p []byte) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWriterReadFromErrors">
-            <h2>TestWriterReadFromErrors</h2>
-            <hr />
-            
-            <pre><code>func TestWriterReadFromErrors(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWriterReadFromCounts">
-            <h2>TestWriterReadFromCounts</h2>
-            <hr />
-            
-            <p>TestWriterReadFromCounts tests that using io.Copy to copy into a
-bufio.Writer does not prematurely flush the buffer. For example, when
-buffering writes to a network socket, excessive network writes should be
-avoided.</p>
-            
-            <pre><code>func TestWriterReadFromCounts(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Write">
-            <h2>Write</h2>
-            <hr />
-            
-            <pre><code>func Write(p []byte) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Read">
-            <h2>Read</h2>
-            <hr />
-            
-            <pre><code>func Read([]byte) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestNegativeRead">
-            <h2>TestNegativeRead</h2>
-            <hr />
-            
-            <pre><code>func TestNegativeRead(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Read">
-            <h2>Read</h2>
-            <hr />
-            
-            <pre><code>func Read(p []byte) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestReaderClearError">
-            <h2>TestReaderClearError</h2>
-            <hr />
-            
-            <pre><code>func TestReaderClearError(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWriterReadFromWhileFull">
-            <h2>TestWriterReadFromWhileFull</h2>
-            <hr />
-            
-            <p>Test for golang.org/issue/5947</p>
-            
-            <pre><code>func TestWriterReadFromWhileFull(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Read">
-            <h2>Read</h2>
-            <hr />
-            
-            <pre><code>func Read(p []byte) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWriterReadFromUntilEOF">
-            <h2>TestWriterReadFromUntilEOF</h2>
-            <hr />
-            
-            <p>Test for golang.org/issue/7611</p>
-            
-            <pre><code>func TestWriterReadFromUntilEOF(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWriterReadFromErrNoProgress">
-            <h2>TestWriterReadFromErrNoProgress</h2>
-            <hr />
-            
-            <pre><code>func TestWriterReadFromErrNoProgress(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Write">
-            <h2>Write</h2>
-            <hr />
-            
-            <pre><code>func Write(p []byte) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="ReadFrom">
-            <h2>ReadFrom</h2>
-            <hr />
-            
-            <pre><code>func ReadFrom(r io.Reader) (int64, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWriterReadFromWithBufferedData">
-            <h2>TestWriterReadFromWithBufferedData</h2>
-            <hr />
-            
-            <p>Test that calling (*Writer).ReadFrom with a partially-filled buffer
-fills the buffer before switching over to ReadFrom.</p>
-            
-            <pre><code>func TestWriterReadFromWithBufferedData(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestReadZero">
-            <h2>TestReadZero</h2>
-            <hr />
-            
-            <pre><code>func TestReadZero(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestReaderReset">
-            <h2>TestReaderReset</h2>
-            <hr />
-            
-            <pre><code>func TestReaderReset(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWriterReset">
-            <h2>TestWriterReset</h2>
-            <hr />
-            
-            <pre><code>func TestWriterReset(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestReaderDiscard">
-            <h2>TestReaderDiscard</h2>
-            <hr />
-            
-            <pre><code>func TestReaderDiscard(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestReaderSize">
-            <h2>TestReaderSize</h2>
-            <hr />
-            
-            <pre><code>func TestReaderSize(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWriterSize">
-            <h2>TestWriterSize</h2>
-            <hr />
-            
-            <pre><code>func TestWriterSize(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Read">
-            <h2>Read</h2>
-            <hr />
-            
-            <pre><code>func Read(p []byte) (n int, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="newScriptedReader">
-            <h2>newScriptedReader</h2>
-            <hr />
-            
-            <pre><code>func newScriptedReader(steps ...func) io.Reader</code></pre>
-         </article>
-         
-         <article class="function" data-name="Read">
-            <h2>Read</h2>
-            <hr />
-            
-            <pre><code>func Read(p []byte) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestPartialReadEOF">
-            <h2>TestPartialReadEOF</h2>
-            <hr />
-            
-            <pre><code>func TestPartialReadEOF(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="ReadFrom">
-            <h2>ReadFrom</h2>
-            <hr />
-            
-            <pre><code>func ReadFrom(r io.Reader) (int64, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Write">
-            <h2>Write</h2>
-            <hr />
-            
-            <pre><code>func Write(b []byte) (n int, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWriterReadFromMustSetUnderlyingError">
-            <h2>TestWriterReadFromMustSetUnderlyingError</h2>
-            <hr />
-            
-            <pre><code>func TestWriterReadFromMustSetUnderlyingError(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Write">
-            <h2>Write</h2>
-            <hr />
-            
-            <pre><code>func Write(p []byte) (n int, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWriterReadFromMustReturnUnderlyingError">
-            <h2>TestWriterReadFromMustReturnUnderlyingError</h2>
-            <hr />
-            
-            <p>Ensure that previous Write errors are immediately returned
-on any ReadFrom. See golang.org/issue/35194.</p>
-            
-            <pre><code>func TestWriterReadFromMustReturnUnderlyingError(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkReaderCopyOptimal">
-            <h2>BenchmarkReaderCopyOptimal</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkReaderCopyOptimal(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkReaderCopyUnoptimal">
-            <h2>BenchmarkReaderCopyUnoptimal</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkReaderCopyUnoptimal(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkReaderCopyNoWriteTo">
-            <h2>BenchmarkReaderCopyNoWriteTo</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkReaderCopyNoWriteTo(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkReaderWriteToOptimal">
-            <h2>BenchmarkReaderWriteToOptimal</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkReaderWriteToOptimal(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkReaderReadString">
-            <h2>BenchmarkReaderReadString</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkReaderReadString(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkWriterCopyOptimal">
-            <h2>BenchmarkWriterCopyOptimal</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkWriterCopyOptimal(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkWriterCopyUnoptimal">
-            <h2>BenchmarkWriterCopyUnoptimal</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkWriterCopyUnoptimal(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkWriterCopyNoReadFrom">
-            <h2>BenchmarkWriterCopyNoReadFrom</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkWriterCopyNoReadFrom(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkReaderEmpty">
-            <h2>BenchmarkReaderEmpty</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkReaderEmpty(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkWriterEmpty">
-            <h2>BenchmarkWriterEmpty</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkWriterEmpty(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkWriterFlush">
-            <h2>BenchmarkWriterFlush</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkWriterFlush(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleWriter">
-            <h2>ExampleWriter</h2>
-            <hr />
-            
-            <pre><code>func ExampleWriter()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleWriter_AvailableBuffer">
-            <h2>ExampleWriter_AvailableBuffer</h2>
-            <hr />
-            
-            <pre><code>func ExampleWriter_AvailableBuffer()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleWriter_ReadFrom">
-            <h2>ExampleWriter_ReadFrom</h2>
-            <hr />
-            
-            <p>ExampleWriter_ReadFrom demonstrates how to use the ReadFrom method of Writer.</p>
-            
-            <pre><code>func ExampleWriter_ReadFrom()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleScanner_lines">
-            <h2>ExampleScanner_lines</h2>
-            <hr />
-            
-            <p>The simplest use of a Scanner, to read standard input as a set of lines.</p>
-            
-            <pre><code>func ExampleScanner_lines()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleScanner_Bytes">
-            <h2>ExampleScanner_Bytes</h2>
-            <hr />
-            
-            <p>Return the most recent call to Scan as a []byte.</p>
-            
-            <pre><code>func ExampleScanner_Bytes()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleScanner_words">
-            <h2>ExampleScanner_words</h2>
-            <hr />
-            
-            <p>Use a Scanner to implement a simple word-count utility by scanning the
-input as a sequence of space-delimited tokens.</p>
-            
-            <pre><code>func ExampleScanner_words()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleScanner_custom">
-            <h2>ExampleScanner_custom</h2>
-            <hr />
-            
-            <p>Use a Scanner with a custom split function (built by wrapping ScanWords) to validate
-32-bit decimal input.</p>
-            
-            <pre><code>func ExampleScanner_custom()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleScanner_emptyFinalToken">
-            <h2>ExampleScanner_emptyFinalToken</h2>
-            <hr />
-            
-            <p>Use a Scanner with a custom split function to parse a comma-separated
-list with an empty final value.</p>
-            
-            <pre><code>func ExampleScanner_emptyFinalToken()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleScanner_earlyStop">
-            <h2>ExampleScanner_earlyStop</h2>
-            <hr />
-            
-            <p>Use a Scanner with a custom split function to parse a comma-separated
-list with an empty final value but stops at the token "STOP".</p>
-            
-            <pre><code>func ExampleScanner_earlyStop()</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestSpace">
-            <h2>TestSpace</h2>
-            <hr />
-            
-            <p>Test white space table matches the Unicode definition.</p>
-            
-            <pre><code>func TestSpace(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestScanByte">
-            <h2>TestScanByte</h2>
-            <hr />
-            
-            <pre><code>func TestScanByte(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestScanRune">
-            <h2>TestScanRune</h2>
-            <hr />
-            
-            <p>Test that the rune splitter returns same sequence of runes (not bytes) as for range string.</p>
-            
-            <pre><code>func TestScanRune(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestScanWords">
-            <h2>TestScanWords</h2>
-            <hr />
-            
-            <p>Test that the word splitter returns the same data as strings.Fields.</p>
-            
-            <pre><code>func TestScanWords(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Read">
-            <h2>Read</h2>
-            <hr />
-            
-            <pre><code>func Read(p []byte) (n int, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="genLine">
-            <h2>genLine</h2>
-            <hr />
-            
-            <p>genLine writes to buf a predictable but non-trivial line of text of length
-n, including the terminal newline and an occasional carriage return.
-If addNewline is false, the \r and \n are not emitted.</p>
-            
-            <pre><code>func genLine(buf *bytes.Buffer, lineNum int, n int, addNewline bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestScanLongLines">
-            <h2>TestScanLongLines</h2>
-            <hr />
-            
-            <p>Test the line splitter, including some carriage returns but no long lines.</p>
-            
-            <pre><code>func TestScanLongLines(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestScanLineTooLong">
-            <h2>TestScanLineTooLong</h2>
-            <hr />
-            
-            <p>Test that the line splitter errors out on a long line.</p>
-            
-            <pre><code>func TestScanLineTooLong(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testNoNewline">
-            <h2>testNoNewline</h2>
-            <hr />
-            
-            <p>Test that the line splitter handles a final line without a newline.</p>
-            
-            <pre><code>func testNoNewline(text string, lines []string, t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestScanLineNoNewline">
-            <h2>TestScanLineNoNewline</h2>
-            <hr />
-            
-            <p>Test that the line splitter handles a final line without a newline.</p>
-            
-            <pre><code>func TestScanLineNoNewline(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestScanLineReturnButNoNewline">
-            <h2>TestScanLineReturnButNoNewline</h2>
-            <hr />
-            
-            <p>Test that the line splitter handles a final line with a carriage return but no newline.</p>
-            
-            <pre><code>func TestScanLineReturnButNoNewline(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestScanLineEmptyFinalLine">
-            <h2>TestScanLineEmptyFinalLine</h2>
-            <hr />
-            
-            <p>Test that the line splitter handles a final empty line.</p>
-            
-            <pre><code>func TestScanLineEmptyFinalLine(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestScanLineEmptyFinalLineWithCR">
-            <h2>TestScanLineEmptyFinalLineWithCR</h2>
-            <hr />
-            
-            <p>Test that the line splitter handles a final empty line with a carriage return but no newline.</p>
-            
-            <pre><code>func TestScanLineEmptyFinalLineWithCR(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestSplitError">
-            <h2>TestSplitError</h2>
-            <hr />
-            
-            <p>Test the correct error is returned when the split function errors out.</p>
-            
-            <pre><code>func TestSplitError(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestErrAtEOF">
-            <h2>TestErrAtEOF</h2>
-            <hr />
-            
-            <p>Test that an EOF is overridden by a user-generated scan error.</p>
-            
-            <pre><code>func TestErrAtEOF(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Read">
-            <h2>Read</h2>
-            <hr />
-            
-            <pre><code>func Read(p []byte) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestNonEOFWithEmptyRead">
-            <h2>TestNonEOFWithEmptyRead</h2>
-            <hr />
-            
-            <pre><code>func TestNonEOFWithEmptyRead(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Read">
-            <h2>Read</h2>
-            <hr />
-            
-            <pre><code>func Read(p []byte) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestBadReader">
-            <h2>TestBadReader</h2>
-            <hr />
-            
-            <pre><code>func TestBadReader(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestScanWordsExcessiveWhiteSpace">
-            <h2>TestScanWordsExcessiveWhiteSpace</h2>
-            <hr />
-            
-            <pre><code>func TestScanWordsExcessiveWhiteSpace(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="commaSplit">
-            <h2>commaSplit</h2>
-            <hr />
-            
-            <pre><code>func commaSplit(data []byte, atEOF bool) (advance int, token []byte, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testEmptyTokens">
-            <h2>testEmptyTokens</h2>
-            <hr />
-            
-            <pre><code>func testEmptyTokens(t *testing.T, text string, values []string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestEmptyTokens">
-            <h2>TestEmptyTokens</h2>
-            <hr />
-            
-            <pre><code>func TestEmptyTokens(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWithNoEmptyTokens">
-            <h2>TestWithNoEmptyTokens</h2>
-            <hr />
-            
-            <pre><code>func TestWithNoEmptyTokens(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="loopAtEOFSplit">
-            <h2>loopAtEOFSplit</h2>
-            <hr />
-            
-            <pre><code>func loopAtEOFSplit(data []byte, atEOF bool) (advance int, token []byte, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestDontLoopForever">
-            <h2>TestDontLoopForever</h2>
-            <hr />
-            
-            <pre><code>func TestDontLoopForever(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestBlankLines">
-            <h2>TestBlankLines</h2>
-            <hr />
-            
-            <pre><code>func TestBlankLines(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="split">
-            <h2>split</h2>
-            <hr />
-            
-            <pre><code>func split(data []byte, atEOF bool) (advance int, token []byte, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestEmptyLinesOK">
-            <h2>TestEmptyLinesOK</h2>
-            <hr />
-            
-            <p>Check that the looping-at-EOF check doesn't trigger for merely empty tokens.</p>
-            
-            <pre><code>func TestEmptyLinesOK(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestHugeBuffer">
-            <h2>TestHugeBuffer</h2>
-            <hr />
-            
-            <p>Make sure we can read a huge token if a big enough buffer is provided.</p>
-            
-            <pre><code>func TestHugeBuffer(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Read">
-            <h2>Read</h2>
-            <hr />
-            
-            <pre><code>func Read(p []byte) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestNegativeEOFReader">
-            <h2>TestNegativeEOFReader</h2>
-            <hr />
-            
-            <p>Test that the scanner doesn't panic and returns ErrBadReadCount
-on a reader that returns a negative count of bytes read (issue 38053).</p>
-            
-            <pre><code>func TestNegativeEOFReader(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Read">
-            <h2>Read</h2>
-            <hr />
-            
-            <pre><code>func Read(p []byte) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestLargeReader">
-            <h2>TestLargeReader</h2>
-            <hr />
-            
-            <p>Test that the scanner doesn't panic and returns ErrBadReadCount
-on a reader that returns an impossibly large count of bytes read (issue 38053).</p>
-            
-            <pre><code>func TestLargeReader(t *testing.T)</code></pre>
-         </article>
+         <section id="functions">
+            <h2>Functions</h2>
+            
+            <article class="function" data-name="Available">
+               <h3>
+                  Available 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Available returns how many bytes are unused in the buffer.</p>
+               
+               <pre><code>func (b *Writer) Available() int</code></pre>
+            </article>
+            
+            <article class="function" data-name="AvailableBuffer">
+               <h3>
+                  AvailableBuffer 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>AvailableBuffer returns an empty buffer with b.Available() capacity.
+This buffer is intended to be appended to and
+passed to an immediately succeeding [Writer.Write] call.
+The buffer is only valid until the next write operation on b.</p>
+               
+               <pre><code>func (b *Writer) AvailableBuffer() []byte</code></pre>
+            </article>
+            
+            <article class="function" data-name="Buffer">
+               <h3>
+                  Buffer 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Buffer sets the initial buffer to use when scanning
+and the maximum size of buffer that may be allocated during scanning.
+The maximum token size must be less than the larger of max and cap(buf).
+If max <= cap(buf), [Scanner.Scan] will use this buffer only and do no allocation.
+By default, [Scanner.Scan] uses an internal buffer and sets the
+maximum token size to [MaxScanTokenSize].
+Buffer panics if it is called after scanning has started.</p>
+               
+               <pre><code>func (s *Scanner) Buffer(buf []byte, max int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Buffered">
+               <h3>
+                  Buffered 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Buffered returns the number of bytes that can be read from the current buffer.</p>
+               
+               <pre><code>func (b *Reader) Buffered() int</code></pre>
+            </article>
+            
+            <article class="function" data-name="Buffered">
+               <h3>
+                  Buffered 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Buffered returns the number of bytes that have been written into the current buffer.</p>
+               
+               <pre><code>func (b *Writer) Buffered() int</code></pre>
+            </article>
+            
+            <article class="function" data-name="Bytes">
+               <h3>
+                  Bytes 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Bytes returns the most recent token generated by a call to [Scanner.Scan].
+The underlying array may point to data that will be overwritten
+by a subsequent call to Scan. It does no allocation.</p>
+               
+               <pre><code>func (s *Scanner) Bytes() []byte</code></pre>
+            </article>
+            
+            <article class="function" data-name="Discard">
+               <h3>
+                  Discard 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Discard skips the next n bytes, returning the number of bytes discarded.
+If Discard skips fewer than n bytes, it also returns an error.
+If 0 <= n <= b.Buffered(), Discard is guaranteed to succeed without
+reading from the underlying io.Reader.</p>
+               
+               <pre><code>func (b *Reader) Discard(n int) (discarded int, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Err">
+               <h3>
+                  Err 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Err returns the first non-EOF error that was encountered by the [Scanner].</p>
+               
+               <pre><code>func (s *Scanner) Err() error</code></pre>
+            </article>
+            
+            <article class="function" data-name="Flush">
+               <h3>
+                  Flush 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Flush writes any buffered data to the underlying [io.Writer].</p>
+               
+               <pre><code>func (b *Writer) Flush() error</code></pre>
+            </article>
+            
+            <article class="function" data-name="NewReadWriter">
+               <h3>
+                  NewReadWriter 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewReadWriter allocates a new [ReadWriter] that dispatches to r and w.</p>
+               
+               <pre><code>func NewReadWriter(r *Reader, w *Writer) *ReadWriter</code></pre>
+            </article>
+            
+            <article class="function" data-name="NewReader">
+               <h3>
+                  NewReader 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewReader returns a new [Reader] whose buffer has the default size.</p>
+               
+               <pre><code>func NewReader(rd io.Reader) *Reader</code></pre>
+            </article>
+            
+            <article class="function" data-name="NewReaderSize">
+               <h3>
+                  NewReaderSize 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewReaderSize returns a new [Reader] whose buffer has at least the specified
+size. If the argument io.Reader is already a [Reader] with large enough
+size, it returns the underlying [Reader].</p>
+               
+               <pre><code>func NewReaderSize(rd io.Reader, size int) *Reader</code></pre>
+            </article>
+            
+            <article class="function" data-name="NewScanner">
+               <h3>
+                  NewScanner 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewScanner returns a new [Scanner] to read from r.
+The split function defaults to [ScanLines].</p>
+               
+               <pre><code>func NewScanner(r io.Reader) *Scanner</code></pre>
+            </article>
+            
+            <article class="function" data-name="NewWriter">
+               <h3>
+                  NewWriter 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewWriter returns a new [Writer] whose buffer has the default size.
+If the argument io.Writer is already a [Writer] with large enough buffer size,
+it returns the underlying [Writer].</p>
+               
+               <pre><code>func NewWriter(w io.Writer) *Writer</code></pre>
+            </article>
+            
+            <article class="function" data-name="NewWriterSize">
+               <h3>
+                  NewWriterSize 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewWriterSize returns a new [Writer] whose buffer has at least the specified
+size. If the argument io.Writer is already a [Writer] with large enough
+size, it returns the underlying [Writer].</p>
+               
+               <pre><code>func NewWriterSize(w io.Writer, size int) *Writer</code></pre>
+            </article>
+            
+            <article class="function" data-name="Peek">
+               <h3>
+                  Peek 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Peek returns the next n bytes without advancing the reader. The bytes stop
+being valid at the next read call. If necessary, Peek will read more bytes
+into the buffer in order to make n bytes available. If Peek returns fewer
+than n bytes, it also returns an error explaining why the read is short.
+The error is [ErrBufferFull] if n is larger than b's buffer size.
+Calling Peek prevents a [Reader.UnreadByte] or [Reader.UnreadRune] call from succeeding
+until the next read operation.</p>
+               
+               <pre><code>func (b *Reader) Peek(n int) ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Read">
+               <h3>
+                  Read 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Read reads data into p.
+It returns the number of bytes read into p.
+The bytes are taken from at most one Read on the underlying [Reader],
+hence n may be less than len(p).
+To read exactly len(p) bytes, use io.ReadFull(b, p).
+If the underlying [Reader] can return a non-zero count with io.EOF,
+then this Read method can do so as well; see the [io.Reader] docs.</p>
+               
+               <pre><code>func (b *Reader) Read(p []byte) (n int, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="ReadByte">
+               <h3>
+                  ReadByte 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ReadByte reads and returns a single byte.
+If no byte is available, returns an error.</p>
+               
+               <pre><code>func (b *Reader) ReadByte() (byte, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="ReadBytes">
+               <h3>
+                  ReadBytes 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ReadBytes reads until the first occurrence of delim in the input,
+returning a slice containing the data up to and including the delimiter.
+If ReadBytes encounters an error before finding a delimiter,
+it returns the data read before the error and the error itself (often io.EOF).
+ReadBytes returns err != nil if and only if the returned data does not end in
+delim.
+For simple uses, a Scanner may be more convenient.</p>
+               
+               <pre><code>func (b *Reader) ReadBytes(delim byte) ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="ReadFrom">
+               <h3>
+                  ReadFrom 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ReadFrom implements [io.ReaderFrom]. If the underlying writer
+supports the ReadFrom method, this calls the underlying ReadFrom.
+If there is buffered data and an underlying ReadFrom, this fills
+the buffer and writes it before calling ReadFrom.</p>
+               
+               <pre><code>func (b *Writer) ReadFrom(r io.Reader) (n int64, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="ReadLine">
+               <h3>
+                  ReadLine 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ReadLine is a low-level line-reading primitive. Most callers should use
+[Reader.ReadBytes]('\n') or [Reader.ReadString]('\n') instead or use a [Scanner].
+ReadLine tries to return a single line, not including the end-of-line bytes.
+If the line was too long for the buffer then isPrefix is set and the
+beginning of the line is returned. The rest of the line will be returned
+from future calls. isPrefix will be false when returning the last fragment
+of the line. The returned buffer is only valid until the next call to
+ReadLine. ReadLine either returns a non-nil line or it returns an error,
+never both.
+The text returned from ReadLine does not include the line end ("\r\n" or "\n").
+No indication or error is given if the input ends without a final line end.
+Calling [Reader.UnreadByte] after ReadLine will always unread the last byte read
+(possibly a character belonging to the line end) even if that byte is not
+part of the line returned by ReadLine.</p>
+               
+               <pre><code>func (b *Reader) ReadLine() (line []byte, isPrefix bool, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="ReadRune">
+               <h3>
+                  ReadRune 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ReadRune reads a single UTF-8 encoded Unicode character and returns the
+rune and its size in bytes. If the encoded rune is invalid, it consumes one byte
+and returns unicode.ReplacementChar (U+FFFD) with a size of 1.</p>
+               
+               <pre><code>func (b *Reader) ReadRune() (r rune, size int, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="ReadSlice">
+               <h3>
+                  ReadSlice 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ReadSlice reads until the first occurrence of delim in the input,
+returning a slice pointing at the bytes in the buffer.
+The bytes stop being valid at the next read.
+If ReadSlice encounters an error before finding a delimiter,
+it returns all the data in the buffer and the error itself (often io.EOF).
+ReadSlice fails with error [ErrBufferFull] if the buffer fills without a delim.
+Because the data returned from ReadSlice will be overwritten
+by the next I/O operation, most clients should use
+[Reader.ReadBytes] or ReadString instead.
+ReadSlice returns err != nil if and only if line does not end in delim.</p>
+               
+               <pre><code>func (b *Reader) ReadSlice(delim byte) (line []byte, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="ReadString">
+               <h3>
+                  ReadString 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ReadString reads until the first occurrence of delim in the input,
+returning a string containing the data up to and including the delimiter.
+If ReadString encounters an error before finding a delimiter,
+it returns the data read before the error and the error itself (often io.EOF).
+ReadString returns err != nil if and only if the returned data does not end in
+delim.
+For simple uses, a Scanner may be more convenient.</p>
+               
+               <pre><code>func (b *Reader) ReadString(delim byte) (string, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Reset">
+               <h3>
+                  Reset 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Reset discards any unflushed buffered data, clears any error, and
+resets b to write its output to w.
+Calling Reset on the zero value of [Writer] initializes the internal buffer
+to the default size.
+Calling w.Reset(w) (that is, resetting a [Writer] to itself) does nothing.</p>
+               
+               <pre><code>func (b *Writer) Reset(w io.Writer)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Reset">
+               <h3>
+                  Reset 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Reset discards any buffered data, resets all state, and switches
+the buffered reader to read from r.
+Calling Reset on the zero value of [Reader] initializes the internal buffer
+to the default size.
+Calling b.Reset(b) (that is, resetting a [Reader] to itself) does nothing.</p>
+               
+               <pre><code>func (b *Reader) Reset(r io.Reader)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Scan">
+               <h3>
+                  Scan 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Scan advances the [Scanner] to the next token, which will then be
+available through the [Scanner.Bytes] or [Scanner.Text] method. It returns false when
+there are no more tokens, either by reaching the end of the input or an error.
+After Scan returns false, the [Scanner.Err] method will return any error that
+occurred during scanning, except that if it was [io.EOF], [Scanner.Err]
+will return nil.
+Scan panics if the split function returns too many empty
+tokens without advancing the input. This is a common error mode for
+scanners.</p>
+               
+               <pre><code>func (s *Scanner) Scan() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="ScanBytes">
+               <h3>
+                  ScanBytes 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>ScanBytes is a split function for a [Scanner] that returns each byte as a token.</p>
+               
+               <pre><code>func ScanBytes(data []byte, atEOF bool) (advance int, token []byte, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="ScanLines">
+               <h3>
+                  ScanLines 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>ScanLines is a split function for a [Scanner] that returns each line of
+text, stripped of any trailing end-of-line marker. The returned line may
+be empty. The end-of-line marker is one optional carriage return followed
+by one mandatory newline. In regular expression notation, it is `\r?\n`.
+The last non-empty line of input will be returned even if it has no
+newline.</p>
+               
+               <pre><code>func ScanLines(data []byte, atEOF bool) (advance int, token []byte, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="ScanRunes">
+               <h3>
+                  ScanRunes 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>ScanRunes is a split function for a [Scanner] that returns each
+UTF-8-encoded rune as a token. The sequence of runes returned is
+equivalent to that from a range loop over the input as a string, which
+means that erroneous UTF-8 encodings translate to U+FFFD = "\xef\xbf\xbd".
+Because of the Scan interface, this makes it impossible for the client to
+distinguish correctly encoded replacement runes from encoding errors.</p>
+               
+               <pre><code>func ScanRunes(data []byte, atEOF bool) (advance int, token []byte, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="ScanWords">
+               <h3>
+                  ScanWords 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>ScanWords is a split function for a [Scanner] that returns each
+space-separated word of text, with surrounding spaces deleted. It will
+never return an empty string. The definition of space is set by
+unicode.IsSpace.</p>
+               
+               <pre><code>func ScanWords(data []byte, atEOF bool) (advance int, token []byte, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Size">
+               <h3>
+                  Size 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Size returns the size of the underlying buffer in bytes.</p>
+               
+               <pre><code>func (b *Writer) Size() int</code></pre>
+            </article>
+            
+            <article class="function" data-name="Size">
+               <h3>
+                  Size 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Size returns the size of the underlying buffer in bytes.</p>
+               
+               <pre><code>func (b *Reader) Size() int</code></pre>
+            </article>
+            
+            <article class="function" data-name="Split">
+               <h3>
+                  Split 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Split sets the split function for the [Scanner].
+The default split function is [ScanLines].
+Split panics if it is called after scanning has started.</p>
+               
+               <pre><code>func (s *Scanner) Split(split SplitFunc)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Text">
+               <h3>
+                  Text 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Text returns the most recent token generated by a call to [Scanner.Scan]
+as a newly allocated string holding its bytes.</p>
+               
+               <pre><code>func (s *Scanner) Text() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="UnreadByte">
+               <h3>
+                  UnreadByte 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>UnreadByte unreads the last byte. Only the most recently read byte can be unread.
+UnreadByte returns an error if the most recent method called on the
+[Reader] was not a read operation. Notably, [Reader.Peek], [Reader.Discard], and [Reader.WriteTo] are not
+considered read operations.</p>
+               
+               <pre><code>func (b *Reader) UnreadByte() error</code></pre>
+            </article>
+            
+            <article class="function" data-name="UnreadRune">
+               <h3>
+                  UnreadRune 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>UnreadRune unreads the last rune. If the most recent method called on
+the [Reader] was not a [Reader.ReadRune], [Reader.UnreadRune] returns an error. (In this
+regard it is stricter than [Reader.UnreadByte], which will unread the last byte
+from any read operation.)</p>
+               
+               <pre><code>func (b *Reader) UnreadRune() error</code></pre>
+            </article>
+            
+            <article class="function" data-name="Write">
+               <h3>
+                  Write 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Write writes the contents of p into the buffer.
+It returns the number of bytes written.
+If nn < len(p), it also returns an error explaining
+why the write is short.</p>
+               
+               <pre><code>func (b *Writer) Write(p []byte) (nn int, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="WriteByte">
+               <h3>
+                  WriteByte 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>WriteByte writes a single byte.</p>
+               
+               <pre><code>func (b *Writer) WriteByte(c byte) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="WriteRune">
+               <h3>
+                  WriteRune 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>WriteRune writes a single Unicode code point, returning
+the number of bytes written and any error.</p>
+               
+               <pre><code>func (b *Writer) WriteRune(r rune) (size int, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="WriteString">
+               <h3>
+                  WriteString 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>WriteString writes a string.
+It returns the number of bytes written.
+If the count is less than len(s), it also returns an error explaining
+why the write is short.</p>
+               
+               <pre><code>func (b *Writer) WriteString(s string) (int, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="WriteTo">
+               <h3>
+                  WriteTo 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>WriteTo implements io.WriterTo.
+This may make multiple calls to the [Reader.Read] method of the underlying [Reader].
+If the underlying reader supports the [Reader.WriteTo] method,
+this calls the underlying [Reader.WriteTo] without buffering.</p>
+               
+               <pre><code>func (b *Reader) WriteTo(w io.Writer) (n int64, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="advance">
+               <h3>
+                  advance 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>advance consumes n bytes of the buffer. It reports whether the advance was legal.</p>
+               
+               <pre><code>func (s *Scanner) advance(n int) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="collectFragments">
+               <h3>
+                  collectFragments 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>collectFragments reads until the first occurrence of delim in the input. It
+returns (slice of full buffers, remaining bytes before delim, total number
+of bytes in the combined first two elements, error).
+The complete result is equal to
+`bytes.Join(append(fullBuffers, finalFragment), nil)`, which has a
+length of `totalLen`. The result is structured in this way to allow callers
+to minimize allocations and copies.</p>
+               
+               <pre><code>func (b *Reader) collectFragments(delim byte) (fullBuffers [][]byte, finalFragment []byte, totalLen int, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="dropCR">
+               <h3>
+                  dropCR 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>dropCR drops a terminal \r from the data.</p>
+               
+               <pre><code>func dropCR(data []byte) []byte</code></pre>
+            </article>
+            
+            <article class="function" data-name="fill">
+               <h3>
+                  fill 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>fill reads a new chunk into the buffer.</p>
+               
+               <pre><code>func (b *Reader) fill()</code></pre>
+            </article>
+            
+            <article class="function" data-name="isSpace">
+               <h3>
+                  isSpace 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>isSpace reports whether the character is a Unicode white space character.
+We avoid dependency on the unicode package, but check validity of the implementation
+in the tests.</p>
+               
+               <pre><code>func isSpace(r rune) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="readErr">
+               <h3>
+                  readErr 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (b *Reader) readErr() error</code></pre>
+            </article>
+            
+            <article class="function" data-name="reset">
+               <h3>
+                  reset 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (b *Reader) reset(buf []byte, r io.Reader)</code></pre>
+            </article>
+            
+            <article class="function" data-name="setErr">
+               <h3>
+                  setErr 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>setErr records the first error encountered.</p>
+               
+               <pre><code>func (s *Scanner) setErr(err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="writeBuf">
+               <h3>
+                  writeBuf 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>writeBuf writes the [Reader]'s buffer to the writer.</p>
+               
+               <pre><code>func (b *Reader) writeBuf(w io.Writer) (int64, error)</code></pre>
+            </article>
+            
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -1605,59 +1559,170 @@ on a reader that returns an impossibly large count of bytes read (issue 38053).<
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

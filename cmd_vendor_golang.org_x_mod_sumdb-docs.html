@@ -13,266 +13,647 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
-          
-         <a href="cmd_vendor_golang.org_x_mod_sumdb_dirhash-docs.html">dirhash</a>
-         <br />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <ul class="subpackage-list">
+               
+               <li><a href="cmd_vendor_golang.org_x_mod_sumdb_dirhash-docs.html">dirhash</a></li>
+               
+               <li><a href="cmd_vendor_golang.org_x_mod_sumdb_note-docs.html">note</a></li>
+               
+               <li><a href="cmd_vendor_golang.org_x_mod_sumdb_tlog-docs.html">tlog</a></li>
+               
+            </ul>
+            
+         </div>
+
          
-         <a href="cmd_vendor_golang.org_x_mod_sumdb_note-docs.html">note</a>
-         <br />
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                
+               <li><a href="#interfaces">Interfaces</a></li>
+                
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
-         <a href="cmd_vendor_golang.org_x_mod_sumdb_tlog-docs.html">tlog</a>
-         <br />
-          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>sumdb</code>
-         </h1>
-         <hr />
-         
-         <article class="global" data-name="ServerPaths">
-            <h2>ServerPaths</h2>
-            <hr />
-            
-            <p>ServerPaths are the URL paths the Server can (and should) serve.
+         <h1>sumdb</h1>
+         <div class="section-divider"></div>
 
-Typically a server will do:
-
-	srv := sumdb.NewServer(ops)
-	for _, path := range sumdb.ServerPaths {
-		http.Handle(path, srv)
-	}</p>
-            
-            <pre><code>ServerPaths</code></pre>
-         </article>
          
-         <article class="global" data-name="modVerRE">
-            <h2>modVerRE</h2>
-            <hr />
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"context"
+"fmt"
+"sync"
+"golang.org/x/mod/module"
+"golang.org/x/mod/sumdb/note"
+"golang.org/x/mod/sumdb/tlog"
+"sync"
+"sync/atomic"
+"bytes"
+"errors"
+"fmt"
+"strings"
+"sync"
+"sync/atomic"
+"golang.org/x/mod/module"
+"golang.org/x/mod/sumdb/note"
+"golang.org/x/mod/sumdb/tlog"
+"bytes"
+"context"
+"net/http"
+"os"
+"strings"
+"golang.org/x/mod/internal/lazyregexp"
+"golang.org/x/mod/module"
+"golang.org/x/mod/sumdb/tlog"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <pre><code>modVerRE</code></pre>
-         </article>
-         
-         <article class="global" data-name="ErrWriteConflict">
-            <h2>ErrWriteConflict</h2>
-            <hr />
-            
-            <p>ErrWriteConflict signals a write conflict during Client.WriteConfig.</p>
-            
-            <pre><code>ErrWriteConflict</code></pre>
-         </article>
-         
-         <article class="global" data-name="ErrSecurity">
-            <h2>ErrSecurity</h2>
-            <hr />
-            
-            <p>ErrSecurity is returned by [Client] operations that invoke Client.SecurityError.</p>
-            
-            <pre><code>ErrSecurity</code></pre>
-         </article>
-         
-         <article class="global" data-name="ErrGONOSUMDB">
-            <h2>ErrGONOSUMDB</h2>
-            <hr />
-            
-            <p>ErrGONOSUMDB is returned by [Client.Lookup] for paths that match
+            <article class="global" data-name="ErrGONOSUMDB">
+               <h3>
+                  ErrGONOSUMDB 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>ErrGONOSUMDB is returned by [Client.Lookup] for paths that match
 a pattern listed in the GONOSUMDB list (set by [Client.SetGONOSUMDB],
 usually from the environment variable).</p>
+               
+               <pre><code>var ErrGONOSUMDB = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre><code>ErrGONOSUMDB</code></pre>
-         </article>
-         
-         <article class="global" data-name="msgPast">
-            <h2>msgPast</h2>
-            <hr />
+            <article class="global" data-name="ErrSecurity">
+               <h3>
+                  ErrSecurity 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>ErrSecurity is returned by [Client] operations that invoke Client.SecurityError.</p>
+               
+               <pre><code>var ErrSecurity = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre><code>msgPast</code></pre>
-         </article>
-         
-         <article class="global" data-name="msgNow">
-            <h2>msgNow</h2>
-            <hr />
+            <article class="global" data-name="ErrWriteConflict">
+               <h3>
+                  ErrWriteConflict 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>ErrWriteConflict signals a write conflict during Client.WriteConfig.</p>
+               
+               <pre><code>var ErrWriteConflict = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre><code>msgNow</code></pre>
-         </article>
-         
-         <article class="global" data-name="msgFuture">
-            <h2>msgFuture</h2>
-            <hr />
+            <article class="global" data-name="ServerPaths">
+               <h3>
+                  ServerPaths 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>ServerPaths are the URL paths the Server can (and should) serve.
+Typically a server will do:
+srv := sumdb.NewServer(ops)
+for _, path := range sumdb.ServerPaths {
+http.Handle(path, srv)
+}</p>
+               
+               <pre><code>var ServerPaths = []string{...}</code></pre>
+            </article>
             
-            <pre><code>msgFuture</code></pre>
-         </article>
+            <article class="global" data-name="modVerRE">
+               <h3>
+                  modVerRE 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var modVerRE = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="msgFuture">
+               <h3>
+                  msgFuture 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const msgFuture</code></pre>
+            </article>
+            
+            <article class="global" data-name="msgNow">
+               <h3>
+                  msgNow 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const msgNow</code></pre>
+            </article>
+            
+            <article class="global" data-name="msgPast">
+               <h3>
+                  msgPast 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const msgPast = *ast.BinaryExpr</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="struct" data-name="Server">
-            <h2>type Server struct</h2>
-            <hr />
+         <section id="types">
+            <h2>Type Aliases</h2>
             
-            <p>A Server is the checksum database HTTP server,
-which implements http.Handler and should be invoked
-to serve the paths listed in [ServerPaths].</p>
+            <article class="type" data-name="testHashes">
+               <h3>
+                  testHashes
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>testHashes implements tlog.HashReader, reading from a slice.</p>
+               
+               <pre><code>type testHashes []tlog.Hash</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">ops ServerOps</code></pre>
-         </article>
-         
-         <article class="struct" data-name="TestServer">
-            <h2>type TestServer struct</h2>
-            <hr />
+         </section>
+          
+         <section id="interfaces">
+            <h2>Interfaces</h2>
             
-            <p>A TestServer is an in-memory implementation of [ServerOps] for testing.</p>
+            <article class="interface" data-name="ClientOps">
+               <h3>
+                  ClientOps
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>A ClientOps provides the external operations
+(file caching, HTTP fetches, and so on) needed by the [Client].
+The methods must be safe for concurrent use by multiple goroutines.</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type ClientOps interface {
+ReadRemote(path string) ([]byte, error)
+ReadConfig(file string) ([]byte, error)
+WriteConfig(file string, old []byte, new []byte) error
+ReadCache(file string) ([]byte, error)
+WriteCache(file string, data []byte)
+Log(msg string)
+SecurityError(msg string)
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">signer string
-gosum func
-mu sync.Mutex
-hashes testHashes
-records [][]byte
-lookup *ast.MapType</code></pre>
-         </article>
-         
-         <article class="struct" data-name="parCache">
-            <h2>type parCache struct</h2>
-            <hr />
+            <article class="interface" data-name="ServerOps">
+               <h3>
+                  ServerOps
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>A ServerOps provides the external operations
+(underlying database access and so on) needed by the [Server].</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type ServerOps interface {
+Signed(ctx context.Context) ([]byte, error)
+ReadRecords(ctx context.Context, id int64, n int64) ([][]byte, error)
+Lookup(ctx context.Context, m module.Version) (int64, error)
+ReadTileData(ctx context.Context, t tlog.Tile) ([]byte, error)
+}</code></pre>
+            </article>
             
-            <p>parCache runs an action once per key and caches the result.</p>
+         </section>
+          
+         <section id="structs">
+            <h2>Structs</h2>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">m sync.Map</code></pre>
-         </article>
-         
-         <article class="struct" data-name="cacheEntry">
-            <h2>type cacheEntry struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">done uint32
-mu sync.Mutex
-result *ast.InterfaceType</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Client">
-            <h2>type Client struct</h2>
-            <hr />
-            
-            <p>A Client is a client connection to a checksum database.
+            <article class="struct" data-name="Client">
+               <h3>
+                  Client
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Client is a client connection to a checksum database.
 All the methods are safe for simultaneous use by multiple goroutines.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">ops ClientOps
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Client struct {
+ops ClientOps
 didLookup uint32
 initOnce sync.Once
 initErr error
@@ -287,197 +668,380 @@ latestMu sync.Mutex
 latest tlog.Tree
 latestMsg []byte
 tileSavedMu sync.Mutex
-tileSaved *ast.MapType</code></pre>
-         </article>
-         
-         <article class="struct" data-name="tileReader">
-            <h2>type tileReader struct</h2>
-            <hr />
+tileSaved map[tlog.Tile]bool
+}</code></pre>
+            </article>
             
-            <p>tileReader is a *Client wrapper that implements tlog.TileReader.
+            <article class="struct" data-name="Server">
+               <h3>
+                  Server
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Server is the checksum database HTTP server,
+which implements http.Handler and should be invoked
+to serve the paths listed in [ServerPaths].</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Server struct {
+ops ServerOps
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="TestServer">
+               <h3>
+                  TestServer
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A TestServer is an in-memory implementation of [ServerOps] for testing.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type TestServer struct {
+signer string
+gosum func(path string, vers string) ([]byte, error)
+mu sync.Mutex
+hashes testHashes
+records [][]byte
+lookup map[string]int64
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="cacheEntry">
+               <h3>
+                  cacheEntry
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type cacheEntry struct {
+done uint32
+mu sync.Mutex
+result interface{}
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="parCache">
+               <h3>
+                  parCache
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>parCache runs an action once per key and caches the result.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type parCache struct {
+m sync.Map
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="tileReader">
+               <h3>
+                  tileReader
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>tileReader is a *Client wrapper that implements tlog.TileReader.
 The separate type avoids exposing the ReadTiles and SaveTiles
 methods on Client itself.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type tileReader struct {
+c *Client
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">c *Client</code></pre>
-         </article>
+         </section>
           
-         <article class="function" data-name="NewServer">
-            <h2>NewServer</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <p>NewServer returns a new Server using the given operations.</p>
+            <article class="function" data-name="Do">
+               <h3>
+                  Do 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Do calls the function f if and only if Do is being called for the first time with this key.
+No call to Do with a given key returns until the one call to f returns.
+Do returns the value returned by the one call to f.</p>
+               
+               <pre><code>func (c *parCache) Do(key interface{}, f func() interface{}) interface{}</code></pre>
+            </article>
             
-            <pre><code>func NewServer(ops ServerOps) *Server</code></pre>
-         </article>
-         
-         <article class="function" data-name="ServeHTTP">
-            <h2>ServeHTTP</h2>
-            <hr />
+            <article class="function" data-name="Get">
+               <h3>
+                  Get 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Get returns the cached result associated with key.
+It returns nil if there is no such result.
+If the result for key is being computed, Get does not wait for the computation to finish.</p>
+               
+               <pre><code>func (c *parCache) Get(key interface{}) interface{}</code></pre>
+            </article>
             
-            <pre><code>func ServeHTTP(w http.ResponseWriter, r *http.Request)</code></pre>
-         </article>
-         
-         <article class="function" data-name="reportError">
-            <h2>reportError</h2>
-            <hr />
+            <article class="function" data-name="Height">
+               <h3>
+                  Height 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *tileReader) Height() int</code></pre>
+            </article>
             
-            <p>reportError reports err to w.
-If it's a not-found, the reported error is 404.
-Otherwise it is an internal server error.
-The caller must only call reportError in contexts where
-a not-found err should be reported as 404.</p>
+            <article class="function" data-name="Lookup">
+               <h3>
+                  Lookup 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Lookup returns the go.sum lines for the given module path and version.
+The version may end in a /go.mod suffix, in which case Lookup returns
+the go.sum lines for the module's go.mod-only hash.</p>
+               
+               <pre><code>func (c *Client) Lookup(path string, vers string) (lines []string, err error)</code></pre>
+            </article>
             
-            <pre><code>func reportError(w http.ResponseWriter, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="NewTestServer">
-            <h2>NewTestServer</h2>
-            <hr />
+            <article class="function" data-name="Lookup">
+               <h3>
+                  Lookup 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *TestServer) Lookup(ctx context.Context, m module.Version) (int64, error)</code></pre>
+            </article>
             
-            <p>NewTestServer constructs a new [TestServer]
+            <article class="function" data-name="NewClient">
+               <h3>
+                  NewClient 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewClient returns a new [Client] using the given [ClientOps].</p>
+               
+               <pre><code>func NewClient(ops ClientOps) *Client</code></pre>
+            </article>
+            
+            <article class="function" data-name="NewServer">
+               <h3>
+                  NewServer 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewServer returns a new Server using the given operations.</p>
+               
+               <pre><code>func NewServer(ops ServerOps) *Server</code></pre>
+            </article>
+            
+            <article class="function" data-name="NewTestServer">
+               <h3>
+                  NewTestServer 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewTestServer constructs a new [TestServer]
 that will sign its tree with the given signer key
 (see [golang.org/x/mod/sumdb/note])
 and fetch new records as needed by calling gosum.</p>
+               
+               <pre><code>func NewTestServer(signer string, gosum func(path string, vers string) ([]byte, error)) *TestServer</code></pre>
+            </article>
             
-            <pre><code>func NewTestServer(signer string, gosum func) *TestServer</code></pre>
-         </article>
-         
-         <article class="function" data-name="ReadHashes">
-            <h2>ReadHashes</h2>
-            <hr />
+            <article class="function" data-name="ReadHashes">
+               <h3>
+                  ReadHashes 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (h testHashes) ReadHashes(indexes []int64) ([]tlog.Hash, error)</code></pre>
+            </article>
             
-            <pre><code>func ReadHashes(indexes []int64) ([]tlog.Hash, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Signed">
-            <h2>Signed</h2>
-            <hr />
+            <article class="function" data-name="ReadRecords">
+               <h3>
+                  ReadRecords 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *TestServer) ReadRecords(ctx context.Context, id int64, n int64) ([][]byte, error)</code></pre>
+            </article>
             
-            <pre><code>func Signed(ctx context.Context) ([]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="ReadRecords">
-            <h2>ReadRecords</h2>
-            <hr />
+            <article class="function" data-name="ReadTileData">
+               <h3>
+                  ReadTileData 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *TestServer) ReadTileData(ctx context.Context, t tlog.Tile) ([]byte, error)</code></pre>
+            </article>
             
-            <pre><code>func ReadRecords(ctx context.Context, id int64, n int64) ([][]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Lookup">
-            <h2>Lookup</h2>
-            <hr />
+            <article class="function" data-name="ReadTiles">
+               <h3>
+                  ReadTiles 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ReadTiles reads and returns the requested tiles,
+either from the on-disk cache or the server.</p>
+               
+               <pre><code>func (r *tileReader) ReadTiles(tiles []tlog.Tile) ([][]byte, error)</code></pre>
+            </article>
             
-            <pre><code>func Lookup(ctx context.Context, m module.Version) (int64, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="ReadTileData">
-            <h2>ReadTileData</h2>
-            <hr />
+            <article class="function" data-name="SaveTiles">
+               <h3>
+                  SaveTiles 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>SaveTiles saves the now validated tiles.</p>
+               
+               <pre><code>func (r *tileReader) SaveTiles(tiles []tlog.Tile, data [][]byte)</code></pre>
+            </article>
             
-            <pre><code>func ReadTileData(ctx context.Context, t tlog.Tile) ([]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Do">
-            <h2>Do</h2>
-            <hr />
+            <article class="function" data-name="ServeHTTP">
+               <h3>
+                  ServeHTTP 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request)</code></pre>
+            </article>
             
-            <p>Do calls the function f if and only if Do is being called for the first time with this key.
-No call to Do with a given key returns until the one call to f returns.
-Do returns the value returned by the one call to f.</p>
-            
-            <pre><code>func Do(key *ast.InterfaceType, f func) *ast.InterfaceType</code></pre>
-         </article>
-         
-         <article class="function" data-name="Get">
-            <h2>Get</h2>
-            <hr />
-            
-            <p>Get returns the cached result associated with key.
-It returns nil if there is no such result.
-If the result for key is being computed, Get does not wait for the computation to finish.</p>
-            
-            <pre><code>func Get(key *ast.InterfaceType) *ast.InterfaceType</code></pre>
-         </article>
-         
-         <article class="function" data-name="NewClient">
-            <h2>NewClient</h2>
-            <hr />
-            
-            <p>NewClient returns a new [Client] using the given [ClientOps].</p>
-            
-            <pre><code>func NewClient(ops ClientOps) *Client</code></pre>
-         </article>
-         
-         <article class="function" data-name="init">
-            <h2>init</h2>
-            <hr />
-            
-            <p>init initializes the client (if not already initialized)
-and returns any initialization error.</p>
-            
-            <pre><code>func init() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="initWork">
-            <h2>initWork</h2>
-            <hr />
-            
-            <p>initWork does the actual initialization work.</p>
-            
-            <pre><code>func initWork()</code></pre>
-         </article>
-         
-         <article class="function" data-name="SetTileHeight">
-            <h2>SetTileHeight</h2>
-            <hr />
-            
-            <p>SetTileHeight sets the tile height for the Client.
-Any call to SetTileHeight must happen before the first call to [Client.Lookup].
-If SetTileHeight is not called, the Client defaults to tile height 8.
-SetTileHeight can be called at most once,
-and if so it must be called before the first call to Lookup.</p>
-            
-            <pre><code>func SetTileHeight(height int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="SetGONOSUMDB">
-            <h2>SetGONOSUMDB</h2>
-            <hr />
-            
-            <p>SetGONOSUMDB sets the list of comma-separated GONOSUMDB patterns for the Client.
+            <article class="function" data-name="SetGONOSUMDB">
+               <h3>
+                  SetGONOSUMDB 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>SetGONOSUMDB sets the list of comma-separated GONOSUMDB patterns for the Client.
 For any module path matching one of the patterns,
 [Client.Lookup] will return ErrGONOSUMDB.
 SetGONOSUMDB can be called at most once,
 and if so it must be called before the first call to Lookup.</p>
+               
+               <pre><code>func (c *Client) SetGONOSUMDB(list string)</code></pre>
+            </article>
             
-            <pre><code>func SetGONOSUMDB(list string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="skip">
-            <h2>skip</h2>
-            <hr />
+            <article class="function" data-name="SetTileHeight">
+               <h3>
+                  SetTileHeight 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>SetTileHeight sets the tile height for the Client.
+Any call to SetTileHeight must happen before the first call to [Client.Lookup].
+If SetTileHeight is not called, the Client defaults to tile height 8.
+SetTileHeight can be called at most once,
+and if so it must be called before the first call to Lookup.</p>
+               
+               <pre><code>func (c *Client) SetTileHeight(height int)</code></pre>
+            </article>
             
-            <pre><code>func skip(target string) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="Lookup">
-            <h2>Lookup</h2>
-            <hr />
+            <article class="function" data-name="Signed">
+               <h3>
+                  Signed 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *TestServer) Signed(ctx context.Context) ([]byte, error)</code></pre>
+            </article>
             
-            <p>Lookup returns the go.sum lines for the given module path and version.
-The version may end in a /go.mod suffix, in which case Lookup returns
-the go.sum lines for the module's go.mod-only hash.</p>
+            <article class="function" data-name="checkRecord">
+               <h3>
+                  checkRecord 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>checkRecord checks that record #id's hash matches data.</p>
+               
+               <pre><code>func (c *Client) checkRecord(id int64, data []byte) error</code></pre>
+            </article>
             
-            <pre><code>func Lookup(path string, vers string) (lines []string, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="mergeLatest">
-            <h2>mergeLatest</h2>
-            <hr />
+            <article class="function" data-name="checkTrees">
+               <h3>
+                  checkTrees 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>checkTrees checks that older (from olderNote) is contained in newer (from newerNote).
+If an error occurs, such as malformed data or a network problem, checkTrees returns that error.
+If on the other hand checkTrees finds evidence of misbehavior, it prepares a detailed
+message and calls log.Fatal.</p>
+               
+               <pre><code>func (c *Client) checkTrees(older tlog.Tree, olderNote []byte, newer tlog.Tree, newerNote []byte) error</code></pre>
+            </article>
             
-            <p>mergeLatest merges the tree head in msg
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>init initializes the client (if not already initialized)
+and returns any initialization error.</p>
+               
+               <pre><code>func (c *Client) init() error</code></pre>
+            </article>
+            
+            <article class="function" data-name="initWork">
+               <h3>
+                  initWork 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>initWork does the actual initialization work.</p>
+               
+               <pre><code>func (c *Client) initWork()</code></pre>
+            </article>
+            
+            <article class="function" data-name="markTileSaved">
+               <h3>
+                  markTileSaved 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>markTileSaved records that tile is already present in the on-disk cache,
+so that a future SaveTiles for that tile can be ignored.</p>
+               
+               <pre><code>func (c *Client) markTileSaved(tile tlog.Tile)</code></pre>
+            </article>
+            
+            <article class="function" data-name="mergeLatest">
+               <h3>
+                  mergeLatest 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>mergeLatest merges the tree head in msg
 with the Client's current latest tree head,
 ensuring the result is a consistent timeline.
 If the result is inconsistent, mergeLatest calls c.ops.SecurityError
@@ -486,15 +1050,18 @@ with a detailed security error message and then
 If the Client's current latest tree head moves forward,
 mergeLatest updates the underlying configuration file as well,
 taking care to merge any independent updates to that configuration.</p>
+               
+               <pre><code>func (c *Client) mergeLatest(msg []byte) error</code></pre>
+            </article>
             
-            <pre><code>func mergeLatest(msg []byte) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="mergeLatestMem">
-            <h2>mergeLatestMem</h2>
-            <hr />
-            
-            <p>mergeLatestMem is like mergeLatest but is only concerned with
+            <article class="function" data-name="mergeLatestMem">
+               <h3>
+                  mergeLatestMem 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>mergeLatestMem is like mergeLatest but is only concerned with
 updating the in-memory copy of the latest tree head (c.latest)
 not the configuration file.
 The when result explains when msg happened relative to our
@@ -502,106 +1069,94 @@ previous idea of c.latest:
 msgPast means msg was from before c.latest,
 msgNow means msg was exactly c.latest, and
 msgFuture means msg was from after c.latest, which has now been updated.</p>
+               
+               <pre><code>func (c *Client) mergeLatestMem(msg []byte) (when int, err error)</code></pre>
+            </article>
             
-            <pre><code>func mergeLatestMem(msg []byte) (when int, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="checkTrees">
-            <h2>checkTrees</h2>
-            <hr />
+            <article class="function" data-name="readTile">
+               <h3>
+                  readTile 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>readTile reads a single tile, either from the on-disk cache or the server.</p>
+               
+               <pre><code>func (c *Client) readTile(tile tlog.Tile) ([]byte, error)</code></pre>
+            </article>
             
-            <p>checkTrees checks that older (from olderNote) is contained in newer (from newerNote).
-If an error occurs, such as malformed data or a network problem, checkTrees returns that error.
-If on the other hand checkTrees finds evidence of misbehavior, it prepares a detailed
-message and calls log.Fatal.</p>
+            <article class="function" data-name="reportError">
+               <h3>
+                  reportError 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>reportError reports err to w.
+If it's a not-found, the reported error is 404.
+Otherwise it is an internal server error.
+The caller must only call reportError in contexts where
+a not-found err should be reported as 404.</p>
+               
+               <pre><code>func reportError(w http.ResponseWriter, err error)</code></pre>
+            </article>
             
-            <pre><code>func checkTrees(older tlog.Tree, olderNote []byte, newer tlog.Tree, newerNote []byte) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="checkRecord">
-            <h2>checkRecord</h2>
-            <hr />
+            <article class="function" data-name="skip">
+               <h3>
+                  skip 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *Client) skip(target string) bool</code></pre>
+            </article>
             
-            <p>checkRecord checks that record #id's hash matches data.</p>
+            <article class="function" data-name="tileCacheKey">
+               <h3>
+                  tileCacheKey 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>tileCacheKey returns the cache key for the tile.</p>
+               
+               <pre><code>func (c *Client) tileCacheKey(tile tlog.Tile) string</code></pre>
+            </article>
             
-            <pre><code>func checkRecord(id int64, data []byte) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="Height">
-            <h2>Height</h2>
-            <hr />
+            <article class="function" data-name="tileRemotePath">
+               <h3>
+                  tileRemotePath 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>tileRemotePath returns the remote path for the tile.</p>
+               
+               <pre><code>func (c *Client) tileRemotePath(tile tlog.Tile) string</code></pre>
+            </article>
             
-            <pre><code>func Height() int</code></pre>
-         </article>
-         
-         <article class="function" data-name="ReadTiles">
-            <h2>ReadTiles</h2>
-            <hr />
-            
-            <p>ReadTiles reads and returns the requested tiles,
-either from the on-disk cache or the server.</p>
-            
-            <pre><code>func ReadTiles(tiles []tlog.Tile) ([][]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="tileCacheKey">
-            <h2>tileCacheKey</h2>
-            <hr />
-            
-            <p>tileCacheKey returns the cache key for the tile.</p>
-            
-            <pre><code>func tileCacheKey(tile tlog.Tile) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="tileRemotePath">
-            <h2>tileRemotePath</h2>
-            <hr />
-            
-            <p>tileRemotePath returns the remote path for the tile.</p>
-            
-            <pre><code>func tileRemotePath(tile tlog.Tile) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="readTile">
-            <h2>readTile</h2>
-            <hr />
-            
-            <p>readTile reads a single tile, either from the on-disk cache or the server.</p>
-            
-            <pre><code>func readTile(tile tlog.Tile) ([]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="markTileSaved">
-            <h2>markTileSaved</h2>
-            <hr />
-            
-            <p>markTileSaved records that tile is already present in the on-disk cache,
-so that a future SaveTiles for that tile can be ignored.</p>
-            
-            <pre><code>func markTileSaved(tile tlog.Tile)</code></pre>
-         </article>
-         
-         <article class="function" data-name="SaveTiles">
-            <h2>SaveTiles</h2>
-            <hr />
-            
-            <p>SaveTiles saves the now validated tiles.</p>
-            
-            <pre><code>func SaveTiles(tiles []tlog.Tile, data [][]byte)</code></pre>
-         </article>
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -609,59 +1164,170 @@ so that a future SaveTiles for that tile can be ignored.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

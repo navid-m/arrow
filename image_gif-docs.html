@@ -13,405 +13,843 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                 
+               <li><a href="#interfaces">Interfaces</a></li>
+                
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>gif</code>
-         </h1>
-         <hr />
+         <h1>gif</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="_">
-            <h2>_</h2>
-            <hr />
-            
-            <p>lzw.NewWriter wants an interface which is basically the same thing as gif's
-writer interface.  This ensures we're compatible.</p>
-            
-            <pre><code>_ writer</code></pre>
-         </article>
-         
-         <article class="global" data-name="testCase">
-            <h2>testCase</h2>
-            <hr />
-            
-            <pre><code>testCase</code></pre>
-         </article>
-         
-         <article class="global" data-name="frames">
-            <h2>frames</h2>
-            <hr />
-            
-            <pre><code>frames</code></pre>
-         </article>
-         
-         <article class="global" data-name="errNotEnough">
-            <h2>errNotEnough</h2>
-            <hr />
-            
-            <pre><code>errNotEnough</code></pre>
-         </article>
-         
-         <article class="global" data-name="errTooMuch">
-            <h2>errTooMuch</h2>
-            <hr />
-            
-            <pre><code>errTooMuch</code></pre>
-         </article>
-         
-         <article class="global" data-name="errBadPixel">
-            <h2>errBadPixel</h2>
-            <hr />
-            
-            <pre><code>errBadPixel</code></pre>
-         </article>
-         
-         <article class="global" data-name="fColorTable">
-            <h2>fColorTable</h2>
-            <hr />
-            
-            <p>Fields.</p>
-            
-            <pre><code>fColorTable</code></pre>
-         </article>
-         
-         <article class="global" data-name="fInterlace">
-            <h2>fInterlace</h2>
-            <hr />
-            
-            <p>Masks etc.</p>
-            
-            <pre><code>fInterlace</code></pre>
-         </article>
-         
-         <article class="global" data-name="fColorTableBitsMask">
-            <h2>fColorTableBitsMask</h2>
-            <hr />
-            
-            <p>Masks etc.</p>
-            
-            <pre><code>fColorTableBitsMask</code></pre>
-         </article>
-         
-         <article class="global" data-name="gcTransparentColorSet">
-            <h2>gcTransparentColorSet</h2>
-            <hr />
-            
-            <p>Graphic control flags.</p>
-            
-            <pre><code>gcTransparentColorSet</code></pre>
-         </article>
-         
-         <article class="global" data-name="gcDisposalMethodMask">
-            <h2>gcDisposalMethodMask</h2>
-            <hr />
-            
-            <p>Masks etc.</p>
-            
-            <pre><code>gcDisposalMethodMask</code></pre>
-         </article>
-         
-         <article class="global" data-name="DisposalNone">
-            <h2>DisposalNone</h2>
-            <hr />
-            
-            <p>Disposal Methods.</p>
-            
-            <pre><code>DisposalNone</code></pre>
-         </article>
-         
-         <article class="global" data-name="DisposalBackground">
-            <h2>DisposalBackground</h2>
-            <hr />
-            
-            <p>Disposal Methods.</p>
-            
-            <pre><code>DisposalBackground</code></pre>
-         </article>
-         
-         <article class="global" data-name="DisposalPrevious">
-            <h2>DisposalPrevious</h2>
-            <hr />
-            
-            <p>Disposal Methods.</p>
-            
-            <pre><code>DisposalPrevious</code></pre>
-         </article>
-         
-         <article class="global" data-name="sExtension">
-            <h2>sExtension</h2>
-            <hr />
-            
-            <p>Section indicators.</p>
-            
-            <pre><code>sExtension</code></pre>
-         </article>
-         
-         <article class="global" data-name="sImageDescriptor">
-            <h2>sImageDescriptor</h2>
-            <hr />
-            
-            <p>Section indicators.</p>
-            
-            <pre><code>sImageDescriptor</code></pre>
-         </article>
-         
-         <article class="global" data-name="sTrailer">
-            <h2>sTrailer</h2>
-            <hr />
-            
-            <p>Section indicators.</p>
-            
-            <pre><code>sTrailer</code></pre>
-         </article>
-         
-         <article class="global" data-name="eText">
-            <h2>eText</h2>
-            <hr />
-            
-            <p>Extensions.</p>
-            
-            <pre><code>eText</code></pre>
-         </article>
-         
-         <article class="global" data-name="eGraphicControl">
-            <h2>eGraphicControl</h2>
-            <hr />
-            
-            <p>Extensions.</p>
-            
-            <pre><code>eGraphicControl</code></pre>
-         </article>
-         
-         <article class="global" data-name="eComment">
-            <h2>eComment</h2>
-            <hr />
-            
-            <p>Extensions.</p>
-            
-            <pre><code>eComment</code></pre>
-         </article>
-         
-         <article class="global" data-name="eApplication">
-            <h2>eApplication</h2>
-            <hr />
-            
-            <p>Extensions.</p>
-            
-            <pre><code>eApplication</code></pre>
-         </article>
-         
-         <article class="global" data-name="interlacing">
-            <h2>interlacing</h2>
-            <hr />
-            
-            <p>interlacing represents the set of scans in an interlaced GIF image.</p>
-            
-            <pre><code>interlacing</code></pre>
-         </article>
-         
-         <article class="global" data-name="headerStr">
-            <h2>headerStr</h2>
-            <hr />
-            
-            <p>header, palette and trailer are parts of a valid 2x1 GIF image.</p>
-            
-            <pre><code>headerStr</code></pre>
-         </article>
-         
-         <article class="global" data-name="paletteStr">
-            <h2>paletteStr</h2>
-            <hr />
-            
-            <p>header, palette and trailer are parts of a valid 2x1 GIF image.</p>
-            
-            <pre><code>paletteStr</code></pre>
-         </article>
-         
-         <article class="global" data-name="trailerStr">
-            <h2>trailerStr</h2>
-            <hr />
-            
-            <p>header, palette and trailer are parts of a valid 2x1 GIF image.</p>
-            
-            <pre><code>trailerStr</code></pre>
-         </article>
-         
-         <article class="global" data-name="_">
-            <h2>_</h2>
-            <hr />
-            
-            <p>lzw.NewReader wants an io.ByteReader, this ensures we're compatible.</p>
-            
-            <pre><code>_ io.ByteReader</code></pre>
-         </article>
-         
-         <article class="global" data-name="testGIF">
-            <h2>testGIF</h2>
-            <hr />
-            
-            <p>testGIF is a simple GIF that we can modify to test different scenarios.</p>
-            
-            <pre><code>testGIF</code></pre>
-         </article>
-         
-         <article class="global" data-name="gcLabel">
-            <h2>gcLabel</h2>
-            <hr />
-            
-            <p>Graphic control extension fields.</p>
-            
-            <pre><code>gcLabel</code></pre>
-         </article>
-         
-         <article class="global" data-name="gcBlockSize">
-            <h2>gcBlockSize</h2>
-            <hr />
-            
-            <p>Graphic control extension fields.</p>
-            
-            <pre><code>gcBlockSize</code></pre>
-         </article>
-         
-         <article class="global" data-name="log2Lookup">
-            <h2>log2Lookup</h2>
-            <hr />
-            
-            <pre><code>log2Lookup</code></pre>
-         </article>
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"bufio"
+"compress/lzw"
+"errors"
+"fmt"
+"image"
+"image/color"
+"io"
+"bufio"
+"bytes"
+"compress/lzw"
+"errors"
+"image"
+"image/color"
+"image/color/palette"
+"image/draw"
+"internal/byteorder"
+"io"
+</code></pre>
+            </article>
+         </section>
           
-         <article class="struct" data-name="offsetImage">
-            <h2>type offsetImage struct</h2>
-            <hr />
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">image.Image
-Rect image.Rectangle</code></pre>
-         </article>
-         
-         <article class="struct" data-name="decoder">
-            <h2>type decoder struct</h2>
-            <hr />
+            <article class="global" data-name="DisposalBackground">
+               <h3>
+                  DisposalBackground 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Disposal Methods.</p>
+               
+               <pre><code>const DisposalBackground = 0x02</code></pre>
+            </article>
             
-            <p>decoder is the type used to decode a GIF file.</p>
+            <article class="global" data-name="DisposalNone">
+               <h3>
+                  DisposalNone 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Disposal Methods.</p>
+               
+               <pre><code>const DisposalNone = 0x01</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">r reader
+            <article class="global" data-name="DisposalPrevious">
+               <h3>
+                  DisposalPrevious 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Disposal Methods.</p>
+               
+               <pre><code>const DisposalPrevious = 0x03</code></pre>
+            </article>
+            
+            <article class="global" data-name="eApplication">
+               <h3>
+                  eApplication 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Extensions.</p>
+               
+               <pre><code>const eApplication = 0xFF</code></pre>
+            </article>
+            
+            <article class="global" data-name="eComment">
+               <h3>
+                  eComment 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Extensions.</p>
+               
+               <pre><code>const eComment = 0xFE</code></pre>
+            </article>
+            
+            <article class="global" data-name="eGraphicControl">
+               <h3>
+                  eGraphicControl 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Extensions.</p>
+               
+               <pre><code>const eGraphicControl = 0xF9</code></pre>
+            </article>
+            
+            <article class="global" data-name="eText">
+               <h3>
+                  eText 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Extensions.</p>
+               
+               <pre><code>const eText = 0x01</code></pre>
+            </article>
+            
+            <article class="global" data-name="errBadPixel">
+               <h3>
+                  errBadPixel 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var errBadPixel = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="errNotEnough">
+               <h3>
+                  errNotEnough 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var errNotEnough = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="errTooMuch">
+               <h3>
+                  errTooMuch 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var errTooMuch = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="fColorTable">
+               <h3>
+                  fColorTable 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Fields.</p>
+               
+               <pre><code>const fColorTable = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="fColorTableBitsMask">
+               <h3>
+                  fColorTableBitsMask 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Masks etc.</p>
+               
+               <pre><code>const fColorTableBitsMask = 7</code></pre>
+            </article>
+            
+            <article class="global" data-name="fInterlace">
+               <h3>
+                  fInterlace 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Masks etc.</p>
+               
+               <pre><code>const fInterlace = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="gcBlockSize">
+               <h3>
+                  gcBlockSize 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Graphic control extension fields.</p>
+               
+               <pre><code>const gcBlockSize = 0x04</code></pre>
+            </article>
+            
+            <article class="global" data-name="gcDisposalMethodMask">
+               <h3>
+                  gcDisposalMethodMask 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Masks etc.</p>
+               
+               <pre><code>const gcDisposalMethodMask = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="gcLabel">
+               <h3>
+                  gcLabel 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Graphic control extension fields.</p>
+               
+               <pre><code>const gcLabel = 0xF9</code></pre>
+            </article>
+            
+            <article class="global" data-name="gcTransparentColorSet">
+               <h3>
+                  gcTransparentColorSet 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Graphic control flags.</p>
+               
+               <pre><code>const gcTransparentColorSet = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="interlacing">
+               <h3>
+                  interlacing 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>interlacing represents the set of scans in an interlaced GIF image.</p>
+               
+               <pre><code>var interlacing = []interlaceScan{...}</code></pre>
+            </article>
+            
+            <article class="global" data-name="log2Lookup">
+               <h3>
+                  log2Lookup 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var log2Lookup = [8]int{...}</code></pre>
+            </article>
+            
+            <article class="global" data-name="sExtension">
+               <h3>
+                  sExtension 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Section indicators.</p>
+               
+               <pre><code>const sExtension = 0x21</code></pre>
+            </article>
+            
+            <article class="global" data-name="sImageDescriptor">
+               <h3>
+                  sImageDescriptor 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Section indicators.</p>
+               
+               <pre><code>const sImageDescriptor = 0x2C</code></pre>
+            </article>
+            
+            <article class="global" data-name="sTrailer">
+               <h3>
+                  sTrailer 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Section indicators.</p>
+               
+               <pre><code>const sTrailer = 0x3B</code></pre>
+            </article>
+            
+         </section>
+           
+         <section id="interfaces">
+            <h2>Interfaces</h2>
+            
+            <article class="interface" data-name="reader">
+               <h3>
+                  reader
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>If the io.Reader does not also have ReadByte, then decode will introduce its own buffering.</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type reader interface {
+io.Reader
+io.ByteReader
+}</code></pre>
+            </article>
+            
+            <article class="interface" data-name="writer">
+               <h3>
+                  writer
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>writer is a buffered writer.</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type writer interface {
+Flush() error
+io.Writer
+io.ByteWriter
+}</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="GIF">
+               <h3>
+                  GIF
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>GIF represents the possibly multiple images stored in a GIF file.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type GIF struct {
+Image []*image.Paletted
+Delay []int
+LoopCount int
+Disposal []byte
+Config image.Config
+BackgroundIndex byte
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="Options">
+               <h3>
+                  Options
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Options are the encoding parameters.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Options struct {
+NumColors int
+Quantizer draw.Quantizer
+Drawer draw.Drawer
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="blockReader">
+               <h3>
+                  blockReader
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>blockReader parses the block structure of GIF image data, which comprises
+(n, (n bytes)) blocks, with 1 <= n <= 255. It is the reader given to the
+LZW decoder, which is thus immune to the blocking. After the LZW decoder
+completes, there will be a 0-byte block remaining (0, ()), which is
+consumed when checking that the blockReader is exhausted.
+To avoid the allocation of a bufio.Reader for the lzw Reader, blockReader
+implements io.ByteReader and buffers blocks into the decoder's "tmp" buffer.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type blockReader struct {
+d *decoder
+i uint8
+j uint8
+err error
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="blockWriter">
+               <h3>
+                  blockWriter
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>blockWriter writes the block structure of GIF image data, which
+comprises (n, (n bytes)) blocks, with 1 <= n <= 255. It is the
+writer given to the LZW encoder, which is thus immune to the
+blocking.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type blockWriter struct {
+e *encoder
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="decoder">
+               <h3>
+                  decoder
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>decoder is the type used to decode a GIF file.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type decoder struct {
+r reader
 vers string
 width int
 height int
@@ -426,350 +864,190 @@ globalColorTable color.Palette
 delay []int
 disposal []byte
 image []*image.Paletted
-tmp []byte</code></pre>
-         </article>
-         
-         <article class="struct" data-name="blockReader">
-            <h2>type blockReader struct</h2>
-            <hr />
+tmp [1024]byte
+}</code></pre>
+            </article>
             
-            <p>blockReader parses the block structure of GIF image data, which comprises
-(n, (n bytes)) blocks, with 1 <= n <= 255. It is the reader given to the
-LZW decoder, which is thus immune to the blocking. After the LZW decoder
-completes, there will be a 0-byte block remaining (0, ()), which is
-consumed when checking that the blockReader is exhausted.
-
-To avoid the allocation of a bufio.Reader for the lzw Reader, blockReader
-implements io.ByteReader and buffers blocks into the decoder's "tmp" buffer.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">d *decoder
-i uint8
-j uint8
-err error</code></pre>
-         </article>
-         
-         <article class="struct" data-name="interlaceScan">
-            <h2>type interlaceScan struct</h2>
-            <hr />
-            
-            <p>interlaceScan defines the ordering for a pass of the interlace algorithm.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">skip int
-start int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="GIF">
-            <h2>type GIF struct</h2>
-            <hr />
-            
-            <p>GIF represents the possibly multiple images stored in a GIF file.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Image []*image.Paletted
-Delay []int
-LoopCount int
-Disposal []byte
-Config image.Config
-BackgroundIndex byte</code></pre>
-         </article>
-         
-         <article class="struct" data-name="encoder">
-            <h2>type encoder struct</h2>
-            <hr />
-            
-            <p>encoder encodes an image to the GIF format.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">w writer
+            <article class="struct" data-name="encoder">
+               <h3>
+                  encoder
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>encoder encodes an image to the GIF format.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type encoder struct {
+w writer
 err error
 g GIF
 globalCT int
-buf []byte
-globalColorTable []byte
-localColorTable []byte</code></pre>
-         </article>
-         
-         <article class="struct" data-name="blockWriter">
-            <h2>type blockWriter struct</h2>
-            <hr />
+buf [256]byte
+globalColorTable [*ast.BinaryExpr]byte
+localColorTable [*ast.BinaryExpr]byte
+}</code></pre>
+            </article>
             
-            <p>blockWriter writes the block structure of GIF image data, which
-comprises (n, (n bytes)) blocks, with 1 <= n <= 255. It is the
-writer given to the LZW encoder, which is thus immune to the
-blocking.</p>
+            <article class="struct" data-name="interlaceScan">
+               <h3>
+                  interlaceScan
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>interlaceScan defines the ordering for a pass of the interlace algorithm.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type interlaceScan struct {
+skip int
+start int
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">e *encoder</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Options">
-            <h2>type Options struct</h2>
-            <hr />
-            
-            <p>Options are the encoding parameters.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">NumColors int
-Quantizer draw.Quantizer
-Drawer draw.Drawer</code></pre>
-         </article>
+         </section>
           
-         <article class="function" data-name="readImg">
-            <h2>readImg</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <pre><code>func readImg(filename string) (image.Image, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="readGIF">
-            <h2>readGIF</h2>
-            <hr />
+            <article class="function" data-name="Decode">
+               <h3>
+                  Decode 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Decode reads a GIF image from r and returns the first embedded
+image as an [image.Image].</p>
+               
+               <pre><code>func Decode(r io.Reader) (image.Image, error)</code></pre>
+            </article>
             
-            <pre><code>func readGIF(filename string) (*GIF, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="delta">
-            <h2>delta</h2>
-            <hr />
+            <article class="function" data-name="DecodeAll">
+               <h3>
+                  DecodeAll 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>DecodeAll reads a GIF image from r and returns the sequential frames
+and timing information.</p>
+               
+               <pre><code>func DecodeAll(r io.Reader) (*GIF, error)</code></pre>
+            </article>
             
-            <pre><code>func delta(u0 uint32, u1 uint32) int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="averageDelta">
-            <h2>averageDelta</h2>
-            <hr />
+            <article class="function" data-name="DecodeConfig">
+               <h3>
+                  DecodeConfig 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>DecodeConfig returns the global color model and dimensions of a GIF image
+without decoding the entire image.</p>
+               
+               <pre><code>func DecodeConfig(r io.Reader) (image.Config, error)</code></pre>
+            </article>
             
-            <p>averageDelta returns the average delta in RGB space. The two images must
-have the same bounds.</p>
+            <article class="function" data-name="Encode">
+               <h3>
+                  Encode 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Encode writes the Image m to w in GIF format.</p>
+               
+               <pre><code>func Encode(w io.Writer, m image.Image, o *Options) error</code></pre>
+            </article>
             
-            <pre><code>func averageDelta(m0 image.Image, m1 image.Image) int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="averageDeltaBound">
-            <h2>averageDeltaBound</h2>
-            <hr />
+            <article class="function" data-name="EncodeAll">
+               <h3>
+                  EncodeAll 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>EncodeAll writes the images in g to w in GIF format with the
+given loop count and delay between frames.</p>
+               
+               <pre><code>func EncodeAll(w io.Writer, g *GIF) error</code></pre>
+            </article>
             
-            <p>averageDeltaBound returns the average delta in RGB space. The average delta is
-calculated in the specified bounds.</p>
+            <article class="function" data-name="Flush">
+               <h3>
+                  Flush 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (b blockWriter) Flush() error</code></pre>
+            </article>
             
-            <pre><code>func averageDeltaBound(m0 image.Image, m1 image.Image, b0 image.Rectangle, b1 image.Rectangle) int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWriter">
-            <h2>TestWriter</h2>
-            <hr />
-            
-            <pre><code>func TestWriter(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestSubImage">
-            <h2>TestSubImage</h2>
-            <hr />
-            
-            <pre><code>func TestSubImage(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="palettesEqual">
-            <h2>palettesEqual</h2>
-            <hr />
-            
-            <p>palettesEqual reports whether two color.Palette values are equal, ignoring
-any trailing opaque-black palette entries.</p>
-            
-            <pre><code>func palettesEqual(p color.Palette, q color.Palette) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="testEncodeAll">
-            <h2>testEncodeAll</h2>
-            <hr />
-            
-            <pre><code>func testEncodeAll(t *testing.T, go1Dot5Fields bool, useGlobalColorModel bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestEncodeAllGo1Dot4">
-            <h2>TestEncodeAllGo1Dot4</h2>
-            <hr />
-            
-            <pre><code>func TestEncodeAllGo1Dot4(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestEncodeAllGo1Dot5">
-            <h2>TestEncodeAllGo1Dot5</h2>
-            <hr />
-            
-            <pre><code>func TestEncodeAllGo1Dot5(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestEncodeAllGo1Dot5GlobalColorModel">
-            <h2>TestEncodeAllGo1Dot5GlobalColorModel</h2>
-            <hr />
-            
-            <pre><code>func TestEncodeAllGo1Dot5GlobalColorModel(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestEncodeMismatchDelay">
-            <h2>TestEncodeMismatchDelay</h2>
-            <hr />
-            
-            <pre><code>func TestEncodeMismatchDelay(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestEncodeZeroGIF">
-            <h2>TestEncodeZeroGIF</h2>
-            <hr />
-            
-            <pre><code>func TestEncodeZeroGIF(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestEncodeAllFramesOutOfBounds">
-            <h2>TestEncodeAllFramesOutOfBounds</h2>
-            <hr />
-            
-            <pre><code>func TestEncodeAllFramesOutOfBounds(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestEncodeNonZeroMinPoint">
-            <h2>TestEncodeNonZeroMinPoint</h2>
-            <hr />
-            
-            <pre><code>func TestEncodeNonZeroMinPoint(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestEncodeImplicitConfigSize">
-            <h2>TestEncodeImplicitConfigSize</h2>
-            <hr />
-            
-            <pre><code>func TestEncodeImplicitConfigSize(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestEncodePalettes">
-            <h2>TestEncodePalettes</h2>
-            <hr />
-            
-            <pre><code>func TestEncodePalettes(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestEncodeBadPalettes">
-            <h2>TestEncodeBadPalettes</h2>
-            <hr />
-            
-            <pre><code>func TestEncodeBadPalettes(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestColorTablesMatch">
-            <h2>TestColorTablesMatch</h2>
-            <hr />
-            
-            <pre><code>func TestColorTablesMatch(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestEncodeCroppedSubImages">
-            <h2>TestEncodeCroppedSubImages</h2>
-            <hr />
-            
-            <pre><code>func TestEncodeCroppedSubImages(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Bounds">
-            <h2>Bounds</h2>
-            <hr />
-            
-            <pre><code>func Bounds() image.Rectangle</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestEncodeWrappedImage">
-            <h2>TestEncodeWrappedImage</h2>
-            <hr />
-            
-            <pre><code>func TestEncodeWrappedImage(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkEncodeRandomPaletted">
-            <h2>BenchmarkEncodeRandomPaletted</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkEncodeRandomPaletted(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkEncodeRandomRGBA">
-            <h2>BenchmarkEncodeRandomRGBA</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkEncodeRandomRGBA(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkEncodeRealisticPaletted">
-            <h2>BenchmarkEncodeRealisticPaletted</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkEncodeRealisticPaletted(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkEncodeRealisticRGBA">
-            <h2>BenchmarkEncodeRealisticRGBA</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkEncodeRealisticRGBA(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="FuzzDecode">
-            <h2>FuzzDecode</h2>
-            <hr />
-            
-            <pre><code>func FuzzDecode(f *testing.F)</code></pre>
-         </article>
-         
-         <article class="function" data-name="readFull">
-            <h2>readFull</h2>
-            <hr />
-            
-            <pre><code>func readFull(r io.Reader, b []byte) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="readByte">
-            <h2>readByte</h2>
-            <hr />
-            
-            <pre><code>func readByte(r io.ByteReader) (byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="fill">
-            <h2>fill</h2>
-            <hr />
-            
-            <pre><code>func fill()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ReadByte">
-            <h2>ReadByte</h2>
-            <hr />
-            
-            <pre><code>func ReadByte() (byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Read">
-            <h2>Read</h2>
-            <hr />
-            
-            <p>blockReader must implement io.Reader, but its Read shouldn't ever actually
+            <article class="function" data-name="Read">
+               <h3>
+                  Read 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>blockReader must implement io.Reader, but its Read shouldn't ever actually
 be called in practice. The compress/lzw package will only call [blockReader.ReadByte].</p>
+               
+               <pre><code>func (b *blockReader) Read(p []byte) (int, error)</code></pre>
+            </article>
             
-            <pre><code>func Read(p []byte) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="close">
-            <h2>close</h2>
-            <hr />
+            <article class="function" data-name="ReadByte">
+               <h3>
+                  ReadByte 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (b *blockReader) ReadByte() (byte, error)</code></pre>
+            </article>
             
-            <p>close primarily detects whether or not a block terminator was encountered
+            <article class="function" data-name="Write">
+               <h3>
+                  Write 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>blockWriter must be an io.Writer for lzw.NewWriter, but this is never
+actually called.</p>
+               
+               <pre><code>func (b blockWriter) Write(data []byte) (int, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="WriteByte">
+               <h3>
+                  WriteByte 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (b blockWriter) WriteByte(c byte) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="close">
+               <h3>
+                  close 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (b blockWriter) close()</code></pre>
+            </article>
+            
+            <article class="function" data-name="close">
+               <h3>
+                  close 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>close primarily detects whether or not a block terminator was encountered
 after reading a sequence of data sub-blocks. It allows at most one trailing
 sub-block worth of data. I.e., if some number of bytes exist in one sub-block
 following the end of LZW data, the very next sub-block must be the block
@@ -777,334 +1055,256 @@ terminator. If the very end of LZW data happened to fill one sub-block, at
 most one more sub-block of length 1 may exist before the block-terminator.
 These accommodations allow us to support GIFs created by less strict encoders.
 See https://golang.org/issue/16146.</p>
+               
+               <pre><code>func (b *blockReader) close() error</code></pre>
+            </article>
             
-            <pre><code>func close() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="decode">
-            <h2>decode</h2>
-            <hr />
+            <article class="function" data-name="colorTablesMatch">
+               <h3>
+                  colorTablesMatch 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *encoder) colorTablesMatch(localLen int, transparentIndex int) bool</code></pre>
+            </article>
             
-            <p>decode reads a GIF image from r and stores the result in d.</p>
+            <article class="function" data-name="decode">
+               <h3>
+                  decode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>decode reads a GIF image from r and stores the result in d.</p>
+               
+               <pre><code>func (d *decoder) decode(r io.Reader, configOnly bool, keepAllFrames bool) error</code></pre>
+            </article>
             
-            <pre><code>func decode(r io.Reader, configOnly bool, keepAllFrames bool) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="readHeaderAndScreenDescriptor">
-            <h2>readHeaderAndScreenDescriptor</h2>
-            <hr />
+            <article class="function" data-name="encodeColorTable">
+               <h3>
+                  encodeColorTable 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func encodeColorTable(dst []byte, p color.Palette, size int) (int, error)</code></pre>
+            </article>
             
-            <pre><code>func readHeaderAndScreenDescriptor() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="readColorTable">
-            <h2>readColorTable</h2>
-            <hr />
+            <article class="function" data-name="fill">
+               <h3>
+                  fill 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (b *blockReader) fill()</code></pre>
+            </article>
             
-            <pre><code>func readColorTable(fields byte) (color.Palette, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="readExtension">
-            <h2>readExtension</h2>
-            <hr />
+            <article class="function" data-name="flush">
+               <h3>
+                  flush 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *encoder) flush()</code></pre>
+            </article>
             
-            <pre><code>func readExtension() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="readGraphicControl">
-            <h2>readGraphicControl</h2>
-            <hr />
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func init()</code></pre>
+            </article>
             
-            <pre><code>func readGraphicControl() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="readImageDescriptor">
-            <h2>readImageDescriptor</h2>
-            <hr />
+            <article class="function" data-name="log2">
+               <h3>
+                  log2 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func log2(x int) int</code></pre>
+            </article>
             
-            <pre><code>func readImageDescriptor(keepAllFrames bool) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="newImageFromDescriptor">
-            <h2>newImageFromDescriptor</h2>
-            <hr />
+            <article class="function" data-name="newImageFromDescriptor">
+               <h3>
+                  newImageFromDescriptor 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d *decoder) newImageFromDescriptor() (*image.Paletted, error)</code></pre>
+            </article>
             
-            <pre><code>func newImageFromDescriptor() (*image.Paletted, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="readBlock">
-            <h2>readBlock</h2>
-            <hr />
+            <article class="function" data-name="readBlock">
+               <h3>
+                  readBlock 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d *decoder) readBlock() (int, error)</code></pre>
+            </article>
             
-            <pre><code>func readBlock() (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="uninterlace">
-            <h2>uninterlace</h2>
-            <hr />
+            <article class="function" data-name="readByte">
+               <h3>
+                  readByte 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func readByte(r io.ByteReader) (byte, error)</code></pre>
+            </article>
             
-            <p>uninterlace rearranges the pixels in m to account for interlaced input.</p>
+            <article class="function" data-name="readColorTable">
+               <h3>
+                  readColorTable 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d *decoder) readColorTable(fields byte) (color.Palette, error)</code></pre>
+            </article>
             
-            <pre><code>func uninterlace(m *image.Paletted)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Decode">
-            <h2>Decode</h2>
-            <hr />
+            <article class="function" data-name="readExtension">
+               <h3>
+                  readExtension 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d *decoder) readExtension() error</code></pre>
+            </article>
             
-            <p>Decode reads a GIF image from r and returns the first embedded
-image as an [image.Image].</p>
+            <article class="function" data-name="readFull">
+               <h3>
+                  readFull 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func readFull(r io.Reader, b []byte) error</code></pre>
+            </article>
             
-            <pre><code>func Decode(r io.Reader) (image.Image, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="DecodeAll">
-            <h2>DecodeAll</h2>
-            <hr />
+            <article class="function" data-name="readGraphicControl">
+               <h3>
+                  readGraphicControl 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d *decoder) readGraphicControl() error</code></pre>
+            </article>
             
-            <p>DecodeAll reads a GIF image from r and returns the sequential frames
-and timing information.</p>
+            <article class="function" data-name="readHeaderAndScreenDescriptor">
+               <h3>
+                  readHeaderAndScreenDescriptor 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d *decoder) readHeaderAndScreenDescriptor() error</code></pre>
+            </article>
             
-            <pre><code>func DecodeAll(r io.Reader) (*GIF, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="DecodeConfig">
-            <h2>DecodeConfig</h2>
-            <hr />
+            <article class="function" data-name="readImageDescriptor">
+               <h3>
+                  readImageDescriptor 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d *decoder) readImageDescriptor(keepAllFrames bool) error</code></pre>
+            </article>
             
-            <p>DecodeConfig returns the global color model and dimensions of a GIF image
-without decoding the entire image.</p>
+            <article class="function" data-name="setup">
+               <h3>
+                  setup 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (b blockWriter) setup()</code></pre>
+            </article>
             
-            <pre><code>func DecodeConfig(r io.Reader) (image.Config, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="init">
-            <h2>init</h2>
-            <hr />
+            <article class="function" data-name="uninterlace">
+               <h3>
+                  uninterlace 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>uninterlace rearranges the pixels in m to account for interlaced input.</p>
+               
+               <pre><code>func uninterlace(m *image.Paletted)</code></pre>
+            </article>
             
-            <pre><code>func init()</code></pre>
-         </article>
-         
-         <article class="function" data-name="lzwEncode">
-            <h2>lzwEncode</h2>
-            <hr />
+            <article class="function" data-name="write">
+               <h3>
+                  write 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *encoder) write(p []byte)</code></pre>
+            </article>
             
-            <p>lzwEncode returns an LZW encoding (with 2-bit literals) of in.</p>
+            <article class="function" data-name="writeByte">
+               <h3>
+                  writeByte 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *encoder) writeByte(b byte)</code></pre>
+            </article>
             
-            <pre><code>func lzwEncode(in []byte) []byte</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestDecode">
-            <h2>TestDecode</h2>
-            <hr />
+            <article class="function" data-name="writeHeader">
+               <h3>
+                  writeHeader 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *encoder) writeHeader()</code></pre>
+            </article>
             
-            <pre><code>func TestDecode(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestTransparentIndex">
-            <h2>TestTransparentIndex</h2>
-            <hr />
+            <article class="function" data-name="writeImageBlock">
+               <h3>
+                  writeImageBlock 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *encoder) writeImageBlock(pm *image.Paletted, delay int, disposal byte)</code></pre>
+            </article>
             
-            <pre><code>func TestTransparentIndex(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="try">
-            <h2>try</h2>
-            <hr />
-            
-            <pre><code>func try(t *testing.T, b []byte, want string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestBounds">
-            <h2>TestBounds</h2>
-            <hr />
-            
-            <pre><code>func TestBounds(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestNoPalette">
-            <h2>TestNoPalette</h2>
-            <hr />
-            
-            <pre><code>func TestNoPalette(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestPixelOutsidePaletteRange">
-            <h2>TestPixelOutsidePaletteRange</h2>
-            <hr />
-            
-            <pre><code>func TestPixelOutsidePaletteRange(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestTransparentPixelOutsidePaletteRange">
-            <h2>TestTransparentPixelOutsidePaletteRange</h2>
-            <hr />
-            
-            <pre><code>func TestTransparentPixelOutsidePaletteRange(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestLoopCount">
-            <h2>TestLoopCount</h2>
-            <hr />
-            
-            <pre><code>func TestLoopCount(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestUnexpectedEOF">
-            <h2>TestUnexpectedEOF</h2>
-            <hr />
-            
-            <pre><code>func TestUnexpectedEOF(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestDecodeMemoryConsumption">
-            <h2>TestDecodeMemoryConsumption</h2>
-            <hr />
-            
-            <p>See golang.org/issue/22237</p>
-            
-            <pre><code>func TestDecodeMemoryConsumption(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkDecode">
-            <h2>BenchmarkDecode</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkDecode(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestReencodeExtendedPalette">
-            <h2>TestReencodeExtendedPalette</h2>
-            <hr />
-            
-            <pre><code>func TestReencodeExtendedPalette(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="log2">
-            <h2>log2</h2>
-            <hr />
-            
-            <pre><code>func log2(x int) int</code></pre>
-         </article>
-         
-         <article class="function" data-name="setup">
-            <h2>setup</h2>
-            <hr />
-            
-            <pre><code>func setup()</code></pre>
-         </article>
-         
-         <article class="function" data-name="Flush">
-            <h2>Flush</h2>
-            <hr />
-            
-            <pre><code>func Flush() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="WriteByte">
-            <h2>WriteByte</h2>
-            <hr />
-            
-            <pre><code>func WriteByte(c byte) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="Write">
-            <h2>Write</h2>
-            <hr />
-            
-            <p>blockWriter must be an io.Writer for lzw.NewWriter, but this is never
-actually called.</p>
-            
-            <pre><code>func Write(data []byte) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="close">
-            <h2>close</h2>
-            <hr />
-            
-            <pre><code>func close()</code></pre>
-         </article>
-         
-         <article class="function" data-name="flush">
-            <h2>flush</h2>
-            <hr />
-            
-            <pre><code>func flush()</code></pre>
-         </article>
-         
-         <article class="function" data-name="write">
-            <h2>write</h2>
-            <hr />
-            
-            <pre><code>func write(p []byte)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeByte">
-            <h2>writeByte</h2>
-            <hr />
-            
-            <pre><code>func writeByte(b byte)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeHeader">
-            <h2>writeHeader</h2>
-            <hr />
-            
-            <pre><code>func writeHeader()</code></pre>
-         </article>
-         
-         <article class="function" data-name="encodeColorTable">
-            <h2>encodeColorTable</h2>
-            <hr />
-            
-            <pre><code>func encodeColorTable(dst []byte, p color.Palette, size int) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="colorTablesMatch">
-            <h2>colorTablesMatch</h2>
-            <hr />
-            
-            <pre><code>func colorTablesMatch(localLen int, transparentIndex int) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeImageBlock">
-            <h2>writeImageBlock</h2>
-            <hr />
-            
-            <pre><code>func writeImageBlock(pm *image.Paletted, delay int, disposal byte)</code></pre>
-         </article>
-         
-         <article class="function" data-name="EncodeAll">
-            <h2>EncodeAll</h2>
-            <hr />
-            
-            <p>EncodeAll writes the images in g to w in GIF format with the
-given loop count and delay between frames.</p>
-            
-            <pre><code>func EncodeAll(w io.Writer, g *GIF) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="Encode">
-            <h2>Encode</h2>
-            <hr />
-            
-            <p>Encode writes the Image m to w in GIF format.</p>
-            
-            <pre><code>func Encode(w io.Writer, m image.Image, o *Options) error</code></pre>
-         </article>
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -1112,59 +1312,170 @@ given loop count and delay between frames.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

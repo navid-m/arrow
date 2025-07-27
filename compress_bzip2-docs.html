@@ -13,575 +13,948 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                 
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>bzip2</code>
-         </h1>
-         <hr />
+         <h1>bzip2</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="bzip2FileMagic">
-            <h2>bzip2FileMagic</h2>
-            <hr />
-            
-            <pre><code>bzip2FileMagic</code></pre>
-         </article>
-         
-         <article class="global" data-name="bzip2BlockMagic">
-            <h2>bzip2BlockMagic</h2>
-            <hr />
-            
-            <pre><code>bzip2BlockMagic</code></pre>
-         </article>
-         
-         <article class="global" data-name="bzip2FinalMagic">
-            <h2>bzip2FinalMagic</h2>
-            <hr />
-            
-            <pre><code>bzip2FinalMagic</code></pre>
-         </article>
-         
-         <article class="global" data-name="crctab">
-            <h2>crctab</h2>
-            <hr />
-            
-            <pre><code>crctab []uint32</code></pre>
-         </article>
-         
-         <article class="global" data-name="digits">
-            <h2>digits</h2>
-            <hr />
-            
-            <pre><code>digits</code></pre>
-         </article>
-         
-         <article class="global" data-name="newton">
-            <h2>newton</h2>
-            <hr />
-            
-            <pre><code>newton</code></pre>
-         </article>
-         
-         <article class="global" data-name="random">
-            <h2>random</h2>
-            <hr />
-            
-            <pre><code>random</code></pre>
-         </article>
-         
-         <article class="global" data-name="invalidNodeValue">
-            <h2>invalidNodeValue</h2>
-            <hr />
-            
-            <p>invalidNodeValue is an invalid index which marks a leaf node in the tree.</p>
-            
-            <pre><code>invalidNodeValue</code></pre>
-         </article>
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"bufio"
+"io"
+"io"
+"cmp"
+"slices"
+</code></pre>
+            </article>
+         </section>
           
-         <article class="struct" data-name="bitReader">
-            <h2>type bitReader struct</h2>
-            <hr />
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <p>bitReader wraps an io.Reader and provides the ability to read values,
+            <article class="global" data-name="bzip2BlockMagic">
+               <h3>
+                  bzip2BlockMagic 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const bzip2BlockMagic = 0x314159265359</code></pre>
+            </article>
+            
+            <article class="global" data-name="bzip2FileMagic">
+               <h3>
+                  bzip2FileMagic 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const bzip2FileMagic = 0x425a</code></pre>
+            </article>
+            
+            <article class="global" data-name="bzip2FinalMagic">
+               <h3>
+                  bzip2FinalMagic 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const bzip2FinalMagic = 0x177245385090</code></pre>
+            </article>
+            
+            <article class="global" data-name="crctab">
+               <h3>
+                  crctab 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var crctab [256]uint32</code></pre>
+            </article>
+            
+            <article class="global" data-name="invalidNodeValue">
+               <h3>
+                  invalidNodeValue 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>invalidNodeValue is an invalid index which marks a leaf node in the tree.</p>
+               
+               <pre><code>const invalidNodeValue = 0xffff</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="types">
+            <h2>Type Aliases</h2>
+            
+            <article class="type" data-name="StructuralError">
+               <h3>
+                  StructuralError
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>A StructuralError is returned when the bzip2 data is found to be
+syntactically invalid.</p>
+               
+               <pre><code>type StructuralError string</code></pre>
+            </article>
+            
+            <article class="type" data-name="moveToFrontDecoder">
+               <h3>
+                  moveToFrontDecoder
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>moveToFrontDecoder implements a move-to-front list. Such a list is an
+efficient way to transform a string with repeating elements into one with
+many small valued numbers, which is suitable for entropy encoding. It works
+by starting with an initial list of symbols and references symbols by their
+index into that list. When a symbol is referenced, it's moved to the front
+of the list. Thus, a repeated symbol ends up being encoded with many zeros,
+as the symbol will be at the front of the list after the first access.</p>
+               
+               <pre><code>type moveToFrontDecoder []byte</code></pre>
+            </article>
+            
+         </section>
+           
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="bitReader">
+               <h3>
+                  bitReader
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>bitReader wraps an io.Reader and provides the ability to read values,
 bit-by-bit, from it. Its Read* methods don't return the usual error
 because the error handling was verbose. Instead, any error is kept and can
 be checked afterwards.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">r io.ByteReader
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type bitReader struct {
+r io.ByteReader
 n uint64
 bits uint
-err error</code></pre>
-         </article>
-         
-         <article class="struct" data-name="reader">
-            <h2>type reader struct</h2>
-            <hr />
+err error
+}</code></pre>
+            </article>
             
-            <p>A reader decompresses bzip2 compressed data.</p>
+            <article class="struct" data-name="huffmanCode">
+               <h3>
+                  huffmanCode
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>huffmanCode contains a symbol, its code and code length.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type huffmanCode struct {
+code uint32
+codeLen uint8
+value uint16
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">br bitReader
+            <article class="struct" data-name="huffmanNode">
+               <h3>
+                  huffmanNode
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A huffmanNode is a node in the tree. left and right contain indexes into the
+nodes slice of the tree. If left or right is invalidNodeValue then the child
+is a left node and its value is in leftValue/rightValue.
+The symbols are uint16s because bzip2 encodes not only MTF indexes in the
+tree, but also two magic values for run-length encoding and an EOF symbol.
+Thus there are more than 256 possible symbols.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type huffmanNode struct {
+left uint16
+right uint16
+leftValue uint16
+rightValue uint16
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="huffmanSymbolLengthPair">
+               <h3>
+                  huffmanSymbolLengthPair
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>huffmanSymbolLengthPair contains a symbol and its code length.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type huffmanSymbolLengthPair struct {
+value uint16
+length uint8
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="huffmanTree">
+               <h3>
+                  huffmanTree
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A huffmanTree is a binary tree which is navigated, bit-by-bit to reach a
+symbol.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type huffmanTree struct {
+nodes []huffmanNode
+nextNode int
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="reader">
+               <h3>
+                  reader
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A reader decompresses bzip2 compressed data.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type reader struct {
+br bitReader
 fileCRC uint32
 blockCRC uint32
 wantBlockCRC uint32
 setupDone bool
 eof bool
 blockSize int
-c []uint
+c [256]uint
 tt []uint32
 tPos uint32
 preRLE []uint32
 preRLEUsed int
 lastByte int
 byteRepeats uint
-repeats uint</code></pre>
-         </article>
-         
-         <article class="struct" data-name="huffmanTree">
-            <h2>type huffmanTree struct</h2>
-            <hr />
+repeats uint
+}</code></pre>
+            </article>
             
-            <p>A huffmanTree is a binary tree which is navigated, bit-by-bit to reach a
-symbol.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">nodes []huffmanNode
-nextNode int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="huffmanNode">
-            <h2>type huffmanNode struct</h2>
-            <hr />
-            
-            <p>A huffmanNode is a node in the tree. left and right contain indexes into the
-nodes slice of the tree. If left or right is invalidNodeValue then the child
-is a left node and its value is in leftValue/rightValue.
-
-The symbols are uint16s because bzip2 encodes not only MTF indexes in the
-tree, but also two magic values for run-length encoding and an EOF symbol.
-Thus there are more than 256 possible symbols.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">left uint16
-right uint16
-leftValue uint16
-rightValue uint16</code></pre>
-         </article>
-         
-         <article class="struct" data-name="huffmanSymbolLengthPair">
-            <h2>type huffmanSymbolLengthPair struct</h2>
-            <hr />
-            
-            <p>huffmanSymbolLengthPair contains a symbol and its code length.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">value uint16
-length uint8</code></pre>
-         </article>
-         
-         <article class="struct" data-name="huffmanCode">
-            <h2>type huffmanCode struct</h2>
-            <hr />
-            
-            <p>huffmanCode contains a symbol, its code and code length.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">code uint32
-codeLen uint8
-value uint16</code></pre>
-         </article>
+         </section>
           
-         <article class="function" data-name="newBitReader">
-            <h2>newBitReader</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <p>newBitReader returns a new bitReader reading from r. If r is not
-already an io.ByteReader, it will be converted via a bufio.Reader.</p>
+            <article class="function" data-name="Decode">
+               <h3>
+                  Decode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (m moveToFrontDecoder) Decode(n int) (b byte)</code></pre>
+            </article>
             
-            <pre><code>func newBitReader(r io.Reader) bitReader</code></pre>
-         </article>
-         
-         <article class="function" data-name="ReadBits64">
-            <h2>ReadBits64</h2>
-            <hr />
+            <article class="function" data-name="Decode">
+               <h3>
+                  Decode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Decode reads bits from the given bitReader and navigates the tree until a
+symbol is found.</p>
+               
+               <pre><code>func (t *huffmanTree) Decode(br *bitReader) (v uint16)</code></pre>
+            </article>
             
-            <p>ReadBits64 reads the given number of bits and returns them in the
-least-significant part of a uint64. In the event of an error, it returns 0
-and the error can be obtained by calling bitReader.Err().</p>
+            <article class="function" data-name="Err">
+               <h3>
+                  Err 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (br *bitReader) Err() error</code></pre>
+            </article>
             
-            <pre><code>func ReadBits64(bits uint) n uint64</code></pre>
-         </article>
-         
-         <article class="function" data-name="ReadBits">
-            <h2>ReadBits</h2>
-            <hr />
+            <article class="function" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s StructuralError) Error() string</code></pre>
+            </article>
             
-            <pre><code>func ReadBits(bits uint) n int</code></pre>
-         </article>
-         
-         <article class="function" data-name="ReadBit">
-            <h2>ReadBit</h2>
-            <hr />
+            <article class="function" data-name="First">
+               <h3>
+                  First 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>First returns the symbol at the front of the list.</p>
+               
+               <pre><code>func (m moveToFrontDecoder) First() byte</code></pre>
+            </article>
             
-            <pre><code>func ReadBit() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="Err">
-            <h2>Err</h2>
-            <hr />
-            
-            <pre><code>func Err() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="Error">
-            <h2>Error</h2>
-            <hr />
-            
-            <pre><code>func Error() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="NewReader">
-            <h2>NewReader</h2>
-            <hr />
-            
-            <p>NewReader returns an io.Reader which decompresses bzip2 data from r.
+            <article class="function" data-name="NewReader">
+               <h3>
+                  NewReader 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewReader returns an io.Reader which decompresses bzip2 data from r.
 If r does not also implement [io.ByteReader],
 the decompressor may read more data than necessary from r.</p>
+               
+               <pre><code>func NewReader(r io.Reader) io.Reader</code></pre>
+            </article>
             
-            <pre><code>func NewReader(r io.Reader) io.Reader</code></pre>
-         </article>
-         
-         <article class="function" data-name="setup">
-            <h2>setup</h2>
-            <hr />
+            <article class="function" data-name="Read">
+               <h3>
+                  Read 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (bz2 *reader) Read(buf []byte) (n int, err error)</code></pre>
+            </article>
             
-            <p>setup parses the bzip2 header.</p>
+            <article class="function" data-name="ReadBit">
+               <h3>
+                  ReadBit 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (br *bitReader) ReadBit() bool</code></pre>
+            </article>
             
-            <pre><code>func setup(needMagic bool) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="Read">
-            <h2>Read</h2>
-            <hr />
+            <article class="function" data-name="ReadBits">
+               <h3>
+                  ReadBits 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (br *bitReader) ReadBits(bits uint) (n int)</code></pre>
+            </article>
             
-            <pre><code>func Read(buf []byte) (n int, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="readFromBlock">
-            <h2>readFromBlock</h2>
-            <hr />
+            <article class="function" data-name="ReadBits64">
+               <h3>
+                  ReadBits64 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ReadBits64 reads the given number of bits and returns them in the
+least-significant part of a uint64. In the event of an error, it returns 0
+and the error can be obtained by calling bitReader.Err().</p>
+               
+               <pre><code>func (br *bitReader) ReadBits64(bits uint) (n uint64)</code></pre>
+            </article>
             
-            <pre><code>func readFromBlock(buf []byte) int</code></pre>
-         </article>
-         
-         <article class="function" data-name="read">
-            <h2>read</h2>
-            <hr />
+            <article class="function" data-name="buildHuffmanNode">
+               <h3>
+                  buildHuffmanNode 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>buildHuffmanNode takes a slice of sorted huffmanCodes and builds a node in
+the Huffman tree at the given level. It returns the index of the newly
+constructed node.</p>
+               
+               <pre><code>func buildHuffmanNode(t *huffmanTree, codes []huffmanCode, level uint32) (nodeIndex uint16, err error)</code></pre>
+            </article>
             
-            <pre><code>func read(buf []byte) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="readBlock">
-            <h2>readBlock</h2>
-            <hr />
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func init()</code></pre>
+            </article>
             
-            <p>readBlock reads a bzip2 block. The magic number should already have been consumed.</p>
-            
-            <pre><code>func readBlock() err error</code></pre>
-         </article>
-         
-         <article class="function" data-name="inverseBWT">
-            <h2>inverseBWT</h2>
-            <hr />
-            
-            <p>inverseBWT implements the inverse Burrows-Wheeler transform as described in
+            <article class="function" data-name="inverseBWT">
+               <h3>
+                  inverseBWT 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>inverseBWT implements the inverse Burrows-Wheeler transform as described in
 http://www.hpl.hp.com/techreports/Compaq-DEC/SRC-RR-124.pdf, section 4.2.
 In that document, origPtr is called “I” and c is the “C” array after the
 first pass over the data. It's an argument here because we merge the first
 pass with the Huffman decoding.
-
 This also implements the “single array” method from the bzip2 source code
 which leaves the output, still shuffled, in the bottom 8 bits of tt with the
 index of the next byte in the top 24-bits. The index of the first byte is
 returned.</p>
+               
+               <pre><code>func inverseBWT(tt []uint32, origPtr uint, c []uint) uint32</code></pre>
+            </article>
             
-            <pre><code>func inverseBWT(tt []uint32, origPtr uint, c []uint) uint32</code></pre>
-         </article>
-         
-         <article class="function" data-name="init">
-            <h2>init</h2>
-            <hr />
+            <article class="function" data-name="newBitReader">
+               <h3>
+                  newBitReader 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>newBitReader returns a new bitReader reading from r. If r is not
+already an io.ByteReader, it will be converted via a bufio.Reader.</p>
+               
+               <pre><code>func newBitReader(r io.Reader) bitReader</code></pre>
+            </article>
             
-            <pre><code>func init()</code></pre>
-         </article>
-         
-         <article class="function" data-name="updateCRC">
-            <h2>updateCRC</h2>
-            <hr />
-            
-            <p>updateCRC updates the crc value to incorporate the data in b.
-The initial value is 0.</p>
-            
-            <pre><code>func updateCRC(val uint32, b []byte) uint32</code></pre>
-         </article>
-         
-         <article class="function" data-name="mustDecodeHex">
-            <h2>mustDecodeHex</h2>
-            <hr />
-            
-            <pre><code>func mustDecodeHex(s string) []byte</code></pre>
-         </article>
-         
-         <article class="function" data-name="mustLoadFile">
-            <h2>mustLoadFile</h2>
-            <hr />
-            
-            <pre><code>func mustLoadFile(f string) []byte</code></pre>
-         </article>
-         
-         <article class="function" data-name="trim">
-            <h2>trim</h2>
-            <hr />
-            
-            <pre><code>func trim(b []byte) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestReader">
-            <h2>TestReader</h2>
-            <hr />
-            
-            <pre><code>func TestReader(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestBitReader">
-            <h2>TestBitReader</h2>
-            <hr />
-            
-            <pre><code>func TestBitReader(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestMTF">
-            <h2>TestMTF</h2>
-            <hr />
-            
-            <pre><code>func TestMTF(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestZeroRead">
-            <h2>TestZeroRead</h2>
-            <hr />
-            
-            <pre><code>func TestZeroRead(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="benchmarkDecode">
-            <h2>benchmarkDecode</h2>
-            <hr />
-            
-            <pre><code>func benchmarkDecode(b *testing.B, compressed []byte)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkDecodeDigits">
-            <h2>BenchmarkDecodeDigits</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkDecodeDigits(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkDecodeNewton">
-            <h2>BenchmarkDecodeNewton</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkDecodeNewton(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkDecodeRand">
-            <h2>BenchmarkDecodeRand</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkDecodeRand(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Decode">
-            <h2>Decode</h2>
-            <hr />
-            
-            <p>Decode reads bits from the given bitReader and navigates the tree until a
-symbol is found.</p>
-            
-            <pre><code>func Decode(br *bitReader) v uint16</code></pre>
-         </article>
-         
-         <article class="function" data-name="newHuffmanTree">
-            <h2>newHuffmanTree</h2>
-            <hr />
-            
-            <p>newHuffmanTree builds a Huffman tree from a slice containing the code
+            <article class="function" data-name="newHuffmanTree">
+               <h3>
+                  newHuffmanTree 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>newHuffmanTree builds a Huffman tree from a slice containing the code
 lengths of each symbol. The maximum code length is 32 bits.</p>
+               
+               <pre><code>func newHuffmanTree(lengths []uint8) (huffmanTree, error)</code></pre>
+            </article>
             
-            <pre><code>func newHuffmanTree(lengths []uint8) (huffmanTree, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="buildHuffmanNode">
-            <h2>buildHuffmanNode</h2>
-            <hr />
-            
-            <p>buildHuffmanNode takes a slice of sorted huffmanCodes and builds a node in
-the Huffman tree at the given level. It returns the index of the newly
-constructed node.</p>
-            
-            <pre><code>func buildHuffmanNode(t *huffmanTree, codes []huffmanCode, level uint32) (nodeIndex uint16, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="newMTFDecoder">
-            <h2>newMTFDecoder</h2>
-            <hr />
-            
-            <p>newMTFDecoder creates a move-to-front decoder with an explicit initial list
+            <article class="function" data-name="newMTFDecoder">
+               <h3>
+                  newMTFDecoder 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>newMTFDecoder creates a move-to-front decoder with an explicit initial list
 of symbols.</p>
+               
+               <pre><code>func newMTFDecoder(symbols []byte) moveToFrontDecoder</code></pre>
+            </article>
             
-            <pre><code>func newMTFDecoder(symbols []byte) moveToFrontDecoder</code></pre>
-         </article>
-         
-         <article class="function" data-name="newMTFDecoderWithRange">
-            <h2>newMTFDecoderWithRange</h2>
-            <hr />
-            
-            <p>newMTFDecoderWithRange creates a move-to-front decoder with an initial
+            <article class="function" data-name="newMTFDecoderWithRange">
+               <h3>
+                  newMTFDecoderWithRange 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>newMTFDecoderWithRange creates a move-to-front decoder with an initial
 symbol list of 0...n-1.</p>
+               
+               <pre><code>func newMTFDecoderWithRange(n int) moveToFrontDecoder</code></pre>
+            </article>
             
-            <pre><code>func newMTFDecoderWithRange(n int) moveToFrontDecoder</code></pre>
-         </article>
-         
-         <article class="function" data-name="Decode">
-            <h2>Decode</h2>
-            <hr />
+            <article class="function" data-name="read">
+               <h3>
+                  read 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (bz2 *reader) read(buf []byte) (int, error)</code></pre>
+            </article>
             
-            <pre><code>func Decode(n int) b byte</code></pre>
-         </article>
-         
-         <article class="function" data-name="First">
-            <h2>First</h2>
-            <hr />
+            <article class="function" data-name="readBlock">
+               <h3>
+                  readBlock 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>readBlock reads a bzip2 block. The magic number should already have been consumed.</p>
+               
+               <pre><code>func (bz2 *reader) readBlock() (err error)</code></pre>
+            </article>
             
-            <p>First returns the symbol at the front of the list.</p>
+            <article class="function" data-name="readFromBlock">
+               <h3>
+                  readFromBlock 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (bz2 *reader) readFromBlock(buf []byte) int</code></pre>
+            </article>
             
-            <pre><code>func First() byte</code></pre>
-         </article>
+            <article class="function" data-name="setup">
+               <h3>
+                  setup 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>setup parses the bzip2 header.</p>
+               
+               <pre><code>func (bz2 *reader) setup(needMagic bool) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="updateCRC">
+               <h3>
+                  updateCRC 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>updateCRC updates the crc value to incorporate the data in b.
+The initial value is 0.</p>
+               
+               <pre><code>func updateCRC(val uint32, b []byte) uint32</code></pre>
+            </article>
+            
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -589,59 +962,170 @@ symbol list of 0...n-1.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

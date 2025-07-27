@@ -13,789 +13,1618 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                
+               <li><a href="#interfaces">Interfaces</a></li>
+                
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>comment</code>
-         </h1>
-         <hr />
+         <h1>comment</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="oldHeadingTests">
-            <h2>oldHeadingTests</h2>
-            <hr />
-            
-            <pre><code>oldHeadingTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="autoURLTests">
-            <h2>autoURLTests</h2>
-            <hr />
-            
-            <pre><code>autoURLTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="_">
-            <h2>_</h2>
-            <hr />
-            
-            <pre><code>_ spanKind</code></pre>
-         </article>
-         
-         <article class="global" data-name="spanCode">
-            <h2>spanCode</h2>
-            <hr />
-            
-            <pre><code>spanCode</code></pre>
-         </article>
-         
-         <article class="global" data-name="spanHeading">
-            <h2>spanHeading</h2>
-            <hr />
-            
-            <pre><code>spanHeading</code></pre>
-         </article>
-         
-         <article class="global" data-name="spanList">
-            <h2>spanList</h2>
-            <hr />
-            
-            <pre><code>spanList</code></pre>
-         </article>
-         
-         <article class="global" data-name="spanOldHeading">
-            <h2>spanOldHeading</h2>
-            <hr />
-            
-            <pre><code>spanOldHeading</code></pre>
-         </article>
-         
-         <article class="global" data-name="spanPara">
-            <h2>spanPara</h2>
-            <hr />
-            
-            <pre><code>spanPara</code></pre>
-         </article>
-         
-         <article class="global" data-name="stdPkgs">
-            <h2>stdPkgs</h2>
-            <hr />
-            
-            <pre><code>stdPkgs</code></pre>
-         </article>
-         
-         <article class="global" data-name="wrapSeed">
-            <h2>wrapSeed</h2>
-            <hr />
-            
-            <pre><code>wrapSeed</code></pre>
-         </article>
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"bytes"
+"fmt"
+"strconv"
+"bytes"
+"fmt"
+"strings"
+"slices"
+"strings"
+"unicode"
+"unicode/utf8"
+"bytes"
+"fmt"
+"strings"
+"bytes"
+"fmt"
+"sort"
+"strings"
+"unicode/utf8"
+</code></pre>
+            </article>
+         </section>
           
-         <article class="struct" data-name="mdPrinter">
-            <h2>type mdPrinter struct</h2>
-            <hr />
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <p>An mdPrinter holds the state needed for printing a Doc as Markdown.</p>
+            <article class="global" data-name="_">
+               <h3>
+                  _ 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const _ spanKind = iota</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">*Printer
-headingPrefix string
-raw bytes.Buffer</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Doc">
-            <h2>type Doc struct</h2>
-            <hr />
+            <article class="global" data-name="spanCode">
+               <h3>
+                  spanCode 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const spanCode</code></pre>
+            </article>
             
-            <p>A Doc is a parsed Go doc comment.</p>
+            <article class="global" data-name="spanHeading">
+               <h3>
+                  spanHeading 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const spanHeading</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Content []Block
-Links []*LinkDef</code></pre>
-         </article>
-         
-         <article class="struct" data-name="LinkDef">
-            <h2>type LinkDef struct</h2>
-            <hr />
+            <article class="global" data-name="spanList">
+               <h3>
+                  spanList 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const spanList</code></pre>
+            </article>
             
-            <p>A LinkDef is a single link definition.</p>
+            <article class="global" data-name="spanOldHeading">
+               <h3>
+                  spanOldHeading 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const spanOldHeading</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Text string
+            <article class="global" data-name="spanPara">
+               <h3>
+                  spanPara 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const spanPara</code></pre>
+            </article>
+            
+            <article class="global" data-name="stdPkgs">
+               <h3>
+                  stdPkgs 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var stdPkgs = []string{...}</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="types">
+            <h2>Type Aliases</h2>
+            
+            <article class="type" data-name="Italic">
+               <h3>
+                  Italic
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>An Italic is a string rendered as italicized text.</p>
+               
+               <pre><code>type Italic string</code></pre>
+            </article>
+            
+            <article class="type" data-name="Plain">
+               <h3>
+                  Plain
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>A Plain is a string rendered as plain text (not italicized).</p>
+               
+               <pre><code>type Plain string</code></pre>
+            </article>
+            
+            <article class="type" data-name="spanKind">
+               <h3>
+                  spanKind
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>A spanKind describes the kind of span.</p>
+               
+               <pre><code>type spanKind int</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="interfaces">
+            <h2>Interfaces</h2>
+            
+            <article class="interface" data-name="Block">
+               <h3>
+                  Block
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>A Block is block-level content in a doc comment,
+one of [*Code], [*Heading], [*List], or [*Paragraph].</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type Block interface {
+block()
+}</code></pre>
+            </article>
+            
+            <article class="interface" data-name="Text">
+               <h3>
+                  Text
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>A Text is text-level content in a doc comment,
+one of [Plain], [Italic], [*Link], or [*DocLink].</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type Text interface {
+text()
+}</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="Code">
+               <h3>
+                  Code
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Code is a preformatted code block.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Code struct {
+Text string
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="Doc">
+               <h3>
+                  Doc
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Doc is a parsed Go doc comment.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Doc struct {
+Content []Block
+Links []*LinkDef
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="DocLink">
+               <h3>
+                  DocLink
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A DocLink is a link to documentation for a Go package or symbol.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type DocLink struct {
+Text []Text
+ImportPath string
+Recv string
+Name string
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="Heading">
+               <h3>
+                  Heading
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Heading is a doc comment heading.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Heading struct {
+Text []Text
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="Link">
+               <h3>
+                  Link
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Link is a link to a specific URL.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Link struct {
+Auto bool
+Text []Text
 URL string
-Used bool</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Heading">
-            <h2>type Heading struct</h2>
-            <hr />
+}</code></pre>
+            </article>
             
-            <p>A Heading is a doc comment heading.</p>
+            <article class="struct" data-name="LinkDef">
+               <h3>
+                  LinkDef
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A LinkDef is a single link definition.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type LinkDef struct {
+Text string
+URL string
+Used bool
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Text []Text</code></pre>
-         </article>
-         
-         <article class="struct" data-name="List">
-            <h2>type List struct</h2>
-            <hr />
-            
-            <p>A List is a numbered or bullet list.
+            <article class="struct" data-name="List">
+               <h3>
+                  List
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A List is a numbered or bullet list.
 Lists are always non-empty: len(Items) > 0.
 In a numbered list, every Items[i].Number is a non-empty string.
 In a bullet list, every Items[i].Number is an empty string.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Items []*ListItem
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type List struct {
+Items []*ListItem
 ForceBlankBefore bool
-ForceBlankBetween bool</code></pre>
-         </article>
-         
-         <article class="struct" data-name="ListItem">
-            <h2>type ListItem struct</h2>
-            <hr />
+ForceBlankBetween bool
+}</code></pre>
+            </article>
             
-            <p>A ListItem is a single item in a numbered or bullet list.</p>
+            <article class="struct" data-name="ListItem">
+               <h3>
+                  ListItem
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A ListItem is a single item in a numbered or bullet list.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type ListItem struct {
+Number string
+Content []Block
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Number string
-Content []Block</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Paragraph">
-            <h2>type Paragraph struct</h2>
-            <hr />
-            
-            <p>A Paragraph is a paragraph of text.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Text []Text</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Code">
-            <h2>type Code struct</h2>
-            <hr />
-            
-            <p>A Code is a preformatted code block.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Text string</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Link">
-            <h2>type Link struct</h2>
-            <hr />
-            
-            <p>A Link is a link to a specific URL.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Auto bool
+            <article class="struct" data-name="Paragraph">
+               <h3>
+                  Paragraph
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Paragraph is a paragraph of text.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Paragraph struct {
 Text []Text
-URL string</code></pre>
-         </article>
-         
-         <article class="struct" data-name="DocLink">
-            <h2>type DocLink struct</h2>
-            <hr />
+}</code></pre>
+            </article>
             
-            <p>A DocLink is a link to documentation for a Go package or symbol.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Text []Text
-ImportPath string
-Recv string
-Name string</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Parser">
-            <h2>type Parser struct</h2>
-            <hr />
-            
-            <p>A Parser is a doc comment parser.
+            <article class="struct" data-name="Parser">
+               <h3>
+                  Parser
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Parser is a doc comment parser.
 The fields in the struct can be filled in before calling [Parser.Parse]
 in order to customize the details of the parsing process.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Parser struct {
+Words map[string]string
+LookupPackage func(name string) (importPath string, ok bool)
+LookupSym func(recv string, name string) ok bool
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Words *ast.MapType
-LookupPackage func
-LookupSym func</code></pre>
-         </article>
-         
-         <article class="struct" data-name="parseDoc">
-            <h2>type parseDoc struct</h2>
-            <hr />
-            
-            <p>parseDoc is parsing state for a single doc comment.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">*Parser
-*Doc
-links *ast.MapType
-lines []string
-lookupSym func</code></pre>
-         </article>
-         
-         <article class="struct" data-name="span">
-            <h2>type span struct</h2>
-            <hr />
-            
-            <p>A span represents a single span of comment lines (lines[start:end])
-of an identified kind (code, heading, paragraph, and so on).</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">start int
-end int
-kind spanKind</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Printer">
-            <h2>type Printer struct</h2>
-            <hr />
-            
-            <p>A Printer is a doc comment printer.
+            <article class="struct" data-name="Printer">
+               <h3>
+                  Printer
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Printer is a doc comment printer.
 The fields in the struct can be filled in before calling
 any of the printing methods
 in order to customize the details of the printing process.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">HeadingLevel int
-HeadingID func
-DocLinkURL func
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Printer struct {
+HeadingLevel int
+HeadingID func(h *Heading) string
+DocLinkURL func(link *DocLink) string
 DocLinkBaseURL string
 TextPrefix string
 TextCodePrefix string
-TextWidth int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="commentPrinter">
-            <h2>type commentPrinter struct</h2>
-            <hr />
+TextWidth int
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">*Printer</code></pre>
-         </article>
-         
-         <article class="struct" data-name="textPrinter">
-            <h2>type textPrinter struct</h2>
-            <hr />
+            <article class="struct" data-name="commentPrinter">
+               <h3>
+                  commentPrinter
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type commentPrinter struct {
+*Printer
+}</code></pre>
+            </article>
             
-            <p>A textPrinter holds the state needed for printing a Doc as plain text.</p>
+            <article class="struct" data-name="htmlPrinter">
+               <h3>
+                  htmlPrinter
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>An htmlPrinter holds the state needed for printing a [Doc] as HTML.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type htmlPrinter struct {
+*Printer
+tight bool
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">*Printer
+            <article class="struct" data-name="mdPrinter">
+               <h3>
+                  mdPrinter
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>An mdPrinter holds the state needed for printing a Doc as Markdown.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type mdPrinter struct {
+*Printer
+headingPrefix string
+raw bytes.Buffer
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="parseDoc">
+               <h3>
+                  parseDoc
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>parseDoc is parsing state for a single doc comment.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type parseDoc struct {
+*Parser
+*Doc
+links map[string]*LinkDef
+lines []string
+lookupSym func(recv string, name string) bool
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="span">
+               <h3>
+                  span
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A span represents a single span of comment lines (lines[start:end])
+of an identified kind (code, heading, paragraph, and so on).</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type span struct {
+start int
+end int
+kind spanKind
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="textPrinter">
+               <h3>
+                  textPrinter
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A textPrinter holds the state needed for printing a Doc as plain text.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type textPrinter struct {
+*Printer
 long strings.Builder
 prefix string
 codePrefix string
-width int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="htmlPrinter">
-            <h2>type htmlPrinter struct</h2>
-            <hr />
+width int
+}</code></pre>
+            </article>
             
-            <p>An htmlPrinter holds the state needed for printing a [Doc] as HTML.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">*Printer
-tight bool</code></pre>
-         </article>
+         </section>
           
-         <article class="function" data-name="Markdown">
-            <h2>Markdown</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <p>Markdown returns a Markdown formatting of the Doc.
-See the [Printer] documentation for ways to customize the Markdown output.</p>
-            
-            <pre><code>func Markdown(d *Doc) []byte</code></pre>
-         </article>
-         
-         <article class="function" data-name="block">
-            <h2>block</h2>
-            <hr />
-            
-            <p>block prints the block x to out.</p>
-            
-            <pre><code>func block(out *bytes.Buffer, x Block)</code></pre>
-         </article>
-         
-         <article class="function" data-name="text">
-            <h2>text</h2>
-            <hr />
-            
-            <p>text prints the text sequence x to out.</p>
-            
-            <pre><code>func text(out *bytes.Buffer, x []Text)</code></pre>
-         </article>
-         
-         <article class="function" data-name="rawText">
-            <h2>rawText</h2>
-            <hr />
-            
-            <p>rawText prints the text sequence x to out,
-without worrying about escaping characters
-that have special meaning at the start of a Markdown line.</p>
-            
-            <pre><code>func rawText(out *bytes.Buffer, x []Text)</code></pre>
-         </article>
-         
-         <article class="function" data-name="escape">
-            <h2>escape</h2>
-            <hr />
-            
-            <p>escape prints s to out as plain text,
-escaping special characters to avoid being misinterpreted
-as Markdown markup sequences.</p>
-            
-            <pre><code>func escape(out *bytes.Buffer, s string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestIsOldHeading">
-            <h2>TestIsOldHeading</h2>
-            <hr />
-            
-            <pre><code>func TestIsOldHeading(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestAutoURL">
-            <h2>TestAutoURL</h2>
-            <hr />
-            
-            <pre><code>func TestAutoURL(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="block">
-            <h2>block</h2>
-            <hr />
-            
-            <pre><code>func block()</code></pre>
-         </article>
-         
-         <article class="function" data-name="block">
-            <h2>block</h2>
-            <hr />
-            
-            <pre><code>func block()</code></pre>
-         </article>
-         
-         <article class="function" data-name="BlankBefore">
-            <h2>BlankBefore</h2>
-            <hr />
-            
-            <p>BlankBefore reports whether a reformatting of the comment
+            <article class="function" data-name="BlankBefore">
+               <h3>
+                  BlankBefore 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>BlankBefore reports whether a reformatting of the comment
 should include a blank line before the list.
 The default rule is the same as for [BlankBetween]:
 if the list item content contains any blank lines
 (meaning at least one item has multiple paragraphs)
 then the list itself must be preceded by a blank line.
 A preceding blank line can be forced by setting [List].ForceBlankBefore.</p>
+               
+               <pre><code>func (l *List) BlankBefore() bool</code></pre>
+            </article>
             
-            <pre><code>func BlankBefore() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="BlankBetween">
-            <h2>BlankBetween</h2>
-            <hr />
-            
-            <p>BlankBetween reports whether a reformatting of the comment
+            <article class="function" data-name="BlankBetween">
+               <h3>
+                  BlankBetween 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>BlankBetween reports whether a reformatting of the comment
 should include a blank line between each pair of list items.
 The default rule is that if the list item content contains any blank lines
 (meaning at least one item has multiple paragraphs)
 then list items must themselves be separated by blank lines.
 Blank line separators can be forced by setting [List].ForceBlankBetween.</p>
+               
+               <pre><code>func (l *List) BlankBetween() bool</code></pre>
+            </article>
             
-            <pre><code>func BlankBetween() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="block">
-            <h2>block</h2>
-            <hr />
+            <article class="function" data-name="Comment">
+               <h3>
+                  Comment 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Comment returns the standard Go formatting of the [Doc],
+without any comment markers.</p>
+               
+               <pre><code>func (p *Printer) Comment(d *Doc) []byte</code></pre>
+            </article>
             
-            <pre><code>func block()</code></pre>
-         </article>
-         
-         <article class="function" data-name="block">
-            <h2>block</h2>
-            <hr />
+            <article class="function" data-name="DefaultID">
+               <h3>
+                  DefaultID 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>DefaultID returns the default anchor ID for the heading h.
+The default anchor ID is constructed by converting every
+rune that is not alphanumeric ASCII to an underscore
+and then adding the prefix “hdr-”.
+For example, if the heading text is “Go Doc Comments”,
+the default ID is “hdr-Go_Doc_Comments”.</p>
+               
+               <pre><code>func (h *Heading) DefaultID() string</code></pre>
+            </article>
             
-            <pre><code>func block()</code></pre>
-         </article>
-         
-         <article class="function" data-name="text">
-            <h2>text</h2>
-            <hr />
-            
-            <pre><code>func text()</code></pre>
-         </article>
-         
-         <article class="function" data-name="text">
-            <h2>text</h2>
-            <hr />
-            
-            <pre><code>func text()</code></pre>
-         </article>
-         
-         <article class="function" data-name="text">
-            <h2>text</h2>
-            <hr />
-            
-            <pre><code>func text()</code></pre>
-         </article>
-         
-         <article class="function" data-name="text">
-            <h2>text</h2>
-            <hr />
-            
-            <pre><code>func text()</code></pre>
-         </article>
-         
-         <article class="function" data-name="lookupPkg">
-            <h2>lookupPkg</h2>
-            <hr />
-            
-            <p>lookupPkg is called to look up the pkg in [pkg], [pkg.Name], and [pkg.Name.Recv].
-If pkg has a slash, it is assumed to be the full import path and is returned with ok = true.
-
-Otherwise, pkg is probably a simple package name like "rand" (not "crypto/rand" or "math/rand").
-d.LookupPackage provides a way for the caller to allow resolving such names with reference
-to the imports in the surrounding package.
-
-There is one collision between these two cases: single-element standard library names
-like "math" are full import paths but don't contain slashes. We let d.LookupPackage have
-the first chance to resolve it, in case there's a different package imported as math,
-and otherwise we refer to a built-in list of single-element standard library package names.</p>
-            
-            <pre><code>func lookupPkg(pkg string) (importPath string, ok bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="isStdPkg">
-            <h2>isStdPkg</h2>
-            <hr />
-            
-            <pre><code>func isStdPkg(path string) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="DefaultLookupPackage">
-            <h2>DefaultLookupPackage</h2>
-            <hr />
-            
-            <p>DefaultLookupPackage is the default package lookup
+            <article class="function" data-name="DefaultLookupPackage">
+               <h3>
+                  DefaultLookupPackage 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>DefaultLookupPackage is the default package lookup
 function, used when [Parser.LookupPackage] is nil.
 It recognizes names of the packages from the standard
 library with single-element import paths, such as math,
 which would otherwise be impossible to name.
-
 Note that the go/doc package provides a more sophisticated
 lookup based on the imports used in the current package.</p>
+               
+               <pre><code>func DefaultLookupPackage(name string) (importPath string, ok bool)</code></pre>
+            </article>
             
-            <pre><code>func DefaultLookupPackage(name string) (importPath string, ok bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Parse">
-            <h2>Parse</h2>
-            <hr />
+            <article class="function" data-name="DefaultURL">
+               <h3>
+                  DefaultURL 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>DefaultURL constructs and returns the documentation URL for l,
+using baseURL as a prefix for links to other packages.
+The possible forms returned by DefaultURL are:
+- baseURL/ImportPath, for a link to another package
+- baseURL/ImportPath#Name, for a link to a const, func, type, or var in another package
+- baseURL/ImportPath#Recv.Name, for a link to a method in another package
+- #Name, for a link to a const, func, type, or var in this package
+- #Recv.Name, for a link to a method in this package
+If baseURL ends in a trailing slash, then DefaultURL inserts
+a slash between ImportPath and # in the anchored forms.
+For example, here are some baseURL values and URLs they can generate:
+"/pkg/" → "/pkg/math/#Sqrt"
+"/pkg"  → "/pkg/math#Sqrt"
+"/"     → "/math/#Sqrt"
+""      → "/math#Sqrt"</p>
+               
+               <pre><code>func (l *DocLink) DefaultURL(baseURL string) string</code></pre>
+            </article>
             
-            <p>Parse parses the doc comment text and returns the *[Doc] form.
+            <article class="function" data-name="HTML">
+               <h3>
+                  HTML 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>HTML returns an HTML formatting of the [Doc].
+See the [Printer] documentation for ways to customize the HTML output.</p>
+               
+               <pre><code>func (p *Printer) HTML(d *Doc) []byte</code></pre>
+            </article>
+            
+            <article class="function" data-name="Markdown">
+               <h3>
+                  Markdown 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Markdown returns a Markdown formatting of the Doc.
+See the [Printer] documentation for ways to customize the Markdown output.</p>
+               
+               <pre><code>func (p *Printer) Markdown(d *Doc) []byte</code></pre>
+            </article>
+            
+            <article class="function" data-name="Parse">
+               <h3>
+                  Parse 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Parse parses the doc comment text and returns the *[Doc] form.
 Comment markers (/* // and */) in the text must have already been removed.</p>
+               
+               <pre><code>func (p *Parser) Parse(text string) *Doc</code></pre>
+            </article>
             
-            <pre><code>func Parse(text string) *Doc</code></pre>
-         </article>
-         
-         <article class="function" data-name="parseSpans">
-            <h2>parseSpans</h2>
-            <hr />
+            <article class="function" data-name="Text">
+               <h3>
+                  Text 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Text returns a textual formatting of the [Doc].
+See the [Printer] documentation for ways to customize the text output.</p>
+               
+               <pre><code>func (p *Printer) Text(d *Doc) []byte</code></pre>
+            </article>
             
-            <pre><code>func parseSpans(lines []string) []span</code></pre>
-         </article>
-         
-         <article class="function" data-name="indented">
-            <h2>indented</h2>
-            <hr />
+            <article class="function" data-name="autoURL">
+               <h3>
+                  autoURL 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>autoURL checks whether s begins with a URL that should be hyperlinked.
+If so, it returns the URL, which is a prefix of s, and ok == true.
+Otherwise it returns "", false.
+The caller should skip over the first len(url) bytes of s
+before further processing.</p>
+               
+               <pre><code>func autoURL(s string) (url string, ok bool)</code></pre>
+            </article>
             
-            <p>indented reports whether line is indented
+            <article class="function" data-name="blankBefore">
+               <h3>
+                  blankBefore 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>blankBefore reports whether the block x requires a blank line before it.
+All blocks do, except for Lists that return false from x.BlankBefore().</p>
+               
+               <pre><code>func blankBefore(x Block) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="block">
+               <h3>
+                  block 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*Paragraph) block()</code></pre>
+            </article>
+            
+            <article class="function" data-name="block">
+               <h3>
+                  block 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>block prints the block x to out.</p>
+               
+               <pre><code>func (p *htmlPrinter) block(out *bytes.Buffer, x Block)</code></pre>
+            </article>
+            
+            <article class="function" data-name="block">
+               <h3>
+                  block 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>block prints the block x to out.</p>
+               
+               <pre><code>func (p *textPrinter) block(out *bytes.Buffer, x Block)</code></pre>
+            </article>
+            
+            <article class="function" data-name="block">
+               <h3>
+                  block 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*Code) block()</code></pre>
+            </article>
+            
+            <article class="function" data-name="block">
+               <h3>
+                  block 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*Heading) block()</code></pre>
+            </article>
+            
+            <article class="function" data-name="block">
+               <h3>
+                  block 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>block prints the block x to out.</p>
+               
+               <pre><code>func (p *commentPrinter) block(out *bytes.Buffer, x Block)</code></pre>
+            </article>
+            
+            <article class="function" data-name="block">
+               <h3>
+                  block 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*List) block()</code></pre>
+            </article>
+            
+            <article class="function" data-name="block">
+               <h3>
+                  block 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>block prints the block x to out.</p>
+               
+               <pre><code>func (p *mdPrinter) block(out *bytes.Buffer, x Block)</code></pre>
+            </article>
+            
+            <article class="function" data-name="code">
+               <h3>
+                  code 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>code returns a code block built from the lines.</p>
+               
+               <pre><code>func (d *parseDoc) code(lines []string) *Code</code></pre>
+            </article>
+            
+            <article class="function" data-name="commonPrefix">
+               <h3>
+                  commonPrefix 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>commonPrefix returns the longest common prefix of a and b.</p>
+               
+               <pre><code>func commonPrefix(a string, b string) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="docLink">
+               <h3>
+                  docLink 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>docLink parses text, which was found inside [ ] brackets,
+as a doc link if possible, returning the DocLink and ok == true
+or else nil, false.
+The before and after strings are the text before the [ and after the ]
+on the same line. Doc links must be preceded and followed by
+punctuation, spaces, tabs, or the start or end of a line.</p>
+               
+               <pre><code>func (d *parseDoc) docLink(text string, before string, after string) (link *DocLink, ok bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="docLinkURL">
+               <h3>
+                  docLinkURL 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *Printer) docLinkURL(link *DocLink) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="escape">
+               <h3>
+                  escape 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>escape prints s to out as plain text,
+escaping < & " ' and > to avoid being misinterpreted
+in larger HTML constructs.</p>
+               
+               <pre><code>func (p *htmlPrinter) escape(out *bytes.Buffer, s string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="escape">
+               <h3>
+                  escape 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>escape prints s to out as plain text,
+escaping special characters to avoid being misinterpreted
+as Markdown markup sequences.</p>
+               
+               <pre><code>func (p *mdPrinter) escape(out *bytes.Buffer, s string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="heading">
+               <h3>
+                  heading 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>heading returns the *Heading for the given new-style section heading line.</p>
+               
+               <pre><code>func (d *parseDoc) heading(line string) Block</code></pre>
+            </article>
+            
+            <article class="function" data-name="headingID">
+               <h3>
+                  headingID 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *Printer) headingID(h *Heading) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="headingLevel">
+               <h3>
+                  headingLevel 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *Printer) headingLevel() int</code></pre>
+            </article>
+            
+            <article class="function" data-name="ident">
+               <h3>
+                  ident 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>ident checks whether s begins with a Go identifier.
+If so, it returns the identifier, which is a prefix of s, and ok == true.
+Otherwise it returns "", false.
+The caller should skip over the first len(id) bytes of s
+before further processing.</p>
+               
+               <pre><code>func ident(s string) (id string, ok bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="importPathOK">
+               <h3>
+                  importPathOK 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func importPathOK(c byte) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="inc">
+               <h3>
+                  inc 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>inc increments the decimal string s.
+For example, inc("1199") == "1200".</p>
+               
+               <pre><code>func inc(s string) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="indent">
+               <h3>
+                  indent 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>indent prints s to out, indenting with the indent string
+after each newline in s.</p>
+               
+               <pre><code>func (p *commentPrinter) indent(out *bytes.Buffer, indent string, s string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="indented">
+               <h3>
+                  indented 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>indented reports whether line is indented
 (starts with a leading space or tab).</p>
+               
+               <pre><code>func indented(line string) bool</code></pre>
+            </article>
             
-            <pre><code>func indented(line string) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="unindent">
-            <h2>unindent</h2>
-            <hr />
+            <article class="function" data-name="isBlank">
+               <h3>
+                  isBlank 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>isBlank reports whether s is a blank line.</p>
+               
+               <pre><code>func isBlank(s string) bool</code></pre>
+            </article>
             
-            <p>unindent removes any common space/tab prefix
-from each line in lines, returning a copy of lines in which
-those prefixes have been trimmed from each line.
-It also replaces any lines containing only spaces with blank lines (empty strings).</p>
+            <article class="function" data-name="isHeading">
+               <h3>
+                  isHeading 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>isHeading reports whether line is a new-style section heading.</p>
+               
+               <pre><code>func isHeading(line string) bool</code></pre>
+            </article>
             
-            <pre><code>func unindent(lines []string) []string</code></pre>
-         </article>
-         
-         <article class="function" data-name="isBlank">
-            <h2>isBlank</h2>
-            <hr />
+            <article class="function" data-name="isHost">
+               <h3>
+                  isHost 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>isHost reports whether c is a byte that can appear in a URL host,
+like www.example.com or user@[::1]:8080</p>
+               
+               <pre><code>func isHost(c byte) bool</code></pre>
+            </article>
             
-            <p>isBlank reports whether s is a blank line.</p>
+            <article class="function" data-name="isIdentASCII">
+               <h3>
+                  isIdentASCII 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>isIdentASCII reports whether c is an ASCII identifier byte.</p>
+               
+               <pre><code>func isIdentASCII(c byte) bool</code></pre>
+            </article>
             
-            <pre><code>func isBlank(s string) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="commonPrefix">
-            <h2>commonPrefix</h2>
-            <hr />
+            <article class="function" data-name="isList">
+               <h3>
+                  isList 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>isList reports whether the line is the first line of a list,
+meaning starts with a list marker after any indentation.
+(The caller is responsible for checking the line is indented, as appropriate.)</p>
+               
+               <pre><code>func isList(line string) bool</code></pre>
+            </article>
             
-            <p>commonPrefix returns the longest common prefix of a and b.</p>
+            <article class="function" data-name="isName">
+               <h3>
+                  isName 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>isName reports whether s is a capitalized Go identifier (like Name).</p>
+               
+               <pre><code>func isName(s string) bool</code></pre>
+            </article>
             
-            <pre><code>func commonPrefix(a string, b string) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="leadingSpace">
-            <h2>leadingSpace</h2>
-            <hr />
-            
-            <p>leadingSpace returns the longest prefix of s consisting of spaces and tabs.</p>
-            
-            <pre><code>func leadingSpace(s string) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="isOldHeading">
-            <h2>isOldHeading</h2>
-            <hr />
-            
-            <p>isOldHeading reports whether line is an old-style section heading.
+            <article class="function" data-name="isOldHeading">
+               <h3>
+                  isOldHeading 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>isOldHeading reports whether line is an old-style section heading.
 line is all[off].</p>
+               
+               <pre><code>func isOldHeading(line string, all []string, off int) bool</code></pre>
+            </article>
             
-            <pre><code>func isOldHeading(line string, all []string, off int) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="oldHeading">
-            <h2>oldHeading</h2>
-            <hr />
+            <article class="function" data-name="isPath">
+               <h3>
+                  isPath 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>isPath reports whether c is a (non-punctuation) path byte.</p>
+               
+               <pre><code>func isPath(c byte) bool</code></pre>
+            </article>
             
-            <p>oldHeading returns the *Heading for the given old-style section heading line.</p>
+            <article class="function" data-name="isPunct">
+               <h3>
+                  isPunct 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>isPunct reports whether c is a punctuation byte that can appear
+inside a path but not at the end.</p>
+               
+               <pre><code>func isPunct(c byte) bool</code></pre>
+            </article>
             
-            <pre><code>func oldHeading(line string) Block</code></pre>
-         </article>
-         
-         <article class="function" data-name="isHeading">
-            <h2>isHeading</h2>
-            <hr />
+            <article class="function" data-name="isScheme">
+               <h3>
+                  isScheme 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>isScheme reports whether s is a recognized URL scheme.
+Note that if strings of new length (beyond 3-7)
+are added here, the fast path at the top of autoURL will need updating.</p>
+               
+               <pre><code>func isScheme(s string) bool</code></pre>
+            </article>
             
-            <p>isHeading reports whether line is a new-style section heading.</p>
+            <article class="function" data-name="isStdPkg">
+               <h3>
+                  isStdPkg 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func isStdPkg(path string) bool</code></pre>
+            </article>
             
-            <pre><code>func isHeading(line string) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="heading">
-            <h2>heading</h2>
-            <hr />
+            <article class="function" data-name="leadingSpace">
+               <h3>
+                  leadingSpace 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>leadingSpace returns the longest prefix of s consisting of spaces and tabs.</p>
+               
+               <pre><code>func leadingSpace(s string) string</code></pre>
+            </article>
             
-            <p>heading returns the *Heading for the given new-style section heading line.</p>
-            
-            <pre><code>func heading(line string) Block</code></pre>
-         </article>
-         
-         <article class="function" data-name="code">
-            <h2>code</h2>
-            <hr />
-            
-            <p>code returns a code block built from the lines.</p>
-            
-            <pre><code>func code(lines []string) *Code</code></pre>
-         </article>
-         
-         <article class="function" data-name="paragraph">
-            <h2>paragraph</h2>
-            <hr />
-            
-            <p>paragraph returns a paragraph block built from the lines.
-If the lines are link definitions, paragraph adds them to d and returns nil.</p>
-            
-            <pre><code>func paragraph(lines []string) Block</code></pre>
-         </article>
-         
-         <article class="function" data-name="parseLink">
-            <h2>parseLink</h2>
-            <hr />
-            
-            <p>parseLink parses a single link definition line:
-
-	[text]: url
-
-It returns the link definition and whether the line was well formed.</p>
-            
-            <pre><code>func parseLink(line string) (*LinkDef, bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="list">
-            <h2>list</h2>
-            <hr />
-            
-            <p>list returns a list built from the indented lines,
+            <article class="function" data-name="list">
+               <h3>
+                  list 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>list returns a list built from the indented lines,
 using forceBlankBefore as the value of the List's ForceBlankBefore field.</p>
+               
+               <pre><code>func (d *parseDoc) list(lines []string, forceBlankBefore bool) *List</code></pre>
+            </article>
             
-            <pre><code>func list(lines []string, forceBlankBefore bool) *List</code></pre>
-         </article>
-         
-         <article class="function" data-name="listMarker">
-            <h2>listMarker</h2>
-            <hr />
-            
-            <p>listMarker parses the line as beginning with a list marker.
+            <article class="function" data-name="listMarker">
+               <h3>
+                  listMarker 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>listMarker parses the line as beginning with a list marker.
 If it can do that, it returns the numeric marker ("" for a bullet list),
 the rest of the line, and ok == true.
 Otherwise, it returns "", "", false.</p>
+               
+               <pre><code>func listMarker(line string) (num string, rest string, ok bool)</code></pre>
+            </article>
             
-            <pre><code>func listMarker(line string) (num string, rest string, ok bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="isList">
-            <h2>isList</h2>
-            <hr />
+            <article class="function" data-name="lookupPkg">
+               <h3>
+                  lookupPkg 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>lookupPkg is called to look up the pkg in [pkg], [pkg.Name], and [pkg.Name.Recv].
+If pkg has a slash, it is assumed to be the full import path and is returned with ok = true.
+Otherwise, pkg is probably a simple package name like "rand" (not "crypto/rand" or "math/rand").
+d.LookupPackage provides a way for the caller to allow resolving such names with reference
+to the imports in the surrounding package.
+There is one collision between these two cases: single-element standard library names
+like "math" are full import paths but don't contain slashes. We let d.LookupPackage have
+the first chance to resolve it, in case there's a different package imported as math,
+and otherwise we refer to a built-in list of single-element standard library package names.</p>
+               
+               <pre><code>func (d *parseDoc) lookupPkg(pkg string) (importPath string, ok bool)</code></pre>
+            </article>
             
-            <p>isList reports whether the line is the first line of a list,
-meaning starts with a list marker after any indentation.
-(The caller is responsible for checking the line is indented, as appropriate.)</p>
+            <article class="function" data-name="oldHeading">
+               <h3>
+                  oldHeading 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>oldHeading returns the *Heading for the given old-style section heading line.</p>
+               
+               <pre><code>func (d *parseDoc) oldHeading(line string) Block</code></pre>
+            </article>
             
-            <pre><code>func isList(line string) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="parseLinkedText">
-            <h2>parseLinkedText</h2>
-            <hr />
+            <article class="function" data-name="oneLongLine">
+               <h3>
+                  oneLongLine 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>oneLongLine prints the text sequence x to out as one long line,
+without worrying about line wrapping.
+Explicit links have the [ ] dropped to improve readability.</p>
+               
+               <pre><code>func (p *textPrinter) oneLongLine(out *strings.Builder, x []Text)</code></pre>
+            </article>
             
-            <p>parseLinkedText parses text that is allowed to contain explicit links,
+            <article class="function" data-name="paragraph">
+               <h3>
+                  paragraph 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>paragraph returns a paragraph block built from the lines.
+If the lines are link definitions, paragraph adds them to d and returns nil.</p>
+               
+               <pre><code>func (d *parseDoc) paragraph(lines []string) Block</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseLink">
+               <h3>
+                  parseLink 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>parseLink parses a single link definition line:
+[text]: url
+It returns the link definition and whether the line was well formed.</p>
+               
+               <pre><code>func parseLink(line string) (*LinkDef, bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseLinkedText">
+               <h3>
+                  parseLinkedText 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>parseLinkedText parses text that is allowed to contain explicit links,
 such as [math.Sin] or [Go home page], into a slice of Text items.
-
 A “pkg” is only assumed to be a full import path if it starts with
 a domain name (a path element with a dot) or is one of the packages
 from the standard library (“[os]”, “[encoding/json]”, and so on).
@@ -803,472 +1632,261 @@ To avoid problems with maps, generics, and array types, doc links
 must be both preceded and followed by punctuation, spaces, tabs,
 or the start or end of a line. An example problem would be treating
 map[ast.Expr]TypeAndValue as containing a link.</p>
+               
+               <pre><code>func (d *parseDoc) parseLinkedText(text string) []Text</code></pre>
+            </article>
             
-            <pre><code>func parseLinkedText(text string) []Text</code></pre>
-         </article>
-         
-         <article class="function" data-name="docLink">
-            <h2>docLink</h2>
-            <hr />
+            <article class="function" data-name="parseSpans">
+               <h3>
+                  parseSpans 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func parseSpans(lines []string) []span</code></pre>
+            </article>
             
-            <p>docLink parses text, which was found inside [ ] brackets,
-as a doc link if possible, returning the DocLink and ok == true
-or else nil, false.
-The before and after strings are the text before the [ and after the ]
-on the same line. Doc links must be preceded and followed by
-punctuation, spaces, tabs, or the start or end of a line.</p>
-            
-            <pre><code>func docLink(text string, before string, after string) (link *DocLink, ok bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="splitDocName">
-            <h2>splitDocName</h2>
-            <hr />
-            
-            <p>If text is of the form before.Name, where Name is a capitalized Go identifier,
-then splitDocName returns before, name, true.
-Otherwise it returns text, "", false.</p>
-            
-            <pre><code>func splitDocName(text string) (before string, name string, foundDot bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="parseText">
-            <h2>parseText</h2>
-            <hr />
-            
-            <p>parseText parses s as text and returns the result of appending
+            <article class="function" data-name="parseText">
+               <h3>
+                  parseText 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>parseText parses s as text and returns the result of appending
 those parsed Text elements to out.
 parseText does not handle explicit links like [math.Sin] or [Go home page]:
 those are handled by parseLinkedText.
 If autoLink is true, then parseText recognizes URLs and words from d.Words
 and converts those to links as appropriate.</p>
+               
+               <pre><code>func (d *parseDoc) parseText(out []Text, s string, autoLink bool) []Text</code></pre>
+            </article>
             
-            <pre><code>func parseText(out []Text, s string, autoLink bool) []Text</code></pre>
-         </article>
-         
-         <article class="function" data-name="autoURL">
-            <h2>autoURL</h2>
-            <hr />
+            <article class="function" data-name="rawText">
+               <h3>
+                  rawText 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>rawText prints the text sequence x to out,
+without worrying about escaping characters
+that have special meaning at the start of a Markdown line.</p>
+               
+               <pre><code>func (p *mdPrinter) rawText(out *bytes.Buffer, x []Text)</code></pre>
+            </article>
             
-            <p>autoURL checks whether s begins with a URL that should be hyperlinked.
-If so, it returns the URL, which is a prefix of s, and ok == true.
-Otherwise it returns "", false.
-The caller should skip over the first len(url) bytes of s
-before further processing.</p>
+            <article class="function" data-name="splitDocName">
+               <h3>
+                  splitDocName 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>If text is of the form before.Name, where Name is a capitalized Go identifier,
+then splitDocName returns before, name, true.
+Otherwise it returns text, "", false.</p>
+               
+               <pre><code>func splitDocName(text string) (before string, name string, foundDot bool)</code></pre>
+            </article>
             
-            <pre><code>func autoURL(s string) (url string, ok bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="isScheme">
-            <h2>isScheme</h2>
-            <hr />
+            <article class="function" data-name="text">
+               <h3>
+                  text 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (Italic) text()</code></pre>
+            </article>
             
-            <p>isScheme reports whether s is a recognized URL scheme.
-Note that if strings of new length (beyond 3-7)
-are added here, the fast path at the top of autoURL will need updating.</p>
+            <article class="function" data-name="text">
+               <h3>
+                  text 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>text prints the text sequence x to out.</p>
+               
+               <pre><code>func (p *mdPrinter) text(out *bytes.Buffer, x []Text)</code></pre>
+            </article>
             
-            <pre><code>func isScheme(s string) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="isHost">
-            <h2>isHost</h2>
-            <hr />
+            <article class="function" data-name="text">
+               <h3>
+                  text 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*DocLink) text()</code></pre>
+            </article>
             
-            <p>isHost reports whether c is a byte that can appear in a URL host,
-like www.example.com or user@[::1]:8080</p>
+            <article class="function" data-name="text">
+               <h3>
+                  text 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*Link) text()</code></pre>
+            </article>
             
-            <pre><code>func isHost(c byte) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="isPunct">
-            <h2>isPunct</h2>
-            <hr />
+            <article class="function" data-name="text">
+               <h3>
+                  text 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>text prints the text sequence x to out.</p>
+               
+               <pre><code>func (p *commentPrinter) text(out *bytes.Buffer, indent string, x []Text)</code></pre>
+            </article>
             
-            <p>isPunct reports whether c is a punctuation byte that can appear
-inside a path but not at the end.</p>
+            <article class="function" data-name="text">
+               <h3>
+                  text 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (Plain) text()</code></pre>
+            </article>
             
-            <pre><code>func isPunct(c byte) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="isPath">
-            <h2>isPath</h2>
-            <hr />
+            <article class="function" data-name="text">
+               <h3>
+                  text 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>text prints the text sequence x to out.</p>
+               
+               <pre><code>func (p *htmlPrinter) text(out *bytes.Buffer, x []Text)</code></pre>
+            </article>
             
-            <p>isPath reports whether c is a (non-punctuation) path byte.</p>
+            <article class="function" data-name="text">
+               <h3>
+                  text 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>text prints the text sequence x to out.</p>
+               
+               <pre><code>func (p *textPrinter) text(out *bytes.Buffer, indent string, x []Text)</code></pre>
+            </article>
             
-            <pre><code>func isPath(c byte) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="isName">
-            <h2>isName</h2>
-            <hr />
+            <article class="function" data-name="unindent">
+               <h3>
+                  unindent 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>unindent removes any common space/tab prefix
+from each line in lines, returning a copy of lines in which
+those prefixes have been trimmed from each line.
+It also replaces any lines containing only spaces with blank lines (empty strings).</p>
+               
+               <pre><code>func unindent(lines []string) []string</code></pre>
+            </article>
             
-            <p>isName reports whether s is a capitalized Go identifier (like Name).</p>
-            
-            <pre><code>func isName(s string) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="ident">
-            <h2>ident</h2>
-            <hr />
-            
-            <p>ident checks whether s begins with a Go identifier.
-If so, it returns the identifier, which is a prefix of s, and ok == true.
-Otherwise it returns "", false.
-The caller should skip over the first len(id) bytes of s
-before further processing.</p>
-            
-            <pre><code>func ident(s string) (id string, ok bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="isIdentASCII">
-            <h2>isIdentASCII</h2>
-            <hr />
-            
-            <p>isIdentASCII reports whether c is an ASCII identifier byte.</p>
-            
-            <pre><code>func isIdentASCII(c byte) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="validImportPath">
-            <h2>validImportPath</h2>
-            <hr />
-            
-            <p>validImportPath reports whether path is a valid import path.
+            <article class="function" data-name="validImportPath">
+               <h3>
+                  validImportPath 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>validImportPath reports whether path is a valid import path.
 It is a lightly edited copy of golang.org/x/mod/module.CheckImportPath.</p>
+               
+               <pre><code>func validImportPath(path string) bool</code></pre>
+            </article>
             
-            <pre><code>func validImportPath(path string) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="validImportPathElem">
-            <h2>validImportPathElem</h2>
-            <hr />
+            <article class="function" data-name="validImportPathElem">
+               <h3>
+                  validImportPathElem 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func validImportPathElem(elem string) bool</code></pre>
+            </article>
             
-            <pre><code>func validImportPathElem(elem string) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="importPathOK">
-            <h2>importPathOK</h2>
-            <hr />
-            
-            <pre><code>func importPathOK(c byte) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="headingLevel">
-            <h2>headingLevel</h2>
-            <hr />
-            
-            <pre><code>func headingLevel() int</code></pre>
-         </article>
-         
-         <article class="function" data-name="headingID">
-            <h2>headingID</h2>
-            <hr />
-            
-            <pre><code>func headingID(h *Heading) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="docLinkURL">
-            <h2>docLinkURL</h2>
-            <hr />
-            
-            <pre><code>func docLinkURL(link *DocLink) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="DefaultURL">
-            <h2>DefaultURL</h2>
-            <hr />
-            
-            <p>DefaultURL constructs and returns the documentation URL for l,
-using baseURL as a prefix for links to other packages.
-
-The possible forms returned by DefaultURL are:
-  - baseURL/ImportPath, for a link to another package
-  - baseURL/ImportPath#Name, for a link to a const, func, type, or var in another package
-  - baseURL/ImportPath#Recv.Name, for a link to a method in another package
-  - #Name, for a link to a const, func, type, or var in this package
-  - #Recv.Name, for a link to a method in this package
-
-If baseURL ends in a trailing slash, then DefaultURL inserts
-a slash between ImportPath and # in the anchored forms.
-For example, here are some baseURL values and URLs they can generate:
-
-	"/pkg/" → "/pkg/math/#Sqrt"
-	"/pkg"  → "/pkg/math#Sqrt"
-	"/"     → "/math/#Sqrt"
-	""      → "/math#Sqrt"</p>
-            
-            <pre><code>func DefaultURL(baseURL string) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="DefaultID">
-            <h2>DefaultID</h2>
-            <hr />
-            
-            <p>DefaultID returns the default anchor ID for the heading h.
-
-The default anchor ID is constructed by converting every
-rune that is not alphanumeric ASCII to an underscore
-and then adding the prefix “hdr-”.
-For example, if the heading text is “Go Doc Comments”,
-the default ID is “hdr-Go_Doc_Comments”.</p>
-            
-            <pre><code>func DefaultID() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="Comment">
-            <h2>Comment</h2>
-            <hr />
-            
-            <p>Comment returns the standard Go formatting of the [Doc],
-without any comment markers.</p>
-            
-            <pre><code>func Comment(d *Doc) []byte</code></pre>
-         </article>
-         
-         <article class="function" data-name="blankBefore">
-            <h2>blankBefore</h2>
-            <hr />
-            
-            <p>blankBefore reports whether the block x requires a blank line before it.
-All blocks do, except for Lists that return false from x.BlankBefore().</p>
-            
-            <pre><code>func blankBefore(x Block) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="block">
-            <h2>block</h2>
-            <hr />
-            
-            <p>block prints the block x to out.</p>
-            
-            <pre><code>func block(out *bytes.Buffer, x Block)</code></pre>
-         </article>
-         
-         <article class="function" data-name="text">
-            <h2>text</h2>
-            <hr />
-            
-            <p>text prints the text sequence x to out.</p>
-            
-            <pre><code>func text(out *bytes.Buffer, indent string, x []Text)</code></pre>
-         </article>
-         
-         <article class="function" data-name="indent">
-            <h2>indent</h2>
-            <hr />
-            
-            <p>indent prints s to out, indenting with the indent string
-after each newline in s.</p>
-            
-            <pre><code>func indent(out *bytes.Buffer, indent string, s string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestStd">
-            <h2>TestStd</h2>
-            <hr />
-            
-            <pre><code>func TestStd(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Text">
-            <h2>Text</h2>
-            <hr />
-            
-            <p>Text returns a textual formatting of the [Doc].
-See the [Printer] documentation for ways to customize the text output.</p>
-            
-            <pre><code>func Text(d *Doc) []byte</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeNL">
-            <h2>writeNL</h2>
-            <hr />
-            
-            <p>writeNL calls out.WriteByte('\n')
-but first trims trailing spaces on the previous line.</p>
-            
-            <pre><code>func writeNL(out *bytes.Buffer)</code></pre>
-         </article>
-         
-         <article class="function" data-name="block">
-            <h2>block</h2>
-            <hr />
-            
-            <p>block prints the block x to out.</p>
-            
-            <pre><code>func block(out *bytes.Buffer, x Block)</code></pre>
-         </article>
-         
-         <article class="function" data-name="text">
-            <h2>text</h2>
-            <hr />
-            
-            <p>text prints the text sequence x to out.</p>
-            
-            <pre><code>func text(out *bytes.Buffer, indent string, x []Text)</code></pre>
-         </article>
-         
-         <article class="function" data-name="oneLongLine">
-            <h2>oneLongLine</h2>
-            <hr />
-            
-            <p>oneLongLine prints the text sequence x to out as one long line,
-without worrying about line wrapping.
-Explicit links have the [ ] dropped to improve readability.</p>
-            
-            <pre><code>func oneLongLine(out *strings.Builder, x []Text)</code></pre>
-         </article>
-         
-         <article class="function" data-name="wrap">
-            <h2>wrap</h2>
-            <hr />
-            
-            <p>wrap wraps words into lines of at most max runes,
+            <article class="function" data-name="wrap">
+               <h3>
+                  wrap 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>wrap wraps words into lines of at most max runes,
 minimizing the sum of the squares of the leftover lengths
 at the end of each line (except the last, of course),
 with a preference for ending lines at punctuation (.,:;).
-
 The returned slice gives the indexes of the first words
 on each line in the wrapped text with a final entry of len(words).
 Thus the lines are words[seq[0]:seq[1]], words[seq[1]:seq[2]],
 ..., words[seq[len(seq)-2]:seq[len(seq)-1]].
-
 The implementation runs in O(n log n) time, where n = len(words),
 using the algorithm described in D. S. Hirschberg and L. L. Larmore,
 “[The least weight subsequence problem],” FOCS 1985, pp. 137-143.
-
 [The least weight subsequence problem]: https://doi.org/10.1109/SFCS.1985.60</p>
+               
+               <pre><code>func wrap(words []string, max int) (seq []int)</code></pre>
+            </article>
             
-            <pre><code>func wrap(words []string, max int) seq []int</code></pre>
-         </article>
-         
-         <article class="function" data-name="wrapPenalty">
-            <h2>wrapPenalty</h2>
-            <hr />
+            <article class="function" data-name="wrapPenalty">
+               <h3>
+                  wrapPenalty 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>wrapPenalty is the penalty for inserting a line break after word s.</p>
+               
+               <pre><code>func wrapPenalty(s string) int64</code></pre>
+            </article>
             
-            <p>wrapPenalty is the penalty for inserting a line break after word s.</p>
+            <article class="function" data-name="writeNL">
+               <h3>
+                  writeNL 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>writeNL calls out.WriteByte('\n')
+but first trims trailing spaces on the previous line.</p>
+               
+               <pre><code>func writeNL(out *bytes.Buffer)</code></pre>
+            </article>
             
-            <pre><code>func wrapPenalty(s string) int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="HTML">
-            <h2>HTML</h2>
-            <hr />
-            
-            <p>HTML returns an HTML formatting of the [Doc].
-See the [Printer] documentation for ways to customize the HTML output.</p>
-            
-            <pre><code>func HTML(d *Doc) []byte</code></pre>
-         </article>
-         
-         <article class="function" data-name="block">
-            <h2>block</h2>
-            <hr />
-            
-            <p>block prints the block x to out.</p>
-            
-            <pre><code>func block(out *bytes.Buffer, x Block)</code></pre>
-         </article>
-         
-         <article class="function" data-name="inc">
-            <h2>inc</h2>
-            <hr />
-            
-            <p>inc increments the decimal string s.
-For example, inc("1199") == "1200".</p>
-            
-            <pre><code>func inc(s string) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="text">
-            <h2>text</h2>
-            <hr />
-            
-            <p>text prints the text sequence x to out.</p>
-            
-            <pre><code>func text(out *bytes.Buffer, x []Text)</code></pre>
-         </article>
-         
-         <article class="function" data-name="escape">
-            <h2>escape</h2>
-            <hr />
-            
-            <p>escape prints s to out as plain text,
-escaping < & " ' and > to avoid being misinterpreted
-in larger HTML constructs.</p>
-            
-            <pre><code>func escape(out *bytes.Buffer, s string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Test52353">
-            <h2>Test52353</h2>
-            <hr />
-            
-            <p>See https://golang.org/issue/52353</p>
-            
-            <pre><code>func Test52353(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestTestdata">
-            <h2>TestTestdata</h2>
-            <hr />
-            
-            <pre><code>func TestTestdata(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="dump">
-            <h2>dump</h2>
-            <hr />
-            
-            <pre><code>func dump(d *Doc) []byte</code></pre>
-         </article>
-         
-         <article class="function" data-name="dumpTo">
-            <h2>dumpTo</h2>
-            <hr />
-            
-            <pre><code>func dumpTo(out *bytes.Buffer, indent int, x any)</code></pre>
-         </article>
-         
-         <article class="function" data-name="dumpNL">
-            <h2>dumpNL</h2>
-            <hr />
-            
-            <pre><code>func dumpNL(out *bytes.Buffer, n int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWrap">
-            <h2>TestWrap</h2>
-            <hr />
-            
-            <pre><code>func TestWrap(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="wrapSlow">
-            <h2>wrapSlow</h2>
-            <hr />
-            
-            <p>wrapSlow is an O(n²) reference implementation for wrap.
-It returns a minimal-score sequence along with the score.
-It is OK if wrap returns a different sequence as long as that
-sequence has the same score.</p>
-            
-            <pre><code>func wrapSlow(words []string, max int) (seq []int, score int64)</code></pre>
-         </article>
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -1276,59 +1894,170 @@ sequence has the same score.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

@@ -13,342 +13,816 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                 
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>graph</code>
-         </h1>
-         <hr />
+         <h1>graph</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="maxNodelets">
-            <h2>maxNodelets</h2>
-            <hr />
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"fmt"
+"math"
+"path/filepath"
+"regexp"
+"sort"
+"strconv"
+"strings"
+"github.com/google/pprof/profile"
+"fmt"
+"io"
+"math"
+"path/filepath"
+"strings"
+"github.com/google/pprof/internal/measurement"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <pre><code>maxNodelets</code></pre>
-         </article>
-         
-         <article class="global" data-name="javaRegExp">
-            <h2>javaRegExp</h2>
-            <hr />
+            <article class="global" data-name="AddressOrder">
+               <h3>
+                  AddressOrder 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Sorting options for node sort.</p>
+               
+               <pre><code>const AddressOrder</code></pre>
+            </article>
             
-            <p>Removes package name and method arguments for Java method names.
-See tests for examples.</p>
+            <article class="global" data-name="CumNameOrder">
+               <h3>
+                  CumNameOrder 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Sorting options for node sort.</p>
+               
+               <pre><code>const CumNameOrder</code></pre>
+            </article>
             
-            <pre><code>javaRegExp</code></pre>
-         </article>
-         
-         <article class="global" data-name="goRegExp">
-            <h2>goRegExp</h2>
-            <hr />
+            <article class="global" data-name="EntropyOrder">
+               <h3>
+                  EntropyOrder 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Sorting options for node sort.</p>
+               
+               <pre><code>const EntropyOrder</code></pre>
+            </article>
             
-            <p>Removes package name and method arguments for Go function names.
-See tests for examples.</p>
+            <article class="global" data-name="FileOrder">
+               <h3>
+                  FileOrder 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Sorting options for node sort.</p>
+               
+               <pre><code>const FileOrder</code></pre>
+            </article>
             
-            <pre><code>goRegExp</code></pre>
-         </article>
-         
-         <article class="global" data-name="goVerRegExp">
-            <h2>goVerRegExp</h2>
-            <hr />
+            <article class="global" data-name="FlatCumNameOrder">
+               <h3>
+                  FlatCumNameOrder 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Sorting options for node sort.</p>
+               
+               <pre><code>const FlatCumNameOrder</code></pre>
+            </article>
             
-            <p>Removes potential module versions in a package path.</p>
+            <article class="global" data-name="FlatNameOrder">
+               <h3>
+                  FlatNameOrder 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Sorting options for node sort.</p>
+               
+               <pre><code>const FlatNameOrder NodeOrder = iota</code></pre>
+            </article>
             
-            <pre><code>goVerRegExp</code></pre>
-         </article>
-         
-         <article class="global" data-name="cppRegExp">
-            <h2>cppRegExp</h2>
-            <hr />
+            <article class="global" data-name="NameOrder">
+               <h3>
+                  NameOrder 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Sorting options for node sort.</p>
+               
+               <pre><code>const NameOrder</code></pre>
+            </article>
             
-            <p>Strips C++ namespace prefix from a C++ function / method name.
+            <article class="global" data-name="cppAnonymousPrefixRegExp">
+               <h3>
+                  cppAnonymousPrefixRegExp 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var cppAnonymousPrefixRegExp = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="cppRegExp">
+               <h3>
+                  cppRegExp 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Strips C++ namespace prefix from a C++ function / method name.
 NOTE: Make sure to keep the template parameters in the name. Normally,
 template parameters are stripped from the C++ names but when
 -symbolize=demangle=templates flag is used, they will not be.
 See tests for examples.</p>
+               
+               <pre><code>var cppRegExp = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre><code>cppRegExp</code></pre>
-         </article>
-         
-         <article class="global" data-name="cppAnonymousPrefixRegExp">
-            <h2>cppAnonymousPrefixRegExp</h2>
-            <hr />
+            <article class="global" data-name="goRegExp">
+               <h3>
+                  goRegExp 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Removes package name and method arguments for Go function names.
+See tests for examples.</p>
+               
+               <pre><code>var goRegExp = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre><code>cppAnonymousPrefixRegExp</code></pre>
-         </article>
-         
-         <article class="global" data-name="FlatNameOrder">
-            <h2>FlatNameOrder</h2>
-            <hr />
+            <article class="global" data-name="goVerRegExp">
+               <h3>
+                  goVerRegExp 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Removes potential module versions in a package path.</p>
+               
+               <pre><code>var goVerRegExp = *ast.CallExpr</code></pre>
+            </article>
             
-            <p>Sorting options for node sort.</p>
+            <article class="global" data-name="javaRegExp">
+               <h3>
+                  javaRegExp 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Removes package name and method arguments for Java method names.
+See tests for examples.</p>
+               
+               <pre><code>var javaRegExp = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre><code>FlatNameOrder NodeOrder</code></pre>
-         </article>
-         
-         <article class="global" data-name="FlatCumNameOrder">
-            <h2>FlatCumNameOrder</h2>
-            <hr />
+            <article class="global" data-name="maxNodelets">
+               <h3>
+                  maxNodelets 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const maxNodelets = 4</code></pre>
+            </article>
             
-            <p>Sorting options for node sort.</p>
-            
-            <pre><code>FlatCumNameOrder</code></pre>
-         </article>
-         
-         <article class="global" data-name="CumNameOrder">
-            <h2>CumNameOrder</h2>
-            <hr />
-            
-            <p>Sorting options for node sort.</p>
-            
-            <pre><code>CumNameOrder</code></pre>
-         </article>
-         
-         <article class="global" data-name="NameOrder">
-            <h2>NameOrder</h2>
-            <hr />
-            
-            <p>Sorting options for node sort.</p>
-            
-            <pre><code>NameOrder</code></pre>
-         </article>
-         
-         <article class="global" data-name="FileOrder">
-            <h2>FileOrder</h2>
-            <hr />
-            
-            <p>Sorting options for node sort.</p>
-            
-            <pre><code>FileOrder</code></pre>
-         </article>
-         
-         <article class="global" data-name="AddressOrder">
-            <h2>AddressOrder</h2>
-            <hr />
-            
-            <p>Sorting options for node sort.</p>
-            
-            <pre><code>AddressOrder</code></pre>
-         </article>
-         
-         <article class="global" data-name="EntropyOrder">
-            <h2>EntropyOrder</h2>
-            <hr />
-            
-            <p>Sorting options for node sort.</p>
-            
-            <pre><code>EntropyOrder</code></pre>
-         </article>
+         </section>
           
-         <article class="struct" data-name="DotAttributes">
-            <h2>type DotAttributes struct</h2>
-            <hr />
+         <section id="types">
+            <h2>Type Aliases</h2>
             
-            <p>DotAttributes contains details about the graph itself, giving
+            <article class="type" data-name="EdgeMap">
+               <h3>
+                  EdgeMap
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>EdgeMap is used to represent the incoming/outgoing edges from a node.</p>
+               
+               <pre><code>type EdgeMap map[*Node]*Edge</code></pre>
+            </article>
+            
+            <article class="type" data-name="NodeMap">
+               <h3>
+                  NodeMap
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>NodeMap maps from a node info struct to a node. It is used to merge
+report entries with the same info.</p>
+               
+               <pre><code>type NodeMap map[NodeInfo]*Node</code></pre>
+            </article>
+            
+            <article class="type" data-name="NodeOrder">
+               <h3>
+                  NodeOrder
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>NodeOrder sets the ordering for a Sort operation</p>
+               
+               <pre><code>type NodeOrder int</code></pre>
+            </article>
+            
+            <article class="type" data-name="NodePtrSet">
+               <h3>
+                  NodePtrSet
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>NodePtrSet is a collection of nodes. Trimming a graph or tree requires a set
+of objects which uniquely identify the nodes to keep. In a graph, NodeInfo
+works as a unique identifier; however, in a tree multiple nodes may share
+identical NodeInfos. A *Node does uniquely identify a node so we can use that
+instead. Though a *Node also uniquely identifies a node in a graph,
+currently, during trimming, graphs are rebuilt from scratch using only the
+NodeSet, so there would not be the required context of the initial graph to
+allow for the use of *Node.</p>
+               
+               <pre><code>type NodePtrSet map[*Node]bool</code></pre>
+            </article>
+            
+            <article class="type" data-name="NodeSet">
+               <h3>
+                  NodeSet
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>NodeSet is a collection of node info structs.</p>
+               
+               <pre><code>type NodeSet map[NodeInfo]bool</code></pre>
+            </article>
+            
+            <article class="type" data-name="Nodes">
+               <h3>
+                  Nodes
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>Nodes is an ordered collection of graph nodes.</p>
+               
+               <pre><code>type Nodes []*Node</code></pre>
+            </article>
+            
+            <article class="type" data-name="TagMap">
+               <h3>
+                  TagMap
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>TagMap is a collection of tags, classified by their name.</p>
+               
+               <pre><code>type TagMap map[string]*Tag</code></pre>
+            </article>
+            
+            <article class="type" data-name="edgeList">
+               <h3>
+                  edgeList
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <pre><code>type edgeList []*Edge</code></pre>
+            </article>
+            
+         </section>
+           
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="DotAttributes">
+               <h3>
+                  DotAttributes
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>DotAttributes contains details about the graph itself, giving
 insight into how its elements should be rendered.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type DotAttributes struct {
+Nodes map[*Node]*DotNodeAttributes
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Nodes *ast.MapType</code></pre>
-         </article>
-         
-         <article class="struct" data-name="DotNodeAttributes">
-            <h2>type DotNodeAttributes struct</h2>
-            <hr />
+            <article class="struct" data-name="DotConfig">
+               <h3>
+                  DotConfig
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>DotConfig contains attributes about how a graph should be
+constructed and how it should look.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type DotConfig struct {
+Title string
+LegendURL string
+Labels []string
+FormatValue func(int64) string
+Total int64
+}</code></pre>
+            </article>
             
-            <p>DotNodeAttributes contains Node specific visualization options.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Shape string
+            <article class="struct" data-name="DotNodeAttributes">
+               <h3>
+                  DotNodeAttributes
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>DotNodeAttributes contains Node specific visualization options.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type DotNodeAttributes struct {
+Shape string
 Bold bool
 Peripheries int
 URL string
-Formatter func</code></pre>
-         </article>
-         
-         <article class="struct" data-name="DotConfig">
-            <h2>type DotConfig struct</h2>
-            <hr />
+Formatter func(*NodeInfo) string
+}</code></pre>
+            </article>
             
-            <p>DotConfig contains attributes about how a graph should be
-constructed and how it should look.</p>
+            <article class="struct" data-name="Edge">
+               <h3>
+                  Edge
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Edge contains any attributes to be represented about edges in a graph.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Edge struct {
+Src *Node
+Dest *Node
+Weight int64
+WeightDiv int64
+Residual bool
+Inline bool
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Title string
-LegendURL string
-Labels []string
-FormatValue func
-Total int64</code></pre>
-         </article>
-         
-         <article class="struct" data-name="builder">
-            <h2>type builder struct</h2>
-            <hr />
-            
-            <p>builder wraps an io.Writer and understands how to compose DOT formatted elements.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">io.Writer
-attributes *DotAttributes
-config *DotConfig</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Graph">
-            <h2>type Graph struct</h2>
-            <hr />
-            
-            <p>Graph summarizes a performance profile into a format that is
+            <article class="struct" data-name="Graph">
+               <h3>
+                  Graph
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Graph summarizes a performance profile into a format that is
 suitable for visualization.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Graph struct {
+Nodes Nodes
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Nodes Nodes</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Options">
-            <h2>type Options struct</h2>
-            <hr />
-            
-            <p>Options encodes the options for constructing a graph</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">SampleValue func
-SampleMeanDivisor func
-FormatTag func
-ObjNames bool
-OrigFnNames bool
-CallTree bool
-DropNegative bool
-KeptNodes NodeSet</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Node">
-            <h2>type Node struct</h2>
-            <hr />
-            
-            <p>Node is an entry on a profiling report. It represents a unique
+            <article class="struct" data-name="Node">
+               <h3>
+                  Node
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Node is an entry on a profiling report. It represents a unique
 program location.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Info NodeInfo
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Node struct {
+Info NodeInfo
 Function *Node
 Flat int64
 FlatDiv int64
@@ -357,767 +831,1048 @@ CumDiv int64
 In EdgeMap
 Out EdgeMap
 LabelTags TagMap
-NumericTags *ast.MapType</code></pre>
-         </article>
-         
-         <article class="struct" data-name="NodeInfo">
-            <h2>type NodeInfo struct</h2>
-            <hr />
+NumericTags map[string]TagMap
+}</code></pre>
+            </article>
             
-            <p>NodeInfo contains the attributes for a node.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Name string
+            <article class="struct" data-name="NodeInfo">
+               <h3>
+                  NodeInfo
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>NodeInfo contains the attributes for a node.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type NodeInfo struct {
+Name string
 OrigName string
 Address uint64
 File string
 StartLine int
 Lineno int
 Columnno int
-Objfile string</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Edge">
-            <h2>type Edge struct</h2>
-            <hr />
+Objfile string
+}</code></pre>
+            </article>
             
-            <p>Edge contains any attributes to be represented about edges in a graph.</p>
+            <article class="struct" data-name="Options">
+               <h3>
+                  Options
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Options encodes the options for constructing a graph</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Options struct {
+SampleValue func(s []int64) int64
+SampleMeanDivisor func(s []int64) int64
+FormatTag func(int64, string) string
+ObjNames bool
+OrigFnNames bool
+CallTree bool
+DropNegative bool
+KeptNodes NodeSet
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Src *Node
-Dest *Node
-Weight int64
-WeightDiv int64
-Residual bool
-Inline bool</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Tag">
-            <h2>type Tag struct</h2>
-            <hr />
-            
-            <p>Tag represent sample annotations</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Name string
+            <article class="struct" data-name="Tag">
+               <h3>
+                  Tag
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Tag represent sample annotations</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Tag struct {
+Name string
 Unit string
 Value int64
 Flat int64
 FlatDiv int64
 Cum int64
-CumDiv int64</code></pre>
-         </article>
-         
-         <article class="struct" data-name="nodePair">
-            <h2>type nodePair struct</h2>
-            <hr />
+CumDiv int64
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">src *Node
-dest *Node</code></pre>
-         </article>
-         
-         <article class="struct" data-name="tags">
-            <h2>type tags struct</h2>
-            <hr />
+            <article class="struct" data-name="builder">
+               <h3>
+                  builder
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>builder wraps an io.Writer and understands how to compose DOT formatted elements.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type builder struct {
+io.Writer
+attributes *DotAttributes
+config *DotConfig
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">t []*Tag
-flat bool</code></pre>
-         </article>
-         
-         <article class="struct" data-name="nodeSorter">
-            <h2>type nodeSorter struct</h2>
-            <hr />
+            <article class="struct" data-name="nodePair">
+               <h3>
+                  nodePair
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type nodePair struct {
+src *Node
+dest *Node
+}</code></pre>
+            </article>
             
-            <p>nodeSorter is a mechanism used to allow a report to be sorted
+            <article class="struct" data-name="nodeSorter">
+               <h3>
+                  nodeSorter
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>nodeSorter is a mechanism used to allow a report to be sorted
 in different ways.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type nodeSorter struct {
+rs Nodes
+less func(l *Node, r *Node) bool
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">rs Nodes
-less func</code></pre>
-         </article>
+            <article class="struct" data-name="tags">
+               <h3>
+                  tags
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type tags struct {
+t []*Tag
+flat bool
+}</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="function" data-name="ComposeDot">
-            <h2>ComposeDot</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <p>ComposeDot creates and writes a in the DOT format to the writer, using
+            <article class="function" data-name="AddToEdge">
+               <h3>
+                  AddToEdge 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>AddToEdge increases the weight of an edge between two nodes. If
+there isn't such an edge one is created.</p>
+               
+               <pre><code>func (n *Node) AddToEdge(to *Node, v int64, residual bool, inline bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="AddToEdgeDiv">
+               <h3>
+                  AddToEdgeDiv 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>AddToEdgeDiv increases the weight of an edge between two nodes. If
+there isn't such an edge one is created.</p>
+               
+               <pre><code>func (n *Node) AddToEdgeDiv(to *Node, dv int64, v int64, residual bool, inline bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="ComposeDot">
+               <h3>
+                  ComposeDot 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>ComposeDot creates and writes a in the DOT format to the writer, using
 the configurations given.</p>
+               
+               <pre><code>func ComposeDot(w io.Writer, g *Graph, a *DotAttributes, c *DotConfig)</code></pre>
+            </article>
             
-            <pre><code>func ComposeDot(w io.Writer, g *Graph, a *DotAttributes, c *DotConfig)</code></pre>
-         </article>
-         
-         <article class="function" data-name="start">
-            <h2>start</h2>
-            <hr />
+            <article class="function" data-name="CreateNodes">
+               <h3>
+                  CreateNodes 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>CreateNodes creates graph nodes for all locations in a profile. It
+returns set of all nodes, plus a mapping of each location to the
+set of corresponding nodes (one per location.Line).</p>
+               
+               <pre><code>func CreateNodes(prof *profile.Profile, o *Options) (Nodes, map[uint64]Nodes)</code></pre>
+            </article>
             
-            <p>start generates a title and initial node in DOT format.</p>
+            <article class="function" data-name="CumValue">
+               <h3>
+                  CumValue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>CumValue returns the inclusive value for this node, computing the
+mean if a divisor is available.</p>
+               
+               <pre><code>func (n *Node) CumValue() int64</code></pre>
+            </article>
             
-            <pre><code>func start()</code></pre>
-         </article>
-         
-         <article class="function" data-name="finish">
-            <h2>finish</h2>
-            <hr />
+            <article class="function" data-name="CumValue">
+               <h3>
+                  CumValue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>CumValue returns the inclusive value for this tag, computing the
+mean if a divisor is available.</p>
+               
+               <pre><code>func (t *Tag) CumValue() int64</code></pre>
+            </article>
             
-            <p>finish closes the opening curly bracket in the constructed DOT buffer.</p>
+            <article class="function" data-name="DiscardLowFrequencyNodePtrs">
+               <h3>
+                  DiscardLowFrequencyNodePtrs 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>DiscardLowFrequencyNodePtrs returns a NodePtrSet of nodes at or over a
+specific cum value cutoff.</p>
+               
+               <pre><code>func (g *Graph) DiscardLowFrequencyNodePtrs(nodeCutoff int64) NodePtrSet</code></pre>
+            </article>
             
-            <pre><code>func finish()</code></pre>
-         </article>
-         
-         <article class="function" data-name="addLegend">
-            <h2>addLegend</h2>
-            <hr />
+            <article class="function" data-name="DiscardLowFrequencyNodes">
+               <h3>
+                  DiscardLowFrequencyNodes 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>DiscardLowFrequencyNodes returns a set of the nodes at or over a
+specific cum value cutoff.</p>
+               
+               <pre><code>func (g *Graph) DiscardLowFrequencyNodes(nodeCutoff int64) NodeSet</code></pre>
+            </article>
             
-            <p>addLegend generates a legend in DOT format.</p>
+            <article class="function" data-name="FindOrInsertNode">
+               <h3>
+                  FindOrInsertNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>FindOrInsertNode takes the info for a node and either returns a matching node
+from the node map if one exists, or adds one to the map if one does not.
+If kept is non-nil, nodes are only added if they can be located on it.</p>
+               
+               <pre><code>func (nm NodeMap) FindOrInsertNode(info NodeInfo, kept NodeSet) *Node</code></pre>
+            </article>
             
-            <pre><code>func addLegend()</code></pre>
-         </article>
-         
-         <article class="function" data-name="addNode">
-            <h2>addNode</h2>
-            <hr />
+            <article class="function" data-name="FlatValue">
+               <h3>
+                  FlatValue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>FlatValue returns the exclusive value for this tag, computing the
+mean if a divisor is available.</p>
+               
+               <pre><code>func (t *Tag) FlatValue() int64</code></pre>
+            </article>
             
-            <p>addNode generates a graph node in DOT format.</p>
+            <article class="function" data-name="FlatValue">
+               <h3>
+                  FlatValue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>FlatValue returns the exclusive value for this node, computing the
+mean if a divisor is available.</p>
+               
+               <pre><code>func (n *Node) FlatValue() int64</code></pre>
+            </article>
             
-            <pre><code>func addNode(node *Node, nodeID int, maxFlat float64)</code></pre>
-         </article>
-         
-         <article class="function" data-name="addNodelets">
-            <h2>addNodelets</h2>
-            <hr />
+            <article class="function" data-name="Len">
+               <h3>
+                  Len 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (t tags) Len() int</code></pre>
+            </article>
             
-            <p>addNodelets generates the DOT boxes for the node tags if they exist.</p>
+            <article class="function" data-name="Len">
+               <h3>
+                  Len 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s nodeSorter) Len() int</code></pre>
+            </article>
             
-            <pre><code>func addNodelets(node *Node, nodeID int) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="numericNodelets">
-            <h2>numericNodelets</h2>
-            <hr />
+            <article class="function" data-name="Len">
+               <h3>
+                  Len 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (el edgeList) Len() int</code></pre>
+            </article>
             
-            <pre><code>func numericNodelets(nts []*Tag, maxNumNodelets int, flatTags bool, source string) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="addEdge">
-            <h2>addEdge</h2>
-            <hr />
+            <article class="function" data-name="Less">
+               <h3>
+                  Less 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (el edgeList) Less(i int, j int) bool</code></pre>
+            </article>
             
-            <p>addEdge generates a graph edge in DOT format.</p>
+            <article class="function" data-name="Less">
+               <h3>
+                  Less 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s nodeSorter) Less(i int, j int) bool</code></pre>
+            </article>
             
-            <pre><code>func addEdge(edge *Edge, from int, to int, hasNodelets bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="dotColor">
-            <h2>dotColor</h2>
-            <hr />
+            <article class="function" data-name="Less">
+               <h3>
+                  Less 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (t tags) Less(i int, j int) bool</code></pre>
+            </article>
             
-            <p>dotColor returns a color for the given score (between -1.0 and
+            <article class="function" data-name="NameComponents">
+               <h3>
+                  NameComponents 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>NameComponents returns the components of the printable name to be used for a node.</p>
+               
+               <pre><code>func (i *NodeInfo) NameComponents() []string</code></pre>
+            </article>
+            
+            <article class="function" data-name="New">
+               <h3>
+                  New 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>New summarizes performance data from a profile into a graph.</p>
+               
+               <pre><code>func New(prof *profile.Profile, o *Options) *Graph</code></pre>
+            </article>
+            
+            <article class="function" data-name="PrintableName">
+               <h3>
+                  PrintableName 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>PrintableName calls the Node's Formatter function with a single space separator.</p>
+               
+               <pre><code>func (i *NodeInfo) PrintableName() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="RemoveRedundantEdges">
+               <h3>
+                  RemoveRedundantEdges 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>RemoveRedundantEdges removes residual edges if the destination can
+be reached through another path. This is done to simplify the graph
+while preserving connectivity.</p>
+               
+               <pre><code>func (g *Graph) RemoveRedundantEdges()</code></pre>
+            </article>
+            
+            <article class="function" data-name="SelectTopNodePtrs">
+               <h3>
+                  SelectTopNodePtrs 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>SelectTopNodePtrs returns a set of the top maxNodes *Node in a graph.</p>
+               
+               <pre><code>func (g *Graph) SelectTopNodePtrs(maxNodes int, visualMode bool) NodePtrSet</code></pre>
+            </article>
+            
+            <article class="function" data-name="SelectTopNodes">
+               <h3>
+                  SelectTopNodes 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>SelectTopNodes returns a set of the top maxNodes nodes in a graph.</p>
+               
+               <pre><code>func (g *Graph) SelectTopNodes(maxNodes int, visualMode bool) NodeSet</code></pre>
+            </article>
+            
+            <article class="function" data-name="ShortenFunctionName">
+               <h3>
+                  ShortenFunctionName 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>ShortenFunctionName returns a shortened version of a function's name.</p>
+               
+               <pre><code>func ShortenFunctionName(f string) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="Sort">
+               <h3>
+                  Sort 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Sort returns a slice of the edges in the map, in a consistent
+order. The sort order is first based on the edge weight
+(higher-to-lower) and then by the node names to avoid flakiness.</p>
+               
+               <pre><code>func (e EdgeMap) Sort() []*Edge</code></pre>
+            </article>
+            
+            <article class="function" data-name="Sort">
+               <h3>
+                  Sort 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Sort reorders a slice of nodes based on the specified ordering
+criteria. The result is sorted in decreasing order for (absolute)
+numeric quantities, alphabetically for text, and increasing for
+addresses.</p>
+               
+               <pre><code>func (ns Nodes) Sort(o NodeOrder) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="SortNodes">
+               <h3>
+                  SortNodes 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>SortNodes sorts the nodes in a graph based on a specific heuristic.</p>
+               
+               <pre><code>func (g *Graph) SortNodes(cum bool, visualMode bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="SortTags">
+               <h3>
+                  SortTags 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>SortTags sorts a slice of tags based on their weight.</p>
+               
+               <pre><code>func SortTags(t []*Tag, flat bool) []*Tag</code></pre>
+            </article>
+            
+            <article class="function" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>String returns a text representation of a graph, for debugging purposes.</p>
+               
+               <pre><code>func (g *Graph) String() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="Sum">
+               <h3>
+                  Sum 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Sum returns the total weight for a set of nodes.</p>
+               
+               <pre><code>func (e EdgeMap) Sum() int64</code></pre>
+            </article>
+            
+            <article class="function" data-name="Sum">
+               <h3>
+                  Sum 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Sum adds the flat and cum values of a set of nodes.</p>
+               
+               <pre><code>func (ns Nodes) Sum() (flat int64, cum int64)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Swap">
+               <h3>
+                  Swap 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (t tags) Swap(i int, j int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Swap">
+               <h3>
+                  Swap 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s nodeSorter) Swap(i int, j int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Swap">
+               <h3>
+                  Swap 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (el edgeList) Swap(i int, j int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="TrimLowFrequencyEdges">
+               <h3>
+                  TrimLowFrequencyEdges 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>TrimLowFrequencyEdges removes edges that have less than
+the specified weight. Returns the number of edges removed</p>
+               
+               <pre><code>func (g *Graph) TrimLowFrequencyEdges(edgeCutoff int64) int</code></pre>
+            </article>
+            
+            <article class="function" data-name="TrimLowFrequencyTags">
+               <h3>
+                  TrimLowFrequencyTags 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>TrimLowFrequencyTags removes tags that have less than
+the specified weight.</p>
+               
+               <pre><code>func (g *Graph) TrimLowFrequencyTags(tagCutoff int64)</code></pre>
+            </article>
+            
+            <article class="function" data-name="TrimTree">
+               <h3>
+                  TrimTree 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>TrimTree trims a Graph in forest form, keeping only the nodes in kept. This
+will not work correctly if even a single node has multiple parents.</p>
+               
+               <pre><code>func (g *Graph) TrimTree(kept NodePtrSet)</code></pre>
+            </article>
+            
+            <article class="function" data-name="WeightValue">
+               <h3>
+                  WeightValue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>WeightValue returns the weight value for this edge, normalizing if a
+divisor is available.</p>
+               
+               <pre><code>func (e *Edge) WeightValue() int64</code></pre>
+            </article>
+            
+            <article class="function" data-name="abs64">
+               <h3>
+                  abs64 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func abs64(i int64) int64</code></pre>
+            </article>
+            
+            <article class="function" data-name="addEdge">
+               <h3>
+                  addEdge 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>addEdge generates a graph edge in DOT format.</p>
+               
+               <pre><code>func (b *builder) addEdge(edge *Edge, from int, to int, hasNodelets bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="addLegend">
+               <h3>
+                  addLegend 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>addLegend generates a legend in DOT format.</p>
+               
+               <pre><code>func (b *builder) addLegend()</code></pre>
+            </article>
+            
+            <article class="function" data-name="addNode">
+               <h3>
+                  addNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>addNode generates a graph node in DOT format.</p>
+               
+               <pre><code>func (b *builder) addNode(node *Node, nodeID int, maxFlat float64)</code></pre>
+            </article>
+            
+            <article class="function" data-name="addNodelets">
+               <h3>
+                  addNodelets 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>addNodelets generates the DOT boxes for the node tags if they exist.</p>
+               
+               <pre><code>func (b *builder) addNodelets(node *Node, nodeID int) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="addSample">
+               <h3>
+                  addSample 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (n *Node) addSample(dw int64, w int64, labels string, numLabel map[string][]int64, numUnit map[string][]string, format func(int64, string) string, flat bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="collapsedTags">
+               <h3>
+                  collapsedTags 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>collapsedTags trims and sorts a slice of tags.</p>
+               
+               <pre><code>func (b *builder) collapsedTags(ts []*Tag, count int, flatTags bool) []*Tag</code></pre>
+            </article>
+            
+            <article class="function" data-name="compareNodes">
+               <h3>
+                  compareNodes 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>compareNodes compares two nodes to provide a deterministic ordering
+between them. Two nodes cannot have the same Node.Info value.</p>
+               
+               <pre><code>func compareNodes(l *Node, r *Node) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="countTags">
+               <h3>
+                  countTags 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>countTags counts the tags with flat count. This underestimates the
+number of tags being displayed, but in practice is close enough.</p>
+               
+               <pre><code>func countTags(n *Node) int</code></pre>
+            </article>
+            
+            <article class="function" data-name="defaultLabelFormat">
+               <h3>
+                  defaultLabelFormat 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func defaultLabelFormat(v int64, key string) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="dotColor">
+               <h3>
+                  dotColor 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>dotColor returns a color for the given score (between -1.0 and
 1.0), with -1.0 colored green, 0.0 colored grey, and 1.0 colored
 red. If isBackground is true, then a light (low-saturation)
 color is returned (suitable for use as a background color);
 otherwise, a darker color is returned (suitable for use as a
 foreground color).</p>
-            
-            <pre><code>func dotColor(score float64, isBackground bool) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="multilinePrintableName">
-            <h2>multilinePrintableName</h2>
-            <hr />
-            
-            <pre><code>func multilinePrintableName(info *NodeInfo) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="collapsedTags">
-            <h2>collapsedTags</h2>
-            <hr />
-            
-            <p>collapsedTags trims and sorts a slice of tags.</p>
-            
-            <pre><code>func collapsedTags(ts []*Tag, count int, flatTags bool) []*Tag</code></pre>
-         </article>
-         
-         <article class="function" data-name="tagDistance">
-            <h2>tagDistance</h2>
-            <hr />
-            
-            <pre><code>func tagDistance(t *Tag, u *Tag) float64</code></pre>
-         </article>
-         
-         <article class="function" data-name="tagGroupLabel">
-            <h2>tagGroupLabel</h2>
-            <hr />
-            
-            <pre><code>func tagGroupLabel(g []*Tag) (label string, flat int64, cum int64)</code></pre>
-         </article>
-         
-         <article class="function" data-name="min64">
-            <h2>min64</h2>
-            <hr />
-            
-            <pre><code>func min64(a int64, b int64) int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="escapeAllForDot">
-            <h2>escapeAllForDot</h2>
-            <hr />
-            
-            <p>escapeAllForDot applies escapeForDot to all strings in the given slice.</p>
-            
-            <pre><code>func escapeAllForDot(in []string) []string</code></pre>
-         </article>
-         
-         <article class="function" data-name="escapeForDot">
-            <h2>escapeForDot</h2>
-            <hr />
-            
-            <p>escapeForDot escapes double quotes and backslashes, and replaces Graphviz's
-"center" character (\n) with a left-justified character.
-See https://graphviz.org/docs/attr-types/escString/ for more info.</p>
-            
-            <pre><code>func escapeForDot(str string) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="FlatValue">
-            <h2>FlatValue</h2>
-            <hr />
-            
-            <p>FlatValue returns the exclusive value for this node, computing the
-mean if a divisor is available.</p>
-            
-            <pre><code>func FlatValue() int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="CumValue">
-            <h2>CumValue</h2>
-            <hr />
-            
-            <p>CumValue returns the inclusive value for this node, computing the
-mean if a divisor is available.</p>
-            
-            <pre><code>func CumValue() int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="AddToEdge">
-            <h2>AddToEdge</h2>
-            <hr />
-            
-            <p>AddToEdge increases the weight of an edge between two nodes. If
-there isn't such an edge one is created.</p>
-            
-            <pre><code>func AddToEdge(to *Node, v int64, residual bool, inline bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="AddToEdgeDiv">
-            <h2>AddToEdgeDiv</h2>
-            <hr />
-            
-            <p>AddToEdgeDiv increases the weight of an edge between two nodes. If
-there isn't such an edge one is created.</p>
-            
-            <pre><code>func AddToEdgeDiv(to *Node, dv int64, v int64, residual bool, inline bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="PrintableName">
-            <h2>PrintableName</h2>
-            <hr />
-            
-            <p>PrintableName calls the Node's Formatter function with a single space separator.</p>
-            
-            <pre><code>func PrintableName() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="NameComponents">
-            <h2>NameComponents</h2>
-            <hr />
-            
-            <p>NameComponents returns the components of the printable name to be used for a node.</p>
-            
-            <pre><code>func NameComponents() []string</code></pre>
-         </article>
-         
-         <article class="function" data-name="FindOrInsertNode">
-            <h2>FindOrInsertNode</h2>
-            <hr />
-            
-            <p>FindOrInsertNode takes the info for a node and either returns a matching node
-from the node map if one exists, or adds one to the map if one does not.
-If kept is non-nil, nodes are only added if they can be located on it.</p>
-            
-            <pre><code>func FindOrInsertNode(info NodeInfo, kept NodeSet) *Node</code></pre>
-         </article>
-         
-         <article class="function" data-name="WeightValue">
-            <h2>WeightValue</h2>
-            <hr />
-            
-            <p>WeightValue returns the weight value for this edge, normalizing if a
-divisor is available.</p>
-            
-            <pre><code>func WeightValue() int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="FlatValue">
-            <h2>FlatValue</h2>
-            <hr />
-            
-            <p>FlatValue returns the exclusive value for this tag, computing the
-mean if a divisor is available.</p>
-            
-            <pre><code>func FlatValue() int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="CumValue">
-            <h2>CumValue</h2>
-            <hr />
-            
-            <p>CumValue returns the inclusive value for this tag, computing the
-mean if a divisor is available.</p>
-            
-            <pre><code>func CumValue() int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="SortTags">
-            <h2>SortTags</h2>
-            <hr />
-            
-            <p>SortTags sorts a slice of tags based on their weight.</p>
-            
-            <pre><code>func SortTags(t []*Tag, flat bool) []*Tag</code></pre>
-         </article>
-         
-         <article class="function" data-name="New">
-            <h2>New</h2>
-            <hr />
-            
-            <p>New summarizes performance data from a profile into a graph.</p>
-            
-            <pre><code>func New(prof *profile.Profile, o *Options) *Graph</code></pre>
-         </article>
-         
-         <article class="function" data-name="newGraph">
-            <h2>newGraph</h2>
-            <hr />
-            
-            <p>newGraph computes a graph from a profile. It returns the graph, and
-a map from the profile location indices to the corresponding graph
-nodes.</p>
-            
-            <pre><code>func newGraph(prof *profile.Profile, o *Options) (*Graph, *ast.MapType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="selectNodesForGraph">
-            <h2>selectNodesForGraph</h2>
-            <hr />
-            
-            <pre><code>func selectNodesForGraph(nodes Nodes, dropNegative bool) *Graph</code></pre>
-         </article>
-         
-         <article class="function" data-name="newTree">
-            <h2>newTree</h2>
-            <hr />
-            
-            <pre><code>func newTree(prof *profile.Profile, o *Options) g *Graph</code></pre>
-         </article>
-         
-         <article class="function" data-name="ShortenFunctionName">
-            <h2>ShortenFunctionName</h2>
-            <hr />
-            
-            <p>ShortenFunctionName returns a shortened version of a function's name.</p>
-            
-            <pre><code>func ShortenFunctionName(f string) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="TrimTree">
-            <h2>TrimTree</h2>
-            <hr />
-            
-            <p>TrimTree trims a Graph in forest form, keeping only the nodes in kept. This
-will not work correctly if even a single node has multiple parents.</p>
-            
-            <pre><code>func TrimTree(kept NodePtrSet)</code></pre>
-         </article>
-         
-         <article class="function" data-name="joinLabels">
-            <h2>joinLabels</h2>
-            <hr />
-            
-            <pre><code>func joinLabels(s *profile.Sample) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="isNegative">
-            <h2>isNegative</h2>
-            <hr />
-            
-            <p>isNegative returns true if the node is considered as "negative" for the
-purposes of drop_negative.</p>
-            
-            <pre><code>func isNegative(n *Node) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="CreateNodes">
-            <h2>CreateNodes</h2>
-            <hr />
-            
-            <p>CreateNodes creates graph nodes for all locations in a profile. It
-returns set of all nodes, plus a mapping of each location to the
-set of corresponding nodes (one per location.Line).</p>
-            
-            <pre><code>func CreateNodes(prof *profile.Profile, o *Options) (Nodes, *ast.MapType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="nodes">
-            <h2>nodes</h2>
-            <hr />
-            
-            <pre><code>func nodes() Nodes</code></pre>
-         </article>
-         
-         <article class="function" data-name="findOrInsertLine">
-            <h2>findOrInsertLine</h2>
-            <hr />
-            
-            <pre><code>func findOrInsertLine(l *profile.Location, li profile.Line, o *Options) *Node</code></pre>
-         </article>
-         
-         <article class="function" data-name="nodeInfo">
-            <h2>nodeInfo</h2>
-            <hr />
-            
-            <pre><code>func nodeInfo(l *profile.Location, line profile.Line, objfile string, o *Options) *NodeInfo</code></pre>
-         </article>
-         
-         <article class="function" data-name="Len">
-            <h2>Len</h2>
-            <hr />
-            
-            <pre><code>func Len() int</code></pre>
-         </article>
-         
-         <article class="function" data-name="Swap">
-            <h2>Swap</h2>
-            <hr />
-            
-            <pre><code>func Swap(i int, j int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Less">
-            <h2>Less</h2>
-            <hr />
-            
-            <pre><code>func Less(i int, j int) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="Sum">
-            <h2>Sum</h2>
-            <hr />
-            
-            <p>Sum adds the flat and cum values of a set of nodes.</p>
-            
-            <pre><code>func Sum() (flat int64, cum int64)</code></pre>
-         </article>
-         
-         <article class="function" data-name="addSample">
-            <h2>addSample</h2>
-            <hr />
-            
-            <pre><code>func addSample(dw int64, w int64, labels string, numLabel *ast.MapType, numUnit *ast.MapType, format func, flat bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="defaultLabelFormat">
-            <h2>defaultLabelFormat</h2>
-            <hr />
-            
-            <pre><code>func defaultLabelFormat(v int64, key string) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="findOrAddTag">
-            <h2>findOrAddTag</h2>
-            <hr />
-            
-            <pre><code>func findOrAddTag(label string, unit string, value int64) *Tag</code></pre>
-         </article>
-         
-         <article class="function" data-name="String">
-            <h2>String</h2>
-            <hr />
-            
-            <p>String returns a text representation of a graph, for debugging purposes.</p>
-            
-            <pre><code>func String() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="DiscardLowFrequencyNodes">
-            <h2>DiscardLowFrequencyNodes</h2>
-            <hr />
-            
-            <p>DiscardLowFrequencyNodes returns a set of the nodes at or over a
-specific cum value cutoff.</p>
-            
-            <pre><code>func DiscardLowFrequencyNodes(nodeCutoff int64) NodeSet</code></pre>
-         </article>
-         
-         <article class="function" data-name="DiscardLowFrequencyNodePtrs">
-            <h2>DiscardLowFrequencyNodePtrs</h2>
-            <hr />
-            
-            <p>DiscardLowFrequencyNodePtrs returns a NodePtrSet of nodes at or over a
-specific cum value cutoff.</p>
-            
-            <pre><code>func DiscardLowFrequencyNodePtrs(nodeCutoff int64) NodePtrSet</code></pre>
-         </article>
-         
-         <article class="function" data-name="makeNodeSet">
-            <h2>makeNodeSet</h2>
-            <hr />
-            
-            <pre><code>func makeNodeSet(nodes Nodes, nodeCutoff int64) NodeSet</code></pre>
-         </article>
-         
-         <article class="function" data-name="getNodesAboveCumCutoff">
-            <h2>getNodesAboveCumCutoff</h2>
-            <hr />
-            
-            <p>getNodesAboveCumCutoff returns all the nodes which have a Cum value greater
-than or equal to cutoff.</p>
-            
-            <pre><code>func getNodesAboveCumCutoff(nodes Nodes, nodeCutoff int64) Nodes</code></pre>
-         </article>
-         
-         <article class="function" data-name="TrimLowFrequencyTags">
-            <h2>TrimLowFrequencyTags</h2>
-            <hr />
-            
-            <p>TrimLowFrequencyTags removes tags that have less than
-the specified weight.</p>
-            
-            <pre><code>func TrimLowFrequencyTags(tagCutoff int64)</code></pre>
-         </article>
-         
-         <article class="function" data-name="trimLowFreqTags">
-            <h2>trimLowFreqTags</h2>
-            <hr />
-            
-            <pre><code>func trimLowFreqTags(tags TagMap, minValue int64) TagMap</code></pre>
-         </article>
-         
-         <article class="function" data-name="TrimLowFrequencyEdges">
-            <h2>TrimLowFrequencyEdges</h2>
-            <hr />
-            
-            <p>TrimLowFrequencyEdges removes edges that have less than
-the specified weight. Returns the number of edges removed</p>
-            
-            <pre><code>func TrimLowFrequencyEdges(edgeCutoff int64) int</code></pre>
-         </article>
-         
-         <article class="function" data-name="SortNodes">
-            <h2>SortNodes</h2>
-            <hr />
-            
-            <p>SortNodes sorts the nodes in a graph based on a specific heuristic.</p>
-            
-            <pre><code>func SortNodes(cum bool, visualMode bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="SelectTopNodePtrs">
-            <h2>SelectTopNodePtrs</h2>
-            <hr />
-            
-            <p>SelectTopNodePtrs returns a set of the top maxNodes *Node in a graph.</p>
-            
-            <pre><code>func SelectTopNodePtrs(maxNodes int, visualMode bool) NodePtrSet</code></pre>
-         </article>
-         
-         <article class="function" data-name="SelectTopNodes">
-            <h2>SelectTopNodes</h2>
-            <hr />
-            
-            <p>SelectTopNodes returns a set of the top maxNodes nodes in a graph.</p>
-            
-            <pre><code>func SelectTopNodes(maxNodes int, visualMode bool) NodeSet</code></pre>
-         </article>
-         
-         <article class="function" data-name="selectTopNodes">
-            <h2>selectTopNodes</h2>
-            <hr />
-            
-            <p>selectTopNodes returns a slice of the top maxNodes nodes in a graph.</p>
-            
-            <pre><code>func selectTopNodes(maxNodes int, visualMode bool) Nodes</code></pre>
-         </article>
-         
-         <article class="function" data-name="countTags">
-            <h2>countTags</h2>
-            <hr />
-            
-            <p>countTags counts the tags with flat count. This underestimates the
-number of tags being displayed, but in practice is close enough.</p>
-            
-            <pre><code>func countTags(n *Node) int</code></pre>
-         </article>
-         
-         <article class="function" data-name="RemoveRedundantEdges">
-            <h2>RemoveRedundantEdges</h2>
-            <hr />
-            
-            <p>RemoveRedundantEdges removes residual edges if the destination can
-be reached through another path. This is done to simplify the graph
-while preserving connectivity.</p>
-            
-            <pre><code>func RemoveRedundantEdges()</code></pre>
-         </article>
-         
-         <article class="function" data-name="isRedundantEdge">
-            <h2>isRedundantEdge</h2>
-            <hr />
-            
-            <p>isRedundantEdge determines if there is a path that allows e.Src
-to reach e.Dest after removing e.</p>
-            
-            <pre><code>func isRedundantEdge(e *Edge) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="Len">
-            <h2>Len</h2>
-            <hr />
-            
-            <pre><code>func Len() int</code></pre>
-         </article>
-         
-         <article class="function" data-name="Swap">
-            <h2>Swap</h2>
-            <hr />
-            
-            <pre><code>func Swap(i int, j int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Less">
-            <h2>Less</h2>
-            <hr />
-            
-            <pre><code>func Less(i int, j int) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="Sort">
-            <h2>Sort</h2>
-            <hr />
-            
-            <p>Sort reorders a slice of nodes based on the specified ordering
-criteria. The result is sorted in decreasing order for (absolute)
-numeric quantities, alphabetically for text, and increasing for
-addresses.</p>
-            
-            <pre><code>func Sort(o NodeOrder) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="compareNodes">
-            <h2>compareNodes</h2>
-            <hr />
-            
-            <p>compareNodes compares two nodes to provide a deterministic ordering
-between them. Two nodes cannot have the same Node.Info value.</p>
-            
-            <pre><code>func compareNodes(l *Node, r *Node) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="entropyScore">
-            <h2>entropyScore</h2>
-            <hr />
-            
-            <p>entropyScore computes a score for a node representing how important
+               
+               <pre><code>func dotColor(score float64, isBackground bool) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="edgeEntropyScore">
+               <h3>
+                  edgeEntropyScore 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>edgeEntropyScore computes the entropy value for a set of edges
+coming in or out of a node. Entropy (as defined in information
+theory) refers to the amount of information encoded by the set of
+edges. A set of edges that have a more interesting distribution of
+samples gets a higher score.</p>
+               
+               <pre><code>func edgeEntropyScore(n *Node, edges EdgeMap, self int64) float64</code></pre>
+            </article>
+            
+            <article class="function" data-name="entropyScore">
+               <h3>
+                  entropyScore 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>entropyScore computes a score for a node representing how important
 it is to include this node on a graph visualization. It is used to
 sort the nodes and select which ones to display if we have more
 nodes than desired in the graph. This number is computed by looking
 at the flat and cum weights of the node and the incoming/outgoing
 edges. The fundamental idea is to penalize nodes that have a simple
 fallthrough from their incoming to the outgoing edge.</p>
+               
+               <pre><code>func entropyScore(n *Node) int64</code></pre>
+            </article>
             
-            <pre><code>func entropyScore(n *Node) int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="edgeEntropyScore">
-            <h2>edgeEntropyScore</h2>
-            <hr />
+            <article class="function" data-name="escapeAllForDot">
+               <h3>
+                  escapeAllForDot 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>escapeAllForDot applies escapeForDot to all strings in the given slice.</p>
+               
+               <pre><code>func escapeAllForDot(in []string) []string</code></pre>
+            </article>
             
-            <p>edgeEntropyScore computes the entropy value for a set of edges
-coming in or out of a node. Entropy (as defined in information
-theory) refers to the amount of information encoded by the set of
-edges. A set of edges that have a more interesting distribution of
-samples gets a higher score.</p>
+            <article class="function" data-name="escapeForDot">
+               <h3>
+                  escapeForDot 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>escapeForDot escapes double quotes and backslashes, and replaces Graphviz's
+"center" character (\n) with a left-justified character.
+See https://graphviz.org/docs/attr-types/escString/ for more info.</p>
+               
+               <pre><code>func escapeForDot(str string) string</code></pre>
+            </article>
             
-            <pre><code>func edgeEntropyScore(n *Node, edges EdgeMap, self int64) float64</code></pre>
-         </article>
-         
-         <article class="function" data-name="Sort">
-            <h2>Sort</h2>
-            <hr />
+            <article class="function" data-name="findOrAddTag">
+               <h3>
+                  findOrAddTag 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (m TagMap) findOrAddTag(label string, unit string, value int64) *Tag</code></pre>
+            </article>
             
-            <p>Sort returns a slice of the edges in the map, in a consistent
-order. The sort order is first based on the edge weight
-(higher-to-lower) and then by the node names to avoid flakiness.</p>
+            <article class="function" data-name="findOrInsertLine">
+               <h3>
+                  findOrInsertLine 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (nm NodeMap) findOrInsertLine(l *profile.Location, li profile.Line, o *Options) *Node</code></pre>
+            </article>
             
-            <pre><code>func Sort() []*Edge</code></pre>
-         </article>
-         
-         <article class="function" data-name="Sum">
-            <h2>Sum</h2>
-            <hr />
+            <article class="function" data-name="finish">
+               <h3>
+                  finish 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>finish closes the opening curly bracket in the constructed DOT buffer.</p>
+               
+               <pre><code>func (b *builder) finish()</code></pre>
+            </article>
             
-            <p>Sum returns the total weight for a set of nodes.</p>
+            <article class="function" data-name="getNodesAboveCumCutoff">
+               <h3>
+                  getNodesAboveCumCutoff 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>getNodesAboveCumCutoff returns all the nodes which have a Cum value greater
+than or equal to cutoff.</p>
+               
+               <pre><code>func getNodesAboveCumCutoff(nodes Nodes, nodeCutoff int64) Nodes</code></pre>
+            </article>
             
-            <pre><code>func Sum() int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="Len">
-            <h2>Len</h2>
-            <hr />
+            <article class="function" data-name="isNegative">
+               <h3>
+                  isNegative 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>isNegative returns true if the node is considered as "negative" for the
+purposes of drop_negative.</p>
+               
+               <pre><code>func isNegative(n *Node) bool</code></pre>
+            </article>
             
-            <pre><code>func Len() int</code></pre>
-         </article>
-         
-         <article class="function" data-name="Less">
-            <h2>Less</h2>
-            <hr />
+            <article class="function" data-name="isRedundantEdge">
+               <h3>
+                  isRedundantEdge 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>isRedundantEdge determines if there is a path that allows e.Src
+to reach e.Dest after removing e.</p>
+               
+               <pre><code>func isRedundantEdge(e *Edge) bool</code></pre>
+            </article>
             
-            <pre><code>func Less(i int, j int) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="Swap">
-            <h2>Swap</h2>
-            <hr />
+            <article class="function" data-name="joinLabels">
+               <h3>
+                  joinLabels 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func joinLabels(s *profile.Sample) string</code></pre>
+            </article>
             
-            <pre><code>func Swap(i int, j int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="abs64">
-            <h2>abs64</h2>
-            <hr />
+            <article class="function" data-name="makeNodeSet">
+               <h3>
+                  makeNodeSet 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func makeNodeSet(nodes Nodes, nodeCutoff int64) NodeSet</code></pre>
+            </article>
             
-            <pre><code>func abs64(i int64) int64</code></pre>
-         </article>
+            <article class="function" data-name="min64">
+               <h3>
+                  min64 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func min64(a int64, b int64) int64</code></pre>
+            </article>
+            
+            <article class="function" data-name="multilinePrintableName">
+               <h3>
+                  multilinePrintableName 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func multilinePrintableName(info *NodeInfo) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="newGraph">
+               <h3>
+                  newGraph 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>newGraph computes a graph from a profile. It returns the graph, and
+a map from the profile location indices to the corresponding graph
+nodes.</p>
+               
+               <pre><code>func newGraph(prof *profile.Profile, o *Options) (*Graph, map[uint64]Nodes)</code></pre>
+            </article>
+            
+            <article class="function" data-name="newTree">
+               <h3>
+                  newTree 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func newTree(prof *profile.Profile, o *Options) (g *Graph)</code></pre>
+            </article>
+            
+            <article class="function" data-name="nodeInfo">
+               <h3>
+                  nodeInfo 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func nodeInfo(l *profile.Location, line profile.Line, objfile string, o *Options) *NodeInfo</code></pre>
+            </article>
+            
+            <article class="function" data-name="nodes">
+               <h3>
+                  nodes 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (nm NodeMap) nodes() Nodes</code></pre>
+            </article>
+            
+            <article class="function" data-name="numericNodelets">
+               <h3>
+                  numericNodelets 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (b *builder) numericNodelets(nts []*Tag, maxNumNodelets int, flatTags bool, source string) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="selectNodesForGraph">
+               <h3>
+                  selectNodesForGraph 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func selectNodesForGraph(nodes Nodes, dropNegative bool) *Graph</code></pre>
+            </article>
+            
+            <article class="function" data-name="selectTopNodes">
+               <h3>
+                  selectTopNodes 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>selectTopNodes returns a slice of the top maxNodes nodes in a graph.</p>
+               
+               <pre><code>func (g *Graph) selectTopNodes(maxNodes int, visualMode bool) Nodes</code></pre>
+            </article>
+            
+            <article class="function" data-name="start">
+               <h3>
+                  start 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>start generates a title and initial node in DOT format.</p>
+               
+               <pre><code>func (b *builder) start()</code></pre>
+            </article>
+            
+            <article class="function" data-name="tagDistance">
+               <h3>
+                  tagDistance 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func tagDistance(t *Tag, u *Tag) float64</code></pre>
+            </article>
+            
+            <article class="function" data-name="tagGroupLabel">
+               <h3>
+                  tagGroupLabel 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (b *builder) tagGroupLabel(g []*Tag) (label string, flat int64, cum int64)</code></pre>
+            </article>
+            
+            <article class="function" data-name="trimLowFreqTags">
+               <h3>
+                  trimLowFreqTags 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func trimLowFreqTags(tags TagMap, minValue int64) TagMap</code></pre>
+            </article>
+            
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -1125,59 +1880,170 @@ order. The sort order is first based on the edge weight
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

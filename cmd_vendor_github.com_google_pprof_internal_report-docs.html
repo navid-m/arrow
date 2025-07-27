@@ -13,302 +13,772 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                 
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>report</code>
-         </h1>
-         <hr />
+         <h1>report</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="pkgRE">
-            <h2>pkgRE</h2>
-            <hr />
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"path/filepath"
+"regexp"
+"github.com/google/pprof/internal/graph"
+"bufio"
+"fmt"
+"html/template"
+"io"
+"os"
+"path/filepath"
+"regexp"
+"sort"
+"strconv"
+"strings"
+"github.com/google/pprof/internal/graph"
+"github.com/google/pprof/internal/measurement"
+"github.com/google/pprof/internal/plugin"
+"github.com/google/pprof/profile"
+"html/template"
+"crypto/sha256"
+"encoding/binary"
+"fmt"
+"path/filepath"
+"github.com/google/pprof/internal/measurement"
+"github.com/google/pprof/profile"
+"github.com/google/pprof/profile"
+"regexp"
+"fmt"
+"io"
+"net/url"
+"path/filepath"
+"regexp"
+"sort"
+"strconv"
+"strings"
+"text/tabwriter"
+"time"
+"github.com/google/pprof/internal/graph"
+"github.com/google/pprof/internal/measurement"
+"github.com/google/pprof/internal/plugin"
+"github.com/google/pprof/profile"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <p>pkgRE extracts package name, It looks for the first "." or "::" that occurs
+            <article class="global" data-name="Callgrind">
+               <h3>
+                  Callgrind 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Output formats.</p>
+               
+               <pre><code>const Callgrind = iota</code></pre>
+            </article>
+            
+            <article class="global" data-name="Comments">
+               <h3>
+                  Comments 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Output formats.</p>
+               
+               <pre><code>const Comments</code></pre>
+            </article>
+            
+            <article class="global" data-name="Dis">
+               <h3>
+                  Dis 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Output formats.</p>
+               
+               <pre><code>const Dis</code></pre>
+            </article>
+            
+            <article class="global" data-name="Dot">
+               <h3>
+                  Dot 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Output formats.</p>
+               
+               <pre><code>const Dot</code></pre>
+            </article>
+            
+            <article class="global" data-name="List">
+               <h3>
+                  List 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Output formats.</p>
+               
+               <pre><code>const List</code></pre>
+            </article>
+            
+            <article class="global" data-name="Proto">
+               <h3>
+                  Proto 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Output formats.</p>
+               
+               <pre><code>const Proto</code></pre>
+            </article>
+            
+            <article class="global" data-name="Raw">
+               <h3>
+                  Raw 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Output formats.</p>
+               
+               <pre><code>const Raw</code></pre>
+            </article>
+            
+            <article class="global" data-name="Tags">
+               <h3>
+                  Tags 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Output formats.</p>
+               
+               <pre><code>const Tags</code></pre>
+            </article>
+            
+            <article class="global" data-name="Text">
+               <h3>
+                  Text 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Output formats.</p>
+               
+               <pre><code>const Text</code></pre>
+            </article>
+            
+            <article class="global" data-name="TopProto">
+               <h3>
+                  TopProto 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Output formats.</p>
+               
+               <pre><code>const TopProto</code></pre>
+            </article>
+            
+            <article class="global" data-name="Traces">
+               <h3>
+                  Traces 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Output formats.</p>
+               
+               <pre><code>const Traces</code></pre>
+            </article>
+            
+            <article class="global" data-name="Tree">
+               <h3>
+                  Tree 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Output formats.</p>
+               
+               <pre><code>const Tree</code></pre>
+            </article>
+            
+            <article class="global" data-name="WebList">
+               <h3>
+                  WebList 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Output formats.</p>
+               
+               <pre><code>const WebList</code></pre>
+            </article>
+            
+            <article class="global" data-name="fileSepRE">
+               <h3>
+                  fileSepRE 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var fileSepRE = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="pkgRE">
+               <h3>
+                  pkgRE 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>pkgRE extracts package name, It looks for the first "." or "::" that occurs
 after the last "/". (Searching after the last / allows us to correctly handle
 names that look like "some.url.com/foo.bar".)</p>
+               
+               <pre><code>var pkgRE = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre><code>pkgRE</code></pre>
-         </article>
-         
-         <article class="global" data-name="Callgrind">
-            <h2>Callgrind</h2>
-            <hr />
+            <article class="global" data-name="sepRE">
+               <h3>
+                  sepRE 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var sepRE = *ast.CallExpr</code></pre>
+            </article>
             
-            <p>Output formats.</p>
+            <article class="global" data-name="synthAsm">
+               <h3>
+                  synthAsm 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>synthAsm is the special disassembler value used for instructions without an object file.</p>
+               
+               <pre><code>const synthAsm = ""</code></pre>
+            </article>
             
-            <pre><code>Callgrind</code></pre>
-         </article>
-         
-         <article class="global" data-name="Comments">
-            <h2>Comments</h2>
-            <hr />
+            <article class="global" data-name="weblistPageCSS">
+               <h3>
+                  weblistPageCSS 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const weblistPageCSS = `<style type="text/css">
+body #content{
+font-family: sans-serif;
+}
+h1 {
+  font-size: 1.5em;
+}
+.legend {
+  font-size: 1.25em;
+}
+.line, .nop, .unimportant {
+  color: #aaaaaa;
+}
+.inlinesrc {
+  color: #000066;
+}
+.livesrc {
+cursor: pointer;
+}
+.livesrc:hover {
+background-color: #eeeeee;
+}
+.asm {
+color: #008800;
+display: none;
+}
+</style>`</code></pre>
+            </article>
             
-            <p>Output formats.</p>
+            <article class="global" data-name="weblistPageScript">
+               <h3>
+                  weblistPageScript 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const weblistPageScript = `<script type="text/javascript">
+function pprof_toggle_asm(e) {
+  var target;
+  if (!e) e = window.event;
+  if (e.target) target = e.target;
+  else if (e.srcElement) target = e.srcElement;
+
+  if (target) {
+    var asm = target.nextSibling;
+    if (asm && asm.className == "asm") {
+      asm.style.display = (asm.style.display == "block" ? "" : "block");
+      e.preventDefault();
+      return false;
+    }
+  }
+}
+</script>`</code></pre>
+            </article>
             
-            <pre><code>Comments</code></pre>
-         </article>
-         
-         <article class="global" data-name="Dis">
-            <h2>Dis</h2>
-            <hr />
-            
-            <p>Output formats.</p>
-            
-            <pre><code>Dis</code></pre>
-         </article>
-         
-         <article class="global" data-name="Dot">
-            <h2>Dot</h2>
-            <hr />
-            
-            <p>Output formats.</p>
-            
-            <pre><code>Dot</code></pre>
-         </article>
-         
-         <article class="global" data-name="List">
-            <h2>List</h2>
-            <hr />
-            
-            <p>Output formats.</p>
-            
-            <pre><code>List</code></pre>
-         </article>
-         
-         <article class="global" data-name="Proto">
-            <h2>Proto</h2>
-            <hr />
-            
-            <p>Output formats.</p>
-            
-            <pre><code>Proto</code></pre>
-         </article>
-         
-         <article class="global" data-name="Raw">
-            <h2>Raw</h2>
-            <hr />
-            
-            <p>Output formats.</p>
-            
-            <pre><code>Raw</code></pre>
-         </article>
-         
-         <article class="global" data-name="Tags">
-            <h2>Tags</h2>
-            <hr />
-            
-            <p>Output formats.</p>
-            
-            <pre><code>Tags</code></pre>
-         </article>
-         
-         <article class="global" data-name="Text">
-            <h2>Text</h2>
-            <hr />
-            
-            <p>Output formats.</p>
-            
-            <pre><code>Text</code></pre>
-         </article>
-         
-         <article class="global" data-name="TopProto">
-            <h2>TopProto</h2>
-            <hr />
-            
-            <p>Output formats.</p>
-            
-            <pre><code>TopProto</code></pre>
-         </article>
-         
-         <article class="global" data-name="Traces">
-            <h2>Traces</h2>
-            <hr />
-            
-            <p>Output formats.</p>
-            
-            <pre><code>Traces</code></pre>
-         </article>
-         
-         <article class="global" data-name="Tree">
-            <h2>Tree</h2>
-            <hr />
-            
-            <p>Output formats.</p>
-            
-            <pre><code>Tree</code></pre>
-         </article>
-         
-         <article class="global" data-name="WebList">
-            <h2>WebList</h2>
-            <hr />
-            
-            <p>Output formats.</p>
-            
-            <pre><code>WebList</code></pre>
-         </article>
-         
-         <article class="global" data-name="sepRE">
-            <h2>sepRE</h2>
-            <hr />
-            
-            <pre><code>sepRE</code></pre>
-         </article>
-         
-         <article class="global" data-name="fileSepRE">
-            <h2>fileSepRE</h2>
-            <hr />
-            
-            <pre><code>fileSepRE</code></pre>
-         </article>
-         
-         <article class="global" data-name="synthAsm">
-            <h2>synthAsm</h2>
-            <hr />
-            
-            <p>synthAsm is the special disassembler value used for instructions without an object file.</p>
-            
-            <pre><code>synthAsm</code></pre>
-         </article>
-         
-         <article class="global" data-name="weblistPageCSS">
-            <h2>weblistPageCSS</h2>
-            <hr />
-            
-            <pre><code>weblistPageCSS</code></pre>
-         </article>
-         
-         <article class="global" data-name="weblistPageScript">
-            <h2>weblistPageScript</h2>
-            <hr />
-            
-            <pre><code>weblistPageScript</code></pre>
-         </article>
+         </section>
           
-         <article class="struct" data-name="Options">
-            <h2>type Options struct</h2>
-            <hr />
+         <section id="types">
+            <h2>Type Aliases</h2>
             
-            <p>Options are the formatting and filtering options used to generate a
+            <article class="type" data-name="functionMap">
+               <h3>
+                  functionMap
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <pre><code>type functionMap map[string]*profile.Function</code></pre>
+            </article>
+            
+         </section>
+           
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="Options">
+               <h3>
+                  Options
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Options are the formatting and filtering options used to generate a
 profile.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">OutputFormat int
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Options struct {
+OutputFormat int
 CumSort bool
 CallTree bool
 DropNegative bool
@@ -317,54 +787,293 @@ Ratio float64
 Title string
 ProfileLabels []string
 ActiveFilters []string
-NumLabelUnits *ast.MapType
+NumLabelUnits map[string]string
 NodeCount int
 NodeFraction float64
 EdgeFraction float64
-SampleValue func
-SampleMeanDivisor func
+SampleValue func(s []int64) int64
+SampleMeanDivisor func(s []int64) int64
 SampleType string
 SampleUnit string
 OutputUnit string
 Symbol *regexp.Regexp
 SourcePath string
 TrimPath string
-IntelSyntax bool</code></pre>
-         </article>
-         
-         <article class="struct" data-name="objSymbol">
-            <h2>type objSymbol struct</h2>
-            <hr />
+IntelSyntax bool
+}</code></pre>
+            </article>
             
-            <p>objSym represents a symbol identified from a binary. It includes
-the SymbolInfo from the disasm package and the base that must be
-added to correspond to sample addresses</p>
+            <article class="struct" data-name="Report">
+               <h3>
+                  Report
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Report contains the data and associated routines to extract a
+report from a profile.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Report struct {
+prof *profile.Profile
+total int64
+options *Options
+formatValue func(int64) string
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">sym *plugin.Sym
-file plugin.ObjFile</code></pre>
-         </article>
-         
-         <article class="struct" data-name="orderSyms">
-            <h2>type orderSyms struct</h2>
-            <hr />
+            <article class="struct" data-name="Stack">
+               <h3>
+                  Stack
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Stack holds a single stack instance.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Stack struct {
+Value int64
+Sources []int
+}</code></pre>
+            </article>
             
-            <p>orderSyms is a wrapper type to sort []*objSymbol by a supplied comparator.</p>
+            <article class="struct" data-name="StackSet">
+               <h3>
+                  StackSet
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>StackSet holds a set of stacks corresponding to a profile.
+Slices in StackSet and the types it contains are always non-nil,
+which makes Javascript code that uses the JSON encoding less error-prone.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type StackSet struct {
+Total int64
+Scale float64
+Type string
+Unit string
+Stacks []Stack
+Sources []StackSource
+report *Report
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">v []*objSymbol
-less func</code></pre>
-         </article>
-         
-         <article class="struct" data-name="assemblyInstruction">
-            <h2>type assemblyInstruction struct</h2>
-            <hr />
+            <article class="struct" data-name="StackSlot">
+               <h3>
+                  StackSlot
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>StackSlot identifies a particular StackSlot.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type StackSlot struct {
+Stack int
+Pos int
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">address uint64
+            <article class="struct" data-name="StackSource">
+               <h3>
+                  StackSource
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>StackSource holds function/location info for a stack entry.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type StackSource struct {
+FullName string
+FileName string
+UniqueName string
+Inlined bool
+Display []string
+Places []StackSlot
+Self int64
+Color int
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="TextItem">
+               <h3>
+                  TextItem
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>TextItem holds a single text report entry.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type TextItem struct {
+Name string
+InlineLabel string
+Flat int64
+Cum int64
+FlatFormat string
+CumFormat string
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="WebListCall">
+               <h3>
+                  WebListCall
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>WebListCall holds the per-inlined-call information for HTML source code listing.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type WebListCall struct {
+SrcLine string
+FileBase string
+Line int
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="WebListData">
+               <h3>
+                  WebListData
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>WebListData holds the data needed to generate HTML source code listing.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type WebListData struct {
+Total string
+Files []WebListFile
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="WebListFile">
+               <h3>
+                  WebListFile
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>WebListFile holds the per-file information for HTML source code listing.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type WebListFile struct {
+Funcs []WebListFunc
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="WebListFunc">
+               <h3>
+                  WebListFunc
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>WebListFunc holds the per-function information for HTML source code listing.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type WebListFunc struct {
+Name string
+File string
+Flat string
+Cumulative string
+Percent string
+Lines []WebListLine
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="WebListInstruction">
+               <h3>
+                  WebListInstruction
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>WebListInstruction holds the per-instruction information for HTML source code listing.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type WebListInstruction struct {
+NewBlock bool
+Flat string
+Cumulative string
+Synthetic bool
+Address uint64
+Disasm string
+FileLine string
+InlinedCalls []WebListCall
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="WebListLine">
+               <h3>
+                  WebListLine
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>WebListLine holds the per-source-line information for HTML source code listing.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type WebListLine struct {
+SrcLine string
+HTMLClass string
+Line int
+Flat string
+Cumulative string
+Instructions []WebListInstruction
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="addrInfo">
+               <h3>
+                  addrInfo
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>addrInfo holds information for an address we are interested in.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type addrInfo struct {
+loc *profile.Location
+obj plugin.ObjFile
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="addressRange">
+               <h3>
+                  addressRange
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>addressRange is a range of addresses plus the object file that contains it.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type addressRange struct {
+begin uint64
+end uint64
+obj plugin.ObjFile
+mapping *profile.Mapping
+score int64
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="assemblyInstruction">
+               <h3>
+                  assemblyInstruction
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type assemblyInstruction struct {
+address uint64
 instruction string
 function string
 file string
@@ -374,1063 +1083,1179 @@ cum int64
 flatDiv int64
 cumDiv int64
 startsBlock bool
-inlineCalls []callID</code></pre>
-         </article>
-         
-         <article class="struct" data-name="callID">
-            <h2>type callID struct</h2>
-            <hr />
+inlineCalls []callID
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">file string
-line int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="TextItem">
-            <h2>type TextItem struct</h2>
-            <hr />
+            <article class="struct" data-name="callID">
+               <h3>
+                  callID
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type callID struct {
+file string
+line int
+}</code></pre>
+            </article>
             
-            <p>TextItem holds a single text report entry.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Name string
-InlineLabel string
-Flat int64
-Cum int64
-FlatFormat string
-CumFormat string</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Report">
-            <h2>type Report struct</h2>
-            <hr />
-            
-            <p>Report contains the data and associated routines to extract a
-report from a profile.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">prof *profile.Profile
-total int64
-options *Options
-formatValue func</code></pre>
-         </article>
-         
-         <article class="struct" data-name="sourcePrinter">
-            <h2>type sourcePrinter struct</h2>
-            <hr />
-            
-            <p>sourcePrinter holds state needed for generating source+asm HTML listing.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">reader *sourceReader
-synth *synthCode
-objectTool plugin.ObjTool
-objects *ast.MapType
-sym *regexp.Regexp
-files *ast.MapType
-insts *ast.MapType
-interest *ast.MapType
-prettyNames *ast.MapType</code></pre>
-         </article>
-         
-         <article class="struct" data-name="addrInfo">
-            <h2>type addrInfo struct</h2>
-            <hr />
-            
-            <p>addrInfo holds information for an address we are interested in.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">loc *profile.Location
-obj plugin.ObjFile</code></pre>
-         </article>
-         
-         <article class="struct" data-name="instructionInfo">
-            <h2>type instructionInfo struct</h2>
-            <hr />
-            
-            <p>instructionInfo holds collected information for an instruction.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">objAddr uint64
+            <article class="struct" data-name="instructionInfo">
+               <h3>
+                  instructionInfo
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>instructionInfo holds collected information for an instruction.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type instructionInfo struct {
+objAddr uint64
 length int
 disasm string
 file string
 line int
 flat int64
-cum int64</code></pre>
-         </article>
-         
-         <article class="struct" data-name="sourceFile">
-            <h2>type sourceFile struct</h2>
-            <hr />
+cum int64
+}</code></pre>
+            </article>
             
-            <p>sourceFile contains collected information for files we will print.</p>
+            <article class="struct" data-name="objSymbol">
+               <h3>
+                  objSymbol
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>objSym represents a symbol identified from a binary. It includes
+the SymbolInfo from the disasm package and the base that must be
+added to correspond to sample addresses</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type objSymbol struct {
+sym *plugin.Sym
+file plugin.ObjFile
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">fname string
+            <article class="struct" data-name="orderSyms">
+               <h3>
+                  orderSyms
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>orderSyms is a wrapper type to sort []*objSymbol by a supplied comparator.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type orderSyms struct {
+v []*objSymbol
+less func(a *objSymbol, b *objSymbol) bool
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="sourceFile">
+               <h3>
+                  sourceFile
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>sourceFile contains collected information for files we will print.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type sourceFile struct {
+fname string
 cum int64
 flat int64
-lines *ast.MapType
-funcName *ast.MapType</code></pre>
-         </article>
-         
-         <article class="struct" data-name="sourceInst">
-            <h2>type sourceInst struct</h2>
-            <hr />
+lines map[int][]sourceInst
+funcName map[int]string
+}</code></pre>
+            </article>
             
-            <p>sourceInst holds information for an instruction to be displayed.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">addr uint64
-stack []callID</code></pre>
-         </article>
-         
-         <article class="struct" data-name="sourceFunction">
-            <h2>type sourceFunction struct</h2>
-            <hr />
-            
-            <p>sourceFunction contains information for a contiguous range of lines per function we
+            <article class="struct" data-name="sourceFunction">
+               <h3>
+                  sourceFunction
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>sourceFunction contains information for a contiguous range of lines per function we
 will print.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">name string
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type sourceFunction struct {
+name string
 begin int
 end int
 flat int64
-cum int64</code></pre>
-         </article>
-         
-         <article class="struct" data-name="addressRange">
-            <h2>type addressRange struct</h2>
-            <hr />
+cum int64
+}</code></pre>
+            </article>
             
-            <p>addressRange is a range of addresses plus the object file that contains it.</p>
+            <article class="struct" data-name="sourceInst">
+               <h3>
+                  sourceInst
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>sourceInst holds information for an instruction to be displayed.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type sourceInst struct {
+addr uint64
+stack []callID
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">begin uint64
-end uint64
-obj plugin.ObjFile
-mapping *profile.Mapping
-score int64</code></pre>
-         </article>
-         
-         <article class="struct" data-name="WebListData">
-            <h2>type WebListData struct</h2>
-            <hr />
+            <article class="struct" data-name="sourcePrinter">
+               <h3>
+                  sourcePrinter
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>sourcePrinter holds state needed for generating source+asm HTML listing.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type sourcePrinter struct {
+reader *sourceReader
+synth *synthCode
+objectTool plugin.ObjTool
+objects map[string]plugin.ObjFile
+sym *regexp.Regexp
+files map[string]*sourceFile
+insts map[uint64]instructionInfo
+interest map[string]bool
+prettyNames map[string]string
+}</code></pre>
+            </article>
             
-            <p>WebListData holds the data needed to generate HTML source code listing.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Total string
-Files []WebListFile</code></pre>
-         </article>
-         
-         <article class="struct" data-name="WebListFile">
-            <h2>type WebListFile struct</h2>
-            <hr />
-            
-            <p>WebListFile holds the per-file information for HTML source code listing.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Funcs []WebListFunc</code></pre>
-         </article>
-         
-         <article class="struct" data-name="WebListFunc">
-            <h2>type WebListFunc struct</h2>
-            <hr />
-            
-            <p>WebListFunc holds the per-function information for HTML source code listing.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Name string
-File string
-Flat string
-Cumulative string
-Percent string
-Lines []WebListLine</code></pre>
-         </article>
-         
-         <article class="struct" data-name="WebListLine">
-            <h2>type WebListLine struct</h2>
-            <hr />
-            
-            <p>WebListLine holds the per-source-line information for HTML source code listing.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">SrcLine string
-HTMLClass string
-Line int
-Flat string
-Cumulative string
-Instructions []WebListInstruction</code></pre>
-         </article>
-         
-         <article class="struct" data-name="WebListInstruction">
-            <h2>type WebListInstruction struct</h2>
-            <hr />
-            
-            <p>WebListInstruction holds the per-instruction information for HTML source code listing.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">NewBlock bool
-Flat string
-Cumulative string
-Synthetic bool
-Address uint64
-Disasm string
-FileLine string
-InlinedCalls []WebListCall</code></pre>
-         </article>
-         
-         <article class="struct" data-name="WebListCall">
-            <h2>type WebListCall struct</h2>
-            <hr />
-            
-            <p>WebListCall holds the per-inlined-call information for HTML source code listing.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">SrcLine string
-FileBase string
-Line int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="sourceReader">
-            <h2>type sourceReader struct</h2>
-            <hr />
-            
-            <p>sourceReader provides access to source code with caching of file contents.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">searchPath string
+            <article class="struct" data-name="sourceReader">
+               <h3>
+                  sourceReader
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>sourceReader provides access to source code with caching of file contents.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type sourceReader struct {
+searchPath string
 trimPath string
-files *ast.MapType
-errors *ast.MapType</code></pre>
-         </article>
-         
-         <article class="struct" data-name="StackSet">
-            <h2>type StackSet struct</h2>
-            <hr />
+files map[string][]string
+errors map[string]error
+}</code></pre>
+            </article>
             
-            <p>StackSet holds a set of stacks corresponding to a profile.
-
-Slices in StackSet and the types it contains are always non-nil,
-which makes Javascript code that uses the JSON encoding less error-prone.</p>
+            <article class="struct" data-name="synthCode">
+               <h3>
+                  synthCode
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>synthCode assigns addresses to locations without an address.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type synthCode struct {
+next uint64
+addr map[*profile.Location]uint64
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Total int64
-Scale float64
-Type string
-Unit string
-Stacks []Stack
-Sources []StackSource
-report *Report</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Stack">
-            <h2>type Stack struct</h2>
-            <hr />
-            
-            <p>Stack holds a single stack instance.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Value int64
-Sources []int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="StackSource">
-            <h2>type StackSource struct</h2>
-            <hr />
-            
-            <p>StackSource holds function/location info for a stack entry.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">FullName string
-FileName string
-UniqueName string
-Inlined bool
-Display []string
-Places []StackSlot
-Self int64
-Color int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="StackSlot">
-            <h2>type StackSlot struct</h2>
-            <hr />
-            
-            <p>StackSlot identifies a particular StackSlot.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Stack int
-Pos int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="synthCode">
-            <h2>type synthCode struct</h2>
-            <hr />
-            
-            <p>synthCode assigns addresses to locations without an address.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">next uint64
-addr *ast.MapType</code></pre>
-         </article>
+         </section>
           
-         <article class="function" data-name="packageName">
-            <h2>packageName</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <p>packageName returns the package name of the named symbol, or "" if not found.</p>
+            <article class="function" data-name="AddSourceTemplates">
+               <h3>
+                  AddSourceTemplates 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>AddSourceTemplates adds templates used by PrintWebList to t.</p>
+               
+               <pre><code>func AddSourceTemplates(t *template.Template)</code></pre>
+            </article>
             
-            <pre><code>func packageName(name string) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="Generate">
-            <h2>Generate</h2>
-            <hr />
+            <article class="function" data-name="DocURL">
+               <h3>
+                  DocURL 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>DocURL returns the documentation URL for Report, or "" if not available.</p>
+               
+               <pre><code>func (rpt *Report) DocURL() string</code></pre>
+            </article>
             
-            <p>Generate generates a report as directed by the Report.</p>
+            <article class="function" data-name="Generate">
+               <h3>
+                  Generate 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Generate generates a report as directed by the Report.</p>
+               
+               <pre><code>func Generate(w io.Writer, rpt *Report, obj plugin.ObjTool) error</code></pre>
+            </article>
             
-            <pre><code>func Generate(w io.Writer, rpt *Report, obj plugin.ObjTool) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="newTrimmedGraph">
-            <h2>newTrimmedGraph</h2>
-            <hr />
+            <article class="function" data-name="GetDOT">
+               <h3>
+                  GetDOT 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>GetDOT returns a graph suitable for dot processing along with some
+configuration information.</p>
+               
+               <pre><code>func GetDOT(rpt *Report) (*graph.Graph, *graph.DotConfig)</code></pre>
+            </article>
             
-            <p>newTrimmedGraph creates a graph for this report, trimmed according
-to the report options.</p>
+            <article class="function" data-name="Legend">
+               <h3>
+                  Legend 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Legend returns the list of lines to display as the legend.</p>
+               
+               <pre><code>func (s *StackSet) Legend() []string</code></pre>
+            </article>
             
-            <pre><code>func newTrimmedGraph() (g *graph.Graph, origCount int, droppedNodes int, droppedEdges int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="selectOutputUnit">
-            <h2>selectOutputUnit</h2>
-            <hr />
+            <article class="function" data-name="Len">
+               <h3>
+                  Len 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (o orderSyms) Len() int</code></pre>
+            </article>
             
-            <pre><code>func selectOutputUnit(g *graph.Graph)</code></pre>
-         </article>
-         
-         <article class="function" data-name="newGraph">
-            <h2>newGraph</h2>
-            <hr />
+            <article class="function" data-name="Less">
+               <h3>
+                  Less 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (o orderSyms) Less(i int, j int) bool</code></pre>
+            </article>
             
-            <p>newGraph creates a new graph for this report. If nodes is non-nil,
-only nodes whose info matches are included. Otherwise, all nodes
-are included, without trimming.</p>
+            <article class="function" data-name="MakeWebList">
+               <h3>
+                  MakeWebList 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>MakeWebList returns an annotated source listing of rpt.
+rpt.prof should contain inlined call info.</p>
+               
+               <pre><code>func MakeWebList(rpt *Report, obj plugin.ObjTool, maxFiles int) (WebListData, error)</code></pre>
+            </article>
             
-            <pre><code>func newGraph(nodes graph.NodeSet) *graph.Graph</code></pre>
-         </article>
-         
-         <article class="function" data-name="printProto">
-            <h2>printProto</h2>
-            <hr />
+            <article class="function" data-name="New">
+               <h3>
+                  New 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>New builds a new report indexing the sample values interpreting the
+samples with the provided function.</p>
+               
+               <pre><code>func New(prof *profile.Profile, o *Options) *Report</code></pre>
+            </article>
             
-            <p>printProto writes the incoming proto via the writer w.
-If the divide_by option has been specified, samples are scaled appropriately.</p>
+            <article class="function" data-name="NewDefault">
+               <h3>
+                  NewDefault 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewDefault builds a new report indexing the last sample value
+available.</p>
+               
+               <pre><code>func NewDefault(prof *profile.Profile, options Options) *Report</code></pre>
+            </article>
             
-            <pre><code>func printProto(w io.Writer, rpt *Report) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="printTopProto">
-            <h2>printTopProto</h2>
-            <hr />
+            <article class="function" data-name="OutputFormat">
+               <h3>
+                  OutputFormat 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>OutputFormat returns the output format for the report.</p>
+               
+               <pre><code>func (rpt *Report) OutputFormat() int</code></pre>
+            </article>
             
-            <p>printTopProto writes a list of the hottest routines in a profile as a profile.proto.</p>
+            <article class="function" data-name="PrintAssembly">
+               <h3>
+                  PrintAssembly 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>PrintAssembly prints annotated disassembly of rpt to w.</p>
+               
+               <pre><code>func PrintAssembly(w io.Writer, rpt *Report, obj plugin.ObjTool, maxFuncs int) error</code></pre>
+            </article>
             
-            <pre><code>func printTopProto(w io.Writer, rpt *Report) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="findOrAdd">
-            <h2>findOrAdd</h2>
-            <hr />
+            <article class="function" data-name="ProfileLabels">
+               <h3>
+                  ProfileLabels 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>ProfileLabels returns printable labels for a profile.</p>
+               
+               <pre><code>func ProfileLabels(rpt *Report) []string</code></pre>
+            </article>
             
-            <p>findOrAdd takes a node representing a function, adds the function
+            <article class="function" data-name="Stacks">
+               <h3>
+                  Stacks 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Stacks returns a StackSet for the profile in rpt.</p>
+               
+               <pre><code>func (rpt *Report) Stacks() StackSet</code></pre>
+            </article>
+            
+            <article class="function" data-name="Swap">
+               <h3>
+                  Swap 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (o orderSyms) Swap(i int, j int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="TextItems">
+               <h3>
+                  TextItems 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>TextItems returns a list of text items from the report and a list
+of labels that describe the report.</p>
+               
+               <pre><code>func TextItems(rpt *Report) ([]TextItem, []string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Total">
+               <h3>
+                  Total 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Total returns the total number of samples in a report.</p>
+               
+               <pre><code>func (rpt *Report) Total() int64</code></pre>
+            </article>
+            
+            <article class="function" data-name="abs64">
+               <h3>
+                  abs64 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func abs64(i int64) int64</code></pre>
+            </article>
+            
+            <article class="function" data-name="absoluteURL">
+               <h3>
+                  absoluteURL 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func absoluteURL(str string) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="addLineInfo">
+               <h3>
+                  addLineInfo 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func addLineInfo(str string, line profile.Line) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="addStack">
+               <h3>
+                  addStack 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (sp *sourcePrinter) addStack(addr uint64, frames []plugin.Frame)</code></pre>
+            </article>
+            
+            <article class="function" data-name="address">
+               <h3>
+                  address 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>address returns the synthetic address for loc, creating one if needed.</p>
+               
+               <pre><code>func (s *synthCode) address(loc *profile.Location) uint64</code></pre>
+            </article>
+            
+            <article class="function" data-name="allSuffixes">
+               <h3>
+                  allSuffixes 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>allSuffixes returns a list of suffixes (in order of decreasing length)
+found by splitting at re.</p>
+               
+               <pre><code>func allSuffixes(name string, re *regexp.Regexp) []string</code></pre>
+            </article>
+            
+            <article class="function" data-name="annotateAssembly">
+               <h3>
+                  annotateAssembly 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>annotateAssembly annotates a set of assembly instructions with a
+set of samples. It returns a set of nodes to display. base is an
+offset to adjust the sample addresses.</p>
+               
+               <pre><code>func annotateAssembly(insts []plugin.Inst, samples graph.Nodes, file plugin.ObjFile) []assemblyInstruction</code></pre>
+            </article>
+            
+            <article class="function" data-name="callgrindAddress">
+               <h3>
+                  callgrindAddress 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>callgrindAddress implements the callgrind subposition compression scheme if
+possible. If prevInfo != nil, it contains the previous address. The current
+address can be given relative to the previous address, with an explicit +/-
+to indicate it is relative, or * for the same address.</p>
+               
+               <pre><code>func callgrindAddress(prevInfo *graph.NodeInfo, curr uint64) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="callgrindName">
+               <h3>
+                  callgrindName 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>callgrindName implements the callgrind naming compression scheme.
+For names not previously seen returns "(N) name", where N is a
+unique index. For names previously seen returns "(N)" where N is
+the index returned the first time.</p>
+               
+               <pre><code>func callgrindName(names map[string]int, name string) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="canonicalizeFileName">
+               <h3>
+                  canonicalizeFileName 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func canonicalizeFileName(fname string) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="close">
+               <h3>
+                  close 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (sp *sourcePrinter) close()</code></pre>
+            </article>
+            
+            <article class="function" data-name="computeTotal">
+               <h3>
+                  computeTotal 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>computeTotal computes the sum of the absolute value of all sample values.
+If any samples have label indicating they belong to the diff base, then the
+total will only include samples with that label.</p>
+               
+               <pre><code>func computeTotal(prof *profile.Profile, value func(v []int64) int64, meanDiv func(v []int64) int64) int64</code></pre>
+            </article>
+            
+            <article class="function" data-name="cumValue">
+               <h3>
+                  cumValue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (a *assemblyInstruction) cumValue() int64</code></pre>
+            </article>
+            
+            <article class="function" data-name="expandAddresses">
+               <h3>
+                  expandAddresses 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (sp *sourcePrinter) expandAddresses(rpt *Report, addrs map[uint64]addrInfo, flat map[uint64]int64)</code></pre>
+            </article>
+            
+            <article class="function" data-name="fileError">
+               <h3>
+                  fileError 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (reader *sourceReader) fileError(path string) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="fileNameSuffixes">
+               <h3>
+                  fileNameSuffixes 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>fileNameSuffixes returns a non-empty sequence of shortened file names
+(in decreasing preference) that can be used to represent name.</p>
+               
+               <pre><code>func fileNameSuffixes(name string) []string</code></pre>
+            </article>
+            
+            <article class="function" data-name="fillPlaces">
+               <h3>
+                  fillPlaces 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *StackSet) fillPlaces()</code></pre>
+            </article>
+            
+            <article class="function" data-name="findOrAdd">
+               <h3>
+                  findOrAdd 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>findOrAdd takes a node representing a function, adds the function
 represented by the node to the map if the function is not already present,
 and returns the function the node represents. This also returns a boolean,
 which is true if the function was added and false otherwise.</p>
+               
+               <pre><code>func (fm functionMap) findOrAdd(ni graph.NodeInfo) (*profile.Function, bool)</code></pre>
+            </article>
             
-            <pre><code>func findOrAdd(ni graph.NodeInfo) (*profile.Function, bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="printAssembly">
-            <h2>printAssembly</h2>
-            <hr />
+            <article class="function" data-name="flatValue">
+               <h3>
+                  flatValue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (a *assemblyInstruction) flatValue() int64</code></pre>
+            </article>
             
-            <p>printAssembly prints an annotated assembly listing.</p>
+            <article class="function" data-name="functions">
+               <h3>
+                  functions 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>functions splits apart the lines to show in a file into a list of per-function ranges.</p>
+               
+               <pre><code>func (sp *sourcePrinter) functions(f *sourceFile) []sourceFunction</code></pre>
+            </article>
             
-            <pre><code>func printAssembly(w io.Writer, rpt *Report, obj plugin.ObjTool) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="PrintAssembly">
-            <h2>PrintAssembly</h2>
-            <hr />
+            <article class="function" data-name="genLabel">
+               <h3>
+                  genLabel 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func genLabel(d int, n string, l string, f string) string</code></pre>
+            </article>
             
-            <p>PrintAssembly prints annotated disassembly of rpt to w.</p>
+            <article class="function" data-name="generate">
+               <h3>
+                  generate 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (sp *sourcePrinter) generate(maxFiles int, rpt *Report) WebListData</code></pre>
+            </article>
             
-            <pre><code>func PrintAssembly(w io.Writer, rpt *Report, obj plugin.ObjTool, maxFuncs int) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="symbolsFromBinaries">
-            <h2>symbolsFromBinaries</h2>
-            <hr />
+            <article class="function" data-name="generateFile">
+               <h3>
+                  generateFile 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (sp *sourcePrinter) generateFile(f *sourceFile, rpt *Report) WebListFile</code></pre>
+            </article>
             
-            <p>symbolsFromBinaries examines the binaries listed on the profile that have
-associated samples, and returns the identified symbols matching rx.</p>
-            
-            <pre><code>func symbolsFromBinaries(prof *profile.Profile, g *graph.Graph, rx *regexp.Regexp, address *uint64, obj plugin.ObjTool) []*objSymbol</code></pre>
-         </article>
-         
-         <article class="function" data-name="Len">
-            <h2>Len</h2>
-            <hr />
-            
-            <pre><code>func Len() int</code></pre>
-         </article>
-         
-         <article class="function" data-name="Less">
-            <h2>Less</h2>
-            <hr />
-            
-            <pre><code>func Less(i int, j int) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="Swap">
-            <h2>Swap</h2>
-            <hr />
-            
-            <pre><code>func Swap(i int, j int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="nodesPerSymbol">
-            <h2>nodesPerSymbol</h2>
-            <hr />
-            
-            <p>nodesPerSymbol classifies nodes into a group of symbols.</p>
-            
-            <pre><code>func nodesPerSymbol(ns graph.Nodes, symbols []*objSymbol) *ast.MapType</code></pre>
-         </article>
-         
-         <article class="function" data-name="flatValue">
-            <h2>flatValue</h2>
-            <hr />
-            
-            <pre><code>func flatValue() int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="cumValue">
-            <h2>cumValue</h2>
-            <hr />
-            
-            <pre><code>func cumValue() int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="annotateAssembly">
-            <h2>annotateAssembly</h2>
-            <hr />
-            
-            <p>annotateAssembly annotates a set of assembly instructions with a
-set of samples. It returns a set of nodes to display. base is an
-offset to adjust the sample addresses.</p>
-            
-            <pre><code>func annotateAssembly(insts []plugin.Inst, samples graph.Nodes, file plugin.ObjFile) []assemblyInstruction</code></pre>
-         </article>
-         
-         <article class="function" data-name="valueOrDot">
-            <h2>valueOrDot</h2>
-            <hr />
-            
-            <p>valueOrDot formats a value according to a report, intercepting zero
-values.</p>
-            
-            <pre><code>func valueOrDot(value int64, rpt *Report) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="printTags">
-            <h2>printTags</h2>
-            <hr />
-            
-            <p>printTags collects all tags referenced in the profile and prints
-them in a sorted table.</p>
-            
-            <pre><code>func printTags(w io.Writer, rpt *Report) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="printComments">
-            <h2>printComments</h2>
-            <hr />
-            
-            <p>printComments prints all freeform comments in the profile.</p>
-            
-            <pre><code>func printComments(w io.Writer, rpt *Report) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="TextItems">
-            <h2>TextItems</h2>
-            <hr />
-            
-            <p>TextItems returns a list of text items from the report and a list
-of labels that describe the report.</p>
-            
-            <pre><code>func TextItems(rpt *Report) ([]TextItem, []string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="printText">
-            <h2>printText</h2>
-            <hr />
-            
-            <p>printText prints a flat text report for a profile.</p>
-            
-            <pre><code>func printText(w io.Writer, rpt *Report) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="printTraces">
-            <h2>printTraces</h2>
-            <hr />
-            
-            <p>printTraces prints all traces from a profile.</p>
-            
-            <pre><code>func printTraces(w io.Writer, rpt *Report) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="printCallgrind">
-            <h2>printCallgrind</h2>
-            <hr />
-            
-            <p>printCallgrind prints a graph for a profile on callgrind format.</p>
-            
-            <pre><code>func printCallgrind(w io.Writer, rpt *Report) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="getDisambiguatedNames">
-            <h2>getDisambiguatedNames</h2>
-            <hr />
-            
-            <p>getDisambiguatedNames returns a map from each node in the graph to
+            <article class="function" data-name="getDisambiguatedNames">
+               <h3>
+                  getDisambiguatedNames 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>getDisambiguatedNames returns a map from each node in the graph to
 the name to use in the callgrind output. Callgrind merges all
 functions with the same [file name, function name]. Add a [%d/n]
 suffix to disambiguate nodes with different values of
 node.Function, which we want to keep separate. In particular, this
 affects graphs created with --call_tree, where nodes from different
 contexts are associated to different Functions.</p>
+               
+               <pre><code>func getDisambiguatedNames(g *graph.Graph) map[*graph.Node]string</code></pre>
+            </article>
             
-            <pre><code>func getDisambiguatedNames(g *graph.Graph) *ast.MapType</code></pre>
-         </article>
-         
-         <article class="function" data-name="callgrindName">
-            <h2>callgrindName</h2>
-            <hr />
-            
-            <p>callgrindName implements the callgrind naming compression scheme.
-For names not previously seen returns "(N) name", where N is a
-unique index. For names previously seen returns "(N)" where N is
-the index returned the first time.</p>
-            
-            <pre><code>func callgrindName(names *ast.MapType, name string) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="callgrindAddress">
-            <h2>callgrindAddress</h2>
-            <hr />
-            
-            <p>callgrindAddress implements the callgrind subposition compression scheme if
-possible. If prevInfo != nil, it contains the previous address. The current
-address can be given relative to the previous address, with an explicit +/-
-to indicate it is relative, or * for the same address.</p>
-            
-            <pre><code>func callgrindAddress(prevInfo *graph.NodeInfo, curr uint64) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="printTree">
-            <h2>printTree</h2>
-            <hr />
-            
-            <p>printTree prints a tree-based report in text form.</p>
-            
-            <pre><code>func printTree(w io.Writer, rpt *Report) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="GetDOT">
-            <h2>GetDOT</h2>
-            <hr />
-            
-            <p>GetDOT returns a graph suitable for dot processing along with some
-configuration information.</p>
-            
-            <pre><code>func GetDOT(rpt *Report) (*graph.Graph, *graph.DotConfig)</code></pre>
-         </article>
-         
-         <article class="function" data-name="printDOT">
-            <h2>printDOT</h2>
-            <hr />
-            
-            <p>printDOT prints an annotated callgraph in DOT format.</p>
-            
-            <pre><code>func printDOT(w io.Writer, rpt *Report) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="ProfileLabels">
-            <h2>ProfileLabels</h2>
-            <hr />
-            
-            <p>ProfileLabels returns printable labels for a profile.</p>
-            
-            <pre><code>func ProfileLabels(rpt *Report) []string</code></pre>
-         </article>
-         
-         <article class="function" data-name="graphTotal">
-            <h2>graphTotal</h2>
-            <hr />
-            
-            <pre><code>func graphTotal(g *graph.Graph) int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="reportLabels">
-            <h2>reportLabels</h2>
-            <hr />
-            
-            <p>reportLabels returns printable labels for a report. Includes
-profileLabels.</p>
-            
-            <pre><code>func reportLabels(rpt *Report, shownTotal int64, nodeCount int, origCount int, droppedNodes int, droppedEdges int, fullHeaders bool) []string</code></pre>
-         </article>
-         
-         <article class="function" data-name="legendActiveFilters">
-            <h2>legendActiveFilters</h2>
-            <hr />
-            
-            <pre><code>func legendActiveFilters(activeFilters []string) []string</code></pre>
-         </article>
-         
-         <article class="function" data-name="genLabel">
-            <h2>genLabel</h2>
-            <hr />
-            
-            <pre><code>func genLabel(d int, n string, l string, f string) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="New">
-            <h2>New</h2>
-            <hr />
-            
-            <p>New builds a new report indexing the sample values interpreting the
-samples with the provided function.</p>
-            
-            <pre><code>func New(prof *profile.Profile, o *Options) *Report</code></pre>
-         </article>
-         
-         <article class="function" data-name="NewDefault">
-            <h2>NewDefault</h2>
-            <hr />
-            
-            <p>NewDefault builds a new report indexing the last sample value
-available.</p>
-            
-            <pre><code>func NewDefault(prof *profile.Profile, options Options) *Report</code></pre>
-         </article>
-         
-         <article class="function" data-name="computeTotal">
-            <h2>computeTotal</h2>
-            <hr />
-            
-            <p>computeTotal computes the sum of the absolute value of all sample values.
-If any samples have label indicating they belong to the diff base, then the
-total will only include samples with that label.</p>
-            
-            <pre><code>func computeTotal(prof *profile.Profile, value func, meanDiv func) int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="Total">
-            <h2>Total</h2>
-            <hr />
-            
-            <p>Total returns the total number of samples in a report.</p>
-            
-            <pre><code>func Total() int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="OutputFormat">
-            <h2>OutputFormat</h2>
-            <hr />
-            
-            <p>OutputFormat returns the output format for the report.</p>
-            
-            <pre><code>func OutputFormat() int</code></pre>
-         </article>
-         
-         <article class="function" data-name="DocURL">
-            <h2>DocURL</h2>
-            <hr />
-            
-            <p>DocURL returns the documentation URL for Report, or "" if not available.</p>
-            
-            <pre><code>func DocURL() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="absoluteURL">
-            <h2>absoluteURL</h2>
-            <hr />
-            
-            <pre><code>func absoluteURL(str string) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="abs64">
-            <h2>abs64</h2>
-            <hr />
-            
-            <pre><code>func abs64(i int64) int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="fileNameSuffixes">
-            <h2>fileNameSuffixes</h2>
-            <hr />
-            
-            <p>fileNameSuffixes returns a non-empty sequence of shortened file names
-(in decreasing preference) that can be used to represent name.</p>
-            
-            <pre><code>func fileNameSuffixes(name string) []string</code></pre>
-         </article>
-         
-         <article class="function" data-name="shortNameList">
-            <h2>shortNameList</h2>
-            <hr />
-            
-            <p>shortNameList returns a non-empty sequence of shortened names
-(in decreasing preference) that can be used to represent name.</p>
-            
-            <pre><code>func shortNameList(name string) []string</code></pre>
-         </article>
-         
-         <article class="function" data-name="allSuffixes">
-            <h2>allSuffixes</h2>
-            <hr />
-            
-            <p>allSuffixes returns a list of suffixes (in order of decreasing length)
-found by splitting at re.</p>
-            
-            <pre><code>func allSuffixes(name string, re *regexp.Regexp) []string</code></pre>
-         </article>
-         
-         <article class="function" data-name="printSource">
-            <h2>printSource</h2>
-            <hr />
-            
-            <p>printSource prints an annotated source listing, include all
-functions with samples that match the regexp rpt.options.symbol.
-The sources are sorted by function name and then by filename to
-eliminate potential nondeterminism.</p>
-            
-            <pre><code>func printSource(w io.Writer, rpt *Report) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="MakeWebList">
-            <h2>MakeWebList</h2>
-            <hr />
-            
-            <p>MakeWebList returns an annotated source listing of rpt.
-rpt.prof should contain inlined call info.</p>
-            
-            <pre><code>func MakeWebList(rpt *Report, obj plugin.ObjTool, maxFiles int) (WebListData, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="newSourcePrinter">
-            <h2>newSourcePrinter</h2>
-            <hr />
-            
-            <pre><code>func newSourcePrinter(rpt *Report, obj plugin.ObjTool, sourcePath string) *sourcePrinter</code></pre>
-         </article>
-         
-         <article class="function" data-name="close">
-            <h2>close</h2>
-            <hr />
-            
-            <pre><code>func close()</code></pre>
-         </article>
-         
-         <article class="function" data-name="expandAddresses">
-            <h2>expandAddresses</h2>
-            <hr />
-            
-            <pre><code>func expandAddresses(rpt *Report, addrs *ast.MapType, flat *ast.MapType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="addStack">
-            <h2>addStack</h2>
-            <hr />
-            
-            <pre><code>func addStack(addr uint64, frames []plugin.Frame)</code></pre>
-         </article>
-         
-         <article class="function" data-name="handleUnprocessed">
-            <h2>handleUnprocessed</h2>
-            <hr />
-            
-            <p>handleUnprocessed handles addresses that were skipped by splitIntoRanges because they
-did not belong to a known object file.</p>
-            
-            <pre><code>func handleUnprocessed(addrs *ast.MapType, unprocessed []uint64)</code></pre>
-         </article>
-         
-         <article class="function" data-name="splitIntoRanges">
-            <h2>splitIntoRanges</h2>
-            <hr />
-            
-            <p>splitIntoRanges converts the set of addresses we are interested in into a set of address
-ranges to disassemble. It also returns the set of addresses found that did not have an
-associated object file and were therefore not added to an address range.</p>
-            
-            <pre><code>func splitIntoRanges(prof *profile.Profile, addrMap *ast.MapType, flat *ast.MapType) ([]addressRange, []uint64)</code></pre>
-         </article>
-         
-         <article class="function" data-name="initSamples">
-            <h2>initSamples</h2>
-            <hr />
-            
-            <pre><code>func initSamples(flat *ast.MapType, cum *ast.MapType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="generate">
-            <h2>generate</h2>
-            <hr />
-            
-            <pre><code>func generate(maxFiles int, rpt *Report) WebListData</code></pre>
-         </article>
-         
-         <article class="function" data-name="generateFile">
-            <h2>generateFile</h2>
-            <hr />
-            
-            <pre><code>func generateFile(f *sourceFile, rpt *Report) WebListFile</code></pre>
-         </article>
-         
-         <article class="function" data-name="functions">
-            <h2>functions</h2>
-            <hr />
-            
-            <p>functions splits apart the lines to show in a file into a list of per-function ranges.</p>
-            
-            <pre><code>func functions(f *sourceFile) []sourceFunction</code></pre>
-         </article>
-         
-         <article class="function" data-name="objectFile">
-            <h2>objectFile</h2>
-            <hr />
-            
-            <p>objectFile return the object for the specified mapping, opening it if necessary.
-It returns nil on error.</p>
-            
-            <pre><code>func objectFile(m *profile.Mapping) plugin.ObjFile</code></pre>
-         </article>
-         
-         <article class="function" data-name="makeWebListLine">
-            <h2>makeWebListLine</h2>
-            <hr />
-            
-            <p>makeWebListLine returns the contents of a single line in a web listing. This includes
-the source line and the corresponding assembly.</p>
-            
-            <pre><code>func makeWebListLine(lineNo int, flat int64, cum int64, lineContents string, assembly []assemblyInstruction, reader *sourceReader, rpt *Report) WebListLine</code></pre>
-         </article>
-         
-         <article class="function" data-name="makeWebListInstructions">
-            <h2>makeWebListInstructions</h2>
-            <hr />
-            
-            <pre><code>func makeWebListInstructions(srcIndent int, assembly []assemblyInstruction, reader *sourceReader, rpt *Report) []WebListInstruction</code></pre>
-         </article>
-         
-         <article class="function" data-name="getSourceFromFile">
-            <h2>getSourceFromFile</h2>
-            <hr />
-            
-            <p>getSourceFromFile collects the sources of a function from a source
+            <article class="function" data-name="getSourceFromFile">
+               <h3>
+                  getSourceFromFile 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>getSourceFromFile collects the sources of a function from a source
 file and annotates it with the samples in fns. Returns the sources
 as nodes, using the info.name field to hold the source code.</p>
+               
+               <pre><code>func getSourceFromFile(file string, reader *sourceReader, fns graph.Nodes, start int, end int) (graph.Nodes, string, error)</code></pre>
+            </article>
             
-            <pre><code>func getSourceFromFile(file string, reader *sourceReader, fns graph.Nodes, start int, end int) (graph.Nodes, string, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="newSourceReader">
-            <h2>newSourceReader</h2>
-            <hr />
+            <article class="function" data-name="graphTotal">
+               <h3>
+                  graphTotal 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func graphTotal(g *graph.Graph) int64</code></pre>
+            </article>
             
-            <pre><code>func newSourceReader(searchPath string, trimPath string) *sourceReader</code></pre>
-         </article>
-         
-         <article class="function" data-name="fileError">
-            <h2>fileError</h2>
-            <hr />
+            <article class="function" data-name="handleUnprocessed">
+               <h3>
+                  handleUnprocessed 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>handleUnprocessed handles addresses that were skipped by splitIntoRanges because they
+did not belong to a known object file.</p>
+               
+               <pre><code>func (sp *sourcePrinter) handleUnprocessed(addrs map[uint64]addrInfo, unprocessed []uint64)</code></pre>
+            </article>
             
-            <pre><code>func fileError(path string) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="line">
-            <h2>line</h2>
-            <hr />
+            <article class="function" data-name="indentation">
+               <h3>
+                  indentation 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func indentation(line string) int</code></pre>
+            </article>
             
-            <p>line returns the line numbered "lineno" in path, or _,false if lineno is out of range.</p>
+            <article class="function" data-name="initSamples">
+               <h3>
+                  initSamples 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (sp *sourcePrinter) initSamples(flat map[uint64]int64, cum map[uint64]int64)</code></pre>
+            </article>
             
-            <pre><code>func line(path string, lineno int) (string, bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="openSourceFile">
-            <h2>openSourceFile</h2>
-            <hr />
+            <article class="function" data-name="legendActiveFilters">
+               <h3>
+                  legendActiveFilters 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func legendActiveFilters(activeFilters []string) []string</code></pre>
+            </article>
             
-            <p>openSourceFile opens a source file from a name encoded in a profile. File
+            <article class="function" data-name="line">
+               <h3>
+                  line 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>line returns the line numbered "lineno" in path, or _,false if lineno is out of range.</p>
+               
+               <pre><code>func (reader *sourceReader) line(path string, lineno int) (string, bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="makeInitialStacks">
+               <h3>
+                  makeInitialStacks 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *StackSet) makeInitialStacks(rpt *Report)</code></pre>
+            </article>
+            
+            <article class="function" data-name="makeWebListInstructions">
+               <h3>
+                  makeWebListInstructions 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func makeWebListInstructions(srcIndent int, assembly []assemblyInstruction, reader *sourceReader, rpt *Report) []WebListInstruction</code></pre>
+            </article>
+            
+            <article class="function" data-name="makeWebListLine">
+               <h3>
+                  makeWebListLine 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>makeWebListLine returns the contents of a single line in a web listing. This includes
+the source line and the corresponding assembly.</p>
+               
+               <pre><code>func makeWebListLine(lineNo int, flat int64, cum int64, lineContents string, assembly []assemblyInstruction, reader *sourceReader, rpt *Report) WebListLine</code></pre>
+            </article>
+            
+            <article class="function" data-name="newGraph">
+               <h3>
+                  newGraph 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>newGraph creates a new graph for this report. If nodes is non-nil,
+only nodes whose info matches are included. Otherwise, all nodes
+are included, without trimming.</p>
+               
+               <pre><code>func (rpt *Report) newGraph(nodes graph.NodeSet) *graph.Graph</code></pre>
+            </article>
+            
+            <article class="function" data-name="newSourcePrinter">
+               <h3>
+                  newSourcePrinter 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func newSourcePrinter(rpt *Report, obj plugin.ObjTool, sourcePath string) *sourcePrinter</code></pre>
+            </article>
+            
+            <article class="function" data-name="newSourceReader">
+               <h3>
+                  newSourceReader 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func newSourceReader(searchPath string, trimPath string) *sourceReader</code></pre>
+            </article>
+            
+            <article class="function" data-name="newSynthCode">
+               <h3>
+                  newSynthCode 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func newSynthCode(mappings []*profile.Mapping) *synthCode</code></pre>
+            </article>
+            
+            <article class="function" data-name="newTrimmedGraph">
+               <h3>
+                  newTrimmedGraph 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>newTrimmedGraph creates a graph for this report, trimmed according
+to the report options.</p>
+               
+               <pre><code>func (rpt *Report) newTrimmedGraph() (g *graph.Graph, origCount int, droppedNodes int, droppedEdges int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="nodesPerSymbol">
+               <h3>
+                  nodesPerSymbol 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>nodesPerSymbol classifies nodes into a group of symbols.</p>
+               
+               <pre><code>func nodesPerSymbol(ns graph.Nodes, symbols []*objSymbol) map[*objSymbol]graph.Nodes</code></pre>
+            </article>
+            
+            <article class="function" data-name="objectFile">
+               <h3>
+                  objectFile 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>objectFile return the object for the specified mapping, opening it if necessary.
+It returns nil on error.</p>
+               
+               <pre><code>func (sp *sourcePrinter) objectFile(m *profile.Mapping) plugin.ObjFile</code></pre>
+            </article>
+            
+            <article class="function" data-name="openSourceFile">
+               <h3>
+                  openSourceFile 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>openSourceFile opens a source file from a name encoded in a profile. File
 names in a profile after can be relative paths, so search them in each of
 the paths in searchPath and their parents. In case the profile contains
 absolute paths, additional paths may be configured to trim from the source
 paths in the profile. This effectively turns the path into a relative path
 searching it using searchPath as usual).</p>
+               
+               <pre><code>func openSourceFile(path string, searchPath string, trim string) (*os.File, error)</code></pre>
+            </article>
             
-            <pre><code>func openSourceFile(path string, searchPath string, trim string) (*os.File, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="trimPath">
-            <h2>trimPath</h2>
-            <hr />
+            <article class="function" data-name="packageName">
+               <h3>
+                  packageName 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>packageName returns the package name of the named symbol, or "" if not found.</p>
+               
+               <pre><code>func packageName(name string) string</code></pre>
+            </article>
             
-            <p>trimPath cleans up a path by removing prefixes that are commonly
+            <article class="function" data-name="pickColor">
+               <h3>
+                  pickColor 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>pickColor picks a color for key.</p>
+               
+               <pre><code>func pickColor(key string) int</code></pre>
+            </article>
+            
+            <article class="function" data-name="printAssembly">
+               <h3>
+                  printAssembly 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>printAssembly prints an annotated assembly listing.</p>
+               
+               <pre><code>func printAssembly(w io.Writer, rpt *Report, obj plugin.ObjTool) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="printCallgrind">
+               <h3>
+                  printCallgrind 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>printCallgrind prints a graph for a profile on callgrind format.</p>
+               
+               <pre><code>func printCallgrind(w io.Writer, rpt *Report) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="printComments">
+               <h3>
+                  printComments 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>printComments prints all freeform comments in the profile.</p>
+               
+               <pre><code>func printComments(w io.Writer, rpt *Report) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="printDOT">
+               <h3>
+                  printDOT 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>printDOT prints an annotated callgraph in DOT format.</p>
+               
+               <pre><code>func printDOT(w io.Writer, rpt *Report) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="printProto">
+               <h3>
+                  printProto 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>printProto writes the incoming proto via the writer w.
+If the divide_by option has been specified, samples are scaled appropriately.</p>
+               
+               <pre><code>func printProto(w io.Writer, rpt *Report) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="printSource">
+               <h3>
+                  printSource 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>printSource prints an annotated source listing, include all
+functions with samples that match the regexp rpt.options.symbol.
+The sources are sorted by function name and then by filename to
+eliminate potential nondeterminism.</p>
+               
+               <pre><code>func printSource(w io.Writer, rpt *Report) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="printTags">
+               <h3>
+                  printTags 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>printTags collects all tags referenced in the profile and prints
+them in a sorted table.</p>
+               
+               <pre><code>func printTags(w io.Writer, rpt *Report) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="printText">
+               <h3>
+                  printText 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>printText prints a flat text report for a profile.</p>
+               
+               <pre><code>func printText(w io.Writer, rpt *Report) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="printTopProto">
+               <h3>
+                  printTopProto 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>printTopProto writes a list of the hottest routines in a profile as a profile.proto.</p>
+               
+               <pre><code>func printTopProto(w io.Writer, rpt *Report) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="printTraces">
+               <h3>
+                  printTraces 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>printTraces prints all traces from a profile.</p>
+               
+               <pre><code>func printTraces(w io.Writer, rpt *Report) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="printTree">
+               <h3>
+                  printTree 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>printTree prints a tree-based report in text form.</p>
+               
+               <pre><code>func printTree(w io.Writer, rpt *Report) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="reportLabels">
+               <h3>
+                  reportLabels 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>reportLabels returns printable labels for a report. Includes
+profileLabels.</p>
+               
+               <pre><code>func reportLabels(rpt *Report, shownTotal int64, nodeCount int, origCount int, droppedNodes int, droppedEdges int, fullHeaders bool) []string</code></pre>
+            </article>
+            
+            <article class="function" data-name="rightPad">
+               <h3>
+                  rightPad 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>rightPad pads the input with spaces on the right-hand-side to make it have
+at least width n. It treats tabs as enough spaces that lead to the next
+8-aligned tab-stop.</p>
+               
+               <pre><code>func rightPad(s string, n int) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="selectOutputUnit">
+               <h3>
+                  selectOutputUnit 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (rpt *Report) selectOutputUnit(g *graph.Graph)</code></pre>
+            </article>
+            
+            <article class="function" data-name="shortNameList">
+               <h3>
+                  shortNameList 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>shortNameList returns a non-empty sequence of shortened names
+(in decreasing preference) that can be used to represent name.</p>
+               
+               <pre><code>func shortNameList(name string) []string</code></pre>
+            </article>
+            
+            <article class="function" data-name="splitIntoRanges">
+               <h3>
+                  splitIntoRanges 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>splitIntoRanges converts the set of addresses we are interested in into a set of address
+ranges to disassemble. It also returns the set of addresses found that did not have an
+associated object file and were therefore not added to an address range.</p>
+               
+               <pre><code>func (sp *sourcePrinter) splitIntoRanges(prof *profile.Profile, addrMap map[uint64]addrInfo, flat map[uint64]int64) ([]addressRange, []uint64)</code></pre>
+            </article>
+            
+            <article class="function" data-name="symbolsFromBinaries">
+               <h3>
+                  symbolsFromBinaries 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>symbolsFromBinaries examines the binaries listed on the profile that have
+associated samples, and returns the identified symbols matching rx.</p>
+               
+               <pre><code>func symbolsFromBinaries(prof *profile.Profile, g *graph.Graph, rx *regexp.Regexp, address *uint64, obj plugin.ObjTool) []*objSymbol</code></pre>
+            </article>
+            
+            <article class="function" data-name="trimPath">
+               <h3>
+                  trimPath 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>trimPath cleans up a path by removing prefixes that are commonly
 found on profiles plus configured prefixes.
 TODO(aalexand): Consider optimizing out the redundant work done in this
 function if it proves to matter.</p>
+               
+               <pre><code>func trimPath(path string, trimPath string, searchPath string) string</code></pre>
+            </article>
             
-            <pre><code>func trimPath(path string, trimPath string, searchPath string) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="indentation">
-            <h2>indentation</h2>
-            <hr />
+            <article class="function" data-name="valueOrDot">
+               <h3>
+                  valueOrDot 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>valueOrDot formats a value according to a report, intercepting zero
+values.</p>
+               
+               <pre><code>func valueOrDot(value int64, rpt *Report) string</code></pre>
+            </article>
             
-            <pre><code>func indentation(line string) int</code></pre>
-         </article>
-         
-         <article class="function" data-name="rightPad">
-            <h2>rightPad</h2>
-            <hr />
-            
-            <p>rightPad pads the input with spaces on the right-hand-side to make it have
-at least width n. It treats tabs as enough spaces that lead to the next
-8-aligned tab-stop.</p>
-            
-            <pre><code>func rightPad(s string, n int) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="canonicalizeFileName">
-            <h2>canonicalizeFileName</h2>
-            <hr />
-            
-            <pre><code>func canonicalizeFileName(fname string) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="AddSourceTemplates">
-            <h2>AddSourceTemplates</h2>
-            <hr />
-            
-            <p>AddSourceTemplates adds templates used by PrintWebList to t.</p>
-            
-            <pre><code>func AddSourceTemplates(t *template.Template)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Stacks">
-            <h2>Stacks</h2>
-            <hr />
-            
-            <p>Stacks returns a StackSet for the profile in rpt.</p>
-            
-            <pre><code>func Stacks() StackSet</code></pre>
-         </article>
-         
-         <article class="function" data-name="makeInitialStacks">
-            <h2>makeInitialStacks</h2>
-            <hr />
-            
-            <pre><code>func makeInitialStacks(rpt *Report)</code></pre>
-         </article>
-         
-         <article class="function" data-name="fillPlaces">
-            <h2>fillPlaces</h2>
-            <hr />
-            
-            <pre><code>func fillPlaces()</code></pre>
-         </article>
-         
-         <article class="function" data-name="pickColor">
-            <h2>pickColor</h2>
-            <hr />
-            
-            <p>pickColor picks a color for key.</p>
-            
-            <pre><code>func pickColor(key string) int</code></pre>
-         </article>
-         
-         <article class="function" data-name="Legend">
-            <h2>Legend</h2>
-            <hr />
-            
-            <p>Legend returns the list of lines to display as the legend.</p>
-            
-            <pre><code>func Legend() []string</code></pre>
-         </article>
-         
-         <article class="function" data-name="addLineInfo">
-            <h2>addLineInfo</h2>
-            <hr />
-            
-            <pre><code>func addLineInfo(str string, line profile.Line) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="newSynthCode">
-            <h2>newSynthCode</h2>
-            <hr />
-            
-            <pre><code>func newSynthCode(mappings []*profile.Mapping) *synthCode</code></pre>
-         </article>
-         
-         <article class="function" data-name="address">
-            <h2>address</h2>
-            <hr />
-            
-            <p>address returns the synthetic address for loc, creating one if needed.</p>
-            
-            <pre><code>func address(loc *profile.Location) uint64</code></pre>
-         </article>
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -1438,59 +2263,170 @@ at least width n. It treats tabs as enough spaces that lead to the next
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

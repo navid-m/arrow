@@ -13,281 +13,642 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
-          
-         <a href="internal_coverage_cfile_testdata-docs.html">testdata</a>
-         <br />
-          
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
+         
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                 
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
+         
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>cfile</code>
-         </h1>
-         <hr />
+         <h1>cfile</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="hellogo">
-            <h2>hellogo</h2>
-            <hr />
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"internal/runtime/exithook"
+"encoding/json"
+"fmt"
+"internal/coverage"
+"internal/coverage/calloc"
+"internal/coverage/cformat"
+"internal/coverage/cmerge"
+"internal/coverage/decodecounter"
+"internal/coverage/decodemeta"
+"internal/coverage/pods"
+"internal/coverage/rtcov"
+"internal/runtime/atomic"
+"io"
+"os"
+"path/filepath"
+"strings"
+"unsafe"
+"fmt"
+"internal/coverage"
+"internal/coverage/rtcov"
+"io"
+"sync/atomic"
+"unsafe"
+"fmt"
+"hash/fnv"
+"internal/coverage"
+"internal/coverage/encodecounter"
+"internal/coverage/encodemeta"
+"internal/coverage/rtcov"
+"io"
+"os"
+"path/filepath"
+"runtime"
+"strconv"
+"sync/atomic"
+"time"
+"unsafe"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <pre><code>hellogo</code></pre>
-         </article>
-         
-         <article class="global" data-name="finalHash">
-            <h2>finalHash</h2>
-            <hr />
+            <article class="global" data-name="capturedOsArgs">
+               <h3>
+                  capturedOsArgs 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Copy of os.Args made at init time, converted into map format.</p>
+               
+               <pre><code>var capturedOsArgs map[string]string</code></pre>
+            </article>
             
-            <p>finalHash is computed at init time from the list of meta-data
+            <article class="global" data-name="cgran">
+               <h3>
+                  cgran 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Counter granularity for this instrumented program run.</p>
+               
+               <pre><code>var cgran coverage.CounterGranularity</code></pre>
+            </article>
+            
+            <article class="global" data-name="cmode">
+               <h3>
+                  cmode 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Counter mode for this instrumented program run.</p>
+               
+               <pre><code>var cmode coverage.CounterMode</code></pre>
+            </article>
+            
+            <article class="global" data-name="counterDataFile">
+               <h3>
+                  counterDataFile 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const counterDataFile</code></pre>
+            </article>
+            
+            <article class="global" data-name="covProfileAlreadyEmitted">
+               <h3>
+                  covProfileAlreadyEmitted 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Flag used in tests to signal that coverage data already written.</p>
+               
+               <pre><code>var covProfileAlreadyEmitted bool</code></pre>
+            </article>
+            
+            <article class="global" data-name="finalHash">
+               <h3>
+                  finalHash 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>finalHash is computed at init time from the list of meta-data
 symbols registered during init. It is used both for writing the
 meta-data file and counter-data files.</p>
+               
+               <pre><code>var finalHash [16]byte</code></pre>
+            </article>
             
-            <pre><code>finalHash []byte</code></pre>
-         </article>
-         
-         <article class="global" data-name="finalHashComputed">
-            <h2>finalHashComputed</h2>
-            <hr />
+            <article class="global" data-name="finalHashComputed">
+               <h3>
+                  finalHashComputed 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Set to true when we've computed finalHash + finalMetaLen.</p>
+               
+               <pre><code>var finalHashComputed bool</code></pre>
+            </article>
             
-            <p>Set to true when we've computed finalHash + finalMetaLen.</p>
+            <article class="global" data-name="finalMetaLen">
+               <h3>
+                  finalMetaLen 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Total meta-data length.</p>
+               
+               <pre><code>var finalMetaLen uint64</code></pre>
+            </article>
             
-            <pre><code>finalHashComputed bool</code></pre>
-         </article>
-         
-         <article class="global" data-name="finalMetaLen">
-            <h2>finalMetaLen</h2>
-            <hr />
+            <article class="global" data-name="goCoverDir">
+               <h3>
+                  goCoverDir 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Cached value of GOCOVERDIR environment variable.</p>
+               
+               <pre><code>var goCoverDir string</code></pre>
+            </article>
             
-            <p>Total meta-data length.</p>
+            <article class="global" data-name="metaDataEmitAttempted">
+               <h3>
+                  metaDataEmitAttempted 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Records whether we've already attempted to write meta-data.</p>
+               
+               <pre><code>var metaDataEmitAttempted bool</code></pre>
+            </article>
             
-            <pre><code>finalMetaLen uint64</code></pre>
-         </article>
-         
-         <article class="global" data-name="metaDataEmitAttempted">
-            <h2>metaDataEmitAttempted</h2>
-            <hr />
+            <article class="global" data-name="metaDataFile">
+               <h3>
+                  metaDataFile 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const metaDataFile</code></pre>
+            </article>
             
-            <p>Records whether we've already attempted to write meta-data.</p>
+            <article class="global" data-name="noFile">
+               <h3>
+                  noFile 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const noFile = *ast.BinaryExpr</code></pre>
+            </article>
             
-            <pre><code>metaDataEmitAttempted bool</code></pre>
-         </article>
-         
-         <article class="global" data-name="cmode">
-            <h2>cmode</h2>
-            <hr />
-            
-            <p>Counter mode for this instrumented program run.</p>
-            
-            <pre><code>cmode coverage.CounterMode</code></pre>
-         </article>
-         
-         <article class="global" data-name="cgran">
-            <h2>cgran</h2>
-            <hr />
-            
-            <p>Counter granularity for this instrumented program run.</p>
-            
-            <pre><code>cgran coverage.CounterGranularity</code></pre>
-         </article>
-         
-         <article class="global" data-name="goCoverDir">
-            <h2>goCoverDir</h2>
-            <hr />
-            
-            <p>Cached value of GOCOVERDIR environment variable.</p>
-            
-            <pre><code>goCoverDir string</code></pre>
-         </article>
-         
-         <article class="global" data-name="capturedOsArgs">
-            <h2>capturedOsArgs</h2>
-            <hr />
-            
-            <p>Copy of os.Args made at init time, converted into map format.</p>
-            
-            <pre><code>capturedOsArgs *ast.MapType</code></pre>
-         </article>
-         
-         <article class="global" data-name="covProfileAlreadyEmitted">
-            <h2>covProfileAlreadyEmitted</h2>
-            <hr />
-            
-            <p>Flag used in tests to signal that coverage data already written.</p>
-            
-            <pre><code>covProfileAlreadyEmitted bool</code></pre>
-         </article>
-         
-         <article class="global" data-name="noFile">
-            <h2>noFile</h2>
-            <hr />
-            
-            <pre><code>noFile</code></pre>
-         </article>
-         
-         <article class="global" data-name="metaDataFile">
-            <h2>metaDataFile</h2>
-            <hr />
-            
-            <pre><code>metaDataFile</code></pre>
-         </article>
-         
-         <article class="global" data-name="counterDataFile">
-            <h2>counterDataFile</h2>
-            <hr />
-            
-            <pre><code>counterDataFile</code></pre>
-         </article>
-         
-         <article class="global" data-name="fixedTestDir">
-            <h2>fixedTestDir</h2>
-            <hr />
-            
-            <p>Set to true for debugging (linux only).</p>
-            
-            <pre><code>fixedTestDir</code></pre>
-         </article>
-         
-         <article class="global" data-name="funcInvoked">
-            <h2>funcInvoked</h2>
-            <hr />
-            
-            <pre><code>funcInvoked bool</code></pre>
-         </article>
+         </section>
           
-         <article class="struct" data-name="tstate">
-            <h2>type tstate struct</h2>
-            <hr />
+         <section id="types">
+            <h2>Type Aliases</h2>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">calloc.BatchCounterAlloc
-cm *cmerge.Merger
-cf *cformat.Formatter
-cmode coverage.CounterMode</code></pre>
-         </article>
-         
-         <article class="struct" data-name="pkfunc">
-            <h2>type pkfunc struct</h2>
-            <hr />
+            <article class="type" data-name="fileType">
+               <h3>
+                  fileType
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>fileType is used to select between counter-data files and
+meta-data files.</p>
+               
+               <pre><code>type fileType int</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">pk uint32
-fcn uint32</code></pre>
-         </article>
-         
-         <article class="struct" data-name="emitState">
-            <h2>type emitState struct</h2>
-            <hr />
+         </section>
+           
+         <section id="structs">
+            <h2>Structs</h2>
             
-            <p>emitState holds useful state information during the emit process.
-
+            <article class="struct" data-name="emitState">
+               <h3>
+                  emitState
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>emitState holds useful state information during the emit process.
 When an instrumented program finishes execution and starts the
 process of writing out coverage data, it's possible that an
 existing meta-data file already exists in the output directory. In
@@ -302,14 +663,14 @@ atomically; we want this so that things work smoothly in cases
 where there are several instances of a given instrumented program
 all terminating at the same time and trying to create meta-data
 files simultaneously.
-
 For counter data files there is less chance of a collision, hence
 the openOutputFiles() stores the counter data file in 'cfname' and
 then places the *io.File into 'cf'.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">mfname string
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type emitState struct {
+mfname string
 mftmp string
 mf *os.File
 cfname string
@@ -318,544 +679,72 @@ cf *os.File
 outdir string
 metalist []rtcov.CovMetaBlob
 counterlist []rtcov.CovCounterBlob
-pkgmap *ast.MapType
-debug bool</code></pre>
-         </article>
+pkgmap map[int]int
+debug bool
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="pkfunc">
+               <h3>
+                  pkfunc
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type pkfunc struct {
+pk uint32
+fcn uint32
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="tstate">
+               <h3>
+                  tstate
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type tstate struct {
+calloc.BatchCounterAlloc
+cm *cmerge.Merger
+cf *cformat.Formatter
+cmode coverage.CounterMode
+}</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="function" data-name="ProcessCoverTestDir">
-            <h2>ProcessCoverTestDir</h2>
-            <hr />
-            
-            <p>ProcessCoverTestDir is called from
-testmain code when "go test -cover" is in effect. It is not
-intended to be used other than internally by the Go command's
-generated code.</p>
-            
-            <pre><code>func ProcessCoverTestDir(dir string, cfile string, cm string, cpkg string, w io.Writer, selpkgs []string) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="processPod">
-            <h2>processPod</h2>
-            <hr />
-            
-            <p>processPod reads coverage counter data for a specific pod.</p>
-            
-            <pre><code>func processPod(p pods.Pod, importpaths *ast.MapType) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="readAuxMetaFiles">
-            <h2>readAuxMetaFiles</h2>
-            <hr />
-            
-            <pre><code>func readAuxMetaFiles(metafiles string, importpaths *ast.MapType) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="Snapshot">
-            <h2>Snapshot</h2>
-            <hr />
-            
-            <p>Snapshot returns a snapshot of coverage percentage at a moment of
-time within a running test, so as to support the testing.Coverage()
-function. This version doesn't examine coverage meta-data, so the
-result it returns will be less accurate (more "slop") due to the
-fact that we don't look at the meta data to see how many statements
-are associated with each counter.</p>
-            
-            <pre><code>func Snapshot() float64</code></pre>
-         </article>
-         
-         <article class="function" data-name="testGoCoverDir">
-            <h2>testGoCoverDir</h2>
-            <hr />
-            
-            <pre><code>func testGoCoverDir(t *testing.T) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestTestSupport">
-            <h2>TestTestSupport</h2>
-            <hr />
-            
-            <p>TestTestSupport does a basic verification of the functionality in
-ProcessCoverTestDir (doing this here as opposed to
-relying on other test paths will provide a better signal when
-running "go test -cover" for this package).</p>
-            
-            <pre><code>func TestTestSupport(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestCoverageSnapshot">
-            <h2>TestCoverageSnapshot</h2>
-            <hr />
-            
-            <p>Kicks off a sub-test to verify that Snapshot() works properly.
-We do this as a separate shell-out, so as to avoid potential
-interactions with -coverpkg. For example, if you do
-
-	$ cd `go env GOROOT`
-	$ cd src/internal/coverage
-	$ go test -coverpkg=internal/coverage/decodecounter ./...
-	...
-	$
-
-The previous version of this test could fail due to the fact
-that "cfile" itself was not being instrumented, as in the
-scenario above.</p>
-            
-            <pre><code>func TestCoverageSnapshot(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="genAuxMeta">
-            <h2>genAuxMeta</h2>
-            <hr />
-            
-            <p>Returns a pair F,T where F is a meta-data file generated from
-"hello.go" above, and T is a token to look for that should be
-present in the coverage report from F.</p>
-            
-            <pre><code>func genAuxMeta(t *testing.T, dstdir string) (string, string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestAuxMetaDataFiles">
-            <h2>TestAuxMetaDataFiles</h2>
-            <hr />
-            
-            <pre><code>func TestAuxMetaDataFiles(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="WriteMetaDir">
-            <h2>WriteMetaDir</h2>
-            <hr />
-            
-            <p>WriteMetaDir implements [runtime/coverage.WriteMetaDir].</p>
-            
-            <pre><code>func WriteMetaDir(dir string) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="WriteMeta">
-            <h2>WriteMeta</h2>
-            <hr />
-            
-            <p>WriteMeta implements [runtime/coverage.WriteMeta].</p>
-            
-            <pre><code>func WriteMeta(w io.Writer) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="WriteCountersDir">
-            <h2>WriteCountersDir</h2>
-            <hr />
-            
-            <p>WriteCountersDir implements [runtime/coverage.WriteCountersDir].</p>
-            
-            <pre><code>func WriteCountersDir(dir string) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="WriteCounters">
-            <h2>WriteCounters</h2>
-            <hr />
-            
-            <p>WriteCounters implements [runtime/coverage.WriteCounters].</p>
-            
-            <pre><code>func WriteCounters(w io.Writer) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="ClearCounters">
-            <h2>ClearCounters</h2>
-            <hr />
-            
-            <p>ClearCounters implements [runtime/coverage.ClearCounters].</p>
-            
-            <pre><code>func ClearCounters() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="getCovCounterList">
-            <h2>getCovCounterList</h2>
-            <hr />
-            
-            <p>getCovCounterList returns a list of counter-data blobs registered
-for the currently executing instrumented program. It is defined in the
-runtime.</p>
-            
-            <pre><code>func getCovCounterList() []rtcov.CovCounterBlob</code></pre>
-         </article>
-         
-         <article class="function" data-name="emitMetaData">
-            <h2>emitMetaData</h2>
-            <hr />
-            
-            <p>emitMetaData emits the meta-data output file for this coverage run.
-This entry point is intended to be invoked by the compiler from
-an instrumented program's main package init func.</p>
-            
-            <pre><code>func emitMetaData()</code></pre>
-         </article>
-         
-         <article class="function" data-name="modeClash">
-            <h2>modeClash</h2>
-            <hr />
-            
-            <pre><code>func modeClash(m coverage.CounterMode) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="granClash">
-            <h2>granClash</h2>
-            <hr />
-            
-            <pre><code>func granClash(g coverage.CounterGranularity) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="prepareForMetaEmit">
-            <h2>prepareForMetaEmit</h2>
-            <hr />
-            
-            <p>prepareForMetaEmit performs preparatory steps needed prior to
-emitting a meta-data file, notably computing a final hash of
-all meta-data blobs and capturing os args.</p>
-            
-            <pre><code>func prepareForMetaEmit() ([]rtcov.CovMetaBlob, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="emitMetaDataToDirectory">
-            <h2>emitMetaDataToDirectory</h2>
-            <hr />
-            
-            <p>emitMetaDataToDirectory emits the meta-data output file to the specified
-directory, returning an error if something went wrong.</p>
-            
-            <pre><code>func emitMetaDataToDirectory(outdir string, ml []rtcov.CovMetaBlob) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="emitCounterData">
-            <h2>emitCounterData</h2>
-            <hr />
-            
-            <p>emitCounterData emits the counter data output file for this coverage run.
-This entry point is intended to be invoked by the runtime when an
-instrumented program is terminating or calling os.Exit().</p>
-            
-            <pre><code>func emitCounterData()</code></pre>
-         </article>
-         
-         <article class="function" data-name="emitCounterDataToDirectory">
-            <h2>emitCounterDataToDirectory</h2>
-            <hr />
-            
-            <p>emitCounterDataToDirectory emits the counter-data output file for this coverage run.</p>
-            
-            <pre><code>func emitCounterDataToDirectory(outdir string) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="emitCounterDataToWriter">
-            <h2>emitCounterDataToWriter</h2>
-            <hr />
-            
-            <p>emitCounterDataToWriter emits counter data for this coverage run to an io.Writer.</p>
-            
-            <pre><code>func emitCounterDataToWriter(w io.Writer) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="openMetaFile">
-            <h2>openMetaFile</h2>
-            <hr />
-            
-            <p>openMetaFile determines whether we need to emit a meta-data output
-file, or whether we can reuse the existing file in the coverage out
-dir. It updates mfname/mftmp/mf fields in 's', returning an error
-if something went wrong. See the comment on the emitState type
-definition above for more on how file opening is managed.</p>
-            
-            <pre><code>func openMetaFile(metaHash []byte, metaLen uint64) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="openCounterFile">
-            <h2>openCounterFile</h2>
-            <hr />
-            
-            <p>openCounterFile opens an output file for the counter data portion
-of a test coverage run. If updates the 'cfname' and 'cf' fields in
-'s', returning an error if something went wrong.</p>
-            
-            <pre><code>func openCounterFile(metaHash []byte) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="openOutputFiles">
-            <h2>openOutputFiles</h2>
-            <hr />
-            
-            <p>openOutputFiles opens output files in preparation for emitting
-coverage data. In the case of the meta-data file, openOutputFiles
-may determine that we can reuse an existing meta-data file in the
-outdir, in which case it will leave the 'mf' field in the state
-struct as nil. If a new meta-file is needed, the field 'mfname'
-will be the final desired path of the meta file, 'mftmp' will be a
-temporary file, and 'mf' will be an open os.File pointer for
-'mftmp'. The idea is that the client/caller will write content into
-'mf', close it, and then rename 'mftmp' to 'mfname'. This function
-also opens the counter data output file, setting 'cf' and 'cfname'
-in the state struct.</p>
-            
-            <pre><code>func openOutputFiles(metaHash []byte, metaLen uint64, which fileType) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="emitMetaDataFile">
-            <h2>emitMetaDataFile</h2>
-            <hr />
-            
-            <p>emitMetaDataFile emits coverage meta-data to a previously opened
-temporary file (s.mftmp), then renames the generated file to the
-final path (s.mfname).</p>
-            
-            <pre><code>func emitMetaDataFile(finalHash []byte, tlen uint64) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="needMetaDataFile">
-            <h2>needMetaDataFile</h2>
-            <hr />
-            
-            <p>needMetaDataFile returns TRUE if we need to emit a meta-data file
-for this program run. It should be used only after
-openOutputFiles() has been invoked.</p>
-            
-            <pre><code>func needMetaDataFile() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeMetaData">
-            <h2>writeMetaData</h2>
-            <hr />
-            
-            <pre><code>func writeMetaData(w io.Writer, metalist []rtcov.CovMetaBlob, cmode coverage.CounterMode, gran coverage.CounterGranularity, finalHash []byte) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="VisitFuncs">
-            <h2>VisitFuncs</h2>
-            <hr />
-            
-            <pre><code>func VisitFuncs(f encodecounter.CounterVisitorFn) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="captureOsArgs">
-            <h2>captureOsArgs</h2>
-            <hr />
-            
-            <p>captureOsArgs converts os.Args() into the format we use to store
-this info in the counter data file (counter data file "args"
-section is a generic key-value collection). See the 'args' section
-in internal/coverage/defs.go for more info. The args map
-is also used to capture GOOS + GOARCH values as well.</p>
-            
-            <pre><code>func captureOsArgs() *ast.MapType</code></pre>
-         </article>
-         
-         <article class="function" data-name="emitCounterDataFile">
-            <h2>emitCounterDataFile</h2>
-            <hr />
-            
-            <p>emitCounterDataFile emits the counter data portion of a
-coverage output file (to the file 's.cf').</p>
-            
-            <pre><code>func emitCounterDataFile(finalHash []byte, w io.Writer) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="MarkProfileEmitted">
-            <h2>MarkProfileEmitted</h2>
-            <hr />
-            
-            <p>MarkProfileEmitted signals the coverage machinery that
-coverage data output files have already been written out, and there
-is no need to take any additional action at exit time. This
-function is called from the coverage-related boilerplate code in _testmain.go
-emitted for go unit tests.</p>
-            
-            <pre><code>func MarkProfileEmitted(val bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="reportErrorInHardcodedList">
-            <h2>reportErrorInHardcodedList</h2>
-            <hr />
-            
-            <pre><code>func reportErrorInHardcodedList(slot int32, pkgID int32, fnID uint32, nCtrs uint32)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestCoverageApis">
-            <h2>TestCoverageApis</h2>
-            <hr />
-            
-            <pre><code>func TestCoverageApis(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="upmergeCoverData">
-            <h2>upmergeCoverData</h2>
-            <hr />
-            
-            <p>upmergeCoverData helps improve coverage data for this package
-itself. If this test itself is being invoked with "-cover", then
-what we'd like is for package coverage data (that is, coverage for
-routines in "runtime/coverage") to be incorporated into the test
-run from the "harness.exe" runs we've just done. We can accomplish
-this by doing a merge from the harness gocoverdir's to the test
-gocoverdir.</p>
-            
-            <pre><code>func upmergeCoverData(t *testing.T, gocoverdir string, mode string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="buildHarness">
-            <h2>buildHarness</h2>
-            <hr />
-            
-            <p>buildHarness builds the helper program "harness.exe".</p>
-            
-            <pre><code>func buildHarness(t *testing.T, dir string, opts []string) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="mkdir">
-            <h2>mkdir</h2>
-            <hr />
-            
-            <pre><code>func mkdir(t *testing.T, d string) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="updateGoCoverDir">
-            <h2>updateGoCoverDir</h2>
-            <hr />
-            
-            <p>updateGoCoverDir updates the specified environment 'env' to set
-GOCOVERDIR to 'gcd' (if setGoCoverDir is TRUE) or removes
-GOCOVERDIR from the environment (if setGoCoverDir is false).</p>
-            
-            <pre><code>func updateGoCoverDir(env []string, gcd string, setGoCoverDir bool) []string</code></pre>
-         </article>
-         
-         <article class="function" data-name="runHarness">
-            <h2>runHarness</h2>
-            <hr />
-            
-            <pre><code>func runHarness(t *testing.T, harnessPath string, tp string, setGoCoverDir bool, rdir string, edir string) (string, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testForSpecificFunctions">
-            <h2>testForSpecificFunctions</h2>
-            <hr />
-            
-            <pre><code>func testForSpecificFunctions(t *testing.T, dir string, want []string, avoid []string) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="withAndWithoutRunner">
-            <h2>withAndWithoutRunner</h2>
-            <hr />
-            
-            <pre><code>func withAndWithoutRunner(f func)</code></pre>
-         </article>
-         
-         <article class="function" data-name="mktestdirs">
-            <h2>mktestdirs</h2>
-            <hr />
-            
-            <pre><code>func mktestdirs(t *testing.T, tag string, tp string, dir string) (string, string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testEmitToDir">
-            <h2>testEmitToDir</h2>
-            <hr />
-            
-            <pre><code>func testEmitToDir(t *testing.T, harnessPath string, dir string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testEmitToWriter">
-            <h2>testEmitToWriter</h2>
-            <hr />
-            
-            <pre><code>func testEmitToWriter(t *testing.T, harnessPath string, dir string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testEmitToNonexistentDir">
-            <h2>testEmitToNonexistentDir</h2>
-            <hr />
-            
-            <pre><code>func testEmitToNonexistentDir(t *testing.T, harnessPath string, dir string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testEmitToUnwritableDir">
-            <h2>testEmitToUnwritableDir</h2>
-            <hr />
-            
-            <pre><code>func testEmitToUnwritableDir(t *testing.T, harnessPath string, dir string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testEmitToNilWriter">
-            <h2>testEmitToNilWriter</h2>
-            <hr />
-            
-            <pre><code>func testEmitToNilWriter(t *testing.T, harnessPath string, dir string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testEmitToFailingWriter">
-            <h2>testEmitToFailingWriter</h2>
-            <hr />
-            
-            <pre><code>func testEmitToFailingWriter(t *testing.T, harnessPath string, dir string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testEmitWithCounterClear">
-            <h2>testEmitWithCounterClear</h2>
-            <hr />
-            
-            <pre><code>func testEmitWithCounterClear(t *testing.T, harnessPath string, dir string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testEmitToDirNonAtomic">
-            <h2>testEmitToDirNonAtomic</h2>
-            <hr />
-            
-            <pre><code>func testEmitToDirNonAtomic(t *testing.T, harnessPath string, naMode string, dir string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testEmitToWriterNonAtomic">
-            <h2>testEmitToWriterNonAtomic</h2>
-            <hr />
-            
-            <pre><code>func testEmitToWriterNonAtomic(t *testing.T, harnessPath string, naMode string, dir string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testEmitWithCounterClearNonAtomic">
-            <h2>testEmitWithCounterClearNonAtomic</h2>
-            <hr />
-            
-            <pre><code>func testEmitWithCounterClearNonAtomic(t *testing.T, harnessPath string, naMode string, dir string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestApisOnNocoverBinary">
-            <h2>TestApisOnNocoverBinary</h2>
-            <hr />
-            
-            <pre><code>func TestApisOnNocoverBinary(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestIssue56006EmitDataRaceCoverRunningGoroutine">
-            <h2>TestIssue56006EmitDataRaceCoverRunningGoroutine</h2>
-            <hr />
-            
-            <pre><code>func TestIssue56006EmitDataRaceCoverRunningGoroutine(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestIssue59563TruncatedCoverPkgAll">
-            <h2>TestIssue59563TruncatedCoverPkgAll</h2>
-            <hr />
-            
-            <pre><code>func TestIssue59563TruncatedCoverPkgAll(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="InitHook">
-            <h2>InitHook</h2>
-            <hr />
-            
-            <p>InitHook is invoked from the main package "init" routine in
+         <section id="functions">
+            <h2>Functions</h2>
+            
+            <article class="function" data-name="ClearCounters">
+               <h3>
+                  ClearCounters 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>ClearCounters implements [runtime/coverage.ClearCounters].</p>
+               
+               <pre><code>func ClearCounters() error</code></pre>
+            </article>
+            
+            <article class="function" data-name="InitHook">
+               <h3>
+                  InitHook 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>InitHook is invoked from the main package "init" routine in
 programs built with "-cover". This function is intended to be
 called only by the compiler (via runtime/coverage.initHook).
-
 If 'istest' is false, it indicates we're building a regular program
 ("go build -cover ..."), in which case we immediately try to write
 out the meta-data file, and register emitCounterData as an exit
 hook.
-
 If 'istest' is true (indicating that the program in question is a
 Go test binary), then we tentatively queue up both emitMetaData and
 emitCounterData as exit hooks. In the normal case (e.g. regular "go
@@ -866,40 +755,403 @@ done. If however that call is never made, this is a sign that the
 test binary is being used as a replacement binary for the tool
 being tested, hence we do want to run exit hooks when the program
 terminates.</p>
+               
+               <pre><code>func InitHook(istest bool)</code></pre>
+            </article>
             
-            <pre><code>func InitHook(istest bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="thisFunctionOnlyCalledFromSnapshotTest">
-            <h2>thisFunctionOnlyCalledFromSnapshotTest</h2>
-            <hr />
+            <article class="function" data-name="MarkProfileEmitted">
+               <h3>
+                  MarkProfileEmitted 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>MarkProfileEmitted signals the coverage machinery that
+coverage data output files have already been written out, and there
+is no need to take any additional action at exit time. This
+function is called from the coverage-related boilerplate code in _testmain.go
+emitted for go unit tests.</p>
+               
+               <pre><code>func MarkProfileEmitted(val bool)</code></pre>
+            </article>
             
-            <pre><code>func thisFunctionOnlyCalledFromSnapshotTest(n int) int</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestCoverageSnapshotImpl">
-            <h2>TestCoverageSnapshotImpl</h2>
-            <hr />
+            <article class="function" data-name="ProcessCoverTestDir">
+               <h3>
+                  ProcessCoverTestDir 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>ProcessCoverTestDir is called from
+testmain code when "go test -cover" is in effect. It is not
+intended to be used other than internally by the Go command's
+generated code.</p>
+               
+               <pre><code>func ProcessCoverTestDir(dir string, cfile string, cm string, cpkg string, w io.Writer, selpkgs []string) error</code></pre>
+            </article>
             
-            <p>Tests runtime/coverage.snapshot() directly. Note that if
-coverage is not enabled, the hook is designed to just return
-zero.</p>
+            <article class="function" data-name="Snapshot">
+               <h3>
+                  Snapshot 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Snapshot returns a snapshot of coverage percentage at a moment of
+time within a running test, so as to support the testing.Coverage()
+function. This version doesn't examine coverage meta-data, so the
+result it returns will be less accurate (more "slop") due to the
+fact that we don't look at the meta data to see how many statements
+are associated with each counter.</p>
+               
+               <pre><code>func Snapshot() float64</code></pre>
+            </article>
             
-            <pre><code>func TestCoverageSnapshotImpl(t *testing.T)</code></pre>
-         </article>
+            <article class="function" data-name="VisitFuncs">
+               <h3>
+                  VisitFuncs 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *emitState) VisitFuncs(f encodecounter.CounterVisitorFn) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="WriteCounters">
+               <h3>
+                  WriteCounters 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>WriteCounters implements [runtime/coverage.WriteCounters].</p>
+               
+               <pre><code>func WriteCounters(w io.Writer) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="WriteCountersDir">
+               <h3>
+                  WriteCountersDir 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>WriteCountersDir implements [runtime/coverage.WriteCountersDir].</p>
+               
+               <pre><code>func WriteCountersDir(dir string) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="WriteMeta">
+               <h3>
+                  WriteMeta 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>WriteMeta implements [runtime/coverage.WriteMeta].</p>
+               
+               <pre><code>func WriteMeta(w io.Writer) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="WriteMetaDir">
+               <h3>
+                  WriteMetaDir 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>WriteMetaDir implements [runtime/coverage.WriteMetaDir].</p>
+               
+               <pre><code>func WriteMetaDir(dir string) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="captureOsArgs">
+               <h3>
+                  captureOsArgs 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>captureOsArgs converts os.Args() into the format we use to store
+this info in the counter data file (counter data file "args"
+section is a generic key-value collection). See the 'args' section
+in internal/coverage/defs.go for more info. The args map
+is also used to capture GOOS + GOARCH values as well.</p>
+               
+               <pre><code>func captureOsArgs() map[string]string</code></pre>
+            </article>
+            
+            <article class="function" data-name="emitCounterData">
+               <h3>
+                  emitCounterData 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>emitCounterData emits the counter data output file for this coverage run.
+This entry point is intended to be invoked by the runtime when an
+instrumented program is terminating or calling os.Exit().</p>
+               
+               <pre><code>func emitCounterData()</code></pre>
+            </article>
+            
+            <article class="function" data-name="emitCounterDataFile">
+               <h3>
+                  emitCounterDataFile 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>emitCounterDataFile emits the counter data portion of a
+coverage output file (to the file 's.cf').</p>
+               
+               <pre><code>func (s *emitState) emitCounterDataFile(finalHash [16]byte, w io.Writer) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="emitCounterDataToDirectory">
+               <h3>
+                  emitCounterDataToDirectory 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>emitCounterDataToDirectory emits the counter-data output file for this coverage run.</p>
+               
+               <pre><code>func emitCounterDataToDirectory(outdir string) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="emitCounterDataToWriter">
+               <h3>
+                  emitCounterDataToWriter 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>emitCounterDataToWriter emits counter data for this coverage run to an io.Writer.</p>
+               
+               <pre><code>func (s *emitState) emitCounterDataToWriter(w io.Writer) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="emitMetaData">
+               <h3>
+                  emitMetaData 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>emitMetaData emits the meta-data output file for this coverage run.
+This entry point is intended to be invoked by the compiler from
+an instrumented program's main package init func.</p>
+               
+               <pre><code>func emitMetaData()</code></pre>
+            </article>
+            
+            <article class="function" data-name="emitMetaDataFile">
+               <h3>
+                  emitMetaDataFile 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>emitMetaDataFile emits coverage meta-data to a previously opened
+temporary file (s.mftmp), then renames the generated file to the
+final path (s.mfname).</p>
+               
+               <pre><code>func (s *emitState) emitMetaDataFile(finalHash [16]byte, tlen uint64) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="emitMetaDataToDirectory">
+               <h3>
+                  emitMetaDataToDirectory 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>emitMetaDataToDirectory emits the meta-data output file to the specified
+directory, returning an error if something went wrong.</p>
+               
+               <pre><code>func emitMetaDataToDirectory(outdir string, ml []rtcov.CovMetaBlob) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="getCovCounterList">
+               <h3>
+                  getCovCounterList 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>getCovCounterList returns a list of counter-data blobs registered
+for the currently executing instrumented program. It is defined in the
+runtime.
+go:linkname getCovCounterList</p>
+               
+               <pre><code>func getCovCounterList() []rtcov.CovCounterBlob</code></pre>
+            </article>
+            
+            <article class="function" data-name="granClash">
+               <h3>
+                  granClash 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func granClash(g coverage.CounterGranularity) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="modeClash">
+               <h3>
+                  modeClash 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func modeClash(m coverage.CounterMode) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="needMetaDataFile">
+               <h3>
+                  needMetaDataFile 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>needMetaDataFile returns TRUE if we need to emit a meta-data file
+for this program run. It should be used only after
+openOutputFiles() has been invoked.</p>
+               
+               <pre><code>func (s *emitState) needMetaDataFile() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="openCounterFile">
+               <h3>
+                  openCounterFile 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>openCounterFile opens an output file for the counter data portion
+of a test coverage run. If updates the 'cfname' and 'cf' fields in
+'s', returning an error if something went wrong.</p>
+               
+               <pre><code>func (s *emitState) openCounterFile(metaHash [16]byte) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="openMetaFile">
+               <h3>
+                  openMetaFile 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>openMetaFile determines whether we need to emit a meta-data output
+file, or whether we can reuse the existing file in the coverage out
+dir. It updates mfname/mftmp/mf fields in 's', returning an error
+if something went wrong. See the comment on the emitState type
+definition above for more on how file opening is managed.</p>
+               
+               <pre><code>func (s *emitState) openMetaFile(metaHash [16]byte, metaLen uint64) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="openOutputFiles">
+               <h3>
+                  openOutputFiles 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>openOutputFiles opens output files in preparation for emitting
+coverage data. In the case of the meta-data file, openOutputFiles
+may determine that we can reuse an existing meta-data file in the
+outdir, in which case it will leave the 'mf' field in the state
+struct as nil. If a new meta-file is needed, the field 'mfname'
+will be the final desired path of the meta file, 'mftmp' will be a
+temporary file, and 'mf' will be an open os.File pointer for
+'mftmp'. The idea is that the client/caller will write content into
+'mf', close it, and then rename 'mftmp' to 'mfname'. This function
+also opens the counter data output file, setting 'cf' and 'cfname'
+in the state struct.</p>
+               
+               <pre><code>func (s *emitState) openOutputFiles(metaHash [16]byte, metaLen uint64, which fileType) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="prepareForMetaEmit">
+               <h3>
+                  prepareForMetaEmit 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>prepareForMetaEmit performs preparatory steps needed prior to
+emitting a meta-data file, notably computing a final hash of
+all meta-data blobs and capturing os args.</p>
+               
+               <pre><code>func prepareForMetaEmit() ([]rtcov.CovMetaBlob, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="processPod">
+               <h3>
+                  processPod 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>processPod reads coverage counter data for a specific pod.</p>
+               
+               <pre><code>func (ts *tstate) processPod(p pods.Pod, importpaths map[string]struct{...}) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="readAuxMetaFiles">
+               <h3>
+                  readAuxMetaFiles 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (ts *tstate) readAuxMetaFiles(metafiles string, importpaths map[string]struct{...}) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="reportErrorInHardcodedList">
+               <h3>
+                  reportErrorInHardcodedList 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func reportErrorInHardcodedList(slot int32, pkgID int32, fnID uint32, nCtrs uint32)</code></pre>
+            </article>
+            
+            <article class="function" data-name="writeMetaData">
+               <h3>
+                  writeMetaData 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func writeMetaData(w io.Writer, metalist []rtcov.CovMetaBlob, cmode coverage.CounterMode, gran coverage.CounterGranularity, finalHash [16]byte) error</code></pre>
+            </article>
+            
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -907,59 +1159,170 @@ zero.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

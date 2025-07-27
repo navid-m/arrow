@@ -13,132 +13,648 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                  
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>unsafe</code>
-         </h1>
-         <hr />
+         <h1>unsafe</h1>
+         <div class="section-divider"></div>
+
            
-         <article class="function" data-name="Sizeof">
-            <h2>Sizeof</h2>
-            <hr />
+         <section id="types">
+            <h2>Type Aliases</h2>
             
-            <p>Sizeof takes an expression x of any type and returns the size in bytes
+            <article class="type" data-name="ArbitraryType">
+               <h3>
+                  ArbitraryType
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>ArbitraryType is here for the purposes of documentation only and is not actually
+part of the unsafe package. It represents the type of an arbitrary Go expression.</p>
+               
+               <pre><code>type ArbitraryType int</code></pre>
+            </article>
+            
+            <article class="type" data-name="IntegerType">
+               <h3>
+                  IntegerType
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>IntegerType is here for the purposes of documentation only and is not actually
+part of the unsafe package. It represents any arbitrary integer type.</p>
+               
+               <pre><code>type IntegerType int</code></pre>
+            </article>
+            
+            <article class="type" data-name="Pointer">
+               <h3>
+                  Pointer
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>Pointer represents a pointer to an arbitrary type. There are four special operations
+available for type Pointer that are not available for other types:
+- A pointer value of any type can be converted to a Pointer.
+- A Pointer can be converted to a pointer value of any type.
+- A uintptr can be converted to a Pointer.
+- A Pointer can be converted to a uintptr.
+Pointer therefore allows a program to defeat the type system and read and write
+arbitrary memory. It should be used with extreme care.
+The following patterns involving Pointer are valid.
+Code not using these patterns is likely to be invalid today
+or to become invalid in the future.
+Even the valid patterns below come with important caveats.
+Running "go vet" can help find uses of Pointer that do not conform to these patterns,
+but silence from "go vet" is not a guarantee that the code is valid.
+(1) Conversion of a *T1 to Pointer to *T2.
+Provided that T2 is no larger than T1 and that the two share an equivalent
+memory layout, this conversion allows reinterpreting data of one type as
+data of another type. An example is the implementation of
+math.Float64bits:
+func Float64bits(f float64) uint64 {
+return *(*uint64)(unsafe.Pointer(&f))
+}
+(2) Conversion of a Pointer to a uintptr (but not back to Pointer).
+Converting a Pointer to a uintptr produces the memory address of the value
+pointed at, as an integer. The usual use for such a uintptr is to print it.
+Conversion of a uintptr back to Pointer is not valid in general.
+A uintptr is an integer, not a reference.
+Converting a Pointer to a uintptr creates an integer value
+with no pointer semantics.
+Even if a uintptr holds the address of some object,
+the garbage collector will not update that uintptr's value
+if the object moves, nor will that uintptr keep the object
+from being reclaimed.
+The remaining patterns enumerate the only valid conversions
+from uintptr to Pointer.
+(3) Conversion of a Pointer to a uintptr and back, with arithmetic.
+If p points into an allocated object, it can be advanced through the object
+by conversion to uintptr, addition of an offset, and conversion back to Pointer.
+p = unsafe.Pointer(uintptr(p) + offset)
+The most common use of this pattern is to access fields in a struct
+or elements of an array:
+// equivalent to f := unsafe.Pointer(&s.f)
+f := unsafe.Pointer(uintptr(unsafe.Pointer(&s)) + unsafe.Offsetof(s.f))
+// equivalent to e := unsafe.Pointer(&x[i])
+e := unsafe.Pointer(uintptr(unsafe.Pointer(&x[0])) + i*unsafe.Sizeof(x[0]))
+It is valid both to add and to subtract offsets from a pointer in this way.
+It is also valid to use &^ to round pointers, usually for alignment.
+In all cases, the result must continue to point into the original allocated object.
+Unlike in C, it is not valid to advance a pointer just beyond the end of
+its original allocation:
+// INVALID: end points outside allocated space.
+var s thing
+end = unsafe.Pointer(uintptr(unsafe.Pointer(&s)) + unsafe.Sizeof(s))
+// INVALID: end points outside allocated space.
+b := make([]byte, n)
+end = unsafe.Pointer(uintptr(unsafe.Pointer(&b[0])) + uintptr(n))
+Note that both conversions must appear in the same expression, with only
+the intervening arithmetic between them:
+// INVALID: uintptr cannot be stored in variable
+// before conversion back to Pointer.
+u := uintptr(p)
+p = unsafe.Pointer(u + offset)
+Note that the pointer must point into an allocated object, so it may not be nil.
+// INVALID: conversion of nil pointer
+u := unsafe.Pointer(nil)
+p := unsafe.Pointer(uintptr(u) + offset)
+(4) Conversion of a Pointer to a uintptr when calling functions like [syscall.Syscall].
+The Syscall functions in package syscall pass their uintptr arguments directly
+to the operating system, which then may, depending on the details of the call,
+reinterpret some of them as pointers.
+That is, the system call implementation is implicitly converting certain arguments
+back from uintptr to pointer.
+If a pointer argument must be converted to uintptr for use as an argument,
+that conversion must appear in the call expression itself:
+syscall.Syscall(SYS_READ, uintptr(fd), uintptr(unsafe.Pointer(p)), uintptr(n))
+The compiler handles a Pointer converted to a uintptr in the argument list of
+a call to a function implemented in assembly by arranging that the referenced
+allocated object, if any, is retained and not moved until the call completes,
+even though from the types alone it would appear that the object is no longer
+needed during the call.
+For the compiler to recognize this pattern,
+the conversion must appear in the argument list:
+// INVALID: uintptr cannot be stored in variable
+// before implicit conversion back to Pointer during system call.
+u := uintptr(unsafe.Pointer(p))
+syscall.Syscall(SYS_READ, uintptr(fd), u, uintptr(n))
+(5) Conversion of the result of [reflect.Value.Pointer] or [reflect.Value.UnsafeAddr]
+from uintptr to Pointer.
+Package reflect's Value methods named Pointer and UnsafeAddr return type uintptr
+instead of unsafe.Pointer to keep callers from changing the result to an arbitrary
+type without first importing "unsafe". However, this means that the result is
+fragile and must be converted to Pointer immediately after making the call,
+in the same expression:
+p := (*int)(unsafe.Pointer(reflect.ValueOf(new(int)).Pointer()))
+As in the cases above, it is invalid to store the result before the conversion:
+// INVALID: uintptr cannot be stored in variable
+// before conversion back to Pointer.
+u := reflect.ValueOf(new(int)).Pointer()
+p := (*int)(unsafe.Pointer(u))
+(6) Conversion of a [reflect.SliceHeader] or [reflect.StringHeader] Data field to or from Pointer.
+As in the previous case, the reflect data structures SliceHeader and StringHeader
+declare the field Data as a uintptr to keep callers from changing the result to
+an arbitrary type without first importing "unsafe". However, this means that
+SliceHeader and StringHeader are only valid when interpreting the content
+of an actual slice or string value.
+var s string
+hdr := (*reflect.StringHeader)(unsafe.Pointer(&s)) // case 1
+hdr.Data = uintptr(unsafe.Pointer(p))              // case 6 (this case)
+hdr.Len = n
+In this usage hdr.Data is really an alternate way to refer to the underlying
+pointer in the string header, not a uintptr variable itself.
+In general, [reflect.SliceHeader] and [reflect.StringHeader] should be used
+only as *reflect.SliceHeader and *reflect.StringHeader pointing at actual
+slices or strings, never as plain structs.
+A program should not declare or allocate variables of these struct types.
+// INVALID: a directly-declared header will not hold Data as a reference.
+var hdr reflect.StringHeader
+hdr.Data = uintptr(unsafe.Pointer(p))
+hdr.Len = n
+s := *(*string)(unsafe.Pointer(&hdr)) // p possibly already lost</p>
+               
+               <pre><code>type Pointer *ArbitraryType</code></pre>
+            </article>
+            
+         </section>
+            
+         <section id="functions">
+            <h2>Functions</h2>
+            
+            <article class="function" data-name="Add">
+               <h3>
+                  Add 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>The function Add adds len to ptr and returns the updated pointer
+[Pointer](uintptr(ptr) + uintptr(len)).
+The len argument must be of integer type or an untyped constant.
+A constant len argument must be representable by a value of type int;
+if it is an untyped constant it is given type int.
+The rules for valid uses of Pointer still apply.</p>
+               
+               <pre><code>func Add(ptr Pointer, len IntegerType) Pointer</code></pre>
+            </article>
+            
+            <article class="function" data-name="Alignof">
+               <h3>
+                  Alignof 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Alignof takes an expression x of any type and returns the required alignment
+of a hypothetical variable v as if v was declared via var v = x.
+It is the largest value m such that the address of v is always zero mod m.
+It is the same as the value returned by [reflect.TypeOf](x).Align().
+As a special case, if a variable s is of struct type and f is a field
+within that struct, then Alignof(s.f) will return the required alignment
+of a field of that type within a struct. This case is the same as the
+value returned by [reflect.TypeOf](s.f).FieldAlign().
+The return value of Alignof is a Go constant if the type of the argument
+does not have variable size.
+(See the description of [Sizeof] for a definition of variable sized types.)</p>
+               
+               <pre><code>func Alignof(x ArbitraryType) uintptr</code></pre>
+            </article>
+            
+            <article class="function" data-name="Offsetof">
+               <h3>
+                  Offsetof 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Offsetof returns the offset within the struct of the field represented by x,
+which must be of the form structValue.field. In other words, it returns the
+number of bytes between the start of the struct and the start of the field.
+The return value of Offsetof is a Go constant if the type of the argument x
+does not have variable size.
+(See the description of [Sizeof] for a definition of variable sized types.)</p>
+               
+               <pre><code>func Offsetof(x ArbitraryType) uintptr</code></pre>
+            </article>
+            
+            <article class="function" data-name="Sizeof">
+               <h3>
+                  Sizeof 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Sizeof takes an expression x of any type and returns the size in bytes
 of a hypothetical variable v as if v was declared via var v = x.
 The size does not include any memory possibly referenced by x.
 For instance, if x is a slice, Sizeof returns the size of the slice
@@ -150,137 +666,106 @@ The return value of Sizeof is a Go constant if the type of the argument x
 does not have variable size.
 (A type has variable size if it is a type parameter or if it is an array
 or struct type with elements of variable size).</p>
+               
+               <pre><code>func Sizeof(x ArbitraryType) uintptr</code></pre>
+            </article>
             
-            <pre><code>func Sizeof(x ArbitraryType) uintptr</code></pre>
-         </article>
-         
-         <article class="function" data-name="Offsetof">
-            <h2>Offsetof</h2>
-            <hr />
-            
-            <p>Offsetof returns the offset within the struct of the field represented by x,
-which must be of the form structValue.field. In other words, it returns the
-number of bytes between the start of the struct and the start of the field.
-The return value of Offsetof is a Go constant if the type of the argument x
-does not have variable size.
-(See the description of [Sizeof] for a definition of variable sized types.)</p>
-            
-            <pre><code>func Offsetof(x ArbitraryType) uintptr</code></pre>
-         </article>
-         
-         <article class="function" data-name="Alignof">
-            <h2>Alignof</h2>
-            <hr />
-            
-            <p>Alignof takes an expression x of any type and returns the required alignment
-of a hypothetical variable v as if v was declared via var v = x.
-It is the largest value m such that the address of v is always zero mod m.
-It is the same as the value returned by [reflect.TypeOf](x).Align().
-As a special case, if a variable s is of struct type and f is a field
-within that struct, then Alignof(s.f) will return the required alignment
-of a field of that type within a struct. This case is the same as the
-value returned by [reflect.TypeOf](s.f).FieldAlign().
-The return value of Alignof is a Go constant if the type of the argument
-does not have variable size.
-(See the description of [Sizeof] for a definition of variable sized types.)</p>
-            
-            <pre><code>func Alignof(x ArbitraryType) uintptr</code></pre>
-         </article>
-         
-         <article class="function" data-name="Add">
-            <h2>Add</h2>
-            <hr />
-            
-            <p>The function Add adds len to ptr and returns the updated pointer
-[Pointer](uintptr(ptr) + uintptr(len)).
-The len argument must be of integer type or an untyped constant.
-A constant len argument must be representable by a value of type int;
-if it is an untyped constant it is given type int.
-The rules for valid uses of Pointer still apply.</p>
-            
-            <pre><code>func Add(ptr Pointer, len IntegerType) Pointer</code></pre>
-         </article>
-         
-         <article class="function" data-name="Slice">
-            <h2>Slice</h2>
-            <hr />
-            
-            <p>The function Slice returns a slice whose underlying array starts at ptr
+            <article class="function" data-name="Slice">
+               <h3>
+                  Slice 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>The function Slice returns a slice whose underlying array starts at ptr
 and whose length and capacity are len.
 Slice(ptr, len) is equivalent to
-
-	(*[len]ArbitraryType)(unsafe.Pointer(ptr))[:]
-
+(*[len]ArbitraryType)(unsafe.Pointer(ptr))[:]
 except that, as a special case, if ptr is nil and len is zero,
 Slice returns nil.
-
 The len argument must be of integer type or an untyped constant.
 A constant len argument must be non-negative and representable by a value of type int;
 if it is an untyped constant it is given type int.
 At run time, if len is negative, or if ptr is nil and len is not zero,
 a run-time panic occurs.</p>
+               
+               <pre><code>func Slice(ptr *ArbitraryType, len IntegerType) []ArbitraryType</code></pre>
+            </article>
             
-            <pre><code>func Slice(ptr *ArbitraryType, len IntegerType) []ArbitraryType</code></pre>
-         </article>
-         
-         <article class="function" data-name="SliceData">
-            <h2>SliceData</h2>
-            <hr />
-            
-            <p>SliceData returns a pointer to the underlying array of the argument
+            <article class="function" data-name="SliceData">
+               <h3>
+                  SliceData 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>SliceData returns a pointer to the underlying array of the argument
 slice.
-  - If cap(slice) > 0, SliceData returns &slice[:1][0].
-  - If slice == nil, SliceData returns nil.
-  - Otherwise, SliceData returns a non-nil pointer to an
-    unspecified memory address.</p>
+- If cap(slice) > 0, SliceData returns &slice[:1][0].
+- If slice == nil, SliceData returns nil.
+- Otherwise, SliceData returns a non-nil pointer to an
+unspecified memory address.</p>
+               
+               <pre><code>func SliceData(slice []ArbitraryType) *ArbitraryType</code></pre>
+            </article>
             
-            <pre><code>func SliceData(slice []ArbitraryType) *ArbitraryType</code></pre>
-         </article>
-         
-         <article class="function" data-name="String">
-            <h2>String</h2>
-            <hr />
-            
-            <p>String returns a string value whose underlying bytes
+            <article class="function" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>String returns a string value whose underlying bytes
 start at ptr and whose length is len.
-
 The len argument must be of integer type or an untyped constant.
 A constant len argument must be non-negative and representable by a value of type int;
 if it is an untyped constant it is given type int.
 At run time, if len is negative, or if ptr is nil and len is not zero,
 a run-time panic occurs.
-
 Since Go strings are immutable, the bytes passed to String
 must not be modified as long as the returned string value exists.</p>
+               
+               <pre><code>func String(ptr *byte, len IntegerType) string</code></pre>
+            </article>
             
-            <pre><code>func String(ptr *byte, len IntegerType) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="StringData">
-            <h2>StringData</h2>
-            <hr />
-            
-            <p>StringData returns a pointer to the underlying bytes of str.
+            <article class="function" data-name="StringData">
+               <h3>
+                  StringData 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>StringData returns a pointer to the underlying bytes of str.
 For an empty string the return value is unspecified, and may be nil.
-
 Since Go strings are immutable, the bytes returned by StringData
 must not be modified.</p>
+               
+               <pre><code>func StringData(str string) *byte</code></pre>
+            </article>
             
-            <pre><code>func StringData(str string) *byte</code></pre>
-         </article>
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -288,59 +773,170 @@ must not be modified.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

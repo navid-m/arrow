@@ -13,670 +13,1391 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                 
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
-      <main>
-         <h1>
-            Package
-            <code>cgo</code>
-         </h1>
-         <hr />
-         
-         <article class="global" data-name="_environ">
-            <h2>_environ</h2>
-            <hr />
-            
-            <pre><code>_environ uintptr</code></pre>
-         </article>
-         
-         <article class="global" data-name="_progname">
-            <h2>_progname</h2>
-            <hr />
-            
-            <pre><code>_progname uintptr</code></pre>
-         </article>
-         
-         <article class="global" data-name="___ps_strings">
-            <h2>___ps_strings</h2>
-            <hr />
-            
-            <pre><code>___ps_strings uintptr</code></pre>
-         </article>
-         
-         <article class="global" data-name="_guard_local">
-            <h2>_guard_local</h2>
-            <hr />
-            
-            <pre><code>_guard_local uintptr</code></pre>
-         </article>
-         
-         <article class="global" data-name="x_cgo_sigaction">
-            <h2>x_cgo_sigaction</h2>
-            <hr />
-            
-            <pre><code>x_cgo_sigaction byte</code></pre>
-         </article>
-         
-         <article class="global" data-name="_cgo_sigaction">
-            <h2>_cgo_sigaction</h2>
-            <hr />
-            
-            <pre><code>_cgo_sigaction</code></pre>
-         </article>
-         
-         <article class="global" data-name="x_cgo_callers">
-            <h2>x_cgo_callers</h2>
-            <hr />
-            
-            <pre><code>x_cgo_callers byte</code></pre>
-         </article>
-         
-         <article class="global" data-name="_cgo_callers">
-            <h2>_cgo_callers</h2>
-            <hr />
-            
-            <pre><code>_cgo_callers</code></pre>
-         </article>
-         
-         <article class="global" data-name="_environ">
-            <h2>_environ</h2>
-            <hr />
-            
-            <pre><code>_environ uintptr</code></pre>
-         </article>
-         
-         <article class="global" data-name="_progname">
-            <h2>_progname</h2>
-            <hr />
-            
-            <pre><code>_progname uintptr</code></pre>
-         </article>
-         
-         <article class="global" data-name="_environ">
-            <h2>_environ</h2>
-            <hr />
-            
-            <pre><code>_environ uintptr</code></pre>
-         </article>
-         
-         <article class="global" data-name="_progname">
-            <h2>_progname</h2>
-            <hr />
-            
-            <pre><code>_progname uintptr</code></pre>
-         </article>
-         
-         <article class="global" data-name="x_cgo_mmap">
-            <h2>x_cgo_mmap</h2>
-            <hr />
-            
-            <pre><code>x_cgo_mmap byte</code></pre>
-         </article>
-         
-         <article class="global" data-name="_cgo_mmap">
-            <h2>_cgo_mmap</h2>
-            <hr />
-            
-            <pre><code>_cgo_mmap</code></pre>
-         </article>
-         
-         <article class="global" data-name="x_cgo_munmap">
-            <h2>x_cgo_munmap</h2>
-            <hr />
-            
-            <pre><code>x_cgo_munmap byte</code></pre>
-         </article>
-         
-         <article class="global" data-name="_cgo_munmap">
-            <h2>_cgo_munmap</h2>
-            <hr />
-            
-            <pre><code>_cgo_munmap</code></pre>
-         </article>
-         
-         <article class="global" data-name="x_cgo_setenv">
-            <h2>x_cgo_setenv</h2>
-            <hr />
-            
-            <pre><code>x_cgo_setenv byte</code></pre>
-         </article>
-         
-         <article class="global" data-name="_cgo_setenv">
-            <h2>_cgo_setenv</h2>
-            <hr />
-            
-            <pre><code>_cgo_setenv</code></pre>
-         </article>
-         
-         <article class="global" data-name="x_cgo_unsetenv">
-            <h2>x_cgo_unsetenv</h2>
-            <hr />
-            
-            <pre><code>x_cgo_unsetenv byte</code></pre>
-         </article>
-         
-         <article class="global" data-name="_cgo_unsetenv">
-            <h2>_cgo_unsetenv</h2>
-            <hr />
-            
-            <pre><code>_cgo_unsetenv</code></pre>
-         </article>
-         
-         <article class="global" data-name="x_cgo_init">
-            <h2>x_cgo_init</h2>
-            <hr />
-            
-            <pre><code>x_cgo_init byte</code></pre>
-         </article>
-         
-         <article class="global" data-name="_cgo_init">
-            <h2>_cgo_init</h2>
-            <hr />
-            
-            <pre><code>_cgo_init</code></pre>
-         </article>
-         
-         <article class="global" data-name="x_cgo_thread_start">
-            <h2>x_cgo_thread_start</h2>
-            <hr />
-            
-            <pre><code>x_cgo_thread_start byte</code></pre>
-         </article>
-         
-         <article class="global" data-name="_cgo_thread_start">
-            <h2>_cgo_thread_start</h2>
-            <hr />
-            
-            <pre><code>_cgo_thread_start</code></pre>
-         </article>
-         
-         <article class="global" data-name="x_cgo_sys_thread_create">
-            <h2>x_cgo_sys_thread_create</h2>
-            <hr />
-            
-            <pre><code>x_cgo_sys_thread_create byte</code></pre>
-         </article>
-         
-         <article class="global" data-name="_cgo_sys_thread_create">
-            <h2>_cgo_sys_thread_create</h2>
-            <hr />
-            
-            <pre><code>_cgo_sys_thread_create</code></pre>
-         </article>
-         
-         <article class="global" data-name="x_cgo_pthread_key_created">
-            <h2>x_cgo_pthread_key_created</h2>
-            <hr />
-            
-            <pre><code>x_cgo_pthread_key_created byte</code></pre>
-         </article>
-         
-         <article class="global" data-name="_cgo_pthread_key_created">
-            <h2>_cgo_pthread_key_created</h2>
-            <hr />
-            
-            <pre><code>_cgo_pthread_key_created</code></pre>
-         </article>
-         
-         <article class="global" data-name="x_crosscall2_ptr">
-            <h2>x_crosscall2_ptr</h2>
-            <hr />
-            
-            <pre><code>x_crosscall2_ptr byte</code></pre>
-         </article>
-         
-         <article class="global" data-name="_crosscall2_ptr">
-            <h2>_crosscall2_ptr</h2>
-            <hr />
-            
-            <pre><code>_crosscall2_ptr</code></pre>
-         </article>
-         
-         <article class="global" data-name="_set_crosscall2">
-            <h2>_set_crosscall2</h2>
-            <hr />
-            
-            <pre><code>_set_crosscall2</code></pre>
-         </article>
-         
-         <article class="global" data-name="x_cgo_bindm">
-            <h2>x_cgo_bindm</h2>
-            <hr />
-            
-            <pre><code>x_cgo_bindm byte</code></pre>
-         </article>
-         
-         <article class="global" data-name="_cgo_bindm">
-            <h2>_cgo_bindm</h2>
-            <hr />
-            
-            <pre><code>_cgo_bindm</code></pre>
-         </article>
-         
-         <article class="global" data-name="x_cgo_notify_runtime_init_done">
-            <h2>x_cgo_notify_runtime_init_done</h2>
-            <hr />
-            
-            <pre><code>x_cgo_notify_runtime_init_done byte</code></pre>
-         </article>
-         
-         <article class="global" data-name="_cgo_notify_runtime_init_done">
-            <h2>_cgo_notify_runtime_init_done</h2>
-            <hr />
-            
-            <pre><code>_cgo_notify_runtime_init_done</code></pre>
-         </article>
-         
-         <article class="global" data-name="x_cgo_set_context_function">
-            <h2>x_cgo_set_context_function</h2>
-            <hr />
-            
-            <pre><code>x_cgo_set_context_function byte</code></pre>
-         </article>
-         
-         <article class="global" data-name="_cgo_set_context_function">
-            <h2>_cgo_set_context_function</h2>
-            <hr />
-            
-            <pre><code>_cgo_set_context_function</code></pre>
-         </article>
-         
-         <article class="global" data-name="_cgo_yield">
-            <h2>_cgo_yield</h2>
-            <hr />
-            
-            <pre><code>_cgo_yield unsafe.Pointer</code></pre>
-         </article>
-         
-         <article class="global" data-name="x_cgo_getstackbound">
-            <h2>x_cgo_getstackbound</h2>
-            <hr />
-            
-            <pre><code>x_cgo_getstackbound byte</code></pre>
-         </article>
-         
-         <article class="global" data-name="_cgo_getstackbound">
-            <h2>_cgo_getstackbound</h2>
-            <hr />
-            
-            <pre><code>_cgo_getstackbound</code></pre>
-         </article>
-         
-         <article class="global" data-name="handles">
-            <h2>handles</h2>
-            <hr />
-            
-            <pre><code>handles</code></pre>
-         </article>
-         
-         <article class="global" data-name="handleIdx">
-            <h2>handleIdx</h2>
-            <hr />
-            
-            <pre><code>handleIdx atomic.Uintptr</code></pre>
-         </article>
-         
-         <article class="global" data-name="_iscgo">
-            <h2>_iscgo</h2>
-            <hr />
-            
-            <pre><code>_iscgo bool</code></pre>
-         </article>
-         
-         <article class="global" data-name="_cgo_libc_setegid">
-            <h2>_cgo_libc_setegid</h2>
-            <hr />
-            
-            <pre><code>_cgo_libc_setegid byte</code></pre>
-         </article>
-         
-         <article class="global" data-name="cgo_libc_setegid">
-            <h2>cgo_libc_setegid</h2>
-            <hr />
-            
-            <pre><code>cgo_libc_setegid</code></pre>
-         </article>
-         
-         <article class="global" data-name="_cgo_libc_seteuid">
-            <h2>_cgo_libc_seteuid</h2>
-            <hr />
-            
-            <pre><code>_cgo_libc_seteuid byte</code></pre>
-         </article>
-         
-         <article class="global" data-name="cgo_libc_seteuid">
-            <h2>cgo_libc_seteuid</h2>
-            <hr />
-            
-            <pre><code>cgo_libc_seteuid</code></pre>
-         </article>
-         
-         <article class="global" data-name="_cgo_libc_setregid">
-            <h2>_cgo_libc_setregid</h2>
-            <hr />
-            
-            <pre><code>_cgo_libc_setregid byte</code></pre>
-         </article>
-         
-         <article class="global" data-name="cgo_libc_setregid">
-            <h2>cgo_libc_setregid</h2>
-            <hr />
-            
-            <pre><code>cgo_libc_setregid</code></pre>
-         </article>
-         
-         <article class="global" data-name="_cgo_libc_setresgid">
-            <h2>_cgo_libc_setresgid</h2>
-            <hr />
-            
-            <pre><code>_cgo_libc_setresgid byte</code></pre>
-         </article>
-         
-         <article class="global" data-name="cgo_libc_setresgid">
-            <h2>cgo_libc_setresgid</h2>
-            <hr />
-            
-            <pre><code>cgo_libc_setresgid</code></pre>
-         </article>
-         
-         <article class="global" data-name="_cgo_libc_setresuid">
-            <h2>_cgo_libc_setresuid</h2>
-            <hr />
-            
-            <pre><code>_cgo_libc_setresuid byte</code></pre>
-         </article>
-         
-         <article class="global" data-name="cgo_libc_setresuid">
-            <h2>cgo_libc_setresuid</h2>
-            <hr />
-            
-            <pre><code>cgo_libc_setresuid</code></pre>
-         </article>
-         
-         <article class="global" data-name="_cgo_libc_setreuid">
-            <h2>_cgo_libc_setreuid</h2>
-            <hr />
-            
-            <pre><code>_cgo_libc_setreuid byte</code></pre>
-         </article>
-         
-         <article class="global" data-name="cgo_libc_setreuid">
-            <h2>cgo_libc_setreuid</h2>
-            <hr />
-            
-            <pre><code>cgo_libc_setreuid</code></pre>
-         </article>
-         
-         <article class="global" data-name="_cgo_libc_setgroups">
-            <h2>_cgo_libc_setgroups</h2>
-            <hr />
-            
-            <pre><code>_cgo_libc_setgroups byte</code></pre>
-         </article>
-         
-         <article class="global" data-name="cgo_libc_setgroups">
-            <h2>cgo_libc_setgroups</h2>
-            <hr />
-            
-            <pre><code>cgo_libc_setgroups</code></pre>
-         </article>
-         
-         <article class="global" data-name="_cgo_libc_setgid">
-            <h2>_cgo_libc_setgid</h2>
-            <hr />
-            
-            <pre><code>_cgo_libc_setgid byte</code></pre>
-         </article>
-         
-         <article class="global" data-name="cgo_libc_setgid">
-            <h2>cgo_libc_setgid</h2>
-            <hr />
-            
-            <pre><code>cgo_libc_setgid</code></pre>
-         </article>
-         
-         <article class="global" data-name="_cgo_libc_setuid">
-            <h2>_cgo_libc_setuid</h2>
-            <hr />
-            
-            <pre><code>_cgo_libc_setuid byte</code></pre>
-         </article>
-         
-         <article class="global" data-name="cgo_libc_setuid">
-            <h2>cgo_libc_setuid</h2>
-            <hr />
-            
-            <pre><code>cgo_libc_setuid</code></pre>
-         </article>
-          
-         <article class="struct" data-name="Incomplete">
-            <h2>type Incomplete struct</h2>
-            <hr />
-            
-            <p>Incomplete is used specifically for the semantics of incomplete C types.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">_ sys.NotInHeap</code></pre>
-         </article>
-          
-         <article class="function" data-name="_runtime_cgo_panic_internal">
-            <h2>_runtime_cgo_panic_internal</h2>
-            <hr />
-            
-            <pre><code>func _runtime_cgo_panic_internal(p *byte)</code></pre>
-         </article>
-         
-         <article class="function" data-name="_cgo_panic">
-            <h2>_cgo_panic</h2>
-            <hr />
-            
-            <pre><code>func _cgo_panic(a **ast.StructType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="set_crosscall2">
-            <h2>set_crosscall2</h2>
-            <hr />
-            
-            <p>Set the x_crosscall2_ptr C function pointer variable point to crosscall2.
-It's for the runtime package to call at init time.</p>
-            
-            <pre><code>func set_crosscall2()</code></pre>
-         </article>
-         
-         <article class="function" data-name="NewHandle">
-            <h2>NewHandle</h2>
-            <hr />
-            
-            <p>NewHandle returns a handle for a given value.
 
+      <main>
+         <h1>cgo</h1>
+         <div class="section-divider"></div>
+
+         
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"C"
+"internal/runtime/sys"
+_ "unsafe"
+_ "unsafe"
+_ "unsafe"
+_ "unsafe"
+_ "unsafe"
+_ "unsafe"
+_ "unsafe"
+"unsafe"
+"sync"
+"sync/atomic"
+"unsafe"
+_ "unsafe"
+_ "unsafe"
+_ "unsafe"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
+            
+            <article class="global" data-name="___ps_strings">
+               <h3>
+                  ___ps_strings 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var ___ps_strings uintptr</code></pre>
+            </article>
+            
+            <article class="global" data-name="_cgo_bindm">
+               <h3>
+                  _cgo_bindm 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var _cgo_bindm = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="_cgo_callers">
+               <h3>
+                  _cgo_callers 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var _cgo_callers = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="_cgo_getstackbound">
+               <h3>
+                  _cgo_getstackbound 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var _cgo_getstackbound = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="_cgo_init">
+               <h3>
+                  _cgo_init 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var _cgo_init = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="_cgo_libc_setegid">
+               <h3>
+                  _cgo_libc_setegid 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:cgo_import_static _cgo_libc_setegid
+go:linkname _cgo_libc_setegid _cgo_libc_setegid
+go:linkname cgo_libc_setegid syscall.cgo_libc_setegid</p>
+               
+               <pre><code>var _cgo_libc_setegid byte</code></pre>
+            </article>
+            
+            <article class="global" data-name="_cgo_libc_seteuid">
+               <h3>
+                  _cgo_libc_seteuid 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:cgo_import_static _cgo_libc_seteuid
+go:linkname _cgo_libc_seteuid _cgo_libc_seteuid
+go:linkname cgo_libc_seteuid syscall.cgo_libc_seteuid</p>
+               
+               <pre><code>var _cgo_libc_seteuid byte</code></pre>
+            </article>
+            
+            <article class="global" data-name="_cgo_libc_setgid">
+               <h3>
+                  _cgo_libc_setgid 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:cgo_import_static _cgo_libc_setgid
+go:linkname _cgo_libc_setgid _cgo_libc_setgid
+go:linkname cgo_libc_setgid syscall.cgo_libc_setgid</p>
+               
+               <pre><code>var _cgo_libc_setgid byte</code></pre>
+            </article>
+            
+            <article class="global" data-name="_cgo_libc_setgroups">
+               <h3>
+                  _cgo_libc_setgroups 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:cgo_import_static _cgo_libc_setgroups
+go:linkname _cgo_libc_setgroups _cgo_libc_setgroups
+go:linkname cgo_libc_setgroups syscall.cgo_libc_setgroups</p>
+               
+               <pre><code>var _cgo_libc_setgroups byte</code></pre>
+            </article>
+            
+            <article class="global" data-name="_cgo_libc_setregid">
+               <h3>
+                  _cgo_libc_setregid 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:cgo_import_static _cgo_libc_setregid
+go:linkname _cgo_libc_setregid _cgo_libc_setregid
+go:linkname cgo_libc_setregid syscall.cgo_libc_setregid</p>
+               
+               <pre><code>var _cgo_libc_setregid byte</code></pre>
+            </article>
+            
+            <article class="global" data-name="_cgo_libc_setresgid">
+               <h3>
+                  _cgo_libc_setresgid 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:cgo_import_static _cgo_libc_setresgid
+go:linkname _cgo_libc_setresgid _cgo_libc_setresgid
+go:linkname cgo_libc_setresgid syscall.cgo_libc_setresgid</p>
+               
+               <pre><code>var _cgo_libc_setresgid byte</code></pre>
+            </article>
+            
+            <article class="global" data-name="_cgo_libc_setresuid">
+               <h3>
+                  _cgo_libc_setresuid 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:cgo_import_static _cgo_libc_setresuid
+go:linkname _cgo_libc_setresuid _cgo_libc_setresuid
+go:linkname cgo_libc_setresuid syscall.cgo_libc_setresuid</p>
+               
+               <pre><code>var _cgo_libc_setresuid byte</code></pre>
+            </article>
+            
+            <article class="global" data-name="_cgo_libc_setreuid">
+               <h3>
+                  _cgo_libc_setreuid 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:cgo_import_static _cgo_libc_setreuid
+go:linkname _cgo_libc_setreuid _cgo_libc_setreuid
+go:linkname cgo_libc_setreuid syscall.cgo_libc_setreuid</p>
+               
+               <pre><code>var _cgo_libc_setreuid byte</code></pre>
+            </article>
+            
+            <article class="global" data-name="_cgo_libc_setuid">
+               <h3>
+                  _cgo_libc_setuid 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:cgo_import_static _cgo_libc_setuid
+go:linkname _cgo_libc_setuid _cgo_libc_setuid
+go:linkname cgo_libc_setuid syscall.cgo_libc_setuid</p>
+               
+               <pre><code>var _cgo_libc_setuid byte</code></pre>
+            </article>
+            
+            <article class="global" data-name="_cgo_mmap">
+               <h3>
+                  _cgo_mmap 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var _cgo_mmap = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="_cgo_munmap">
+               <h3>
+                  _cgo_munmap 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var _cgo_munmap = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="_cgo_notify_runtime_init_done">
+               <h3>
+                  _cgo_notify_runtime_init_done 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var _cgo_notify_runtime_init_done = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="_cgo_pthread_key_created">
+               <h3>
+                  _cgo_pthread_key_created 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var _cgo_pthread_key_created = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="_cgo_set_context_function">
+               <h3>
+                  _cgo_set_context_function 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var _cgo_set_context_function = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="_cgo_setenv">
+               <h3>
+                  _cgo_setenv 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var _cgo_setenv = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="_cgo_sigaction">
+               <h3>
+                  _cgo_sigaction 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var _cgo_sigaction = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="_cgo_sys_thread_create">
+               <h3>
+                  _cgo_sys_thread_create 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var _cgo_sys_thread_create = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="_cgo_thread_start">
+               <h3>
+                  _cgo_thread_start 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var _cgo_thread_start = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="_cgo_unsetenv">
+               <h3>
+                  _cgo_unsetenv 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var _cgo_unsetenv = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="_cgo_yield">
+               <h3>
+                  _cgo_yield 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:cgo_import_static _cgo_yield
+go:linkname _cgo_yield _cgo_yield</p>
+               
+               <pre><code>var _cgo_yield unsafe.Pointer</code></pre>
+            </article>
+            
+            <article class="global" data-name="_crosscall2_ptr">
+               <h3>
+                  _crosscall2_ptr 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var _crosscall2_ptr = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="_environ">
+               <h3>
+                  _environ 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var _environ uintptr</code></pre>
+            </article>
+            
+            <article class="global" data-name="_environ">
+               <h3>
+                  _environ 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var _environ uintptr</code></pre>
+            </article>
+            
+            <article class="global" data-name="_environ">
+               <h3>
+                  _environ 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var _environ uintptr</code></pre>
+            </article>
+            
+            <article class="global" data-name="_guard_local">
+               <h3>
+                  _guard_local 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var _guard_local uintptr</code></pre>
+            </article>
+            
+            <article class="global" data-name="_iscgo">
+               <h3>
+                  _iscgo 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:linkname _iscgo runtime.iscgo</p>
+               
+               <pre><code>var _iscgo bool = true</code></pre>
+            </article>
+            
+            <article class="global" data-name="_progname">
+               <h3>
+                  _progname 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var _progname uintptr</code></pre>
+            </article>
+            
+            <article class="global" data-name="_progname">
+               <h3>
+                  _progname 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var _progname uintptr</code></pre>
+            </article>
+            
+            <article class="global" data-name="_progname">
+               <h3>
+                  _progname 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var _progname uintptr</code></pre>
+            </article>
+            
+            <article class="global" data-name="_set_crosscall2">
+               <h3>
+                  _set_crosscall2 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:linkname _set_crosscall2 runtime.set_crosscall2</p>
+               
+               <pre><code>var _set_crosscall2 = set_crosscall2</code></pre>
+            </article>
+            
+            <article class="global" data-name="cgo_libc_setegid">
+               <h3>
+                  cgo_libc_setegid 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var cgo_libc_setegid = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="cgo_libc_seteuid">
+               <h3>
+                  cgo_libc_seteuid 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var cgo_libc_seteuid = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="cgo_libc_setgid">
+               <h3>
+                  cgo_libc_setgid 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var cgo_libc_setgid = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="cgo_libc_setgroups">
+               <h3>
+                  cgo_libc_setgroups 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var cgo_libc_setgroups = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="cgo_libc_setregid">
+               <h3>
+                  cgo_libc_setregid 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var cgo_libc_setregid = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="cgo_libc_setresgid">
+               <h3>
+                  cgo_libc_setresgid 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var cgo_libc_setresgid = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="cgo_libc_setresuid">
+               <h3>
+                  cgo_libc_setresuid 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var cgo_libc_setresuid = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="cgo_libc_setreuid">
+               <h3>
+                  cgo_libc_setreuid 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var cgo_libc_setreuid = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="cgo_libc_setuid">
+               <h3>
+                  cgo_libc_setuid 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var cgo_libc_setuid = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="handleIdx">
+               <h3>
+                  handleIdx 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var handleIdx atomic.Uintptr</code></pre>
+            </article>
+            
+            <article class="global" data-name="handles">
+               <h3>
+                  handles 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var handles = sync.Map{...}</code></pre>
+            </article>
+            
+            <article class="global" data-name="x_cgo_bindm">
+               <h3>
+                  x_cgo_bindm 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:cgo_import_static x_cgo_bindm
+go:linkname x_cgo_bindm x_cgo_bindm
+go:linkname _cgo_bindm _cgo_bindm</p>
+               
+               <pre><code>var x_cgo_bindm byte</code></pre>
+            </article>
+            
+            <article class="global" data-name="x_cgo_callers">
+               <h3>
+                  x_cgo_callers 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:cgo_import_static x_cgo_callers
+go:linkname x_cgo_callers x_cgo_callers
+go:linkname _cgo_callers _cgo_callers</p>
+               
+               <pre><code>var x_cgo_callers byte</code></pre>
+            </article>
+            
+            <article class="global" data-name="x_cgo_getstackbound">
+               <h3>
+                  x_cgo_getstackbound 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:cgo_import_static x_cgo_getstackbound
+go:linkname x_cgo_getstackbound x_cgo_getstackbound
+go:linkname _cgo_getstackbound _cgo_getstackbound</p>
+               
+               <pre><code>var x_cgo_getstackbound byte</code></pre>
+            </article>
+            
+            <article class="global" data-name="x_cgo_init">
+               <h3>
+                  x_cgo_init 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:cgo_import_static x_cgo_init
+go:linkname x_cgo_init x_cgo_init
+go:linkname _cgo_init _cgo_init</p>
+               
+               <pre><code>var x_cgo_init byte</code></pre>
+            </article>
+            
+            <article class="global" data-name="x_cgo_mmap">
+               <h3>
+                  x_cgo_mmap 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:cgo_import_static x_cgo_mmap
+go:linkname x_cgo_mmap x_cgo_mmap
+go:linkname _cgo_mmap _cgo_mmap</p>
+               
+               <pre><code>var x_cgo_mmap byte</code></pre>
+            </article>
+            
+            <article class="global" data-name="x_cgo_munmap">
+               <h3>
+                  x_cgo_munmap 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:cgo_import_static x_cgo_munmap
+go:linkname x_cgo_munmap x_cgo_munmap
+go:linkname _cgo_munmap _cgo_munmap</p>
+               
+               <pre><code>var x_cgo_munmap byte</code></pre>
+            </article>
+            
+            <article class="global" data-name="x_cgo_notify_runtime_init_done">
+               <h3>
+                  x_cgo_notify_runtime_init_done 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:cgo_import_static x_cgo_notify_runtime_init_done
+go:linkname x_cgo_notify_runtime_init_done x_cgo_notify_runtime_init_done
+go:linkname _cgo_notify_runtime_init_done _cgo_notify_runtime_init_done</p>
+               
+               <pre><code>var x_cgo_notify_runtime_init_done byte</code></pre>
+            </article>
+            
+            <article class="global" data-name="x_cgo_pthread_key_created">
+               <h3>
+                  x_cgo_pthread_key_created 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:cgo_import_static x_cgo_pthread_key_created
+go:linkname x_cgo_pthread_key_created x_cgo_pthread_key_created
+go:linkname _cgo_pthread_key_created _cgo_pthread_key_created</p>
+               
+               <pre><code>var x_cgo_pthread_key_created byte</code></pre>
+            </article>
+            
+            <article class="global" data-name="x_cgo_set_context_function">
+               <h3>
+                  x_cgo_set_context_function 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:cgo_import_static x_cgo_set_context_function
+go:linkname x_cgo_set_context_function x_cgo_set_context_function
+go:linkname _cgo_set_context_function _cgo_set_context_function</p>
+               
+               <pre><code>var x_cgo_set_context_function byte</code></pre>
+            </article>
+            
+            <article class="global" data-name="x_cgo_setenv">
+               <h3>
+                  x_cgo_setenv 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:cgo_import_static x_cgo_setenv
+go:linkname x_cgo_setenv x_cgo_setenv
+go:linkname _cgo_setenv runtime._cgo_setenv</p>
+               
+               <pre><code>var x_cgo_setenv byte</code></pre>
+            </article>
+            
+            <article class="global" data-name="x_cgo_sigaction">
+               <h3>
+                  x_cgo_sigaction 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:cgo_import_static x_cgo_sigaction
+go:linkname x_cgo_sigaction x_cgo_sigaction
+go:linkname _cgo_sigaction _cgo_sigaction</p>
+               
+               <pre><code>var x_cgo_sigaction byte</code></pre>
+            </article>
+            
+            <article class="global" data-name="x_cgo_sys_thread_create">
+               <h3>
+                  x_cgo_sys_thread_create 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:cgo_import_static x_cgo_sys_thread_create
+go:linkname x_cgo_sys_thread_create x_cgo_sys_thread_create
+go:linkname _cgo_sys_thread_create _cgo_sys_thread_create</p>
+               
+               <pre><code>var x_cgo_sys_thread_create byte</code></pre>
+            </article>
+            
+            <article class="global" data-name="x_cgo_thread_start">
+               <h3>
+                  x_cgo_thread_start 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:cgo_import_static x_cgo_thread_start
+go:linkname x_cgo_thread_start x_cgo_thread_start
+go:linkname _cgo_thread_start _cgo_thread_start</p>
+               
+               <pre><code>var x_cgo_thread_start byte</code></pre>
+            </article>
+            
+            <article class="global" data-name="x_cgo_unsetenv">
+               <h3>
+                  x_cgo_unsetenv 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:cgo_import_static x_cgo_unsetenv
+go:linkname x_cgo_unsetenv x_cgo_unsetenv
+go:linkname _cgo_unsetenv runtime._cgo_unsetenv</p>
+               
+               <pre><code>var x_cgo_unsetenv byte</code></pre>
+            </article>
+            
+            <article class="global" data-name="x_crosscall2_ptr">
+               <h3>
+                  x_crosscall2_ptr 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:cgo_import_static x_crosscall2_ptr
+go:linkname x_crosscall2_ptr x_crosscall2_ptr
+go:linkname _crosscall2_ptr _crosscall2_ptr</p>
+               
+               <pre><code>var x_crosscall2_ptr byte</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="types">
+            <h2>Type Aliases</h2>
+            
+            <article class="type" data-name="Handle">
+               <h3>
+                  Handle
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>Handle provides a way to pass values that contain Go pointers
+(pointers to memory allocated by Go) between Go and C without
+breaking the cgo pointer passing rules. A Handle is an integer
+value that can represent any Go value. A Handle can be passed
+through C and back to Go, and Go code can use the Handle to
+retrieve the original Go value.
+The underlying type of Handle is guaranteed to fit in an integer type
+that is large enough to hold the bit pattern of any pointer. The zero
+value of a Handle is not valid, and thus is safe to use as a sentinel
+in C APIs.
+For instance, on the Go side:
+package main
+/*
+#include <stdint.h> // for uintptr_t
+extern void MyGoPrint(uintptr_t handle);
+void myprint(uintptr_t handle);
+import "C"
+import "runtime/cgo"
+//export MyGoPrint
+func MyGoPrint(handle C.uintptr_t) {
+h := cgo.Handle(handle)
+val := h.Value().(string)
+println(val)
+h.Delete()
+}
+func main() {
+val := "hello Go"
+C.myprint(C.uintptr_t(cgo.NewHandle(val)))
+// Output: hello Go
+}
+and on the C side:
+#include <stdint.h> // for uintptr_t
+// A Go function
+extern void MyGoPrint(uintptr_t handle);
+// A C function
+void myprint(uintptr_t handle) {
+MyGoPrint(handle);
+}
+Some C functions accept a void* argument that points to an arbitrary
+data value supplied by the caller. It is not safe to coerce a [cgo.Handle]
+(an integer) to a Go [unsafe.Pointer], but instead we can pass the address
+of the cgo.Handle to the void* parameter, as in this variant of the
+previous example:
+package main
+/*
+extern void MyGoPrint(void *context);
+static inline void myprint(void *context) {
+MyGoPrint(context);
+}
+import "C"
+import (
+"runtime/cgo"
+"unsafe"
+)
+//export MyGoPrint
+func MyGoPrint(context unsafe.Pointer) {
+h := *(*cgo.Handle)(context)
+val := h.Value().(string)
+println(val)
+h.Delete()
+}
+func main() {
+val := "hello Go"
+h := cgo.NewHandle(val)
+C.myprint(unsafe.Pointer(&h))
+// Output: hello Go
+}</p>
+               
+               <pre><code>type Handle uintptr</code></pre>
+            </article>
+            
+         </section>
+           
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="Incomplete">
+               <h3>
+                  Incomplete
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Incomplete is used specifically for the semantics of incomplete C types.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Incomplete struct {
+_ sys.NotInHeap
+}</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="functions">
+            <h2>Functions</h2>
+            
+            <article class="function" data-name="Delete">
+               <h3>
+                  Delete 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Delete invalidates a handle. This method should only be called once
+the program no longer needs to pass the handle to C and the C code
+no longer has a copy of the handle value.
+The method panics if the handle is invalid.</p>
+               
+               <pre><code>func (h Handle) Delete()</code></pre>
+            </article>
+            
+            <article class="function" data-name="NewHandle">
+               <h3>
+                  NewHandle 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewHandle returns a handle for a given value.
 The handle is valid until the program calls Delete on it. The handle
 uses resources, and this package assumes that C code may hold on to
 the handle, so a program must explicitly call Delete when the handle
 is no longer needed.
-
 The intended use is to pass the returned handle to C code, which
 passes it back to Go, which calls Value.</p>
+               
+               <pre><code>func NewHandle(v any) Handle</code></pre>
+            </article>
             
-            <pre><code>func NewHandle(v any) Handle</code></pre>
-         </article>
-         
-         <article class="function" data-name="Value">
-            <h2>Value</h2>
-            <hr />
-            
-            <p>Value returns the associated Go value for a valid handle.
-
+            <article class="function" data-name="Value">
+               <h3>
+                  Value 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Value returns the associated Go value for a valid handle.
 The method panics if the handle is invalid.</p>
+               
+               <pre><code>func (h Handle) Value() any</code></pre>
+            </article>
             
-            <pre><code>func Value() any</code></pre>
-         </article>
-         
-         <article class="function" data-name="Delete">
-            <h2>Delete</h2>
-            <hr />
+            <article class="function" data-name="_cgo_panic">
+               <h3>
+                  _cgo_panic 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>go:linkname _cgo_panic _cgo_panic
+go:cgo_export_static _cgo_panic
+go:cgo_export_dynamic _cgo_panic</p>
+               
+               <pre><code>func _cgo_panic(a *struct{...})</code></pre>
+            </article>
             
-            <p>Delete invalidates a handle. This method should only be called once
-the program no longer needs to pass the handle to C and the C code
-no longer has a copy of the handle value.
-
-The method panics if the handle is invalid.</p>
+            <article class="function" data-name="_runtime_cgo_panic_internal">
+               <h3>
+                  _runtime_cgo_panic_internal 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>go:linkname _runtime_cgo_panic_internal runtime._cgo_panic_internal</p>
+               
+               <pre><code>func _runtime_cgo_panic_internal(p *byte)</code></pre>
+            </article>
             
-            <pre><code>func Delete()</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestHandle">
-            <h2>TestHandle</h2>
-            <hr />
+            <article class="function" data-name="set_crosscall2">
+               <h3>
+                  set_crosscall2 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Set the x_crosscall2_ptr C function pointer variable point to crosscall2.
+It's for the runtime package to call at init time.</p>
+               
+               <pre><code>func set_crosscall2()</code></pre>
+            </article>
             
-            <pre><code>func TestHandle(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestInvalidHandle">
-            <h2>TestInvalidHandle</h2>
-            <hr />
+            <article class="function" data-name="xx_cgo_panicmem">
+               <h3>
+                  xx_cgo_panicmem 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>go:cgo_export_static xx_cgo_panicmem xx_cgo_panicmem</p>
+               
+               <pre><code>func xx_cgo_panicmem()</code></pre>
+            </article>
             
-            <pre><code>func TestInvalidHandle(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkHandle">
-            <h2>BenchmarkHandle</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkHandle(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="xx_cgo_panicmem">
-            <h2>xx_cgo_panicmem</h2>
-            <hr />
-            
-            <pre><code>func xx_cgo_panicmem()</code></pre>
-         </article>
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -684,59 +1405,170 @@ The method panics if the handle is invalid.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

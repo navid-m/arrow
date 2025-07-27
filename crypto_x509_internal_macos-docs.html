@@ -13,812 +13,1484 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                 
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>macOS</code>
-         </h1>
-         <hr />
+         <h1>macOS</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="kCFAllocatorDefault">
-            <h2>kCFAllocatorDefault</h2>
-            <hr />
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"bytes"
+"errors"
+"internal/abi"
+"runtime"
+"time"
+"unsafe"
+"errors"
+"internal/abi"
+"strconv"
+"unsafe"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <pre><code>kCFAllocatorDefault</code></pre>
-         </article>
-         
-         <article class="global" data-name="kCFStringEncodingUTF8">
-            <h2>kCFStringEncodingUTF8</h2>
-            <hr />
+            <article class="global" data-name="ErrNoTrustSettings">
+               <h3>
+                  ErrNoTrustSettings 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var ErrNoTrustSettings = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre><code>kCFStringEncodingUTF8</code></pre>
-         </article>
-         
-         <article class="global" data-name="kCFNumberSInt32Type">
-            <h2>kCFNumberSInt32Type</h2>
-            <hr />
-            
-            <pre><code>kCFNumberSInt32Type</code></pre>
-         </article>
-         
-         <article class="global" data-name="SecTrustSettingsResultInvalid">
-            <h2>SecTrustSettingsResultInvalid</h2>
-            <hr />
-            
-            <pre><code>SecTrustSettingsResultInvalid SecTrustSettingsResult</code></pre>
-         </article>
-         
-         <article class="global" data-name="SecTrustSettingsResultTrustRoot">
-            <h2>SecTrustSettingsResultTrustRoot</h2>
-            <hr />
-            
-            <pre><code>SecTrustSettingsResultTrustRoot</code></pre>
-         </article>
-         
-         <article class="global" data-name="SecTrustSettingsResultTrustAsRoot">
-            <h2>SecTrustSettingsResultTrustAsRoot</h2>
-            <hr />
-            
-            <pre><code>SecTrustSettingsResultTrustAsRoot</code></pre>
-         </article>
-         
-         <article class="global" data-name="SecTrustSettingsResultDeny">
-            <h2>SecTrustSettingsResultDeny</h2>
-            <hr />
-            
-            <pre><code>SecTrustSettingsResultDeny</code></pre>
-         </article>
-         
-         <article class="global" data-name="SecTrustSettingsResultUnspecified">
-            <h2>SecTrustSettingsResultUnspecified</h2>
-            <hr />
-            
-            <pre><code>SecTrustSettingsResultUnspecified</code></pre>
-         </article>
-         
-         <article class="global" data-name="SecTrustResultInvalid">
-            <h2>SecTrustResultInvalid</h2>
-            <hr />
-            
-            <pre><code>SecTrustResultInvalid SecTrustResultType</code></pre>
-         </article>
-         
-         <article class="global" data-name="SecTrustResultProceed">
-            <h2>SecTrustResultProceed</h2>
-            <hr />
-            
-            <pre><code>SecTrustResultProceed</code></pre>
-         </article>
-         
-         <article class="global" data-name="SecTrustResultConfirm">
-            <h2>SecTrustResultConfirm</h2>
-            <hr />
-            
-            <pre><code>SecTrustResultConfirm</code></pre>
-         </article>
-         
-         <article class="global" data-name="SecTrustResultDeny">
-            <h2>SecTrustResultDeny</h2>
-            <hr />
-            
-            <pre><code>SecTrustResultDeny</code></pre>
-         </article>
-         
-         <article class="global" data-name="SecTrustResultUnspecified">
-            <h2>SecTrustResultUnspecified</h2>
-            <hr />
-            
-            <pre><code>SecTrustResultUnspecified</code></pre>
-         </article>
-         
-         <article class="global" data-name="SecTrustResultRecoverableTrustFailure">
-            <h2>SecTrustResultRecoverableTrustFailure</h2>
-            <hr />
-            
-            <pre><code>SecTrustResultRecoverableTrustFailure</code></pre>
-         </article>
-         
-         <article class="global" data-name="SecTrustResultFatalTrustFailure">
-            <h2>SecTrustResultFatalTrustFailure</h2>
-            <hr />
-            
-            <pre><code>SecTrustResultFatalTrustFailure</code></pre>
-         </article>
-         
-         <article class="global" data-name="SecTrustResultOtherError">
-            <h2>SecTrustResultOtherError</h2>
-            <hr />
-            
-            <pre><code>SecTrustResultOtherError</code></pre>
-         </article>
-         
-         <article class="global" data-name="SecTrustSettingsDomainUser">
-            <h2>SecTrustSettingsDomainUser</h2>
-            <hr />
-            
-            <pre><code>SecTrustSettingsDomainUser SecTrustSettingsDomain</code></pre>
-         </article>
-         
-         <article class="global" data-name="SecTrustSettingsDomainAdmin">
-            <h2>SecTrustSettingsDomainAdmin</h2>
-            <hr />
-            
-            <pre><code>SecTrustSettingsDomainAdmin</code></pre>
-         </article>
-         
-         <article class="global" data-name="SecTrustSettingsDomainSystem">
-            <h2>SecTrustSettingsDomainSystem</h2>
-            <hr />
-            
-            <pre><code>SecTrustSettingsDomainSystem</code></pre>
-         </article>
-         
-         <article class="global" data-name="ErrSecCertificateExpired">
-            <h2>ErrSecCertificateExpired</h2>
-            <hr />
-            
-            <p>various macOS error codes that can be returned from
+            <article class="global" data-name="ErrSecCertificateExpired">
+               <h3>
+                  ErrSecCertificateExpired 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>various macOS error codes that can be returned from
 SecTrustEvaluateWithError that we can map to Go cert
 verification error types.</p>
+               
+               <pre><code>const ErrSecCertificateExpired = *ast.UnaryExpr</code></pre>
+            </article>
             
-            <pre><code>ErrSecCertificateExpired</code></pre>
-         </article>
-         
-         <article class="global" data-name="ErrSecHostNameMismatch">
-            <h2>ErrSecHostNameMismatch</h2>
-            <hr />
+            <article class="global" data-name="ErrSecHostNameMismatch">
+               <h3>
+                  ErrSecHostNameMismatch 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const ErrSecHostNameMismatch = *ast.UnaryExpr</code></pre>
+            </article>
             
-            <pre><code>ErrSecHostNameMismatch</code></pre>
-         </article>
-         
-         <article class="global" data-name="ErrSecNotTrusted">
-            <h2>ErrSecNotTrusted</h2>
-            <hr />
+            <article class="global" data-name="ErrSecNotTrusted">
+               <h3>
+                  ErrSecNotTrusted 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const ErrSecNotTrusted = *ast.UnaryExpr</code></pre>
+            </article>
             
-            <pre><code>ErrSecNotTrusted</code></pre>
-         </article>
-         
-         <article class="global" data-name="SecTrustSettingsResultKey">
-            <h2>SecTrustSettingsResultKey</h2>
-            <hr />
+            <article class="global" data-name="SecPolicyAppleSSL">
+               <h3>
+                  SecPolicyAppleSSL 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var SecPolicyAppleSSL = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre><code>SecTrustSettingsResultKey</code></pre>
-         </article>
-         
-         <article class="global" data-name="SecTrustSettingsPolicy">
-            <h2>SecTrustSettingsPolicy</h2>
-            <hr />
+            <article class="global" data-name="SecPolicyOid">
+               <h3>
+                  SecPolicyOid 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var SecPolicyOid = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre><code>SecTrustSettingsPolicy</code></pre>
-         </article>
-         
-         <article class="global" data-name="SecTrustSettingsPolicyString">
-            <h2>SecTrustSettingsPolicyString</h2>
-            <hr />
+            <article class="global" data-name="SecTrustResultConfirm">
+               <h3>
+                  SecTrustResultConfirm 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const SecTrustResultConfirm</code></pre>
+            </article>
             
-            <pre><code>SecTrustSettingsPolicyString</code></pre>
-         </article>
-         
-         <article class="global" data-name="SecPolicyOid">
-            <h2>SecPolicyOid</h2>
-            <hr />
+            <article class="global" data-name="SecTrustResultDeny">
+               <h3>
+                  SecTrustResultDeny 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const SecTrustResultDeny</code></pre>
+            </article>
             
-            <pre><code>SecPolicyOid</code></pre>
-         </article>
-         
-         <article class="global" data-name="SecPolicyAppleSSL">
-            <h2>SecPolicyAppleSSL</h2>
-            <hr />
+            <article class="global" data-name="SecTrustResultFatalTrustFailure">
+               <h3>
+                  SecTrustResultFatalTrustFailure 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const SecTrustResultFatalTrustFailure</code></pre>
+            </article>
             
-            <pre><code>SecPolicyAppleSSL</code></pre>
-         </article>
-         
-         <article class="global" data-name="ErrNoTrustSettings">
-            <h2>ErrNoTrustSettings</h2>
-            <hr />
+            <article class="global" data-name="SecTrustResultInvalid">
+               <h3>
+                  SecTrustResultInvalid 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const SecTrustResultInvalid SecTrustResultType = iota</code></pre>
+            </article>
             
-            <pre><code>ErrNoTrustSettings</code></pre>
-         </article>
-         
-         <article class="global" data-name="errSecNoTrustSettings">
-            <h2>errSecNoTrustSettings</h2>
-            <hr />
+            <article class="global" data-name="SecTrustResultOtherError">
+               <h3>
+                  SecTrustResultOtherError 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const SecTrustResultOtherError</code></pre>
+            </article>
             
-            <pre><code>errSecNoTrustSettings</code></pre>
-         </article>
-         
-         <article class="global" data-name="errSecItemNotFound">
-            <h2>errSecItemNotFound</h2>
-            <hr />
+            <article class="global" data-name="SecTrustResultProceed">
+               <h3>
+                  SecTrustResultProceed 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const SecTrustResultProceed</code></pre>
+            </article>
             
-            <pre><code>errSecItemNotFound</code></pre>
-         </article>
+            <article class="global" data-name="SecTrustResultRecoverableTrustFailure">
+               <h3>
+                  SecTrustResultRecoverableTrustFailure 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const SecTrustResultRecoverableTrustFailure</code></pre>
+            </article>
+            
+            <article class="global" data-name="SecTrustResultUnspecified">
+               <h3>
+                  SecTrustResultUnspecified 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const SecTrustResultUnspecified</code></pre>
+            </article>
+            
+            <article class="global" data-name="SecTrustSettingsDomainAdmin">
+               <h3>
+                  SecTrustSettingsDomainAdmin 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const SecTrustSettingsDomainAdmin</code></pre>
+            </article>
+            
+            <article class="global" data-name="SecTrustSettingsDomainSystem">
+               <h3>
+                  SecTrustSettingsDomainSystem 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const SecTrustSettingsDomainSystem</code></pre>
+            </article>
+            
+            <article class="global" data-name="SecTrustSettingsDomainUser">
+               <h3>
+                  SecTrustSettingsDomainUser 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const SecTrustSettingsDomainUser SecTrustSettingsDomain = iota</code></pre>
+            </article>
+            
+            <article class="global" data-name="SecTrustSettingsPolicy">
+               <h3>
+                  SecTrustSettingsPolicy 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var SecTrustSettingsPolicy = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="SecTrustSettingsPolicyString">
+               <h3>
+                  SecTrustSettingsPolicyString 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var SecTrustSettingsPolicyString = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="SecTrustSettingsResultDeny">
+               <h3>
+                  SecTrustSettingsResultDeny 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const SecTrustSettingsResultDeny</code></pre>
+            </article>
+            
+            <article class="global" data-name="SecTrustSettingsResultInvalid">
+               <h3>
+                  SecTrustSettingsResultInvalid 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const SecTrustSettingsResultInvalid SecTrustSettingsResult = iota</code></pre>
+            </article>
+            
+            <article class="global" data-name="SecTrustSettingsResultKey">
+               <h3>
+                  SecTrustSettingsResultKey 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var SecTrustSettingsResultKey = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="SecTrustSettingsResultTrustAsRoot">
+               <h3>
+                  SecTrustSettingsResultTrustAsRoot 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const SecTrustSettingsResultTrustAsRoot</code></pre>
+            </article>
+            
+            <article class="global" data-name="SecTrustSettingsResultTrustRoot">
+               <h3>
+                  SecTrustSettingsResultTrustRoot 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const SecTrustSettingsResultTrustRoot</code></pre>
+            </article>
+            
+            <article class="global" data-name="SecTrustSettingsResultUnspecified">
+               <h3>
+                  SecTrustSettingsResultUnspecified 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const SecTrustSettingsResultUnspecified</code></pre>
+            </article>
+            
+            <article class="global" data-name="errSecItemNotFound">
+               <h3>
+                  errSecItemNotFound 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const errSecItemNotFound = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="errSecNoTrustSettings">
+               <h3>
+                  errSecNoTrustSettings 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const errSecNoTrustSettings = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="kCFAllocatorDefault">
+               <h3>
+                  kCFAllocatorDefault 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const kCFAllocatorDefault = 0</code></pre>
+            </article>
+            
+            <article class="global" data-name="kCFNumberSInt32Type">
+               <h3>
+                  kCFNumberSInt32Type 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const kCFNumberSInt32Type = 3</code></pre>
+            </article>
+            
+            <article class="global" data-name="kCFStringEncodingUTF8">
+               <h3>
+                  kCFStringEncodingUTF8 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const kCFStringEncodingUTF8 = 0x08000100</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="struct" data-name="OSStatus">
-            <h2>type OSStatus struct</h2>
-            <hr />
+         <section id="types">
+            <h2>Type Aliases</h2>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">call string
-status int32</code></pre>
-         </article>
+            <article class="type" data-name="CFRef">
+               <h3>
+                  CFRef
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>CFRef is an opaque reference to a Core Foundation object. It is a pointer,
+but to memory not owned by Go, so not an unsafe.Pointer.</p>
+               
+               <pre><code>type CFRef uintptr</code></pre>
+            </article>
+            
+            <article class="type" data-name="CFString">
+               <h3>
+                  CFString
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <pre><code>type CFString CFRef</code></pre>
+            </article>
+            
+            <article class="type" data-name="SecTrustResultType">
+               <h3>
+                  SecTrustResultType
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <pre><code>type SecTrustResultType int32</code></pre>
+            </article>
+            
+            <article class="type" data-name="SecTrustSettingsDomain">
+               <h3>
+                  SecTrustSettingsDomain
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <pre><code>type SecTrustSettingsDomain int32</code></pre>
+            </article>
+            
+            <article class="type" data-name="SecTrustSettingsResult">
+               <h3>
+                  SecTrustSettingsResult
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <pre><code>type SecTrustSettingsResult int32</code></pre>
+            </article>
+            
+         </section>
+           
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="OSStatus">
+               <h3>
+                  OSStatus
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type OSStatus struct {
+call string
+status int32
+}</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="function" data-name="CFDataToSlice">
-            <h2>CFDataToSlice</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <p>CFDataToSlice returns a copy of the contents of data as a bytes slice.</p>
+            <article class="function" data-name="BytesToCFData">
+               <h3>
+                  BytesToCFData 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func BytesToCFData(b []byte) CFRef</code></pre>
+            </article>
             
-            <pre><code>func CFDataToSlice(data CFRef) []byte</code></pre>
-         </article>
-         
-         <article class="function" data-name="CFStringToString">
-            <h2>CFStringToString</h2>
-            <hr />
+            <article class="function" data-name="CFArrayAppendValue">
+               <h3>
+                  CFArrayAppendValue 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func CFArrayAppendValue(array CFRef, val CFRef)</code></pre>
+            </article>
             
-            <p>CFStringToString returns a Go string representation of the passed
+            <article class="function" data-name="CFArrayCreateMutable">
+               <h3>
+                  CFArrayCreateMutable 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func CFArrayCreateMutable() CFRef</code></pre>
+            </article>
+            
+            <article class="function" data-name="CFArrayGetCount">
+               <h3>
+                  CFArrayGetCount 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func CFArrayGetCount(array CFRef) int</code></pre>
+            </article>
+            
+            <article class="function" data-name="CFArrayGetValueAtIndex">
+               <h3>
+                  CFArrayGetValueAtIndex 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func CFArrayGetValueAtIndex(array CFRef, index int) CFRef</code></pre>
+            </article>
+            
+            <article class="function" data-name="CFDataGetBytePtr">
+               <h3>
+                  CFDataGetBytePtr 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func CFDataGetBytePtr(data CFRef) uintptr</code></pre>
+            </article>
+            
+            <article class="function" data-name="CFDataGetLength">
+               <h3>
+                  CFDataGetLength 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func CFDataGetLength(data CFRef) int</code></pre>
+            </article>
+            
+            <article class="function" data-name="CFDataToSlice">
+               <h3>
+                  CFDataToSlice 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>CFDataToSlice returns a copy of the contents of data as a bytes slice.</p>
+               
+               <pre><code>func CFDataToSlice(data CFRef) []byte</code></pre>
+            </article>
+            
+            <article class="function" data-name="CFDateCreate">
+               <h3>
+                  CFDateCreate 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func CFDateCreate(seconds float64) CFRef</code></pre>
+            </article>
+            
+            <article class="function" data-name="CFDictionaryGetValueIfPresent">
+               <h3>
+                  CFDictionaryGetValueIfPresent 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func CFDictionaryGetValueIfPresent(dict CFRef, key CFString) (value CFRef, ok bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="CFEqual">
+               <h3>
+                  CFEqual 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func CFEqual(a CFRef, b CFRef) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="CFErrorCopyDescription">
+               <h3>
+                  CFErrorCopyDescription 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func CFErrorCopyDescription(errRef CFRef) CFRef</code></pre>
+            </article>
+            
+            <article class="function" data-name="CFErrorGetCode">
+               <h3>
+                  CFErrorGetCode 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func CFErrorGetCode(errRef CFRef) int</code></pre>
+            </article>
+            
+            <article class="function" data-name="CFNumberGetValue">
+               <h3>
+                  CFNumberGetValue 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func CFNumberGetValue(num CFRef) (int32, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="CFRelease">
+               <h3>
+                  CFRelease 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func CFRelease(ref CFRef)</code></pre>
+            </article>
+            
+            <article class="function" data-name="CFStringCreateExternalRepresentation">
+               <h3>
+                  CFStringCreateExternalRepresentation 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func CFStringCreateExternalRepresentation(strRef CFRef) (CFRef, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="CFStringToString">
+               <h3>
+                  CFStringToString 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>CFStringToString returns a Go string representation of the passed
 in CFString, or an empty string if it's invalid.</p>
+               
+               <pre><code>func CFStringToString(ref CFRef) string</code></pre>
+            </article>
             
-            <pre><code>func CFStringToString(ref CFRef) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="TimeToCFDateRef">
-            <h2>TimeToCFDateRef</h2>
-            <hr />
+            <article class="function" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s OSStatus) Error() string</code></pre>
+            </article>
             
-            <p>TimeToCFDateRef converts a time.Time into an apple CFDateRef.</p>
-            
-            <pre><code>func TimeToCFDateRef(t time.Time) CFRef</code></pre>
-         </article>
-         
-         <article class="function" data-name="BytesToCFData">
-            <h2>BytesToCFData</h2>
-            <hr />
-            
-            <pre><code>func BytesToCFData(b []byte) CFRef</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_CFDataCreate_trampoline">
-            <h2>x509_CFDataCreate_trampoline</h2>
-            <hr />
-            
-            <pre><code>func x509_CFDataCreate_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="StringToCFString">
-            <h2>StringToCFString</h2>
-            <hr />
-            
-            <p>StringToCFString returns a copy of the UTF-8 contents of s as a new CFString.</p>
-            
-            <pre><code>func StringToCFString(s string) CFString</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_CFStringCreateWithBytes_trampoline">
-            <h2>x509_CFStringCreateWithBytes_trampoline</h2>
-            <hr />
-            
-            <pre><code>func x509_CFStringCreateWithBytes_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="CFDictionaryGetValueIfPresent">
-            <h2>CFDictionaryGetValueIfPresent</h2>
-            <hr />
-            
-            <pre><code>func CFDictionaryGetValueIfPresent(dict CFRef, key CFString) (value CFRef, ok bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_CFDictionaryGetValueIfPresent_trampoline">
-            <h2>x509_CFDictionaryGetValueIfPresent_trampoline</h2>
-            <hr />
-            
-            <pre><code>func x509_CFDictionaryGetValueIfPresent_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="CFNumberGetValue">
-            <h2>CFNumberGetValue</h2>
-            <hr />
-            
-            <pre><code>func CFNumberGetValue(num CFRef) (int32, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_CFNumberGetValue_trampoline">
-            <h2>x509_CFNumberGetValue_trampoline</h2>
-            <hr />
-            
-            <pre><code>func x509_CFNumberGetValue_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="CFDataGetLength">
-            <h2>CFDataGetLength</h2>
-            <hr />
-            
-            <pre><code>func CFDataGetLength(data CFRef) int</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_CFDataGetLength_trampoline">
-            <h2>x509_CFDataGetLength_trampoline</h2>
-            <hr />
-            
-            <pre><code>func x509_CFDataGetLength_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="CFDataGetBytePtr">
-            <h2>CFDataGetBytePtr</h2>
-            <hr />
-            
-            <pre><code>func CFDataGetBytePtr(data CFRef) uintptr</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_CFDataGetBytePtr_trampoline">
-            <h2>x509_CFDataGetBytePtr_trampoline</h2>
-            <hr />
-            
-            <pre><code>func x509_CFDataGetBytePtr_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="CFArrayGetCount">
-            <h2>CFArrayGetCount</h2>
-            <hr />
-            
-            <pre><code>func CFArrayGetCount(array CFRef) int</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_CFArrayGetCount_trampoline">
-            <h2>x509_CFArrayGetCount_trampoline</h2>
-            <hr />
-            
-            <pre><code>func x509_CFArrayGetCount_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="CFArrayGetValueAtIndex">
-            <h2>CFArrayGetValueAtIndex</h2>
-            <hr />
-            
-            <pre><code>func CFArrayGetValueAtIndex(array CFRef, index int) CFRef</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_CFArrayGetValueAtIndex_trampoline">
-            <h2>x509_CFArrayGetValueAtIndex_trampoline</h2>
-            <hr />
-            
-            <pre><code>func x509_CFArrayGetValueAtIndex_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="CFEqual">
-            <h2>CFEqual</h2>
-            <hr />
-            
-            <pre><code>func CFEqual(a CFRef, b CFRef) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_CFEqual_trampoline">
-            <h2>x509_CFEqual_trampoline</h2>
-            <hr />
-            
-            <pre><code>func x509_CFEqual_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="CFRelease">
-            <h2>CFRelease</h2>
-            <hr />
-            
-            <pre><code>func CFRelease(ref CFRef)</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_CFRelease_trampoline">
-            <h2>x509_CFRelease_trampoline</h2>
-            <hr />
-            
-            <pre><code>func x509_CFRelease_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="CFArrayCreateMutable">
-            <h2>CFArrayCreateMutable</h2>
-            <hr />
-            
-            <pre><code>func CFArrayCreateMutable() CFRef</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_CFArrayCreateMutable_trampoline">
-            <h2>x509_CFArrayCreateMutable_trampoline</h2>
-            <hr />
-            
-            <pre><code>func x509_CFArrayCreateMutable_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="CFArrayAppendValue">
-            <h2>CFArrayAppendValue</h2>
-            <hr />
-            
-            <pre><code>func CFArrayAppendValue(array CFRef, val CFRef)</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_CFArrayAppendValue_trampoline">
-            <h2>x509_CFArrayAppendValue_trampoline</h2>
-            <hr />
-            
-            <pre><code>func x509_CFArrayAppendValue_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="CFDateCreate">
-            <h2>CFDateCreate</h2>
-            <hr />
-            
-            <pre><code>func CFDateCreate(seconds float64) CFRef</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_CFDateCreate_trampoline">
-            <h2>x509_CFDateCreate_trampoline</h2>
-            <hr />
-            
-            <pre><code>func x509_CFDateCreate_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="CFErrorCopyDescription">
-            <h2>CFErrorCopyDescription</h2>
-            <hr />
-            
-            <pre><code>func CFErrorCopyDescription(errRef CFRef) CFRef</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_CFErrorCopyDescription_trampoline">
-            <h2>x509_CFErrorCopyDescription_trampoline</h2>
-            <hr />
-            
-            <pre><code>func x509_CFErrorCopyDescription_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="CFErrorGetCode">
-            <h2>CFErrorGetCode</h2>
-            <hr />
-            
-            <pre><code>func CFErrorGetCode(errRef CFRef) int</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_CFErrorGetCode_trampoline">
-            <h2>x509_CFErrorGetCode_trampoline</h2>
-            <hr />
-            
-            <pre><code>func x509_CFErrorGetCode_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="CFStringCreateExternalRepresentation">
-            <h2>CFStringCreateExternalRepresentation</h2>
-            <hr />
-            
-            <pre><code>func CFStringCreateExternalRepresentation(strRef CFRef) (CFRef, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_CFStringCreateExternalRepresentation_trampoline">
-            <h2>x509_CFStringCreateExternalRepresentation_trampoline</h2>
-            <hr />
-            
-            <pre><code>func x509_CFStringCreateExternalRepresentation_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="syscall">
-            <h2>syscall</h2>
-            <hr />
-            
-            <p>syscall is implemented in the runtime package (runtime/sys_darwin.go)</p>
-            
-            <pre><code>func syscall(fn uintptr, a1 uintptr, a2 uintptr, a3 uintptr, a4 uintptr, a5 uintptr, f1 float64) uintptr</code></pre>
-         </article>
-         
-         <article class="function" data-name="ReleaseCFArray">
-            <h2>ReleaseCFArray</h2>
-            <hr />
-            
-            <p>ReleaseCFArray iterates through an array, releasing its contents, and then
+            <article class="function" data-name="ReleaseCFArray">
+               <h3>
+                  ReleaseCFArray 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>ReleaseCFArray iterates through an array, releasing its contents, and then
 releases the array itself. This is necessary because we cannot, easily, set the
 CFArrayCallBacks argument when creating CFArrays.</p>
+               
+               <pre><code>func ReleaseCFArray(array CFRef)</code></pre>
+            </article>
             
-            <pre><code>func ReleaseCFArray(array CFRef)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Error">
-            <h2>Error</h2>
-            <hr />
+            <article class="function" data-name="SecCertificateCopyData">
+               <h3>
+                  SecCertificateCopyData 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func SecCertificateCopyData(cert CFRef) ([]byte, error)</code></pre>
+            </article>
             
-            <pre><code>func Error() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="SecTrustSettingsCopyCertificates">
-            <h2>SecTrustSettingsCopyCertificates</h2>
-            <hr />
+            <article class="function" data-name="SecCertificateCreateWithData">
+               <h3>
+                  SecCertificateCreateWithData 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func SecCertificateCreateWithData(b []byte) (CFRef, error)</code></pre>
+            </article>
             
-            <pre><code>func SecTrustSettingsCopyCertificates(domain SecTrustSettingsDomain) (certArray CFRef, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_SecTrustSettingsCopyCertificates_trampoline">
-            <h2>x509_SecTrustSettingsCopyCertificates_trampoline</h2>
-            <hr />
+            <article class="function" data-name="SecPolicyCreateSSL">
+               <h3>
+                  SecPolicyCreateSSL 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func SecPolicyCreateSSL(name string) (CFRef, error)</code></pre>
+            </article>
             
-            <pre><code>func x509_SecTrustSettingsCopyCertificates_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="SecTrustSettingsCopyTrustSettings">
-            <h2>SecTrustSettingsCopyTrustSettings</h2>
-            <hr />
+            <article class="function" data-name="SecTrustCreateWithCertificates">
+               <h3>
+                  SecTrustCreateWithCertificates 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func SecTrustCreateWithCertificates(certs CFRef, policies CFRef) (CFRef, error)</code></pre>
+            </article>
             
-            <pre><code>func SecTrustSettingsCopyTrustSettings(cert CFRef, domain SecTrustSettingsDomain) (trustSettings CFRef, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_SecTrustSettingsCopyTrustSettings_trampoline">
-            <h2>x509_SecTrustSettingsCopyTrustSettings_trampoline</h2>
-            <hr />
+            <article class="function" data-name="SecTrustEvaluate">
+               <h3>
+                  SecTrustEvaluate 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func SecTrustEvaluate(trustObj CFRef) (CFRef, error)</code></pre>
+            </article>
             
-            <pre><code>func x509_SecTrustSettingsCopyTrustSettings_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="SecTrustCreateWithCertificates">
-            <h2>SecTrustCreateWithCertificates</h2>
-            <hr />
+            <article class="function" data-name="SecTrustEvaluateWithError">
+               <h3>
+                  SecTrustEvaluateWithError 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func SecTrustEvaluateWithError(trustObj CFRef) (int, error)</code></pre>
+            </article>
             
-            <pre><code>func SecTrustCreateWithCertificates(certs CFRef, policies CFRef) (CFRef, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_SecTrustCreateWithCertificates_trampoline">
-            <h2>x509_SecTrustCreateWithCertificates_trampoline</h2>
-            <hr />
+            <article class="function" data-name="SecTrustGetCertificateAtIndex">
+               <h3>
+                  SecTrustGetCertificateAtIndex 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func SecTrustGetCertificateAtIndex(trustObj CFRef, i int) (CFRef, error)</code></pre>
+            </article>
             
-            <pre><code>func x509_SecTrustCreateWithCertificates_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="SecCertificateCreateWithData">
-            <h2>SecCertificateCreateWithData</h2>
-            <hr />
+            <article class="function" data-name="SecTrustGetCertificateCount">
+               <h3>
+                  SecTrustGetCertificateCount 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func SecTrustGetCertificateCount(trustObj CFRef) int</code></pre>
+            </article>
             
-            <pre><code>func SecCertificateCreateWithData(b []byte) (CFRef, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_SecCertificateCreateWithData_trampoline">
-            <h2>x509_SecCertificateCreateWithData_trampoline</h2>
-            <hr />
+            <article class="function" data-name="SecTrustGetResult">
+               <h3>
+                  SecTrustGetResult 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func SecTrustGetResult(trustObj CFRef, result CFRef) (CFRef, CFRef, error)</code></pre>
+            </article>
             
-            <pre><code>func x509_SecCertificateCreateWithData_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="SecPolicyCreateSSL">
-            <h2>SecPolicyCreateSSL</h2>
-            <hr />
+            <article class="function" data-name="SecTrustSetVerifyDate">
+               <h3>
+                  SecTrustSetVerifyDate 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func SecTrustSetVerifyDate(trustObj CFRef, dateRef CFRef) error</code></pre>
+            </article>
             
-            <pre><code>func SecPolicyCreateSSL(name string) (CFRef, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_SecPolicyCreateSSL_trampoline">
-            <h2>x509_SecPolicyCreateSSL_trampoline</h2>
-            <hr />
+            <article class="function" data-name="SecTrustSettingsCopyCertificates">
+               <h3>
+                  SecTrustSettingsCopyCertificates 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func SecTrustSettingsCopyCertificates(domain SecTrustSettingsDomain) (certArray CFRef, err error)</code></pre>
+            </article>
             
-            <pre><code>func x509_SecPolicyCreateSSL_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="SecTrustSetVerifyDate">
-            <h2>SecTrustSetVerifyDate</h2>
-            <hr />
+            <article class="function" data-name="SecTrustSettingsCopyTrustSettings">
+               <h3>
+                  SecTrustSettingsCopyTrustSettings 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func SecTrustSettingsCopyTrustSettings(cert CFRef, domain SecTrustSettingsDomain) (trustSettings CFRef, err error)</code></pre>
+            </article>
             
-            <pre><code>func SecTrustSetVerifyDate(trustObj CFRef, dateRef CFRef) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_SecTrustSetVerifyDate_trampoline">
-            <h2>x509_SecTrustSetVerifyDate_trampoline</h2>
-            <hr />
+            <article class="function" data-name="StringToCFString">
+               <h3>
+                  StringToCFString 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>StringToCFString returns a copy of the UTF-8 contents of s as a new CFString.</p>
+               
+               <pre><code>func StringToCFString(s string) CFString</code></pre>
+            </article>
             
-            <pre><code>func x509_SecTrustSetVerifyDate_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="SecTrustEvaluate">
-            <h2>SecTrustEvaluate</h2>
-            <hr />
+            <article class="function" data-name="TimeToCFDateRef">
+               <h3>
+                  TimeToCFDateRef 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>TimeToCFDateRef converts a time.Time into an apple CFDateRef.</p>
+               
+               <pre><code>func TimeToCFDateRef(t time.Time) CFRef</code></pre>
+            </article>
             
-            <pre><code>func SecTrustEvaluate(trustObj CFRef) (CFRef, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_SecTrustEvaluate_trampoline">
-            <h2>x509_SecTrustEvaluate_trampoline</h2>
-            <hr />
+            <article class="function" data-name="syscall">
+               <h3>
+                  syscall 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>syscall is implemented in the runtime package (runtime/sys_darwin.go)</p>
+               
+               <pre><code>func syscall(fn uintptr, a1 uintptr, a2 uintptr, a3 uintptr, a4 uintptr, a5 uintptr, f1 float64) uintptr</code></pre>
+            </article>
             
-            <pre><code>func x509_SecTrustEvaluate_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="SecTrustGetResult">
-            <h2>SecTrustGetResult</h2>
-            <hr />
+            <article class="function" data-name="x509_CFArrayAppendValue_trampoline">
+               <h3>
+                  x509_CFArrayAppendValue_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_CFArrayAppendValue_trampoline()</code></pre>
+            </article>
             
-            <pre><code>func SecTrustGetResult(trustObj CFRef, result CFRef) (CFRef, CFRef, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_SecTrustGetResult_trampoline">
-            <h2>x509_SecTrustGetResult_trampoline</h2>
-            <hr />
+            <article class="function" data-name="x509_CFArrayCreateMutable_trampoline">
+               <h3>
+                  x509_CFArrayCreateMutable_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_CFArrayCreateMutable_trampoline()</code></pre>
+            </article>
             
-            <pre><code>func x509_SecTrustGetResult_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="SecTrustEvaluateWithError">
-            <h2>SecTrustEvaluateWithError</h2>
-            <hr />
+            <article class="function" data-name="x509_CFArrayGetCount_trampoline">
+               <h3>
+                  x509_CFArrayGetCount_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_CFArrayGetCount_trampoline()</code></pre>
+            </article>
             
-            <pre><code>func SecTrustEvaluateWithError(trustObj CFRef) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_SecTrustEvaluateWithError_trampoline">
-            <h2>x509_SecTrustEvaluateWithError_trampoline</h2>
-            <hr />
+            <article class="function" data-name="x509_CFArrayGetValueAtIndex_trampoline">
+               <h3>
+                  x509_CFArrayGetValueAtIndex_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_CFArrayGetValueAtIndex_trampoline()</code></pre>
+            </article>
             
-            <pre><code>func x509_SecTrustEvaluateWithError_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="SecTrustGetCertificateCount">
-            <h2>SecTrustGetCertificateCount</h2>
-            <hr />
+            <article class="function" data-name="x509_CFDataCreate_trampoline">
+               <h3>
+                  x509_CFDataCreate_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_CFDataCreate_trampoline()</code></pre>
+            </article>
             
-            <pre><code>func SecTrustGetCertificateCount(trustObj CFRef) int</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_SecTrustGetCertificateCount_trampoline">
-            <h2>x509_SecTrustGetCertificateCount_trampoline</h2>
-            <hr />
+            <article class="function" data-name="x509_CFDataGetBytePtr_trampoline">
+               <h3>
+                  x509_CFDataGetBytePtr_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_CFDataGetBytePtr_trampoline()</code></pre>
+            </article>
             
-            <pre><code>func x509_SecTrustGetCertificateCount_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="SecTrustGetCertificateAtIndex">
-            <h2>SecTrustGetCertificateAtIndex</h2>
-            <hr />
+            <article class="function" data-name="x509_CFDataGetLength_trampoline">
+               <h3>
+                  x509_CFDataGetLength_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_CFDataGetLength_trampoline()</code></pre>
+            </article>
             
-            <pre><code>func SecTrustGetCertificateAtIndex(trustObj CFRef, i int) (CFRef, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_SecTrustGetCertificateAtIndex_trampoline">
-            <h2>x509_SecTrustGetCertificateAtIndex_trampoline</h2>
-            <hr />
+            <article class="function" data-name="x509_CFDateCreate_trampoline">
+               <h3>
+                  x509_CFDateCreate_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_CFDateCreate_trampoline()</code></pre>
+            </article>
             
-            <pre><code>func x509_SecTrustGetCertificateAtIndex_trampoline()</code></pre>
-         </article>
-         
-         <article class="function" data-name="SecCertificateCopyData">
-            <h2>SecCertificateCopyData</h2>
-            <hr />
+            <article class="function" data-name="x509_CFDictionaryGetValueIfPresent_trampoline">
+               <h3>
+                  x509_CFDictionaryGetValueIfPresent_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_CFDictionaryGetValueIfPresent_trampoline()</code></pre>
+            </article>
             
-            <pre><code>func SecCertificateCopyData(cert CFRef) ([]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="x509_SecCertificateCopyData_trampoline">
-            <h2>x509_SecCertificateCopyData_trampoline</h2>
-            <hr />
+            <article class="function" data-name="x509_CFEqual_trampoline">
+               <h3>
+                  x509_CFEqual_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_CFEqual_trampoline()</code></pre>
+            </article>
             
-            <pre><code>func x509_SecCertificateCopyData_trampoline()</code></pre>
-         </article>
+            <article class="function" data-name="x509_CFErrorCopyDescription_trampoline">
+               <h3>
+                  x509_CFErrorCopyDescription_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_CFErrorCopyDescription_trampoline()</code></pre>
+            </article>
+            
+            <article class="function" data-name="x509_CFErrorGetCode_trampoline">
+               <h3>
+                  x509_CFErrorGetCode_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_CFErrorGetCode_trampoline()</code></pre>
+            </article>
+            
+            <article class="function" data-name="x509_CFNumberGetValue_trampoline">
+               <h3>
+                  x509_CFNumberGetValue_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_CFNumberGetValue_trampoline()</code></pre>
+            </article>
+            
+            <article class="function" data-name="x509_CFRelease_trampoline">
+               <h3>
+                  x509_CFRelease_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_CFRelease_trampoline()</code></pre>
+            </article>
+            
+            <article class="function" data-name="x509_CFStringCreateExternalRepresentation_trampoline">
+               <h3>
+                  x509_CFStringCreateExternalRepresentation_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_CFStringCreateExternalRepresentation_trampoline()</code></pre>
+            </article>
+            
+            <article class="function" data-name="x509_CFStringCreateWithBytes_trampoline">
+               <h3>
+                  x509_CFStringCreateWithBytes_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_CFStringCreateWithBytes_trampoline()</code></pre>
+            </article>
+            
+            <article class="function" data-name="x509_SecCertificateCopyData_trampoline">
+               <h3>
+                  x509_SecCertificateCopyData_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_SecCertificateCopyData_trampoline()</code></pre>
+            </article>
+            
+            <article class="function" data-name="x509_SecCertificateCreateWithData_trampoline">
+               <h3>
+                  x509_SecCertificateCreateWithData_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_SecCertificateCreateWithData_trampoline()</code></pre>
+            </article>
+            
+            <article class="function" data-name="x509_SecPolicyCreateSSL_trampoline">
+               <h3>
+                  x509_SecPolicyCreateSSL_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_SecPolicyCreateSSL_trampoline()</code></pre>
+            </article>
+            
+            <article class="function" data-name="x509_SecTrustCreateWithCertificates_trampoline">
+               <h3>
+                  x509_SecTrustCreateWithCertificates_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_SecTrustCreateWithCertificates_trampoline()</code></pre>
+            </article>
+            
+            <article class="function" data-name="x509_SecTrustEvaluateWithError_trampoline">
+               <h3>
+                  x509_SecTrustEvaluateWithError_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_SecTrustEvaluateWithError_trampoline()</code></pre>
+            </article>
+            
+            <article class="function" data-name="x509_SecTrustEvaluate_trampoline">
+               <h3>
+                  x509_SecTrustEvaluate_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_SecTrustEvaluate_trampoline()</code></pre>
+            </article>
+            
+            <article class="function" data-name="x509_SecTrustGetCertificateAtIndex_trampoline">
+               <h3>
+                  x509_SecTrustGetCertificateAtIndex_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_SecTrustGetCertificateAtIndex_trampoline()</code></pre>
+            </article>
+            
+            <article class="function" data-name="x509_SecTrustGetCertificateCount_trampoline">
+               <h3>
+                  x509_SecTrustGetCertificateCount_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_SecTrustGetCertificateCount_trampoline()</code></pre>
+            </article>
+            
+            <article class="function" data-name="x509_SecTrustGetResult_trampoline">
+               <h3>
+                  x509_SecTrustGetResult_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_SecTrustGetResult_trampoline()</code></pre>
+            </article>
+            
+            <article class="function" data-name="x509_SecTrustSetVerifyDate_trampoline">
+               <h3>
+                  x509_SecTrustSetVerifyDate_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_SecTrustSetVerifyDate_trampoline()</code></pre>
+            </article>
+            
+            <article class="function" data-name="x509_SecTrustSettingsCopyCertificates_trampoline">
+               <h3>
+                  x509_SecTrustSettingsCopyCertificates_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_SecTrustSettingsCopyCertificates_trampoline()</code></pre>
+            </article>
+            
+            <article class="function" data-name="x509_SecTrustSettingsCopyTrustSettings_trampoline">
+               <h3>
+                  x509_SecTrustSettingsCopyTrustSettings_trampoline 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func x509_SecTrustSettingsCopyTrustSettings_trampoline()</code></pre>
+            </article>
+            
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -826,59 +1498,170 @@ CFArrayCallBacks argument when creating CFArrays.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

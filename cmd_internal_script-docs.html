@@ -13,354 +13,719 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
-          
-         <a href="cmd_internal_script_scripttest-docs.html">scripttest</a>
-         <br />
-          
-      </aside>
-      <main>
-         <h1>
-            Package
-            <code>script</code>
-         </h1>
-         <hr />
-         
-         <article class="global" data-name="success">
-            <h2>success</h2>
-            <hr />
-            
-            <pre><code>success expectedStatus</code></pre>
-         </article>
-         
-         <article class="global" data-name="failure">
-            <h2>failure</h2>
-            <hr />
-            
-            <pre><code>failure expectedStatus</code></pre>
-         </article>
-         
-         <article class="global" data-name="successOrFailure">
-            <h2>successOrFailure</h2>
-            <hr />
-            
-            <pre><code>successOrFailure expectedStatus</code></pre>
-         </article>
-         
-         <article class="global" data-name="argSepChars">
-            <h2>argSepChars</h2>
-            <hr />
-            
-            <pre><code>argSepChars</code></pre>
-         </article>
-         
-         <article class="global" data-name="ErrUnexpectedSuccess">
-            <h2>ErrUnexpectedSuccess</h2>
-            <hr />
-            
-            <p>ErrUnexpectedSuccess indicates that a script command that was expected to
-fail (as indicated by a "!" prefix) instead completed successfully.</p>
-            
-            <pre><code>ErrUnexpectedSuccess</code></pre>
-         </article>
-         
-         <article class="global" data-name="ErrUsage">
-            <h2>ErrUsage</h2>
-            <hr />
-            
-            <p>ErrUsage may be returned by a Command to indicate that it was called with
-invalid arguments; its Usage method may be called to obtain details.</p>
-            
-            <pre><code>ErrUsage</code></pre>
-         </article>
-         
-         <article class="global" data-name="matchUsage">
-            <h2>matchUsage</h2>
-            <hr />
-            
-            <pre><code>matchUsage</code></pre>
-         </article>
-          
-         <article class="struct" data-name="funcCond">
-            <h2>type funcCond struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">eval func
-usage CondUsage</code></pre>
-         </article>
-         
-         <article class="struct" data-name="prefixCond">
-            <h2>type prefixCond struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">eval func
-usage CondUsage</code></pre>
-         </article>
-         
-         <article class="struct" data-name="boolCond">
-            <h2>type boolCond struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">v bool
-usage CondUsage</code></pre>
-         </article>
-         
-         <article class="struct" data-name="onceCond">
-            <h2>type onceCond struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">eval func
-usage CondUsage</code></pre>
-         </article>
-         
-         <article class="struct" data-name="cachedCond">
-            <h2>type cachedCond struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">m sync.Map
-eval func
-usage CondUsage</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Engine">
-            <h2>type Engine struct</h2>
-            <hr />
-            
-            <p>An Engine stores the configuration for executing a set of scripts.
 
-The same Engine may execute multiple scripts concurrently.</p>
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Cmds *ast.MapType
-Conds *ast.MapType
-Quiet bool</code></pre>
-         </article>
+            <ul class="subpackage-list">
+               
+               <li><a href="cmd_internal_script_scripttest-docs.html">scripttest</a></li>
+               
+            </ul>
+            
+         </div>
+
          
-         <article class="struct" data-name="CmdUsage">
-            <h2>type CmdUsage struct</h2>
-            <hr />
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                
+               <li><a href="#interfaces">Interfaces</a></li>
+                
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
+         
+      </aside>
+
+      <main>
+         <h1>script</h1>
+         <div class="section-divider"></div>
+
+         
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"errors"
+"syscall"
+"fmt"
+"internal/syslist"
+"os"
+"runtime"
+"sync"
+"bufio"
+"context"
+"errors"
+"fmt"
+"io"
+"sort"
+"strings"
+"time"
+"errors"
+"fmt"
+"bytes"
+"context"
+"fmt"
+"internal/txtar"
+"io"
+"io/fs"
+"os"
+"os/exec"
+"path/filepath"
+"regexp"
+"strings"
+"cmd/internal/pathcache"
+"cmd/internal/robustio"
+"errors"
+"fmt"
+"internal/diff"
+"io/fs"
+"os"
+"os/exec"
+"path/filepath"
+"regexp"
+"runtime"
+"strconv"
+"strings"
+"sync"
+"time"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <p>A CmdUsage describes the usage of a Cmd, independent of its name
+            <article class="global" data-name="ErrUnexpectedSuccess">
+               <h3>
+                  ErrUnexpectedSuccess 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>ErrUnexpectedSuccess indicates that a script command that was expected to
+fail (as indicated by a "!" prefix) instead completed successfully.</p>
+               
+               <pre><code>var ErrUnexpectedSuccess = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="ErrUsage">
+               <h3>
+                  ErrUsage 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>ErrUsage may be returned by a Command to indicate that it was called with
+invalid arguments; its Usage method may be called to obtain details.</p>
+               
+               <pre><code>var ErrUsage = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="argSepChars">
+               <h3>
+                  argSepChars 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const argSepChars = " \t\r\n#"</code></pre>
+            </article>
+            
+            <article class="global" data-name="failure">
+               <h3>
+                  failure 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const failure expectedStatus = "!"</code></pre>
+            </article>
+            
+            <article class="global" data-name="matchUsage">
+               <h3>
+                  matchUsage 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const matchUsage = "[-count=N] [-q] 'pattern'"</code></pre>
+            </article>
+            
+            <article class="global" data-name="success">
+               <h3>
+                  success 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const success expectedStatus = ""</code></pre>
+            </article>
+            
+            <article class="global" data-name="successOrFailure">
+               <h3>
+                  successOrFailure 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const successOrFailure expectedStatus = "?"</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="types">
+            <h2>Type Aliases</h2>
+            
+            <article class="type" data-name="WaitFunc">
+               <h3>
+                  WaitFunc
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>A WaitFunc is a function called to retrieve the results of a Cmd.</p>
+               
+               <pre><code>type WaitFunc func(*State) (stdout string, stderr string, err error)</code></pre>
+            </article>
+            
+            <article class="type" data-name="expectedStatus">
+               <h3>
+                  expectedStatus
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>An expectedStatus describes the expected outcome of a command.
+Script execution halts when a command does not match its expected status.</p>
+               
+               <pre><code>type expectedStatus string</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="interfaces">
+            <h2>Interfaces</h2>
+            
+            <article class="interface" data-name="Cmd">
+               <h3>
+                  Cmd
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>A Cmd is a command that is available to a script.</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type Cmd interface {
+Run(s *State, args ...string) (WaitFunc, error)
+Usage() *CmdUsage
+}</code></pre>
+            </article>
+            
+            <article class="interface" data-name="Cond">
+               <h3>
+                  Cond
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>A Cond is a condition deciding whether a command should be run.</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type Cond interface {
+Eval(s *State, suffix string) (bool, error)
+Usage() *CondUsage
+}</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="CmdUsage">
+               <h3>
+                  CmdUsage
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A CmdUsage describes the usage of a Cmd, independent of its name
 (which can change based on its registration).</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Summary string
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type CmdUsage struct {
+Summary string
 Args string
 Detail []string
 Async bool
-RegexpArgs func</code></pre>
-         </article>
-         
-         <article class="struct" data-name="CondUsage">
-            <h2>type CondUsage struct</h2>
-            <hr />
+RegexpArgs func(rawArgs ...string) []int
+}</code></pre>
+            </article>
             
-            <p>A CondUsage describes the usage of a Cond, independent of its name
-(which can change based on its registration).</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Summary string
-Prefix bool</code></pre>
-         </article>
-         
-         <article class="struct" data-name="command">
-            <h2>type command struct</h2>
-            <hr />
-            
-            <p>A command is a complete command parsed from a script.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">file string
-line int
-want expectedStatus
-conds []condition
-name string
-rawArgs [][]argFragment
-args []string
-background bool</code></pre>
-         </article>
-         
-         <article class="struct" data-name="argFragment">
-            <h2>type argFragment struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">s string
-quoted bool</code></pre>
-         </article>
-         
-         <article class="struct" data-name="condition">
-            <h2>type condition struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">want bool
-tag string</code></pre>
-         </article>
-         
-         <article class="struct" data-name="CommandError">
-            <h2>type CommandError struct</h2>
-            <hr />
-            
-            <p>A CommandError describes an error resulting from attempting to execute a
+            <article class="struct" data-name="CommandError">
+               <h3>
+                  CommandError
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A CommandError describes an error resulting from attempting to execute a
 specific command.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">File string
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type CommandError struct {
+File string
 Line int
 Op string
 Args []string
-Err error</code></pre>
-         </article>
-         
-         <article class="struct" data-name="UsageError">
-            <h2>type UsageError struct</h2>
-            <hr />
+Err error
+}</code></pre>
+            </article>
             
-            <p>A UsageError reports the valid arguments for a command.
-
-It may be returned in response to invalid arguments.</p>
+            <article class="struct" data-name="CondUsage">
+               <h3>
+                  CondUsage
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A CondUsage describes the usage of a Cond, independent of its name
+(which can change based on its registration).</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type CondUsage struct {
+Summary string
+Prefix bool
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Name string
-Command Cmd</code></pre>
-         </article>
-         
-         <article class="struct" data-name="State">
-            <h2>type State struct</h2>
-            <hr />
+            <article class="struct" data-name="Engine">
+               <h3>
+                  Engine
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>An Engine stores the configuration for executing a set of scripts.
+The same Engine may execute multiple scripts concurrently.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Engine struct {
+Cmds map[string]Cmd
+Conds map[string]Cond
+Quiet bool
+}</code></pre>
+            </article>
             
-            <p>A State encapsulates the current state of a running script engine,
+            <article class="struct" data-name="State">
+               <h3>
+                  State
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A State encapsulates the current state of a running script engine,
 including the script environment and any running background commands.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">engine *Engine
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type State struct {
+engine *Engine
 ctx context.Context
 cancel context.CancelFunc
 file string
@@ -368,893 +733,1300 @@ log bytes.Buffer
 workdir string
 pwd string
 env []string
-envMap *ast.MapType
+envMap map[string]string
 stdout string
 stderr string
-background []backgroundCmd</code></pre>
-         </article>
-         
-         <article class="struct" data-name="backgroundCmd">
-            <h2>type backgroundCmd struct</h2>
-            <hr />
+background []backgroundCmd
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">*command
-wait WaitFunc</code></pre>
-         </article>
-         
-         <article class="struct" data-name="funcCmd">
-            <h2>type funcCmd struct</h2>
-            <hr />
+            <article class="struct" data-name="UsageError">
+               <h3>
+                  UsageError
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A UsageError reports the valid arguments for a command.
+It may be returned in response to invalid arguments.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type UsageError struct {
+Name string
+Command Cmd
+}</code></pre>
+            </article>
             
-            <p>A funcCmd implements Cmd using a function value.</p>
+            <article class="struct" data-name="argFragment">
+               <h3>
+                  argFragment
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type argFragment struct {
+s string
+quoted bool
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">usage CmdUsage
-run func</code></pre>
-         </article>
-         
-         <article class="struct" data-name="stopError">
-            <h2>type stopError struct</h2>
-            <hr />
+            <article class="struct" data-name="backgroundCmd">
+               <h3>
+                  backgroundCmd
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type backgroundCmd struct {
+*command
+wait WaitFunc
+}</code></pre>
+            </article>
             
-            <p>stopError is the sentinel error type returned by the Stop command.</p>
+            <article class="struct" data-name="boolCond">
+               <h3>
+                  boolCond
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type boolCond struct {
+v bool
+usage CondUsage
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">msg string</code></pre>
-         </article>
-         
-         <article class="struct" data-name="waitError">
-            <h2>type waitError struct</h2>
-            <hr />
+            <article class="struct" data-name="cachedCond">
+               <h3>
+                  cachedCond
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type cachedCond struct {
+m sync.Map
+eval func(string) (bool, error)
+usage CondUsage
+}</code></pre>
+            </article>
             
-            <p>A waitError wraps one or more errors returned by background commands.</p>
+            <article class="struct" data-name="command">
+               <h3>
+                  command
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A command is a complete command parsed from a script.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type command struct {
+file string
+line int
+want expectedStatus
+conds []condition
+name string
+rawArgs [][]argFragment
+args []string
+background bool
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">errs []*CommandError</code></pre>
-         </article>
+            <article class="struct" data-name="condition">
+               <h3>
+                  condition
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type condition struct {
+want bool
+tag string
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="funcCmd">
+               <h3>
+                  funcCmd
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A funcCmd implements Cmd using a function value.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type funcCmd struct {
+usage CmdUsage
+run func(*State, ...string) (WaitFunc, error)
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="funcCond">
+               <h3>
+                  funcCond
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type funcCond struct {
+eval func(*State) (bool, error)
+usage CondUsage
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="onceCond">
+               <h3>
+                  onceCond
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type onceCond struct {
+eval func() (bool, error)
+usage CondUsage
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="prefixCond">
+               <h3>
+                  prefixCond
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type prefixCond struct {
+eval func(*State, string) (bool, error)
+usage CondUsage
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="stopError">
+               <h3>
+                  stopError
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>stopError is the sentinel error type returned by the Stop command.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type stopError struct {
+msg string
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="waitError">
+               <h3>
+                  waitError
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A waitError wraps one or more errors returned by background commands.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type waitError struct {
+errs []*CommandError
+}</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="function" data-name="isETXTBSY">
-            <h2>isETXTBSY</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <pre><code>func isETXTBSY(err error) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="isETXTBSY">
-            <h2>isETXTBSY</h2>
-            <hr />
-            
-            <pre><code>func isETXTBSY(err error) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="DefaultConds">
-            <h2>DefaultConds</h2>
-            <hr />
-            
-            <p>DefaultConds returns a set of broadly useful script conditions.
-
-Run the 'help' command within a script engine to view a list of the available
-conditions.</p>
-            
-            <pre><code>func DefaultConds() *ast.MapType</code></pre>
-         </article>
-         
-         <article class="function" data-name="Condition">
-            <h2>Condition</h2>
-            <hr />
-            
-            <p>Condition returns a Cond with the given summary and evaluation function.</p>
-            
-            <pre><code>func Condition(summary string, eval func) Cond</code></pre>
-         </article>
-         
-         <article class="function" data-name="Usage">
-            <h2>Usage</h2>
-            <hr />
-            
-            <pre><code>func Usage() *CondUsage</code></pre>
-         </article>
-         
-         <article class="function" data-name="Eval">
-            <h2>Eval</h2>
-            <hr />
-            
-            <pre><code>func Eval(s *State, suffix string) (bool, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="PrefixCondition">
-            <h2>PrefixCondition</h2>
-            <hr />
-            
-            <p>PrefixCondition returns a Cond with the given summary and evaluation function.</p>
-            
-            <pre><code>func PrefixCondition(summary string, eval func) Cond</code></pre>
-         </article>
-         
-         <article class="function" data-name="Usage">
-            <h2>Usage</h2>
-            <hr />
-            
-            <pre><code>func Usage() *CondUsage</code></pre>
-         </article>
-         
-         <article class="function" data-name="Eval">
-            <h2>Eval</h2>
-            <hr />
-            
-            <pre><code>func Eval(s *State, suffix string) (bool, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BoolCondition">
-            <h2>BoolCondition</h2>
-            <hr />
-            
-            <p>BoolCondition returns a Cond with the given truth value and summary.
+            <article class="function" data-name="BoolCondition">
+               <h3>
+                  BoolCondition 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>BoolCondition returns a Cond with the given truth value and summary.
 The Cond rejects the use of condition suffixes.</p>
+               
+               <pre><code>func BoolCondition(summary string, v bool) Cond</code></pre>
+            </article>
             
-            <pre><code>func BoolCondition(summary string, v bool) Cond</code></pre>
-         </article>
-         
-         <article class="function" data-name="Usage">
-            <h2>Usage</h2>
-            <hr />
-            
-            <pre><code>func Usage() *CondUsage</code></pre>
-         </article>
-         
-         <article class="function" data-name="Eval">
-            <h2>Eval</h2>
-            <hr />
-            
-            <pre><code>func Eval(s *State, suffix string) (bool, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="OnceCondition">
-            <h2>OnceCondition</h2>
-            <hr />
-            
-            <p>OnceCondition returns a Cond that calls eval the first time the condition is
-evaluated. Future calls reuse the same result.
-
-The eval function is not passed a *State because the condition is cached
-across all execution states and must not vary by state.</p>
-            
-            <pre><code>func OnceCondition(summary string, eval func) Cond</code></pre>
-         </article>
-         
-         <article class="function" data-name="Usage">
-            <h2>Usage</h2>
-            <hr />
-            
-            <pre><code>func Usage() *CondUsage</code></pre>
-         </article>
-         
-         <article class="function" data-name="Eval">
-            <h2>Eval</h2>
-            <hr />
-            
-            <pre><code>func Eval(s *State, suffix string) (bool, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="CachedCondition">
-            <h2>CachedCondition</h2>
-            <hr />
-            
-            <p>CachedCondition is like Condition but only calls eval the first time the
+            <article class="function" data-name="CachedCondition">
+               <h3>
+                  CachedCondition 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>CachedCondition is like Condition but only calls eval the first time the
 condition is evaluated for a given suffix.
 Future calls with the same suffix reuse the earlier result.
-
 The eval function is not passed a *State because the condition is cached
 across all execution states and must not vary by state.</p>
+               
+               <pre><code>func CachedCondition(summary string, eval func(string) (bool, error)) Cond</code></pre>
+            </article>
             
-            <pre><code>func CachedCondition(summary string, eval func) Cond</code></pre>
-         </article>
-         
-         <article class="function" data-name="Usage">
-            <h2>Usage</h2>
-            <hr />
+            <article class="function" data-name="Cat">
+               <h3>
+                  Cat 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Cat writes the concatenated contents of the named file(s) to the script's
+stdout buffer.</p>
+               
+               <pre><code>func Cat() Cmd</code></pre>
+            </article>
             
-            <pre><code>func Usage() *CondUsage</code></pre>
-         </article>
-         
-         <article class="function" data-name="Eval">
-            <h2>Eval</h2>
-            <hr />
+            <article class="function" data-name="Cd">
+               <h3>
+                  Cd 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Cd changes the current working directory.</p>
+               
+               <pre><code>func Cd() Cmd</code></pre>
+            </article>
             
-            <pre><code>func Eval(_ *State, suffix string) (bool, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="NewEngine">
-            <h2>NewEngine</h2>
-            <hr />
+            <article class="function" data-name="Chdir">
+               <h3>
+                  Chdir 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Chdir changes the State's working directory to the given path.</p>
+               
+               <pre><code>func (s *State) Chdir(path string) error</code></pre>
+            </article>
             
-            <p>NewEngine returns an Engine configured with a basic set of commands and conditions.</p>
+            <article class="function" data-name="Chmod">
+               <h3>
+                  Chmod 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Chmod changes the permissions of a file or a directory..</p>
+               
+               <pre><code>func Chmod() Cmd</code></pre>
+            </article>
             
-            <pre><code>func NewEngine() *Engine</code></pre>
-         </article>
-         
-         <article class="function" data-name="Execute">
-            <h2>Execute</h2>
-            <hr />
+            <article class="function" data-name="CloseAndWait">
+               <h3>
+                  CloseAndWait 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>CloseAndWait cancels the State's Context and waits for any background commands to
+finish. If any remaining background command ended in an unexpected state,
+Close returns a non-nil error.</p>
+               
+               <pre><code>func (s *State) CloseAndWait(log io.Writer) error</code></pre>
+            </article>
             
-            <p>Execute reads and executes script, writing the output to log.
-
+            <article class="function" data-name="Cmp">
+               <h3>
+                  Cmp 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Cmp compares the contents of two files, or the contents of either the
+"stdout" or "stderr" buffer and a file, returning a non-nil error if the
+contents differ.</p>
+               
+               <pre><code>func Cmp() Cmd</code></pre>
+            </article>
+            
+            <article class="function" data-name="Cmpenv">
+               <h3>
+                  Cmpenv 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Cmpenv is like Compare, but also performs environment substitutions
+on the contents of both arguments.</p>
+               
+               <pre><code>func Cmpenv() Cmd</code></pre>
+            </article>
+            
+            <article class="function" data-name="Command">
+               <h3>
+                  Command 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Command returns a new Cmd with a Usage method that returns a copy of the
+given CmdUsage and a Run method calls the given function.</p>
+               
+               <pre><code>func Command(usage CmdUsage, run func(*State, ...string) (WaitFunc, error)) Cmd</code></pre>
+            </article>
+            
+            <article class="function" data-name="Condition">
+               <h3>
+                  Condition 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Condition returns a Cond with the given summary and evaluation function.</p>
+               
+               <pre><code>func Condition(summary string, eval func(*State) (bool, error)) Cond</code></pre>
+            </article>
+            
+            <article class="function" data-name="Context">
+               <h3>
+                  Context 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Context returns the Context with which the State was created.</p>
+               
+               <pre><code>func (s *State) Context() context.Context</code></pre>
+            </article>
+            
+            <article class="function" data-name="Cp">
+               <h3>
+                  Cp 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Cp copies one or more files to a new location.</p>
+               
+               <pre><code>func Cp() Cmd</code></pre>
+            </article>
+            
+            <article class="function" data-name="DefaultCmds">
+               <h3>
+                  DefaultCmds 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>DefaultCmds returns a set of broadly useful script commands.
+Run the 'help' command within a script engine to view a list of the available
+commands.</p>
+               
+               <pre><code>func DefaultCmds() map[string]Cmd</code></pre>
+            </article>
+            
+            <article class="function" data-name="DefaultConds">
+               <h3>
+                  DefaultConds 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>DefaultConds returns a set of broadly useful script conditions.
+Run the 'help' command within a script engine to view a list of the available
+conditions.</p>
+               
+               <pre><code>func DefaultConds() map[string]Cond</code></pre>
+            </article>
+            
+            <article class="function" data-name="Echo">
+               <h3>
+                  Echo 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Echo writes its arguments to stdout, followed by a newline.</p>
+               
+               <pre><code>func Echo() Cmd</code></pre>
+            </article>
+            
+            <article class="function" data-name="Env">
+               <h3>
+                  Env 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Env sets or logs the values of environment variables.
+With no arguments, Env reports all variables in the environment.
+"key=value" arguments set variables, and arguments without "="
+cause the corresponding value to be printed to the stdout buffer.</p>
+               
+               <pre><code>func Env() Cmd</code></pre>
+            </article>
+            
+            <article class="function" data-name="Environ">
+               <h3>
+                  Environ 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Environ returns a copy of the current script environment,
+in the form "key=value".</p>
+               
+               <pre><code>func (s *State) Environ() []string</code></pre>
+            </article>
+            
+            <article class="function" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *CommandError) Error() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (w waitError) Error() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s stopError) Error() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *UsageError) Error() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="Eval">
+               <h3>
+                  Eval 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *cachedCond) Eval(_ *State, suffix string) (bool, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Eval">
+               <h3>
+                  Eval 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (b *boolCond) Eval(s *State, suffix string) (bool, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Eval">
+               <h3>
+                  Eval 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *prefixCond) Eval(s *State, suffix string) (bool, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Eval">
+               <h3>
+                  Eval 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *funcCond) Eval(s *State, suffix string) (bool, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Eval">
+               <h3>
+                  Eval 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (l *onceCond) Eval(s *State, suffix string) (bool, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Exec">
+               <h3>
+                  Exec 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Exec runs an arbitrary executable as a subprocess.
+When the Script's context is canceled, Exec sends the interrupt signal, then
+waits for up to the given delay for the subprocess to flush output before
+terminating it with os.Kill.</p>
+               
+               <pre><code>func Exec(cancel func(*exec.Cmd) error, waitDelay time.Duration) Cmd</code></pre>
+            </article>
+            
+            <article class="function" data-name="Execute">
+               <h3>
+                  Execute 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Execute reads and executes script, writing the output to log.
 Execute stops and returns an error at the first command that does not succeed.
 The returned error's text begins with "file:line: ".
-
 If the script runs to completion or ends by a 'stop' command,
 Execute returns nil.
-
 Execute does not stop background commands started by the script
 before returning. To stop those, use [State.CloseAndWait] or the
 [Wait] command.</p>
+               
+               <pre><code>func (e *Engine) Execute(s *State, file string, script *bufio.Reader, log io.Writer) (err error)</code></pre>
+            </article>
             
-            <pre><code>func Execute(s *State, file string, script *bufio.Reader, log io.Writer) err error</code></pre>
-         </article>
-         
-         <article class="function" data-name="parse">
-            <h2>parse</h2>
-            <hr />
+            <article class="function" data-name="Exists">
+               <h3>
+                  Exists 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Exists checks that the named file(s) exist.</p>
+               
+               <pre><code>func Exists() Cmd</code></pre>
+            </article>
             
-            <p>parse parses a single line as a list of space-separated arguments.
-subject to environment variable expansion (but not resplitting).
-Single quotes around text disable splitting and expansion.
-To embed a single quote, double it:
-
-	'Don''t communicate by sharing memory.'</p>
+            <article class="function" data-name="ExpandEnv">
+               <h3>
+                  ExpandEnv 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ExpandEnv replaces ${var} or $var in the string according to the values of
+the environment variables in s. References to undefined variables are
+replaced by the empty string.</p>
+               
+               <pre><code>func (s *State) ExpandEnv(str string, inRegexp bool) string</code></pre>
+            </article>
             
-            <pre><code>func parse(filename string, lineno int, line string) (cmd *command, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="expandArgs">
-            <h2>expandArgs</h2>
-            <hr />
+            <article class="function" data-name="ExtractFiles">
+               <h3>
+                  ExtractFiles 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ExtractFiles extracts the files in ar to the state's current directory,
+expanding any environment variables within each name.
+The files must reside within the working directory with which the State was
+originally created.</p>
+               
+               <pre><code>func (s *State) ExtractFiles(ar *txtar.Archive) error</code></pre>
+            </article>
             
-            <p>expandArgs expands the shell variables in rawArgs and joins them to form the
-final arguments to pass to a command.</p>
+            <article class="function" data-name="Getwd">
+               <h3>
+                  Getwd 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Getwd returns the directory in which to run the next script command.</p>
+               
+               <pre><code>func (s *State) Getwd() string</code></pre>
+            </article>
             
-            <pre><code>func expandArgs(s *State, rawArgs [][]argFragment, regexpArgs []int) []string</code></pre>
-         </article>
-         
-         <article class="function" data-name="quoteArgs">
-            <h2>quoteArgs</h2>
-            <hr />
+            <article class="function" data-name="Grep">
+               <h3>
+                  Grep 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Grep checks that file content matches a regexp.
+Like stdout/stderr and unlike Unix grep, it accepts Go regexp syntax.
+Grep does not modify the State's stdout or stderr buffers.
+(Its output goes to the script log, not stdout.)</p>
+               
+               <pre><code>func Grep() Cmd</code></pre>
+            </article>
             
-            <p>quoteArgs returns a string that parse would parse as args when passed to a command.
-
-TODO(bcmills): This function should have a fuzz test.</p>
+            <article class="function" data-name="Help">
+               <h3>
+                  Help 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Help writes command documentation to the script log.</p>
+               
+               <pre><code>func Help() Cmd</code></pre>
+            </article>
             
-            <pre><code>func quoteArgs(args []string) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="conditionsActive">
-            <h2>conditionsActive</h2>
-            <hr />
-            
-            <pre><code>func conditionsActive(s *State, conds []condition) (bool, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="runCommand">
-            <h2>runCommand</h2>
-            <hr />
-            
-            <pre><code>func runCommand(s *State, cmd *command, impl Cmd) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="checkStatus">
-            <h2>checkStatus</h2>
-            <hr />
-            
-            <pre><code>func checkStatus(cmd *command, err error) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="ListCmds">
-            <h2>ListCmds</h2>
-            <hr />
-            
-            <p>ListCmds prints to w a list of the named commands,
+            <article class="function" data-name="ListCmds">
+               <h3>
+                  ListCmds 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ListCmds prints to w a list of the named commands,
 annotating each with its arguments and a short usage summary.
 If verbose is true, ListCmds prints full details for each command.
-
 Each of the name arguments should be a command name.
 If no names are passed as arguments, ListCmds lists all the
 commands registered in e.</p>
+               
+               <pre><code>func (e *Engine) ListCmds(w io.Writer, verbose bool, names ...string) error</code></pre>
+            </article>
             
-            <pre><code>func ListCmds(w io.Writer, verbose bool, names ...string) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="wrapLine">
-            <h2>wrapLine</h2>
-            <hr />
-            
-            <pre><code>func wrapLine(w io.Writer, line string, cols int, indent string) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="ListConds">
-            <h2>ListConds</h2>
-            <hr />
-            
-            <p>ListConds prints to w a list of conditions, one per line,
+            <article class="function" data-name="ListConds">
+               <h3>
+                  ListConds 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ListConds prints to w a list of conditions, one per line,
 annotating each with a description and whether the condition
 is true in the state s (if s is non-nil).
-
 Each of the tag arguments should be a condition string of
 the form "name" or "name:suffix". If no tags are passed as
 arguments, ListConds lists all conditions registered in
 the engine e.</p>
+               
+               <pre><code>func (e *Engine) ListConds(w io.Writer, s *State, tags ...string) error</code></pre>
+            </article>
             
-            <pre><code>func ListConds(w io.Writer, s *State, tags ...string) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="cmdError">
-            <h2>cmdError</h2>
-            <hr />
+            <article class="function" data-name="Logf">
+               <h3>
+                  Logf 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Logf writes output to the script's log without updating its stdout or stderr
+buffers. (The output log functions as a kind of meta-stderr.)</p>
+               
+               <pre><code>func (s *State) Logf(format string, args ...any)</code></pre>
+            </article>
             
-            <pre><code>func cmdError(cmd *command, err error) *CommandError</code></pre>
-         </article>
-         
-         <article class="function" data-name="Error">
-            <h2>Error</h2>
-            <hr />
+            <article class="function" data-name="LookupEnv">
+               <h3>
+                  LookupEnv 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>LookupEnv retrieves the value of the environment variable in s named by the key.</p>
+               
+               <pre><code>func (s *State) LookupEnv(key string) (string, bool)</code></pre>
+            </article>
             
-            <pre><code>func Error() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="Unwrap">
-            <h2>Unwrap</h2>
-            <hr />
+            <article class="function" data-name="Mkdir">
+               <h3>
+                  Mkdir 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Mkdir creates a directory and any needed parent directories.</p>
+               
+               <pre><code>func Mkdir() Cmd</code></pre>
+            </article>
             
-            <pre><code>func Unwrap() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="Error">
-            <h2>Error</h2>
-            <hr />
+            <article class="function" data-name="Mv">
+               <h3>
+                  Mv 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Mv renames an existing file or directory to a new path.</p>
+               
+               <pre><code>func Mv() Cmd</code></pre>
+            </article>
             
-            <pre><code>func Error() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="NewState">
-            <h2>NewState</h2>
-            <hr />
+            <article class="function" data-name="NewEngine">
+               <h3>
+                  NewEngine 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewEngine returns an Engine configured with a basic set of commands and conditions.</p>
+               
+               <pre><code>func NewEngine() *Engine</code></pre>
+            </article>
             
-            <p>NewState returns a new State permanently associated with ctx, with its
+            <article class="function" data-name="NewState">
+               <h3>
+                  NewState 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewState returns a new State permanently associated with ctx, with its
 initial working directory in workdir and its initial environment set to
 initialEnv (or os.Environ(), if initialEnv is nil).
-
 The new State also contains pseudo-environment-variables for
 ${/} and ${:} (for the platform's path and list separators respectively),
 but does not pass those to subprocesses.</p>
+               
+               <pre><code>func NewState(ctx context.Context, workdir string, initialEnv []string) (*State, error)</code></pre>
+            </article>
             
-            <pre><code>func NewState(ctx context.Context, workdir string, initialEnv []string) (*State, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="CloseAndWait">
-            <h2>CloseAndWait</h2>
-            <hr />
+            <article class="function" data-name="OnceCondition">
+               <h3>
+                  OnceCondition 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>OnceCondition returns a Cond that calls eval the first time the condition is
+evaluated. Future calls reuse the same result.
+The eval function is not passed a *State because the condition is cached
+across all execution states and must not vary by state.</p>
+               
+               <pre><code>func OnceCondition(summary string, eval func() (bool, error)) Cond</code></pre>
+            </article>
             
-            <p>CloseAndWait cancels the State's Context and waits for any background commands to
-finish. If any remaining background command ended in an unexpected state,
-Close returns a non-nil error.</p>
-            
-            <pre><code>func CloseAndWait(log io.Writer) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="Chdir">
-            <h2>Chdir</h2>
-            <hr />
-            
-            <p>Chdir changes the State's working directory to the given path.</p>
-            
-            <pre><code>func Chdir(path string) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="Context">
-            <h2>Context</h2>
-            <hr />
-            
-            <p>Context returns the Context with which the State was created.</p>
-            
-            <pre><code>func Context() context.Context</code></pre>
-         </article>
-         
-         <article class="function" data-name="Environ">
-            <h2>Environ</h2>
-            <hr />
-            
-            <p>Environ returns a copy of the current script environment,
-in the form "key=value".</p>
-            
-            <pre><code>func Environ() []string</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExpandEnv">
-            <h2>ExpandEnv</h2>
-            <hr />
-            
-            <p>ExpandEnv replaces ${var} or $var in the string according to the values of
-the environment variables in s. References to undefined variables are
-replaced by the empty string.</p>
-            
-            <pre><code>func ExpandEnv(str string, inRegexp bool) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExtractFiles">
-            <h2>ExtractFiles</h2>
-            <hr />
-            
-            <p>ExtractFiles extracts the files in ar to the state's current directory,
-expanding any environment variables within each name.
-
-The files must reside within the working directory with which the State was
-originally created.</p>
-            
-            <pre><code>func ExtractFiles(ar *txtar.Archive) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="Getwd">
-            <h2>Getwd</h2>
-            <hr />
-            
-            <p>Getwd returns the directory in which to run the next script command.</p>
-            
-            <pre><code>func Getwd() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="Logf">
-            <h2>Logf</h2>
-            <hr />
-            
-            <p>Logf writes output to the script's log without updating its stdout or stderr
-buffers. (The output log functions as a kind of meta-stderr.)</p>
-            
-            <pre><code>func Logf(format string, args ...any)</code></pre>
-         </article>
-         
-         <article class="function" data-name="flushLog">
-            <h2>flushLog</h2>
-            <hr />
-            
-            <p>flushLog writes the contents of the script's log to w and clears the log.</p>
-            
-            <pre><code>func flushLog(w io.Writer) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="LookupEnv">
-            <h2>LookupEnv</h2>
-            <hr />
-            
-            <p>LookupEnv retrieves the value of the environment variable in s named by the key.</p>
-            
-            <pre><code>func LookupEnv(key string) (string, bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Path">
-            <h2>Path</h2>
-            <hr />
-            
-            <p>Path returns the absolute path in the host operating system for a
+            <article class="function" data-name="Path">
+               <h3>
+                  Path 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Path returns the absolute path in the host operating system for a
 script-based (generally slash-separated and relative) path.</p>
+               
+               <pre><code>func (s *State) Path(path string) string</code></pre>
+            </article>
             
-            <pre><code>func Path(path string) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="Setenv">
-            <h2>Setenv</h2>
-            <hr />
+            <article class="function" data-name="PrefixCondition">
+               <h3>
+                  PrefixCondition 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>PrefixCondition returns a Cond with the given summary and evaluation function.</p>
+               
+               <pre><code>func PrefixCondition(summary string, eval func(*State, string) (bool, error)) Cond</code></pre>
+            </article>
             
-            <p>Setenv sets the value of the environment variable in s named by the key.</p>
-            
-            <pre><code>func Setenv(key string, value string) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="Stdout">
-            <h2>Stdout</h2>
-            <hr />
-            
-            <p>Stdout returns the stdout output of the last command run,
-or the empty string if no command has been run.</p>
-            
-            <pre><code>func Stdout() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="Stderr">
-            <h2>Stderr</h2>
-            <hr />
-            
-            <p>Stderr returns the stderr output of the last command run,
-or the empty string if no command has been run.</p>
-            
-            <pre><code>func Stderr() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="cleanEnv">
-            <h2>cleanEnv</h2>
-            <hr />
-            
-            <p>cleanEnv returns a copy of env with any duplicates removed in favor of
-later values and any required system variables defined.
-
-If env is nil, cleanEnv copies the environment from os.Environ().</p>
-            
-            <pre><code>func cleanEnv(env []string, pwd string) []string</code></pre>
-         </article>
-         
-         <article class="function" data-name="DefaultCmds">
-            <h2>DefaultCmds</h2>
-            <hr />
-            
-            <p>DefaultCmds returns a set of broadly useful script commands.
-
-Run the 'help' command within a script engine to view a list of the available
-commands.</p>
-            
-            <pre><code>func DefaultCmds() *ast.MapType</code></pre>
-         </article>
-         
-         <article class="function" data-name="Command">
-            <h2>Command</h2>
-            <hr />
-            
-            <p>Command returns a new Cmd with a Usage method that returns a copy of the
-given CmdUsage and a Run method calls the given function.</p>
-            
-            <pre><code>func Command(usage CmdUsage, run func) Cmd</code></pre>
-         </article>
-         
-         <article class="function" data-name="Run">
-            <h2>Run</h2>
-            <hr />
-            
-            <pre><code>func Run(s *State, args ...string) (WaitFunc, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Usage">
-            <h2>Usage</h2>
-            <hr />
-            
-            <pre><code>func Usage() *CmdUsage</code></pre>
-         </article>
-         
-         <article class="function" data-name="firstNonFlag">
-            <h2>firstNonFlag</h2>
-            <hr />
-            
-            <p>firstNonFlag returns a slice containing the index of the first argument in
-rawArgs that is not a flag, or nil if all arguments are flags.</p>
-            
-            <pre><code>func firstNonFlag(rawArgs ...string) []int</code></pre>
-         </article>
-         
-         <article class="function" data-name="Cat">
-            <h2>Cat</h2>
-            <hr />
-            
-            <p>Cat writes the concatenated contents of the named file(s) to the script's
-stdout buffer.</p>
-            
-            <pre><code>func Cat() Cmd</code></pre>
-         </article>
-         
-         <article class="function" data-name="Cd">
-            <h2>Cd</h2>
-            <hr />
-            
-            <p>Cd changes the current working directory.</p>
-            
-            <pre><code>func Cd() Cmd</code></pre>
-         </article>
-         
-         <article class="function" data-name="Chmod">
-            <h2>Chmod</h2>
-            <hr />
-            
-            <p>Chmod changes the permissions of a file or a directory..</p>
-            
-            <pre><code>func Chmod() Cmd</code></pre>
-         </article>
-         
-         <article class="function" data-name="Cmp">
-            <h2>Cmp</h2>
-            <hr />
-            
-            <p>Cmp compares the contents of two files, or the contents of either the
-"stdout" or "stderr" buffer and a file, returning a non-nil error if the
-contents differ.</p>
-            
-            <pre><code>func Cmp() Cmd</code></pre>
-         </article>
-         
-         <article class="function" data-name="Cmpenv">
-            <h2>Cmpenv</h2>
-            <hr />
-            
-            <p>Cmpenv is like Compare, but also performs environment substitutions
-on the contents of both arguments.</p>
-            
-            <pre><code>func Cmpenv() Cmd</code></pre>
-         </article>
-         
-         <article class="function" data-name="doCompare">
-            <h2>doCompare</h2>
-            <hr />
-            
-            <pre><code>func doCompare(s *State, env bool, args ...string) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="Cp">
-            <h2>Cp</h2>
-            <hr />
-            
-            <p>Cp copies one or more files to a new location.</p>
-            
-            <pre><code>func Cp() Cmd</code></pre>
-         </article>
-         
-         <article class="function" data-name="Echo">
-            <h2>Echo</h2>
-            <hr />
-            
-            <p>Echo writes its arguments to stdout, followed by a newline.</p>
-            
-            <pre><code>func Echo() Cmd</code></pre>
-         </article>
-         
-         <article class="function" data-name="Env">
-            <h2>Env</h2>
-            <hr />
-            
-            <p>Env sets or logs the values of environment variables.
-
-With no arguments, Env reports all variables in the environment.
-"key=value" arguments set variables, and arguments without "="
-cause the corresponding value to be printed to the stdout buffer.</p>
-            
-            <pre><code>func Env() Cmd</code></pre>
-         </article>
-         
-         <article class="function" data-name="Exec">
-            <h2>Exec</h2>
-            <hr />
-            
-            <p>Exec runs an arbitrary executable as a subprocess.
-
-When the Script's context is canceled, Exec sends the interrupt signal, then
-waits for up to the given delay for the subprocess to flush output before
-terminating it with os.Kill.</p>
-            
-            <pre><code>func Exec(cancel func, waitDelay time.Duration) Cmd</code></pre>
-         </article>
-         
-         <article class="function" data-name="startCommand">
-            <h2>startCommand</h2>
-            <hr />
-            
-            <pre><code>func startCommand(s *State, name string, path string, args []string, cancel func, waitDelay time.Duration) (WaitFunc, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="lookPath">
-            <h2>lookPath</h2>
-            <hr />
-            
-            <p>lookPath is (roughly) like exec.LookPath, but it uses the script's current
-PATH to find the executable.</p>
-            
-            <pre><code>func lookPath(s *State, command string) (string, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="pathEnvName">
-            <h2>pathEnvName</h2>
-            <hr />
-            
-            <p>pathEnvName returns the platform-specific variable used by os/exec.LookPath
-to look up executable names (either "PATH" or "path").
-
-TODO(bcmills): Investigate whether we can instead use PATH uniformly and
-rewrite it to $path when executing subprocesses.</p>
-            
-            <pre><code>func pathEnvName() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="Exists">
-            <h2>Exists</h2>
-            <hr />
-            
-            <p>Exists checks that the named file(s) exist.</p>
-            
-            <pre><code>func Exists() Cmd</code></pre>
-         </article>
-         
-         <article class="function" data-name="Grep">
-            <h2>Grep</h2>
-            <hr />
-            
-            <p>Grep checks that file content matches a regexp.
-Like stdout/stderr and unlike Unix grep, it accepts Go regexp syntax.
-
-Grep does not modify the State's stdout or stderr buffers.
-(Its output goes to the script log, not stdout.)</p>
-            
-            <pre><code>func Grep() Cmd</code></pre>
-         </article>
-         
-         <article class="function" data-name="match">
-            <h2>match</h2>
-            <hr />
-            
-            <p>match implements the Grep, Stdout, and Stderr commands.</p>
-            
-            <pre><code>func match(s *State, args []string, text string, name string) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="Help">
-            <h2>Help</h2>
-            <hr />
-            
-            <p>Help writes command documentation to the script log.</p>
-            
-            <pre><code>func Help() Cmd</code></pre>
-         </article>
-         
-         <article class="function" data-name="Mkdir">
-            <h2>Mkdir</h2>
-            <hr />
-            
-            <p>Mkdir creates a directory and any needed parent directories.</p>
-            
-            <pre><code>func Mkdir() Cmd</code></pre>
-         </article>
-         
-         <article class="function" data-name="Mv">
-            <h2>Mv</h2>
-            <hr />
-            
-            <p>Mv renames an existing file or directory to a new path.</p>
-            
-            <pre><code>func Mv() Cmd</code></pre>
-         </article>
-         
-         <article class="function" data-name="Program">
-            <h2>Program</h2>
-            <hr />
-            
-            <p>Program returns a new command that runs the named program, found from the
+            <article class="function" data-name="Program">
+               <h3>
+                  Program 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Program returns a new command that runs the named program, found from the
 host process's PATH (not looked up in the script's PATH).</p>
+               
+               <pre><code>func Program(name string, cancel func(*exec.Cmd) error, waitDelay time.Duration) Cmd</code></pre>
+            </article>
             
-            <pre><code>func Program(name string, cancel func, waitDelay time.Duration) Cmd</code></pre>
-         </article>
-         
-         <article class="function" data-name="Replace">
-            <h2>Replace</h2>
-            <hr />
+            <article class="function" data-name="Replace">
+               <h3>
+                  Replace 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Replace replaces all occurrences of a string in a file with another string.</p>
+               
+               <pre><code>func Replace() Cmd</code></pre>
+            </article>
             
-            <p>Replace replaces all occurrences of a string in a file with another string.</p>
-            
-            <pre><code>func Replace() Cmd</code></pre>
-         </article>
-         
-         <article class="function" data-name="Rm">
-            <h2>Rm</h2>
-            <hr />
-            
-            <p>Rm removes a file or directory.
-
+            <article class="function" data-name="Rm">
+               <h3>
+                  Rm 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Rm removes a file or directory.
 If a directory, Rm also recursively removes that directory's
 contents.</p>
+               
+               <pre><code>func Rm() Cmd</code></pre>
+            </article>
             
-            <pre><code>func Rm() Cmd</code></pre>
-         </article>
-         
-         <article class="function" data-name="removeAll">
-            <h2>removeAll</h2>
-            <hr />
+            <article class="function" data-name="Run">
+               <h3>
+                  Run 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *funcCmd) Run(s *State, args ...string) (WaitFunc, error)</code></pre>
+            </article>
             
-            <p>removeAll removes dir and all files and directories it contains.
-
-Unlike os.RemoveAll, removeAll attempts to make the directories writable if
-needed in order to remove their contents.</p>
+            <article class="function" data-name="Setenv">
+               <h3>
+                  Setenv 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Setenv sets the value of the environment variable in s named by the key.</p>
+               
+               <pre><code>func (s *State) Setenv(key string, value string) error</code></pre>
+            </article>
             
-            <pre><code>func removeAll(dir string) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="Sleep">
-            <h2>Sleep</h2>
-            <hr />
-            
-            <p>Sleep sleeps for the given Go duration or until the script's context is
+            <article class="function" data-name="Sleep">
+               <h3>
+                  Sleep 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Sleep sleeps for the given Go duration or until the script's context is
 canceled, whichever happens first.</p>
+               
+               <pre><code>func Sleep() Cmd</code></pre>
+            </article>
             
-            <pre><code>func Sleep() Cmd</code></pre>
-         </article>
-         
-         <article class="function" data-name="Stderr">
-            <h2>Stderr</h2>
-            <hr />
+            <article class="function" data-name="Stderr">
+               <h3>
+                  Stderr 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Stderr returns the stderr output of the last command run,
+or the empty string if no command has been run.</p>
+               
+               <pre><code>func (s *State) Stderr() string</code></pre>
+            </article>
             
-            <p>Stderr searches for a regular expression in the stderr buffer.</p>
+            <article class="function" data-name="Stderr">
+               <h3>
+                  Stderr 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Stderr searches for a regular expression in the stderr buffer.</p>
+               
+               <pre><code>func Stderr() Cmd</code></pre>
+            </article>
             
-            <pre><code>func Stderr() Cmd</code></pre>
-         </article>
-         
-         <article class="function" data-name="Stdout">
-            <h2>Stdout</h2>
-            <hr />
+            <article class="function" data-name="Stdout">
+               <h3>
+                  Stdout 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Stdout returns the stdout output of the last command run,
+or the empty string if no command has been run.</p>
+               
+               <pre><code>func (s *State) Stdout() string</code></pre>
+            </article>
             
-            <p>Stdout searches for a regular expression in the stdout buffer.</p>
+            <article class="function" data-name="Stdout">
+               <h3>
+                  Stdout 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Stdout searches for a regular expression in the stdout buffer.</p>
+               
+               <pre><code>func Stdout() Cmd</code></pre>
+            </article>
             
-            <pre><code>func Stdout() Cmd</code></pre>
-         </article>
-         
-         <article class="function" data-name="Stop">
-            <h2>Stop</h2>
-            <hr />
-            
-            <p>Stop returns a sentinel error that causes script execution to halt
+            <article class="function" data-name="Stop">
+               <h3>
+                  Stop 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Stop returns a sentinel error that causes script execution to halt
 and s.Execute to return with a nil error.</p>
+               
+               <pre><code>func Stop() Cmd</code></pre>
+            </article>
             
-            <pre><code>func Stop() Cmd</code></pre>
-         </article>
-         
-         <article class="function" data-name="Error">
-            <h2>Error</h2>
-            <hr />
+            <article class="function" data-name="Symlink">
+               <h3>
+                  Symlink 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Symlink creates a symbolic link.</p>
+               
+               <pre><code>func Symlink() Cmd</code></pre>
+            </article>
             
-            <pre><code>func Error() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="Symlink">
-            <h2>Symlink</h2>
-            <hr />
+            <article class="function" data-name="Unwrap">
+               <h3>
+                  Unwrap 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (w waitError) Unwrap() error</code></pre>
+            </article>
             
-            <p>Symlink creates a symbolic link.</p>
+            <article class="function" data-name="Unwrap">
+               <h3>
+                  Unwrap 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *CommandError) Unwrap() error</code></pre>
+            </article>
             
-            <pre><code>func Symlink() Cmd</code></pre>
-         </article>
-         
-         <article class="function" data-name="Wait">
-            <h2>Wait</h2>
-            <hr />
+            <article class="function" data-name="Usage">
+               <h3>
+                  Usage 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *cachedCond) Usage() *CondUsage</code></pre>
+            </article>
             
-            <p>Wait waits for the completion of background commands.
-
+            <article class="function" data-name="Usage">
+               <h3>
+                  Usage 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *prefixCond) Usage() *CondUsage</code></pre>
+            </article>
+            
+            <article class="function" data-name="Usage">
+               <h3>
+                  Usage 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (l *onceCond) Usage() *CondUsage</code></pre>
+            </article>
+            
+            <article class="function" data-name="Usage">
+               <h3>
+                  Usage 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *funcCond) Usage() *CondUsage</code></pre>
+            </article>
+            
+            <article class="function" data-name="Usage">
+               <h3>
+                  Usage 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *funcCmd) Usage() *CmdUsage</code></pre>
+            </article>
+            
+            <article class="function" data-name="Usage">
+               <h3>
+                  Usage 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (b *boolCond) Usage() *CondUsage</code></pre>
+            </article>
+            
+            <article class="function" data-name="Wait">
+               <h3>
+                  Wait 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Wait waits for the completion of background commands.
 When Wait returns, the stdout and stderr buffers contain the concatenation of
 the background commands' respective outputs in the order in which those
 commands were started.</p>
+               
+               <pre><code>func Wait() Cmd</code></pre>
+            </article>
             
-            <pre><code>func Wait() Cmd</code></pre>
-         </article>
-         
-         <article class="function" data-name="Error">
-            <h2>Error</h2>
-            <hr />
+            <article class="function" data-name="checkStatus">
+               <h3>
+                  checkStatus 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func checkStatus(cmd *command, err error) error</code></pre>
+            </article>
             
-            <pre><code>func Error() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="Unwrap">
-            <h2>Unwrap</h2>
-            <hr />
+            <article class="function" data-name="cleanEnv">
+               <h3>
+                  cleanEnv 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>cleanEnv returns a copy of env with any duplicates removed in favor of
+later values and any required system variables defined.
+If env is nil, cleanEnv copies the environment from os.Environ().</p>
+               
+               <pre><code>func cleanEnv(env []string, pwd string) []string</code></pre>
+            </article>
             
-            <pre><code>func Unwrap() error</code></pre>
-         </article>
+            <article class="function" data-name="cmdError">
+               <h3>
+                  cmdError 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func cmdError(cmd *command, err error) *CommandError</code></pre>
+            </article>
+            
+            <article class="function" data-name="conditionsActive">
+               <h3>
+                  conditionsActive 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *Engine) conditionsActive(s *State, conds []condition) (bool, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="doCompare">
+               <h3>
+                  doCompare 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func doCompare(s *State, env bool, args ...string) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="expandArgs">
+               <h3>
+                  expandArgs 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>expandArgs expands the shell variables in rawArgs and joins them to form the
+final arguments to pass to a command.</p>
+               
+               <pre><code>func expandArgs(s *State, rawArgs [][]argFragment, regexpArgs []int) []string</code></pre>
+            </article>
+            
+            <article class="function" data-name="firstNonFlag">
+               <h3>
+                  firstNonFlag 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>firstNonFlag returns a slice containing the index of the first argument in
+rawArgs that is not a flag, or nil if all arguments are flags.</p>
+               
+               <pre><code>func firstNonFlag(rawArgs ...string) []int</code></pre>
+            </article>
+            
+            <article class="function" data-name="flushLog">
+               <h3>
+                  flushLog 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>flushLog writes the contents of the script's log to w and clears the log.</p>
+               
+               <pre><code>func (s *State) flushLog(w io.Writer) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="isETXTBSY">
+               <h3>
+                  isETXTBSY 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func isETXTBSY(err error) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="isETXTBSY">
+               <h3>
+                  isETXTBSY 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func isETXTBSY(err error) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="lookPath">
+               <h3>
+                  lookPath 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>lookPath is (roughly) like exec.LookPath, but it uses the script's current
+PATH to find the executable.</p>
+               
+               <pre><code>func lookPath(s *State, command string) (string, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="match">
+               <h3>
+                  match 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>match implements the Grep, Stdout, and Stderr commands.</p>
+               
+               <pre><code>func match(s *State, args []string, text string, name string) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="parse">
+               <h3>
+                  parse 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>parse parses a single line as a list of space-separated arguments.
+subject to environment variable expansion (but not resplitting).
+Single quotes around text disable splitting and expansion.
+To embed a single quote, double it:
+'Don''t communicate by sharing memory.'</p>
+               
+               <pre><code>func parse(filename string, lineno int, line string) (cmd *command, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="pathEnvName">
+               <h3>
+                  pathEnvName 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>pathEnvName returns the platform-specific variable used by os/exec.LookPath
+to look up executable names (either "PATH" or "path").
+TODO(bcmills): Investigate whether we can instead use PATH uniformly and
+rewrite it to $path when executing subprocesses.</p>
+               
+               <pre><code>func pathEnvName() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="quoteArgs">
+               <h3>
+                  quoteArgs 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>quoteArgs returns a string that parse would parse as args when passed to a command.
+TODO(bcmills): This function should have a fuzz test.</p>
+               
+               <pre><code>func quoteArgs(args []string) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="removeAll">
+               <h3>
+                  removeAll 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>removeAll removes dir and all files and directories it contains.
+Unlike os.RemoveAll, removeAll attempts to make the directories writable if
+needed in order to remove their contents.</p>
+               
+               <pre><code>func removeAll(dir string) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="runCommand">
+               <h3>
+                  runCommand 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *Engine) runCommand(s *State, cmd *command, impl Cmd) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="startCommand">
+               <h3>
+                  startCommand 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func startCommand(s *State, name string, path string, args []string, cancel func(*exec.Cmd) error, waitDelay time.Duration) (WaitFunc, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="wrapLine">
+               <h3>
+                  wrapLine 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func wrapLine(w io.Writer, line string, cols int, indent string) error</code></pre>
+            </article>
+            
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -1262,59 +2034,170 @@ commands were started.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

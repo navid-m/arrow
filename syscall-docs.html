@@ -6,1108 +6,510 @@
          name="viewport"
          content="width=device-width, initial-scale=1.0"
       />
-      <title>Docs - syscall_test</title>
+      <title>Docs - main</title>
       <link
          href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
          rel="stylesheet"
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
-          
-         <a href="syscall_js-docs.html">js</a>
-         <br />
-          
-      </aside>
-      <main>
-         <h1>
-            Package
-            <code>syscall_test</code>
-         </h1>
-         <hr />
-         
-         <article class="global" data-name="wtf8tests">
-            <h2>wtf8tests</h2>
-            <hr />
-            
-            <pre><code>wtf8tests</code></pre>
-         </article>
-         
-         <article class="global" data-name="CAP_SYS_TIME">
-            <h2>CAP_SYS_TIME</h2>
-            <hr />
-            
-            <pre><code>CAP_SYS_TIME</code></pre>
-         </article>
-         
-         <article class="global" data-name="CAP_SYSLOG">
-            <h2>CAP_SYSLOG</h2>
-            <hr />
-            
-            <pre><code>CAP_SYSLOG</code></pre>
-         </article>
-         
-         <article class="global" data-name="flagJailCreate">
-            <h2>flagJailCreate</h2>
-            <hr />
-            
-            <pre><code>flagJailCreate</code></pre>
-         </article>
-         
-         <article class="global" data-name="MNT_WAIT">
-            <h2>MNT_WAIT</h2>
-            <hr />
-            
-            <pre><code>MNT_WAIT</code></pre>
-         </article>
-         
-         <article class="global" data-name="MNT_NOWAIT">
-            <h2>MNT_NOWAIT</h2>
-            <hr />
-            
-            <pre><code>MNT_NOWAIT</code></pre>
-         </article>
-         
-         <article class="global" data-name="joinPathTests">
-            <h2>joinPathTests</h2>
-            <hr />
-            
-            <pre><code>joinPathTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="_AT_SYMLINK_NOFOLLOW">
-            <h2>_AT_SYMLINK_NOFOLLOW</h2>
-            <hr />
-            
-            <pre><code>_AT_SYMLINK_NOFOLLOW</code></pre>
-         </article>
-         
-         <article class="global" data-name="_AT_FDCWD">
-            <h2>_AT_FDCWD</h2>
-            <hr />
-            
-            <pre><code>_AT_FDCWD</code></pre>
-         </article>
-         
-         <article class="global" data-name="_AT_EACCESS">
-            <h2>_AT_EACCESS</h2>
-            <hr />
-            
-            <pre><code>_AT_EACCESS</code></pre>
-         </article>
-         
-         <article class="global" data-name="_F_OK">
-            <h2>_F_OK</h2>
-            <hr />
-            
-            <pre><code>_F_OK</code></pre>
-         </article>
-         
-         <article class="global" data-name="_R_OK">
-            <h2>_R_OK</h2>
-            <hr />
-            
-            <pre><code>_R_OK</code></pre>
-         </article>
-         
-         <article class="global" data-name="PR_GET_KEEPCAPS">
-            <h2>PR_GET_KEEPCAPS</h2>
-            <hr />
-            
-            <p>reference uapi/linux/prctl.h</p>
-            
-            <pre><code>PR_GET_KEEPCAPS uintptr</code></pre>
-         </article>
-         
-         <article class="global" data-name="PR_SET_KEEPCAPS">
-            <h2>PR_SET_KEEPCAPS</h2>
-            <hr />
-            
-            <p>reference uapi/linux/prctl.h</p>
-            
-            <pre><code>PR_SET_KEEPCAPS</code></pre>
-         </article>
-         
-         <article class="global" data-name="magicRlimitValue">
-            <h2>magicRlimitValue</h2>
-            <hr />
-            
-            <pre><code>magicRlimitValue</code></pre>
-         </article>
-          
-         <article class="struct" data-name="capHeader">
-            <h2>type capHeader struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">version uint32
-pid int32</code></pre>
-         </article>
-         
-         <article class="struct" data-name="capData">
-            <h2>type capData struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">effective uint32
-permitted uint32
-inheritable uint32</code></pre>
-         </article>
-         
-         <article class="struct" data-name="caps">
-            <h2>type caps struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">hdr capHeader
-data []capData</code></pre>
-         </article>
-         
-         <article class="struct" data-name="command">
-            <h2>type command struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">pipe io.WriteCloser
-proc *exec.Cmd
-test *testing.T</code></pre>
-         </article>
-          
-         <article class="function" data-name="TestWTF16Rountrip">
-            <h2>TestWTF16Rountrip</h2>
-            <hr />
-            
-            <pre><code>func TestWTF16Rountrip(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWTF16Golden">
-            <h2>TestWTF16Golden</h2>
-            <hr />
-            
-            <pre><code>func TestWTF16Golden(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="FuzzEncodeWTF16">
-            <h2>FuzzEncodeWTF16</h2>
-            <hr />
-            
-            <pre><code>func FuzzEncodeWTF16(f *testing.F)</code></pre>
-         </article>
-         
-         <article class="function" data-name="FuzzDecodeWTF16">
-            <h2>FuzzDecodeWTF16</h2>
-            <hr />
-            
-            <pre><code>func FuzzDecodeWTF16(f *testing.F)</code></pre>
-         </article>
-         
-         <article class="function" data-name="whoamiNEWUSER">
-            <h2>whoamiNEWUSER</h2>
-            <hr />
-            
-            <p>whoamiNEWUSER returns a command that runs "whoami" with CLONE_NEWUSER,
-mapping uid and gid 0 to the actual uid and gid of the test.</p>
-            
-            <pre><code>func whoamiNEWUSER(t *testing.T, uid int, gid int, setgroups bool) *exec.Cmd</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestCloneNEWUSERAndRemap">
-            <h2>TestCloneNEWUSERAndRemap</h2>
-            <hr />
-            
-            <pre><code>func TestCloneNEWUSERAndRemap(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestEmptyCredGroupsDisableSetgroups">
-            <h2>TestEmptyCredGroupsDisableSetgroups</h2>
-            <hr />
-            
-            <pre><code>func TestEmptyCredGroupsDisableSetgroups(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestUnshare">
-            <h2>TestUnshare</h2>
-            <hr />
-            
-            <pre><code>func TestUnshare(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestGroupCleanup">
-            <h2>TestGroupCleanup</h2>
-            <hr />
-            
-            <pre><code>func TestGroupCleanup(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestGroupCleanupUserNamespace">
-            <h2>TestGroupCleanupUserNamespace</h2>
-            <hr />
-            
-            <pre><code>func TestGroupCleanupUserNamespace(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestUnshareMountNameSpace">
-            <h2>TestUnshareMountNameSpace</h2>
-            <hr />
-            
-            <p>Test for https://go.dev/issue/19661: unshare fails because systemd
-has forced / to be shared</p>
-            
-            <pre><code>func TestUnshareMountNameSpace(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestUnshareMountNameSpaceChroot">
-            <h2>TestUnshareMountNameSpaceChroot</h2>
-            <hr />
-            
-            <p>Test for Issue 20103: unshare fails when chroot is used</p>
-            
-            <pre><code>func TestUnshareMountNameSpaceChroot(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestUnshareUidGidMapping">
-            <h2>TestUnshareUidGidMapping</h2>
-            <hr />
-            
-            <p>Test for Issue 29789: unshare fails when uid/gid mapping is specified</p>
-            
-            <pre><code>func TestUnshareUidGidMapping(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="prepareCgroupFD">
-            <h2>prepareCgroupFD</h2>
-            <hr />
-            
-            <pre><code>func prepareCgroupFD(t *testing.T) (int, string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestUseCgroupFD">
-            <h2>TestUseCgroupFD</h2>
-            <hr />
-            
-            <pre><code>func TestUseCgroupFD(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestCloneTimeNamespace">
-            <h2>TestCloneTimeNamespace</h2>
-            <hr />
-            
-            <pre><code>func TestCloneTimeNamespace(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testPidFD">
-            <h2>testPidFD</h2>
-            <hr />
-            
-            <pre><code>func testPidFD(t *testing.T, userns bool) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestPidFD">
-            <h2>TestPidFD</h2>
-            <hr />
-            
-            <pre><code>func TestPidFD(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestPidFDWithUserNS">
-            <h2>TestPidFDWithUserNS</h2>
-            <hr />
-            
-            <pre><code>func TestPidFDWithUserNS(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestPidFDClone3">
-            <h2>TestPidFDClone3</h2>
-            <hr />
-            
-            <pre><code>func TestPidFDClone3(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="getCaps">
-            <h2>getCaps</h2>
-            <hr />
-            
-            <pre><code>func getCaps() (caps, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestAmbientCaps">
-            <h2>TestAmbientCaps</h2>
-            <hr />
-            
-            <pre><code>func TestAmbientCaps(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestAmbientCapsUserns">
-            <h2>TestAmbientCapsUserns</h2>
-            <hr />
-            
-            <pre><code>func TestAmbientCapsUserns(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testAmbientCaps">
-            <h2>testAmbientCaps</h2>
-            <hr />
-            
-            <pre><code>func testAmbientCaps(t *testing.T, userns bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testalias">
-            <h2>testalias</h2>
-            <hr />
-            
-            <p>testalias checks for aliasing of error strings returned by sys1 and sys2,
-which both call the function named fn in package syscall</p>
-            
-            <pre><code>func testalias(t *testing.T, fn string, sys1 func, sys2 func)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestPlan9Syserr">
-            <h2>TestPlan9Syserr</h2>
-            <hr />
-            
-            <pre><code>func TestPlan9Syserr(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestOpen">
-            <h2>TestOpen</h2>
-            <hr />
-            
-            <pre><code>func TestOpen(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestComputerName">
-            <h2>TestComputerName</h2>
-            <hr />
-            
-            <pre><code>func TestComputerName(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWin32finddata">
-            <h2>TestWin32finddata</h2>
-            <hr />
-            
-            <pre><code>func TestWin32finddata(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="abort">
-            <h2>abort</h2>
-            <hr />
-            
-            <pre><code>func abort(funcname string, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleLoadLibrary">
-            <h2>ExampleLoadLibrary</h2>
-            <hr />
-            
-            <pre><code>func ExampleLoadLibrary()</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestTOKEN_ALL_ACCESS">
-            <h2>TestTOKEN_ALL_ACCESS</h2>
-            <hr />
-            
-            <pre><code>func TestTOKEN_ALL_ACCESS(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestStdioAreInheritable">
-            <h2>TestStdioAreInheritable</h2>
-            <hr />
-            
-            <pre><code>func TestStdioAreInheritable(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestGetwd_DoesNotPanicWhenPathIsLong">
-            <h2>TestGetwd_DoesNotPanicWhenPathIsLong</h2>
-            <hr />
-            
-            <pre><code>func TestGetwd_DoesNotPanicWhenPathIsLong(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestGetStartupInfo">
-            <h2>TestGetStartupInfo</h2>
-            <hr />
-            
-            <pre><code>func TestGetStartupInfo(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestSyscallAllocations">
-            <h2>TestSyscallAllocations</h2>
-            <hr />
-            
-            <pre><code>func TestSyscallAllocations(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="FuzzUTF16FromString">
-            <h2>FuzzUTF16FromString</h2>
-            <hr />
-            
-            <pre><code>func FuzzUTF16FromString(f *testing.F)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestSCMCredentials">
-            <h2>TestSCMCredentials</h2>
-            <hr />
-            
-            <p>TestSCMCredentials tests the sending and receiving of credentials
-(PID, UID, GID) in an ancillary message between two UNIX
-sockets. The SO_PASSCRED socket option is enabled on the sending
-socket for this to work.</p>
-            
-            <pre><code>func TestSCMCredentials(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestDirent">
-            <h2>TestDirent</h2>
-            <hr />
-            
-            <pre><code>func TestDirent(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestDirentRepeat">
-            <h2>TestDirentRepeat</h2>
-            <hr />
-            
-            <pre><code>func TestDirentRepeat(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="prepareJail">
-            <h2>prepareJail</h2>
-            <hr />
-            
-            <pre><code>func prepareJail(t *testing.T) (int, string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestJailAttach">
-            <h2>TestJailAttach</h2>
-            <hr />
-            
-            <pre><code>func TestJailAttach(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestDeathSignalSetuid">
-            <h2>TestDeathSignalSetuid</h2>
-            <hr />
-            
-            <p>TestDeathSignalSetuid verifies that a command run with a different UID still
-receives PDeathsig; it is a regression test for https://go.dev/issue/9686.</p>
-            
-            <pre><code>func TestDeathSignalSetuid(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="deathSignalParent">
-            <h2>deathSignalParent</h2>
-            <hr />
-            
-            <pre><code>func deathSignalParent()</code></pre>
-         </article>
-         
-         <article class="function" data-name="deathSignalChild">
-            <h2>deathSignalChild</h2>
-            <hr />
-            
-            <pre><code>func deathSignalChild()</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestEscapeArg">
-            <h2>TestEscapeArg</h2>
-            <hr />
-            
-            <pre><code>func TestEscapeArg(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestChangingProcessParent">
-            <h2>TestChangingProcessParent</h2>
-            <hr />
-            
-            <pre><code>func TestChangingProcessParent(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestGetfsstat">
-            <h2>TestGetfsstat</h2>
-            <hr />
-            
-            <pre><code>func TestGetfsstat(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestMain">
-            <h2>TestMain</h2>
-            <hr />
-            
-            <pre><code>func TestMain(m *testing.M)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testSetGetenv">
-            <h2>testSetGetenv</h2>
-            <hr />
-            
-            <pre><code>func testSetGetenv(t *testing.T, key string, value string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestEnv">
-            <h2>TestEnv</h2>
-            <hr />
-            
-            <pre><code>func TestEnv(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestExecErrPermutedFds">
-            <h2>TestExecErrPermutedFds</h2>
-            <hr />
-            
-            <p>Check that permuting child process fds doesn't interfere with
-reporting of fork/exec status. See Issue 14979.</p>
-            
-            <pre><code>func TestExecErrPermutedFds(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestGettimeofday">
-            <h2>TestGettimeofday</h2>
-            <hr />
-            
-            <pre><code>func TestGettimeofday(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Info">
-            <h2>Info</h2>
-            <hr />
-            
-            <pre><code>func Info() (pid int, pgrp int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Start">
-            <h2>Start</h2>
-            <hr />
-            
-            <pre><code>func Start()</code></pre>
-         </article>
-         
-         <article class="function" data-name="Stop">
-            <h2>Stop</h2>
-            <hr />
-            
-            <pre><code>func Stop()</code></pre>
-         </article>
-         
-         <article class="function" data-name="create">
-            <h2>create</h2>
-            <hr />
-            
-            <pre><code>func create(t *testing.T) *command</code></pre>
-         </article>
-         
-         <article class="function" data-name="parent">
-            <h2>parent</h2>
-            <hr />
-            
-            <pre><code>func parent() (pid int, pgrp int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestZeroSysProcAttr">
-            <h2>TestZeroSysProcAttr</h2>
-            <hr />
-            
-            <pre><code>func TestZeroSysProcAttr(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestSetpgid">
-            <h2>TestSetpgid</h2>
-            <hr />
-            
-            <pre><code>func TestSetpgid(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestPgid">
-            <h2>TestPgid</h2>
-            <hr />
-            
-            <pre><code>func TestPgid(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestForeground">
-            <h2>TestForeground</h2>
-            <hr />
-            
-            <pre><code>func TestForeground(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestForegroundSignal">
-            <h2>TestForegroundSignal</h2>
-            <hr />
-            
-            <pre><code>func TestForegroundSignal(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestInvalidExec">
-            <h2>TestInvalidExec</h2>
-            <hr />
-            
-            <p>Test a couple of cases that SysProcAttr can't handle. Issue 29458.</p>
-            
-            <pre><code>func TestInvalidExec(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestExec">
-            <h2>TestExec</h2>
-            <hr />
-            
-            <p>TestExec is for issue #41702.</p>
-            
-            <pre><code>func TestExec(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestExecHelper">
-            <h2>TestExecHelper</h2>
-            <hr />
-            
-            <p>TestExecHelper is used by TestExec. It does nothing by itself.
-In testing on macOS 10.14, this used to fail with
-"signal: illegal instruction" more than half the time.</p>
-            
-            <pre><code>func TestExecHelper(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestRlimitRestored">
-            <h2>TestRlimitRestored</h2>
-            <hr />
-            
-            <p>Test that rlimit values are restored by exec.</p>
-            
-            <pre><code>func TestRlimitRestored(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestForkExecNilArgv">
-            <h2>TestForkExecNilArgv</h2>
-            <hr />
-            
-            <pre><code>func TestForkExecNilArgv(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestJoinPath">
-            <h2>TestJoinPath</h2>
-            <hr />
-            
-            <pre><code>func TestJoinPath(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkJoinPath">
-            <h2>BenchmarkJoinPath</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkJoinPath(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestGetdirentries">
-            <h2>TestGetdirentries</h2>
-            <hr />
-            
-            <pre><code>func TestGetdirentries(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testGetdirentries">
-            <h2>testGetdirentries</h2>
-            <hr />
-            
-            <pre><code>func testGetdirentries(t *testing.T, count int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestMmap">
-            <h2>TestMmap</h2>
-            <hr />
-            
-            <pre><code>func TestMmap(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestOpenFileLimit">
-            <h2>TestOpenFileLimit</h2>
-            <hr />
-            
-            <pre><code>func TestOpenFileLimit(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestExecPtrace">
-            <h2>TestExecPtrace</h2>
-            <hr />
-            
-            <pre><code>func TestExecPtrace(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="_">
-            <h2>_</h2>
-            <hr />
-            
-            <p>Tests that below functions, structures and constants are consistent
-on all Unix-like systems.</p>
-            
-            <pre><code>func _()</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestFcntlFlock">
-            <h2>TestFcntlFlock</h2>
-            <hr />
-            
-            <p>TestFcntlFlock tests whether the file locking structure matches
-the calling convention of each kernel.
-On some Linux systems, glibc uses another set of values for the
-commands and translates them to the correct value that the kernel
-expects just before the actual fcntl syscall. As Go uses raw
-syscalls directly, it must use the real value, not the glibc value.
-Thus this test also verifies that the Flock_t structure can be
-roundtripped with F_SETLK and F_GETLK.</p>
-            
-            <pre><code>func TestFcntlFlock(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestPassFD">
-            <h2>TestPassFD</h2>
-            <hr />
-            
-            <p>TestPassFD tests passing a file descriptor over a Unix socket.
 
-This test involved both a parent and child process. The parent
-process is invoked as a normal test, with "go test", which then
-runs the child process by running the current test binary with args
-"-test.run=^TestPassFD$" and an environment variable used to signal
-that the test should become the child process instead.</p>
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
             
-            <pre><code>func TestPassFD(t *testing.T)</code></pre>
-         </article>
+            <ul class="subpackage-list">
+               
+               <li><a href="syscall_js-docs.html">js</a></li>
+               
+            </ul>
+            
+         </div>
+
          
-         <article class="function" data-name="passFDChild">
-            <h2>passFDChild</h2>
-            <hr />
-            
-            <p>passFDChild is the child process used by TestPassFD.</p>
-            
-            <pre><code>func passFDChild()</code></pre>
-         </article>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+                   
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
-         <article class="function" data-name="TestUnixRightsRoundtrip">
-            <h2>TestUnixRightsRoundtrip</h2>
-            <hr />
-            
-            <p>TestUnixRightsRoundtrip tests that UnixRights, ParseSocketControlMessage,
-and ParseUnixRights are able to successfully round-trip lists of file descriptors.</p>
-            
-            <pre><code>func TestUnixRightsRoundtrip(t *testing.T)</code></pre>
-         </article>
+      </aside>
+
+      <main>
+         <h1>main</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="function" data-name="TestSeekFailure">
-            <h2>TestSeekFailure</h2>
-            <hr />
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"fmt"
+"go/format"
+"io"
+"log"
+"os"
+"regexp"
+"strings"
+"bytes"
+"os"
+"os/exec"
+"path/filepath"
+"runtime"
+"bytes"
+"fmt"
+"log"
+"os"
+"strings"
+</code></pre>
+            </article>
+         </section>
+              
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <pre><code>func TestSeekFailure(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestSetsockoptString">
-            <h2>TestSetsockoptString</h2>
-            <hr />
+            <article class="function" data-name="main">
+               <h3>
+                  main 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func main()</code></pre>
+            </article>
             
-            <pre><code>func TestSetsockoptString(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestENFILETemporary">
-            <h2>TestENFILETemporary</h2>
-            <hr />
+            <article class="function" data-name="main">
+               <h3>
+                  main 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func main()</code></pre>
+            </article>
             
-            <pre><code>func TestENFILETemporary(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="touch">
-            <h2>touch</h2>
-            <hr />
+            <article class="function" data-name="main">
+               <h3>
+                  main 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func main()</code></pre>
+            </article>
             
-            <pre><code>func touch(t *testing.T, name string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestFaccessat">
-            <h2>TestFaccessat</h2>
-            <hr />
-            
-            <pre><code>func TestFaccessat(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestFchmodat">
-            <h2>TestFchmodat</h2>
-            <hr />
-            
-            <pre><code>func TestFchmodat(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestMain">
-            <h2>TestMain</h2>
-            <hr />
-            
-            <pre><code>func TestMain(m *testing.M)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestParseNetlinkMessage">
-            <h2>TestParseNetlinkMessage</h2>
-            <hr />
-            
-            <pre><code>func TestParseNetlinkMessage(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestSyscallNoError">
-            <h2>TestSyscallNoError</h2>
-            <hr />
-            
-            <pre><code>func TestSyscallNoError(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="filesystemIsNoSUID">
-            <h2>filesystemIsNoSUID</h2>
-            <hr />
-            
-            <p>filesystemIsNoSUID reports whether the filesystem for the given
-path is mounted nosuid.</p>
-            
-            <pre><code>func filesystemIsNoSUID(path string) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="syscallNoError">
-            <h2>syscallNoError</h2>
-            <hr />
-            
-            <pre><code>func syscallNoError()</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestAllThreadsSyscall">
-            <h2>TestAllThreadsSyscall</h2>
-            <hr />
-            
-            <p>TestAllThreadsSyscall tests that the go runtime can perform
-syscalls that execute on all OSThreads - with which to support
-POSIX semantics for security state changes.</p>
-            
-            <pre><code>func TestAllThreadsSyscall(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="compareStatus">
-            <h2>compareStatus</h2>
-            <hr />
-            
-            <p>compareStatus is used to confirm the contents of the thread
-specific status files match expectations.</p>
-            
-            <pre><code>func compareStatus(filter string, expect string) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="killAThread">
-            <h2>killAThread</h2>
-            <hr />
-            
-            <p>killAThread locks the goroutine to an OS thread and exits; this
-causes an OS thread to terminate.</p>
-            
-            <pre><code>func killAThread(c *ast.ChanType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestSetuidEtc">
-            <h2>TestSetuidEtc</h2>
-            <hr />
-            
-            <p>TestSetuidEtc performs tests on all of the wrapped system calls
-that mirror to the 9 glibc syscalls with POSIX semantics. The test
-here is considered authoritative and should compile and run
-CGO_ENABLED=0 or 1. Note, there is an extended copy of this same
-test in ../../misc/cgo/test/issue1435.go which requires
-CGO_ENABLED=1 and launches pthreads from C that run concurrently
-with the Go code of the test - and the test validates that these
-pthreads are also kept in sync with the security state changed with
-the syscalls. Care should be taken to mirror any enhancements to
-this test here in that file too.</p>
-            
-            <pre><code>func TestSetuidEtc(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestAllThreadsSyscallError">
-            <h2>TestAllThreadsSyscallError</h2>
-            <hr />
-            
-            <p>TestAllThreadsSyscallError verifies that errors are properly returned when
-the syscall fails on the original thread.</p>
-            
-            <pre><code>func TestAllThreadsSyscallError(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestAllThreadsSyscallBlockedSyscall">
-            <h2>TestAllThreadsSyscallBlockedSyscall</h2>
-            <hr />
-            
-            <p>TestAllThreadsSyscallBlockedSyscall confirms that AllThreadsSyscall
-can interrupt threads in long-running system calls. This test will
-deadlock if this doesn't work correctly.</p>
-            
-            <pre><code>func TestAllThreadsSyscallBlockedSyscall(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestPrlimitSelf">
-            <h2>TestPrlimitSelf</h2>
-            <hr />
-            
-            <pre><code>func TestPrlimitSelf(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestPrlimitOtherProcess">
-            <h2>TestPrlimitOtherProcess</h2>
-            <hr />
-            
-            <pre><code>func TestPrlimitOtherProcess(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestPrlimitFileLimit">
-            <h2>TestPrlimitFileLimit</h2>
-            <hr />
-            
-            <p>TestPrlimitFileLimit tests that we can start a Go program, use
-prlimit to change its NOFILE limit, and have that updated limit be
-seen by children. See issue #66797.</p>
-            
-            <pre><code>func TestPrlimitFileLimit(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testPrlimitFileLimitHelper1">
-            <h2>testPrlimitFileLimitHelper1</h2>
-            <hr />
-            
-            <p>testPrlimitFileLimitHelper1 is run by TestPrlimitFileLimit.</p>
-            
-            <pre><code>func testPrlimitFileLimitHelper1(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testPrlimitFileLimitHelper2">
-            <h2>testPrlimitFileLimitHelper2</h2>
-            <hr />
-            
-            <p>testPrlimitFileLimitHelper2 is run by testPrlimitFileLimit1.</p>
-            
-            <pre><code>func testPrlimitFileLimitHelper2(t *testing.T)</code></pre>
-         </article>
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -1115,59 +517,170 @@ seen by children. See issue #66797.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

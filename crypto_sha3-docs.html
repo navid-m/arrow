@@ -6,426 +6,900 @@
          name="viewport"
          content="width=device-width, initial-scale=1.0"
       />
-      <title>Docs - sha3_test</title>
+      <title>Docs - sha3</title>
       <link
          href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
          rel="stylesheet"
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+                  
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
-      <main>
-         <h1>
-            Package
-            <code>sha3_test</code>
-         </h1>
-         <hr />
-         
-         <article class="global" data-name="testString">
-            <h2>testString</h2>
-            <hr />
-            
-            <pre><code>testString</code></pre>
-         </article>
-         
-         <article class="global" data-name="testDigests">
-            <h2>testDigests</h2>
-            <hr />
-            
-            <p>testDigests contains functions returning hash.Hash instances
-with output-length equal to the KAT length for SHA-3, Keccak
-and SHAKE instances.</p>
-            
-            <pre><code>testDigests</code></pre>
-         </article>
-         
-         <article class="global" data-name="testShakes">
-            <h2>testShakes</h2>
-            <hr />
-            
-            <p>testShakes contains functions that return *sha3.SHAKE instances for
-with output-length equal to the KAT length.</p>
-            
-            <pre><code>testShakes</code></pre>
-         </article>
-         
-         <article class="global" data-name="sinkSHA3">
-            <h2>sinkSHA3</h2>
-            <hr />
-            
-            <pre><code>sinkSHA3 byte</code></pre>
-         </article>
-           
-         <article class="function" data-name="decodeHex">
-            <h2>decodeHex</h2>
-            <hr />
-            
-            <p>decodeHex converts a hex-encoded string into a raw byte string.</p>
-            
-            <pre><code>func decodeHex(s string) []byte</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestUnalignedWrite">
-            <h2>TestUnalignedWrite</h2>
-            <hr />
-            
-            <p>TestUnalignedWrite tests that writing data in an arbitrary pattern with
-small input buffers.</p>
-            
-            <pre><code>func TestUnalignedWrite(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testUnalignedWrite">
-            <h2>testUnalignedWrite</h2>
-            <hr />
-            
-            <pre><code>func testUnalignedWrite(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestAppend">
-            <h2>TestAppend</h2>
-            <hr />
-            
-            <p>TestAppend checks that appending works when reallocation is necessary.</p>
-            
-            <pre><code>func TestAppend(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testAppend">
-            <h2>testAppend</h2>
-            <hr />
-            
-            <pre><code>func testAppend(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestAppendNoRealloc">
-            <h2>TestAppendNoRealloc</h2>
-            <hr />
-            
-            <p>TestAppendNoRealloc tests that appending works when no reallocation is necessary.</p>
-            
-            <pre><code>func TestAppendNoRealloc(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testAppendNoRealloc">
-            <h2>testAppendNoRealloc</h2>
-            <hr />
-            
-            <pre><code>func testAppendNoRealloc(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestSqueezing">
-            <h2>TestSqueezing</h2>
-            <hr />
-            
-            <p>TestSqueezing checks that squeezing the full output a single time produces
-the same output as repeatedly squeezing the instance.</p>
-            
-            <pre><code>func TestSqueezing(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testSqueezing">
-            <h2>testSqueezing</h2>
-            <hr />
-            
-            <pre><code>func testSqueezing(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="sequentialBytes">
-            <h2>sequentialBytes</h2>
-            <hr />
-            
-            <p>sequentialBytes produces a buffer of size consecutive bytes 0x00, 0x01, ..., used for testing.
 
-The alignment of each slice is intentionally randomized to detect alignment
-issues in the implementation. See https://golang.org/issue/37644.
-Ideally, the compiler should fuzz the alignment itself.
-(See https://golang.org/issue/35128.)</p>
-            
-            <pre><code>func sequentialBytes(size int) []byte</code></pre>
-         </article>
+      <main>
+         <h1>sha3</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="function" data-name="TestReset">
-            <h2>TestReset</h2>
-            <hr />
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"crypto"
+"crypto/internal/fips140/sha3"
+"hash"
+_ "unsafe"
+</code></pre>
+            </article>
+         </section>
+             
+         <section id="structs">
+            <h2>Structs</h2>
             
-            <pre><code>func TestReset(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testReset">
-            <h2>testReset</h2>
-            <hr />
+            <article class="struct" data-name="SHA3">
+               <h3>
+                  SHA3
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>SHA3 is an instance of a SHA-3 hash. It implements [hash.Hash].</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type SHA3 struct {
+s sha3.Digest
+}</code></pre>
+            </article>
             
-            <pre><code>func testReset(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestAllocations">
-            <h2>TestAllocations</h2>
-            <hr />
+            <article class="struct" data-name="SHAKE">
+               <h3>
+                  SHAKE
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>SHAKE is an instance of a SHAKE extendable output function.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type SHAKE struct {
+s sha3.SHAKE
+}</code></pre>
+            </article>
             
-            <pre><code>func TestAllocations(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestCSHAKEAccumulated">
-            <h2>TestCSHAKEAccumulated</h2>
-            <hr />
+         </section>
+          
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <pre><code>func TestCSHAKEAccumulated(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testCSHAKEAccumulated">
-            <h2>testCSHAKEAccumulated</h2>
-            <hr />
+            <article class="function" data-name="AppendBinary">
+               <h3>
+                  AppendBinary 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>AppendBinary implements [encoding.BinaryAppender].</p>
+               
+               <pre><code>func (s *SHA3) AppendBinary(p []byte) ([]byte, error)</code></pre>
+            </article>
             
-            <pre><code>func testCSHAKEAccumulated(t *testing.T, newCSHAKE func, rate int64, exp string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestCSHAKELargeS">
-            <h2>TestCSHAKELargeS</h2>
-            <hr />
+            <article class="function" data-name="AppendBinary">
+               <h3>
+                  AppendBinary 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>AppendBinary implements [encoding.BinaryAppender].</p>
+               
+               <pre><code>func (s *SHAKE) AppendBinary(p []byte) ([]byte, error)</code></pre>
+            </article>
             
-            <pre><code>func TestCSHAKELargeS(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testCSHAKELargeS">
-            <h2>testCSHAKELargeS</h2>
-            <hr />
+            <article class="function" data-name="BlockSize">
+               <h3>
+                  BlockSize 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>BlockSize returns the rate of the XOF.</p>
+               
+               <pre><code>func (s *SHAKE) BlockSize() int</code></pre>
+            </article>
             
-            <pre><code>func testCSHAKELargeS(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestMarshalUnmarshal">
-            <h2>TestMarshalUnmarshal</h2>
-            <hr />
+            <article class="function" data-name="BlockSize">
+               <h3>
+                  BlockSize 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>BlockSize returns the hash's rate.</p>
+               
+               <pre><code>func (s *SHA3) BlockSize() int</code></pre>
+            </article>
             
-            <pre><code>func TestMarshalUnmarshal(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testMarshalUnmarshal">
-            <h2>testMarshalUnmarshal</h2>
-            <hr />
+            <article class="function" data-name="MarshalBinary">
+               <h3>
+                  MarshalBinary 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>MarshalBinary implements [encoding.BinaryMarshaler].</p>
+               
+               <pre><code>func (s *SHAKE) MarshalBinary() ([]byte, error)</code></pre>
+            </article>
             
-            <p>TODO(filippo): move this to crypto/internal/cryptotest.</p>
+            <article class="function" data-name="MarshalBinary">
+               <h3>
+                  MarshalBinary 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>MarshalBinary implements [encoding.BinaryMarshaler].</p>
+               
+               <pre><code>func (s *SHA3) MarshalBinary() ([]byte, error)</code></pre>
+            </article>
             
-            <pre><code>func testMarshalUnmarshal(t *testing.T, h *SHA3)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testMarshalUnmarshalSHAKE">
-            <h2>testMarshalUnmarshalSHAKE</h2>
-            <hr />
+            <article class="function" data-name="New224">
+               <h3>
+                  New224 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>New224 creates a new SHA3-224 hash.</p>
+               
+               <pre><code>func New224() *SHA3</code></pre>
+            </article>
             
-            <p>TODO(filippo): move this to crypto/internal/cryptotest.</p>
+            <article class="function" data-name="New256">
+               <h3>
+                  New256 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>New256 creates a new SHA3-256 hash.</p>
+               
+               <pre><code>func New256() *SHA3</code></pre>
+            </article>
             
-            <pre><code>func testMarshalUnmarshalSHAKE(t *testing.T, h *SHAKE)</code></pre>
-         </article>
-         
-         <article class="function" data-name="benchmarkHash">
-            <h2>benchmarkHash</h2>
-            <hr />
+            <article class="function" data-name="New384">
+               <h3>
+                  New384 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>New384 creates a new SHA3-384 hash.</p>
+               
+               <pre><code>func New384() *SHA3</code></pre>
+            </article>
             
-            <p>benchmarkHash tests the speed to hash num buffers of buflen each.</p>
+            <article class="function" data-name="New512">
+               <h3>
+                  New512 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>New512 creates a new SHA3-512 hash.</p>
+               
+               <pre><code>func New512() *SHA3</code></pre>
+            </article>
             
-            <pre><code>func benchmarkHash(b *testing.B, h fips140.Hash, size int, num int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="benchmarkShake">
-            <h2>benchmarkShake</h2>
-            <hr />
+            <article class="function" data-name="NewCSHAKE128">
+               <h3>
+                  NewCSHAKE128 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewCSHAKE128 creates a new cSHAKE128 XOF.
+N is used to define functions based on cSHAKE, it can be empty when plain
+cSHAKE is desired. S is a customization byte string used for domain
+separation. When N and S are both empty, this is equivalent to NewSHAKE128.</p>
+               
+               <pre><code>func NewCSHAKE128(N []byte, S []byte) *SHAKE</code></pre>
+            </article>
             
-            <p>benchmarkShake is specialized to the Shake instances, which don't
-require a copy on reading output.</p>
+            <article class="function" data-name="NewCSHAKE256">
+               <h3>
+                  NewCSHAKE256 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewCSHAKE256 creates a new cSHAKE256 XOF.
+N is used to define functions based on cSHAKE, it can be empty when plain
+cSHAKE is desired. S is a customization byte string used for domain
+separation. When N and S are both empty, this is equivalent to NewSHAKE256.</p>
+               
+               <pre><code>func NewCSHAKE256(N []byte, S []byte) *SHAKE</code></pre>
+            </article>
             
-            <pre><code>func benchmarkShake(b *testing.B, h *SHAKE, size int, num int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkSha3_512_MTU">
-            <h2>BenchmarkSha3_512_MTU</h2>
-            <hr />
+            <article class="function" data-name="NewSHAKE128">
+               <h3>
+                  NewSHAKE128 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewSHAKE128 creates a new SHAKE128 XOF.</p>
+               
+               <pre><code>func NewSHAKE128() *SHAKE</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkSha3_512_MTU(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkSha3_384_MTU">
-            <h2>BenchmarkSha3_384_MTU</h2>
-            <hr />
+            <article class="function" data-name="NewSHAKE256">
+               <h3>
+                  NewSHAKE256 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewSHAKE256 creates a new SHAKE256 XOF.</p>
+               
+               <pre><code>func NewSHAKE256() *SHAKE</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkSha3_384_MTU(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkSha3_256_MTU">
-            <h2>BenchmarkSha3_256_MTU</h2>
-            <hr />
+            <article class="function" data-name="Read">
+               <h3>
+                  Read 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Read squeezes more output from the XOF.
+Any call to Write after a call to Read will panic.</p>
+               
+               <pre><code>func (s *SHAKE) Read(p []byte) (n int, err error)</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkSha3_256_MTU(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkSha3_224_MTU">
-            <h2>BenchmarkSha3_224_MTU</h2>
-            <hr />
+            <article class="function" data-name="Reset">
+               <h3>
+                  Reset 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Reset resets the hash to its initial state.</p>
+               
+               <pre><code>func (s *SHA3) Reset()</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkSha3_224_MTU(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkShake128_MTU">
-            <h2>BenchmarkShake128_MTU</h2>
-            <hr />
+            <article class="function" data-name="Reset">
+               <h3>
+                  Reset 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Reset resets the XOF to its initial state.</p>
+               
+               <pre><code>func (s *SHAKE) Reset()</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkShake128_MTU(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkShake256_MTU">
-            <h2>BenchmarkShake256_MTU</h2>
-            <hr />
+            <article class="function" data-name="Size">
+               <h3>
+                  Size 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Size returns the number of bytes Sum will produce.</p>
+               
+               <pre><code>func (s *SHA3) Size() int</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkShake256_MTU(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkShake256_16x">
-            <h2>BenchmarkShake256_16x</h2>
-            <hr />
+            <article class="function" data-name="Sum">
+               <h3>
+                  Sum 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Sum appends the current hash to b and returns the resulting slice.</p>
+               
+               <pre><code>func (s *SHA3) Sum(b []byte) []byte</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkShake256_16x(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkShake256_1MiB">
-            <h2>BenchmarkShake256_1MiB</h2>
-            <hr />
+            <article class="function" data-name="Sum224">
+               <h3>
+                  Sum224 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Sum224 returns the SHA3-224 hash of data.</p>
+               
+               <pre><code>func Sum224(data []byte) [28]byte</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkShake256_1MiB(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkSha3_512_1MiB">
-            <h2>BenchmarkSha3_512_1MiB</h2>
-            <hr />
+            <article class="function" data-name="Sum256">
+               <h3>
+                  Sum256 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Sum256 returns the SHA3-256 hash of data.</p>
+               
+               <pre><code>func Sum256(data []byte) [32]byte</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkSha3_512_1MiB(b *testing.B)</code></pre>
-         </article>
+            <article class="function" data-name="Sum384">
+               <h3>
+                  Sum384 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Sum384 returns the SHA3-384 hash of data.</p>
+               
+               <pre><code>func Sum384(data []byte) [48]byte</code></pre>
+            </article>
+            
+            <article class="function" data-name="Sum512">
+               <h3>
+                  Sum512 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Sum512 returns the SHA3-512 hash of data.</p>
+               
+               <pre><code>func Sum512(data []byte) [64]byte</code></pre>
+            </article>
+            
+            <article class="function" data-name="SumSHAKE128">
+               <h3>
+                  SumSHAKE128 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>SumSHAKE128 applies the SHAKE128 extendable output function to data and
+returns an output of the given length in bytes.</p>
+               
+               <pre><code>func SumSHAKE128(data []byte, length int) []byte</code></pre>
+            </article>
+            
+            <article class="function" data-name="SumSHAKE256">
+               <h3>
+                  SumSHAKE256 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>SumSHAKE256 applies the SHAKE256 extendable output function to data and
+returns an output of the given length in bytes.</p>
+               
+               <pre><code>func SumSHAKE256(data []byte, length int) []byte</code></pre>
+            </article>
+            
+            <article class="function" data-name="UnmarshalBinary">
+               <h3>
+                  UnmarshalBinary 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>UnmarshalBinary implements [encoding.BinaryUnmarshaler].</p>
+               
+               <pre><code>func (s *SHA3) UnmarshalBinary(data []byte) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="UnmarshalBinary">
+               <h3>
+                  UnmarshalBinary 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>UnmarshalBinary implements [encoding.BinaryUnmarshaler].</p>
+               
+               <pre><code>func (s *SHAKE) UnmarshalBinary(data []byte) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="Write">
+               <h3>
+                  Write 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Write absorbs more data into the XOF's state.
+It panics if any output has already been read.</p>
+               
+               <pre><code>func (s *SHAKE) Write(p []byte) (n int, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Write">
+               <h3>
+                  Write 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Write absorbs more data into the hash's state.</p>
+               
+               <pre><code>func (s *SHA3) Write(p []byte) (n int, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="fips140hash_sha3Unwrap">
+               <h3>
+                  fips140hash_sha3Unwrap 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>go:linkname fips140hash_sha3Unwrap crypto/internal/fips140hash.sha3Unwrap</p>
+               
+               <pre><code>func fips140hash_sha3Unwrap(sha3 *SHA3) *sha3.Digest</code></pre>
+            </article>
+            
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func init()</code></pre>
+            </article>
+            
+            <article class="function" data-name="sumSHAKE128">
+               <h3>
+                  sumSHAKE128 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func sumSHAKE128(out []byte, data []byte, length int) []byte</code></pre>
+            </article>
+            
+            <article class="function" data-name="sumSHAKE256">
+               <h3>
+                  sumSHAKE256 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func sumSHAKE256(out []byte, data []byte, length int) []byte</code></pre>
+            </article>
+            
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -433,59 +907,170 @@ require a copy on reading output.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

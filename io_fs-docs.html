@@ -13,848 +13,1632 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                
+               <li><a href="#interfaces">Interfaces</a></li>
+                
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>fs</code>
-         </h1>
-         <hr />
+         <h1>fs</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="SkipDir">
-            <h2>SkipDir</h2>
-            <hr />
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"time"
+"internal/oserror"
+"time"
+"unicode/utf8"
+"path"
+"errors"
+"internal/bytealg"
+"slices"
+"io"
+"errors"
+"path"
+"errors"
+"path"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <p>SkipDir is used as a return value from [WalkDirFunc] to indicate that
-the directory named in the call is to be skipped. It is not returned
-as an error by any function.</p>
+            <article class="global" data-name="ErrClosed">
+               <h3>
+                  ErrClosed 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Generic file system errors.
+Errors returned by file systems can be tested against these errors
+using [errors.Is].</p>
+               
+               <pre><code>var ErrClosed = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre><code>SkipDir</code></pre>
-         </article>
-         
-         <article class="global" data-name="SkipAll">
-            <h2>SkipAll</h2>
-            <hr />
+            <article class="global" data-name="ErrExist">
+               <h3>
+                  ErrExist 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Generic file system errors.
+Errors returned by file systems can be tested against these errors
+using [errors.Is].</p>
+               
+               <pre><code>var ErrExist = *ast.CallExpr</code></pre>
+            </article>
             
-            <p>SkipAll is used as a return value from [WalkDirFunc] to indicate that
+            <article class="global" data-name="ErrInvalid">
+               <h3>
+                  ErrInvalid 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Generic file system errors.
+Errors returned by file systems can be tested against these errors
+using [errors.Is].</p>
+               
+               <pre><code>var ErrInvalid = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="ErrNotExist">
+               <h3>
+                  ErrNotExist 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Generic file system errors.
+Errors returned by file systems can be tested against these errors
+using [errors.Is].</p>
+               
+               <pre><code>var ErrNotExist = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="ErrPermission">
+               <h3>
+                  ErrPermission 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Generic file system errors.
+Errors returned by file systems can be tested against these errors
+using [errors.Is].</p>
+               
+               <pre><code>var ErrPermission = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="ModeAppend">
+               <h3>
+                  ModeAppend 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>The defined file mode bits are the most significant bits of the [FileMode].
+The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
+The values of these bits should be considered part of the public API and
+may be used in wire protocols or disk representations: they must not be
+changed, although new bits might be added.</p>
+               
+               <pre><code>const ModeAppend</code></pre>
+            </article>
+            
+            <article class="global" data-name="ModeCharDevice">
+               <h3>
+                  ModeCharDevice 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>The defined file mode bits are the most significant bits of the [FileMode].
+The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
+The values of these bits should be considered part of the public API and
+may be used in wire protocols or disk representations: they must not be
+changed, although new bits might be added.</p>
+               
+               <pre><code>const ModeCharDevice</code></pre>
+            </article>
+            
+            <article class="global" data-name="ModeDevice">
+               <h3>
+                  ModeDevice 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>The defined file mode bits are the most significant bits of the [FileMode].
+The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
+The values of these bits should be considered part of the public API and
+may be used in wire protocols or disk representations: they must not be
+changed, although new bits might be added.</p>
+               
+               <pre><code>const ModeDevice</code></pre>
+            </article>
+            
+            <article class="global" data-name="ModeDir">
+               <h3>
+                  ModeDir 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>The single letters are the abbreviations
+used by the String method's formatting.</p>
+               
+               <pre><code>const ModeDir FileMode = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="ModeExclusive">
+               <h3>
+                  ModeExclusive 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>The defined file mode bits are the most significant bits of the [FileMode].
+The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
+The values of these bits should be considered part of the public API and
+may be used in wire protocols or disk representations: they must not be
+changed, although new bits might be added.</p>
+               
+               <pre><code>const ModeExclusive</code></pre>
+            </article>
+            
+            <article class="global" data-name="ModeIrregular">
+               <h3>
+                  ModeIrregular 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>The defined file mode bits are the most significant bits of the [FileMode].
+The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
+The values of these bits should be considered part of the public API and
+may be used in wire protocols or disk representations: they must not be
+changed, although new bits might be added.</p>
+               
+               <pre><code>const ModeIrregular</code></pre>
+            </article>
+            
+            <article class="global" data-name="ModeNamedPipe">
+               <h3>
+                  ModeNamedPipe 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>The defined file mode bits are the most significant bits of the [FileMode].
+The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
+The values of these bits should be considered part of the public API and
+may be used in wire protocols or disk representations: they must not be
+changed, although new bits might be added.</p>
+               
+               <pre><code>const ModeNamedPipe</code></pre>
+            </article>
+            
+            <article class="global" data-name="ModePerm">
+               <h3>
+                  ModePerm 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>The defined file mode bits are the most significant bits of the [FileMode].
+The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
+The values of these bits should be considered part of the public API and
+may be used in wire protocols or disk representations: they must not be
+changed, although new bits might be added.</p>
+               
+               <pre><code>const ModePerm FileMode = 0777</code></pre>
+            </article>
+            
+            <article class="global" data-name="ModeSetgid">
+               <h3>
+                  ModeSetgid 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>The defined file mode bits are the most significant bits of the [FileMode].
+The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
+The values of these bits should be considered part of the public API and
+may be used in wire protocols or disk representations: they must not be
+changed, although new bits might be added.</p>
+               
+               <pre><code>const ModeSetgid</code></pre>
+            </article>
+            
+            <article class="global" data-name="ModeSetuid">
+               <h3>
+                  ModeSetuid 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>The defined file mode bits are the most significant bits of the [FileMode].
+The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
+The values of these bits should be considered part of the public API and
+may be used in wire protocols or disk representations: they must not be
+changed, although new bits might be added.</p>
+               
+               <pre><code>const ModeSetuid</code></pre>
+            </article>
+            
+            <article class="global" data-name="ModeSocket">
+               <h3>
+                  ModeSocket 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>The defined file mode bits are the most significant bits of the [FileMode].
+The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
+The values of these bits should be considered part of the public API and
+may be used in wire protocols or disk representations: they must not be
+changed, although new bits might be added.</p>
+               
+               <pre><code>const ModeSocket</code></pre>
+            </article>
+            
+            <article class="global" data-name="ModeSticky">
+               <h3>
+                  ModeSticky 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>The defined file mode bits are the most significant bits of the [FileMode].
+The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
+The values of these bits should be considered part of the public API and
+may be used in wire protocols or disk representations: they must not be
+changed, although new bits might be added.</p>
+               
+               <pre><code>const ModeSticky</code></pre>
+            </article>
+            
+            <article class="global" data-name="ModeSymlink">
+               <h3>
+                  ModeSymlink 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>The defined file mode bits are the most significant bits of the [FileMode].
+The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
+The values of these bits should be considered part of the public API and
+may be used in wire protocols or disk representations: they must not be
+changed, although new bits might be added.</p>
+               
+               <pre><code>const ModeSymlink</code></pre>
+            </article>
+            
+            <article class="global" data-name="ModeTemporary">
+               <h3>
+                  ModeTemporary 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>The defined file mode bits are the most significant bits of the [FileMode].
+The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
+The values of these bits should be considered part of the public API and
+may be used in wire protocols or disk representations: they must not be
+changed, although new bits might be added.</p>
+               
+               <pre><code>const ModeTemporary</code></pre>
+            </article>
+            
+            <article class="global" data-name="ModeType">
+               <h3>
+                  ModeType 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Mask for the type bits. For regular files, none will be set.</p>
+               
+               <pre><code>const ModeType = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="SkipAll">
+               <h3>
+                  SkipAll 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>SkipAll is used as a return value from [WalkDirFunc] to indicate that
 all remaining files and directories are to be skipped. It is not returned
 as an error by any function.</p>
+               
+               <pre><code>var SkipAll = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre><code>SkipAll</code></pre>
-         </article>
-         
-         <article class="global" data-name="ErrInvalid">
-            <h2>ErrInvalid</h2>
-            <hr />
+            <article class="global" data-name="SkipDir">
+               <h3>
+                  SkipDir 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>SkipDir is used as a return value from [WalkDirFunc] to indicate that
+the directory named in the call is to be skipped. It is not returned
+as an error by any function.</p>
+               
+               <pre><code>var SkipDir = *ast.CallExpr</code></pre>
+            </article>
             
-            <p>Generic file system errors.
-Errors returned by file systems can be tested against these errors
-using [errors.Is].</p>
-            
-            <pre><code>ErrInvalid</code></pre>
-         </article>
-         
-         <article class="global" data-name="ErrPermission">
-            <h2>ErrPermission</h2>
-            <hr />
-            
-            <p>Generic file system errors.
-Errors returned by file systems can be tested against these errors
-using [errors.Is].</p>
-            
-            <pre><code>ErrPermission</code></pre>
-         </article>
-         
-         <article class="global" data-name="ErrExist">
-            <h2>ErrExist</h2>
-            <hr />
-            
-            <p>Generic file system errors.
-Errors returned by file systems can be tested against these errors
-using [errors.Is].</p>
-            
-            <pre><code>ErrExist</code></pre>
-         </article>
-         
-         <article class="global" data-name="ErrNotExist">
-            <h2>ErrNotExist</h2>
-            <hr />
-            
-            <p>Generic file system errors.
-Errors returned by file systems can be tested against these errors
-using [errors.Is].</p>
-            
-            <pre><code>ErrNotExist</code></pre>
-         </article>
-         
-         <article class="global" data-name="ErrClosed">
-            <h2>ErrClosed</h2>
-            <hr />
-            
-            <p>Generic file system errors.
-Errors returned by file systems can be tested against these errors
-using [errors.Is].</p>
-            
-            <pre><code>ErrClosed</code></pre>
-         </article>
-         
-         <article class="global" data-name="ModeDir">
-            <h2>ModeDir</h2>
-            <hr />
-            
-            <p>The single letters are the abbreviations
-used by the String method's formatting.</p>
-            
-            <pre><code>ModeDir FileMode</code></pre>
-         </article>
-         
-         <article class="global" data-name="ModeAppend">
-            <h2>ModeAppend</h2>
-            <hr />
-            
-            <p>The defined file mode bits are the most significant bits of the [FileMode].
-The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
-The values of these bits should be considered part of the public API and
-may be used in wire protocols or disk representations: they must not be
-changed, although new bits might be added.</p>
-            
-            <pre><code>ModeAppend</code></pre>
-         </article>
-         
-         <article class="global" data-name="ModeExclusive">
-            <h2>ModeExclusive</h2>
-            <hr />
-            
-            <p>The defined file mode bits are the most significant bits of the [FileMode].
-The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
-The values of these bits should be considered part of the public API and
-may be used in wire protocols or disk representations: they must not be
-changed, although new bits might be added.</p>
-            
-            <pre><code>ModeExclusive</code></pre>
-         </article>
-         
-         <article class="global" data-name="ModeTemporary">
-            <h2>ModeTemporary</h2>
-            <hr />
-            
-            <p>The defined file mode bits are the most significant bits of the [FileMode].
-The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
-The values of these bits should be considered part of the public API and
-may be used in wire protocols or disk representations: they must not be
-changed, although new bits might be added.</p>
-            
-            <pre><code>ModeTemporary</code></pre>
-         </article>
-         
-         <article class="global" data-name="ModeSymlink">
-            <h2>ModeSymlink</h2>
-            <hr />
-            
-            <p>The defined file mode bits are the most significant bits of the [FileMode].
-The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
-The values of these bits should be considered part of the public API and
-may be used in wire protocols or disk representations: they must not be
-changed, although new bits might be added.</p>
-            
-            <pre><code>ModeSymlink</code></pre>
-         </article>
-         
-         <article class="global" data-name="ModeDevice">
-            <h2>ModeDevice</h2>
-            <hr />
-            
-            <p>The defined file mode bits are the most significant bits of the [FileMode].
-The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
-The values of these bits should be considered part of the public API and
-may be used in wire protocols or disk representations: they must not be
-changed, although new bits might be added.</p>
-            
-            <pre><code>ModeDevice</code></pre>
-         </article>
-         
-         <article class="global" data-name="ModeNamedPipe">
-            <h2>ModeNamedPipe</h2>
-            <hr />
-            
-            <p>The defined file mode bits are the most significant bits of the [FileMode].
-The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
-The values of these bits should be considered part of the public API and
-may be used in wire protocols or disk representations: they must not be
-changed, although new bits might be added.</p>
-            
-            <pre><code>ModeNamedPipe</code></pre>
-         </article>
-         
-         <article class="global" data-name="ModeSocket">
-            <h2>ModeSocket</h2>
-            <hr />
-            
-            <p>The defined file mode bits are the most significant bits of the [FileMode].
-The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
-The values of these bits should be considered part of the public API and
-may be used in wire protocols or disk representations: they must not be
-changed, although new bits might be added.</p>
-            
-            <pre><code>ModeSocket</code></pre>
-         </article>
-         
-         <article class="global" data-name="ModeSetuid">
-            <h2>ModeSetuid</h2>
-            <hr />
-            
-            <p>The defined file mode bits are the most significant bits of the [FileMode].
-The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
-The values of these bits should be considered part of the public API and
-may be used in wire protocols or disk representations: they must not be
-changed, although new bits might be added.</p>
-            
-            <pre><code>ModeSetuid</code></pre>
-         </article>
-         
-         <article class="global" data-name="ModeSetgid">
-            <h2>ModeSetgid</h2>
-            <hr />
-            
-            <p>The defined file mode bits are the most significant bits of the [FileMode].
-The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
-The values of these bits should be considered part of the public API and
-may be used in wire protocols or disk representations: they must not be
-changed, although new bits might be added.</p>
-            
-            <pre><code>ModeSetgid</code></pre>
-         </article>
-         
-         <article class="global" data-name="ModeCharDevice">
-            <h2>ModeCharDevice</h2>
-            <hr />
-            
-            <p>The defined file mode bits are the most significant bits of the [FileMode].
-The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
-The values of these bits should be considered part of the public API and
-may be used in wire protocols or disk representations: they must not be
-changed, although new bits might be added.</p>
-            
-            <pre><code>ModeCharDevice</code></pre>
-         </article>
-         
-         <article class="global" data-name="ModeSticky">
-            <h2>ModeSticky</h2>
-            <hr />
-            
-            <p>The defined file mode bits are the most significant bits of the [FileMode].
-The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
-The values of these bits should be considered part of the public API and
-may be used in wire protocols or disk representations: they must not be
-changed, although new bits might be added.</p>
-            
-            <pre><code>ModeSticky</code></pre>
-         </article>
-         
-         <article class="global" data-name="ModeIrregular">
-            <h2>ModeIrregular</h2>
-            <hr />
-            
-            <p>The defined file mode bits are the most significant bits of the [FileMode].
-The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
-The values of these bits should be considered part of the public API and
-may be used in wire protocols or disk representations: they must not be
-changed, although new bits might be added.</p>
-            
-            <pre><code>ModeIrregular</code></pre>
-         </article>
-         
-         <article class="global" data-name="ModeType">
-            <h2>ModeType</h2>
-            <hr />
-            
-            <p>Mask for the type bits. For regular files, none will be set.</p>
-            
-            <pre><code>ModeType</code></pre>
-         </article>
-         
-         <article class="global" data-name="ModePerm">
-            <h2>ModePerm</h2>
-            <hr />
-            
-            <p>The defined file mode bits are the most significant bits of the [FileMode].
-The nine least-significant bits are the standard Unix rwxrwxrwx permissions.
-The values of these bits should be considered part of the public API and
-may be used in wire protocols or disk representations: they must not be
-changed, although new bits might be added.</p>
-            
-            <pre><code>ModePerm FileMode</code></pre>
-         </article>
+         </section>
           
-         <article class="struct" data-name="subFS">
-            <h2>type subFS struct</h2>
-            <hr />
+         <section id="types">
+            <h2>Type Aliases</h2>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">fsys FS
-dir string</code></pre>
-         </article>
-         
-         <article class="struct" data-name="PathError">
-            <h2>type PathError struct</h2>
-            <hr />
+            <article class="type" data-name="FileMode">
+               <h3>
+                  FileMode
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>A FileMode represents a file's mode and permission bits.
+The bits have the same definition on all systems, so that
+information about files can be moved from one system
+to another portably. Not all bits apply to all systems.
+The only required bit is [ModeDir] for directories.</p>
+               
+               <pre><code>type FileMode uint32</code></pre>
+            </article>
             
-            <p>PathError records an error and the operation and file path that caused it.</p>
+            <article class="type" data-name="WalkDirFunc">
+               <h3>
+                  WalkDirFunc
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>WalkDirFunc is the type of the function called by [WalkDir] to visit
+each file or directory.
+The path argument contains the argument to [WalkDir] as a prefix.
+That is, if WalkDir is called with root argument "dir" and finds a file
+named "a" in that directory, the walk function will be called with
+argument "dir/a".
+The d argument is the [DirEntry] for the named path.
+The error result returned by the function controls how [WalkDir]
+continues. If the function returns the special value [SkipDir], WalkDir
+skips the current directory (path if d.IsDir() is true, otherwise
+path's parent directory). If the function returns the special value
+[SkipAll], WalkDir skips all remaining files and directories. Otherwise,
+if the function returns a non-nil error, WalkDir stops entirely and
+returns that error.
+The err argument reports an error related to path, signaling that
+[WalkDir] will not walk into that directory. The function can decide how
+to handle that error; as described earlier, returning the error will
+cause WalkDir to stop walking the entire tree.
+[WalkDir] calls the function with a non-nil err argument in two cases.
+First, if the initial [Stat] on the root directory fails, WalkDir
+calls the function with path set to root, d set to nil, and err set to
+the error from [fs.Stat].
+Second, if a directory's ReadDir method (see [ReadDirFile]) fails, WalkDir calls the
+function with path set to the directory's path, d set to an
+[DirEntry] describing the directory, and err set to the error from
+ReadDir. In this second case, the function is called twice with the
+path of the directory: the first call is before the directory read is
+attempted and has err set to nil, giving the function a chance to
+return [SkipDir] or [SkipAll] and avoid the ReadDir entirely. The second call
+is after a failed ReadDir and reports the error from ReadDir.
+(If ReadDir succeeds, there is no second call.)
+The differences between WalkDirFunc compared to [path/filepath.WalkFunc] are:
+- The second argument has type [DirEntry] instead of [FileInfo].
+- The function is called before reading a directory, to allow [SkipDir]
+or [SkipAll] to bypass the directory read entirely or skip all remaining
+files and directories respectively.
+- If a directory read fails, the function is called a second time
+for that directory to report the error.</p>
+               
+               <pre><code>type WalkDirFunc func(path string, d DirEntry, err error) error</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Op string
+         </section>
+          
+         <section id="interfaces">
+            <h2>Interfaces</h2>
+            
+            <article class="interface" data-name="DirEntry">
+               <h3>
+                  DirEntry
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>A DirEntry is an entry read from a directory
+(using the [ReadDir] function or a [ReadDirFile]'s ReadDir method).</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type DirEntry interface {
+Name() string
+IsDir() bool
+Type() FileMode
+Info() (FileInfo, error)
+}</code></pre>
+            </article>
+            
+            <article class="interface" data-name="FS">
+               <h3>
+                  FS
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>An FS provides access to a hierarchical file system.
+The FS interface is the minimum implementation required of the file system.
+A file system may implement additional interfaces,
+such as [ReadFileFS], to provide additional or optimized functionality.
+[testing/fstest.TestFS] may be used to test implementations of an FS for
+correctness.</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type FS interface {
+Open(name string) (File, error)
+}</code></pre>
+            </article>
+            
+            <article class="interface" data-name="File">
+               <h3>
+                  File
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>A File provides access to a single file.
+The File interface is the minimum implementation required of the file.
+Directory files should also implement [ReadDirFile].
+A file may implement [io.ReaderAt] or [io.Seeker] as optimizations.</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type File interface {
+Stat() (FileInfo, error)
+Read([]byte) (int, error)
+Close() error
+}</code></pre>
+            </article>
+            
+            <article class="interface" data-name="FileInfo">
+               <h3>
+                  FileInfo
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>A FileInfo describes a file and is returned by [Stat].</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type FileInfo interface {
+Name() string
+Size() int64
+Mode() FileMode
+ModTime() time.Time
+IsDir() bool
+Sys() any
+}</code></pre>
+            </article>
+            
+            <article class="interface" data-name="GlobFS">
+               <h3>
+                  GlobFS
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>A GlobFS is a file system with a Glob method.</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type GlobFS interface {
+FS
+Glob(pattern string) ([]string, error)
+}</code></pre>
+            </article>
+            
+            <article class="interface" data-name="ReadDirFS">
+               <h3>
+                  ReadDirFS
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>ReadDirFS is the interface implemented by a file system
+that provides an optimized implementation of [ReadDir].</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type ReadDirFS interface {
+FS
+ReadDir(name string) ([]DirEntry, error)
+}</code></pre>
+            </article>
+            
+            <article class="interface" data-name="ReadDirFile">
+               <h3>
+                  ReadDirFile
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>A ReadDirFile is a directory file whose entries can be read with the ReadDir method.
+Every directory file should implement this interface.
+(It is permissible for any file to implement this interface,
+but if so ReadDir should return an error for non-directories.)</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type ReadDirFile interface {
+File
+ReadDir(n int) ([]DirEntry, error)
+}</code></pre>
+            </article>
+            
+            <article class="interface" data-name="ReadFileFS">
+               <h3>
+                  ReadFileFS
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>ReadFileFS is the interface implemented by a file system
+that provides an optimized implementation of [ReadFile].</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type ReadFileFS interface {
+FS
+ReadFile(name string) ([]byte, error)
+}</code></pre>
+            </article>
+            
+            <article class="interface" data-name="StatFS">
+               <h3>
+                  StatFS
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>A StatFS is a file system with a Stat method.</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type StatFS interface {
+FS
+Stat(name string) (FileInfo, error)
+}</code></pre>
+            </article>
+            
+            <article class="interface" data-name="SubFS">
+               <h3>
+                  SubFS
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>A SubFS is a file system with a Sub method.</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type SubFS interface {
+FS
+Sub(dir string) (FS, error)
+}</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="PathError">
+               <h3>
+                  PathError
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>PathError records an error and the operation and file path that caused it.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type PathError struct {
+Op string
 Path string
-Err error</code></pre>
-         </article>
-         
-         <article class="struct" data-name="dirInfo">
-            <h2>type dirInfo struct</h2>
-            <hr />
+Err error
+}</code></pre>
+            </article>
             
-            <p>dirInfo is a DirEntry based on a FileInfo.</p>
+            <article class="struct" data-name="dirInfo">
+               <h3>
+                  dirInfo
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>dirInfo is a DirEntry based on a FileInfo.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type dirInfo struct {
+fileInfo FileInfo
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">fileInfo FileInfo</code></pre>
-         </article>
+            <article class="struct" data-name="subFS">
+               <h3>
+                  subFS
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type subFS struct {
+fsys FS
+dir string
+}</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="function" data-name="Sub">
-            <h2>Sub</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <p>Sub returns an [FS] corresponding to the subtree rooted at fsys's dir.
-
+            <article class="function" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *PathError) Error() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="FileInfoToDirEntry">
+               <h3>
+                  FileInfoToDirEntry 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>FileInfoToDirEntry returns a [DirEntry] that returns information from info.
+If info is nil, FileInfoToDirEntry returns nil.</p>
+               
+               <pre><code>func FileInfoToDirEntry(info FileInfo) DirEntry</code></pre>
+            </article>
+            
+            <article class="function" data-name="FormatDirEntry">
+               <h3>
+                  FormatDirEntry 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>FormatDirEntry returns a formatted version of dir for human readability.
+Implementations of [DirEntry] can call this from a String method.
+The outputs for a directory named subdir and a file named hello.go are:
+d subdir/
+- hello.go</p>
+               
+               <pre><code>func FormatDirEntry(dir DirEntry) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="FormatFileInfo">
+               <h3>
+                  FormatFileInfo 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>FormatFileInfo returns a formatted version of info for human readability.
+Implementations of [FileInfo] can call this from a String method.
+The output for a file named "hello.go", 100 bytes, mode 0o644, created
+January 1, 1970 at noon is
+-rw-r--r-- 100 1970-01-01 12:00:00 hello.go</p>
+               
+               <pre><code>func FormatFileInfo(info FileInfo) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="Glob">
+               <h3>
+                  Glob 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (f *subFS) Glob(pattern string) ([]string, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Glob">
+               <h3>
+                  Glob 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Glob returns the names of all files matching pattern or nil
+if there is no matching file. The syntax of patterns is the same
+as in [path.Match]. The pattern may describe hierarchical names such as
+usr/*/bin/ed.
+Glob ignores file system errors such as I/O errors reading directories.
+The only possible returned error is [path.ErrBadPattern], reporting that
+the pattern is malformed.
+If fs implements [GlobFS], Glob calls fs.Glob.
+Otherwise, Glob uses [ReadDir] to traverse the directory tree
+and look for matches for the pattern.</p>
+               
+               <pre><code>func Glob(fsys FS, pattern string) (matches []string, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Info">
+               <h3>
+                  Info 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (di dirInfo) Info() (FileInfo, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="IsDir">
+               <h3>
+                  IsDir 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (di dirInfo) IsDir() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="IsDir">
+               <h3>
+                  IsDir 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>IsDir reports whether m describes a directory.
+That is, it tests for the [ModeDir] bit being set in m.</p>
+               
+               <pre><code>func (m FileMode) IsDir() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="IsRegular">
+               <h3>
+                  IsRegular 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>IsRegular reports whether m describes a regular file.
+That is, it tests that no mode type bits are set.</p>
+               
+               <pre><code>func (m FileMode) IsRegular() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="Name">
+               <h3>
+                  Name 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (di dirInfo) Name() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="Open">
+               <h3>
+                  Open 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (f *subFS) Open(name string) (File, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Perm">
+               <h3>
+                  Perm 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Perm returns the Unix permission bits in m (m & [ModePerm]).</p>
+               
+               <pre><code>func (m FileMode) Perm() FileMode</code></pre>
+            </article>
+            
+            <article class="function" data-name="ReadDir">
+               <h3>
+                  ReadDir 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>ReadDir reads the named directory
+and returns a list of directory entries sorted by filename.
+If fs implements [ReadDirFS], ReadDir calls fs.ReadDir.
+Otherwise ReadDir calls fs.Open and uses ReadDir and Close
+on the returned file.</p>
+               
+               <pre><code>func ReadDir(fsys FS, name string) ([]DirEntry, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="ReadDir">
+               <h3>
+                  ReadDir 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (f *subFS) ReadDir(name string) ([]DirEntry, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="ReadFile">
+               <h3>
+                  ReadFile 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>ReadFile reads the named file from the file system fs and returns its contents.
+A successful call returns a nil error, not [io.EOF].
+(Because ReadFile reads the whole file, the expected EOF
+from the final Read is not treated as an error to be reported.)
+If fs implements [ReadFileFS], ReadFile calls fs.ReadFile.
+Otherwise ReadFile calls fs.Open and uses Read and Close
+on the returned [File].</p>
+               
+               <pre><code>func ReadFile(fsys FS, name string) ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="ReadFile">
+               <h3>
+                  ReadFile 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (f *subFS) ReadFile(name string) ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Stat">
+               <h3>
+                  Stat 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Stat returns a [FileInfo] describing the named file from the file system.
+If fs implements [StatFS], Stat calls fs.Stat.
+Otherwise, Stat opens the [File] to stat it.</p>
+               
+               <pre><code>func Stat(fsys FS, name string) (FileInfo, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (m FileMode) String() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (di dirInfo) String() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="Sub">
+               <h3>
+                  Sub 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Sub returns an [FS] corresponding to the subtree rooted at fsys's dir.
 If dir is ".", Sub returns fsys unchanged.
 Otherwise, if fs implements [SubFS], Sub returns fsys.Sub(dir).
 Otherwise, Sub returns a new [FS] implementation sub that,
 in effect, implements sub.Open(name) as fsys.Open(path.Join(dir, name)).
 The implementation also translates calls to ReadDir, ReadFile, and Glob appropriately.
-
 Note that Sub(os.DirFS("/"), "prefix") is equivalent to os.DirFS("/prefix")
 and that neither of them guarantees to avoid operating system
 accesses outside "/prefix", because the implementation of [os.DirFS]
 does not check for symbolic links inside "/prefix" that point to
 other directories. That is, [os.DirFS] is not a general substitute for a
 chroot-style security mechanism, and Sub does not change that fact.</p>
+               
+               <pre><code>func Sub(fsys FS, dir string) (FS, error)</code></pre>
+            </article>
             
-            <pre><code>func Sub(fsys FS, dir string) (FS, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="fullName">
-            <h2>fullName</h2>
-            <hr />
+            <article class="function" data-name="Sub">
+               <h3>
+                  Sub 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (f *subFS) Sub(dir string) (FS, error)</code></pre>
+            </article>
             
-            <p>fullName maps name to the fully-qualified name dir/name.</p>
+            <article class="function" data-name="Timeout">
+               <h3>
+                  Timeout 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Timeout reports whether this error represents a timeout.</p>
+               
+               <pre><code>func (e *PathError) Timeout() bool</code></pre>
+            </article>
             
-            <pre><code>func fullName(op string, name string) (string, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="shorten">
-            <h2>shorten</h2>
-            <hr />
+            <article class="function" data-name="Type">
+               <h3>
+                  Type 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (di dirInfo) Type() FileMode</code></pre>
+            </article>
             
-            <p>shorten maps name, which should start with f.dir, back to the suffix after f.dir.</p>
+            <article class="function" data-name="Type">
+               <h3>
+                  Type 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Type returns type bits in m (m & [ModeType]).</p>
+               
+               <pre><code>func (m FileMode) Type() FileMode</code></pre>
+            </article>
             
-            <pre><code>func shorten(name string) (rel string, ok bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="fixErr">
-            <h2>fixErr</h2>
-            <hr />
+            <article class="function" data-name="Unwrap">
+               <h3>
+                  Unwrap 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *PathError) Unwrap() error</code></pre>
+            </article>
             
-            <p>fixErr shortens any reported names in PathErrors by stripping f.dir.</p>
-            
-            <pre><code>func fixErr(err error) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="Open">
-            <h2>Open</h2>
-            <hr />
-            
-            <pre><code>func Open(name string) (File, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="ReadDir">
-            <h2>ReadDir</h2>
-            <hr />
-            
-            <pre><code>func ReadDir(name string) ([]DirEntry, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="ReadFile">
-            <h2>ReadFile</h2>
-            <hr />
-            
-            <pre><code>func ReadFile(name string) ([]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Glob">
-            <h2>Glob</h2>
-            <hr />
-            
-            <pre><code>func Glob(pattern string) ([]string, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Sub">
-            <h2>Sub</h2>
-            <hr />
-            
-            <pre><code>func Sub(dir string) (FS, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="walkDir">
-            <h2>walkDir</h2>
-            <hr />
-            
-            <p>walkDir recursively descends path, calling walkDirFn.</p>
-            
-            <pre><code>func walkDir(fsys FS, name string, d DirEntry, walkDirFn WalkDirFunc) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="WalkDir">
-            <h2>WalkDir</h2>
-            <hr />
-            
-            <p>WalkDir walks the file tree rooted at root, calling fn for each file or
-directory in the tree, including root.
-
-All errors that arise visiting files and directories are filtered by fn:
-see the [fs.WalkDirFunc] documentation for details.
-
-The files are walked in lexical order, which makes the output deterministic
-but requires WalkDir to read an entire directory into memory before proceeding
-to walk that directory.
-
-WalkDir does not follow symbolic links found in directories,
-but if root itself is a symbolic link, its target will be walked.</p>
-            
-            <pre><code>func WalkDir(fsys FS, root string, fn WalkDirFunc) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="FormatFileInfo">
-            <h2>FormatFileInfo</h2>
-            <hr />
-            
-            <p>FormatFileInfo returns a formatted version of info for human readability.
-Implementations of [FileInfo] can call this from a String method.
-The output for a file named "hello.go", 100 bytes, mode 0o644, created
-January 1, 1970 at noon is
-
-	-rw-r--r-- 100 1970-01-01 12:00:00 hello.go</p>
-            
-            <pre><code>func FormatFileInfo(info FileInfo) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="FormatDirEntry">
-            <h2>FormatDirEntry</h2>
-            <hr />
-            
-            <p>FormatDirEntry returns a formatted version of dir for human readability.
-Implementations of [DirEntry] can call this from a String method.
-The outputs for a directory named subdir and a file named hello.go are:
-
-	d subdir/
-	- hello.go</p>
-            
-            <pre><code>func FormatDirEntry(dir DirEntry) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="ValidPath">
-            <h2>ValidPath</h2>
-            <hr />
-            
-            <p>ValidPath reports whether the given path name
+            <article class="function" data-name="ValidPath">
+               <h3>
+                  ValidPath 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>ValidPath reports whether the given path name
 is valid for use in a call to Open.
-
 Path names passed to open are UTF-8-encoded,
 unrooted, slash-separated sequences of path elements, like “x/y/z”.
 Path names must not contain an element that is “.” or “..” or the empty string,
 except for the special case that the name "." may be used for the root directory.
 Paths must not start or end with a slash: “/x” and “x/” are invalid.
-
 Note that paths are slash-separated on all systems, even Windows.
 Paths containing other characters such as backslash and colon
 are accepted as valid, but those characters must never be
 interpreted by an [FS] implementation as path element separators.</p>
+               
+               <pre><code>func ValidPath(name string) bool</code></pre>
+            </article>
             
-            <pre><code>func ValidPath(name string) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="errInvalid">
-            <h2>errInvalid</h2>
-            <hr />
+            <article class="function" data-name="WalkDir">
+               <h3>
+                  WalkDir 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>WalkDir walks the file tree rooted at root, calling fn for each file or
+directory in the tree, including root.
+All errors that arise visiting files and directories are filtered by fn:
+see the [fs.WalkDirFunc] documentation for details.
+The files are walked in lexical order, which makes the output deterministic
+but requires WalkDir to read an entire directory into memory before proceeding
+to walk that directory.
+WalkDir does not follow symbolic links found in directories,
+but if root itself is a symbolic link, its target will be walked.</p>
+               
+               <pre><code>func WalkDir(fsys FS, root string, fn WalkDirFunc) error</code></pre>
+            </article>
             
-            <pre><code>func errInvalid() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="errPermission">
-            <h2>errPermission</h2>
-            <hr />
+            <article class="function" data-name="cleanGlobPath">
+               <h3>
+                  cleanGlobPath 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>cleanGlobPath prepares path for glob matching.</p>
+               
+               <pre><code>func cleanGlobPath(path string) string</code></pre>
+            </article>
             
-            <pre><code>func errPermission() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="errExist">
-            <h2>errExist</h2>
-            <hr />
+            <article class="function" data-name="errClosed">
+               <h3>
+                  errClosed 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func errClosed() error</code></pre>
+            </article>
             
-            <pre><code>func errExist() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="errNotExist">
-            <h2>errNotExist</h2>
-            <hr />
+            <article class="function" data-name="errExist">
+               <h3>
+                  errExist 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func errExist() error</code></pre>
+            </article>
             
-            <pre><code>func errNotExist() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="errClosed">
-            <h2>errClosed</h2>
-            <hr />
+            <article class="function" data-name="errInvalid">
+               <h3>
+                  errInvalid 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func errInvalid() error</code></pre>
+            </article>
             
-            <pre><code>func errClosed() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="String">
-            <h2>String</h2>
-            <hr />
+            <article class="function" data-name="errNotExist">
+               <h3>
+                  errNotExist 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func errNotExist() error</code></pre>
+            </article>
             
-            <pre><code>func String() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="IsDir">
-            <h2>IsDir</h2>
-            <hr />
+            <article class="function" data-name="errPermission">
+               <h3>
+                  errPermission 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func errPermission() error</code></pre>
+            </article>
             
-            <p>IsDir reports whether m describes a directory.
-That is, it tests for the [ModeDir] bit being set in m.</p>
+            <article class="function" data-name="fixErr">
+               <h3>
+                  fixErr 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>fixErr shortens any reported names in PathErrors by stripping f.dir.</p>
+               
+               <pre><code>func (f *subFS) fixErr(err error) error</code></pre>
+            </article>
             
-            <pre><code>func IsDir() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="IsRegular">
-            <h2>IsRegular</h2>
-            <hr />
+            <article class="function" data-name="fullName">
+               <h3>
+                  fullName 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>fullName maps name to the fully-qualified name dir/name.</p>
+               
+               <pre><code>func (f *subFS) fullName(op string, name string) (string, error)</code></pre>
+            </article>
             
-            <p>IsRegular reports whether m describes a regular file.
-That is, it tests that no mode type bits are set.</p>
-            
-            <pre><code>func IsRegular() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="Perm">
-            <h2>Perm</h2>
-            <hr />
-            
-            <p>Perm returns the Unix permission bits in m (m & [ModePerm]).</p>
-            
-            <pre><code>func Perm() FileMode</code></pre>
-         </article>
-         
-         <article class="function" data-name="Type">
-            <h2>Type</h2>
-            <hr />
-            
-            <p>Type returns type bits in m (m & [ModeType]).</p>
-            
-            <pre><code>func Type() FileMode</code></pre>
-         </article>
-         
-         <article class="function" data-name="Error">
-            <h2>Error</h2>
-            <hr />
-            
-            <pre><code>func Error() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="Unwrap">
-            <h2>Unwrap</h2>
-            <hr />
-            
-            <pre><code>func Unwrap() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="Timeout">
-            <h2>Timeout</h2>
-            <hr />
-            
-            <p>Timeout reports whether this error represents a timeout.</p>
-            
-            <pre><code>func Timeout() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="Glob">
-            <h2>Glob</h2>
-            <hr />
-            
-            <p>Glob returns the names of all files matching pattern or nil
-if there is no matching file. The syntax of patterns is the same
-as in [path.Match]. The pattern may describe hierarchical names such as
-usr/*/bin/ed.
-
-Glob ignores file system errors such as I/O errors reading directories.
-The only possible returned error is [path.ErrBadPattern], reporting that
-the pattern is malformed.
-
-If fs implements [GlobFS], Glob calls fs.Glob.
-Otherwise, Glob uses [ReadDir] to traverse the directory tree
-and look for matches for the pattern.</p>
-            
-            <pre><code>func Glob(fsys FS, pattern string) (matches []string, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="globWithLimit">
-            <h2>globWithLimit</h2>
-            <hr />
-            
-            <pre><code>func globWithLimit(fsys FS, pattern string, depth int) (matches []string, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="cleanGlobPath">
-            <h2>cleanGlobPath</h2>
-            <hr />
-            
-            <p>cleanGlobPath prepares path for glob matching.</p>
-            
-            <pre><code>func cleanGlobPath(path string) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="glob">
-            <h2>glob</h2>
-            <hr />
-            
-            <p>glob searches for files matching pattern in the directory dir
+            <article class="function" data-name="glob">
+               <h3>
+                  glob 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>glob searches for files matching pattern in the directory dir
 and appends them to matches, returning the updated slice.
 If the directory cannot be opened, glob returns the existing matches.
 New matches are added in lexicographical order.</p>
+               
+               <pre><code>func glob(fs FS, dir string, pattern string, matches []string) (m []string, e error)</code></pre>
+            </article>
             
-            <pre><code>func glob(fs FS, dir string, pattern string, matches []string) (m []string, e error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="hasMeta">
-            <h2>hasMeta</h2>
-            <hr />
+            <article class="function" data-name="globWithLimit">
+               <h3>
+                  globWithLimit 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func globWithLimit(fsys FS, pattern string, depth int) (matches []string, err error)</code></pre>
+            </article>
             
-            <p>hasMeta reports whether path contains any of the magic characters
+            <article class="function" data-name="hasMeta">
+               <h3>
+                  hasMeta 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>hasMeta reports whether path contains any of the magic characters
 recognized by path.Match.</p>
+               
+               <pre><code>func hasMeta(path string) bool</code></pre>
+            </article>
             
-            <pre><code>func hasMeta(path string) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="ReadDir">
-            <h2>ReadDir</h2>
-            <hr />
+            <article class="function" data-name="shorten">
+               <h3>
+                  shorten 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>shorten maps name, which should start with f.dir, back to the suffix after f.dir.</p>
+               
+               <pre><code>func (f *subFS) shorten(name string) (rel string, ok bool)</code></pre>
+            </article>
             
-            <p>ReadDir reads the named directory
-and returns a list of directory entries sorted by filename.
-
-If fs implements [ReadDirFS], ReadDir calls fs.ReadDir.
-Otherwise ReadDir calls fs.Open and uses ReadDir and Close
-on the returned file.</p>
+            <article class="function" data-name="walkDir">
+               <h3>
+                  walkDir 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>walkDir recursively descends path, calling walkDirFn.</p>
+               
+               <pre><code>func walkDir(fsys FS, name string, d DirEntry, walkDirFn WalkDirFunc) error</code></pre>
+            </article>
             
-            <pre><code>func ReadDir(fsys FS, name string) ([]DirEntry, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="IsDir">
-            <h2>IsDir</h2>
-            <hr />
-            
-            <pre><code>func IsDir() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="Type">
-            <h2>Type</h2>
-            <hr />
-            
-            <pre><code>func Type() FileMode</code></pre>
-         </article>
-         
-         <article class="function" data-name="Info">
-            <h2>Info</h2>
-            <hr />
-            
-            <pre><code>func Info() (FileInfo, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Name">
-            <h2>Name</h2>
-            <hr />
-            
-            <pre><code>func Name() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="String">
-            <h2>String</h2>
-            <hr />
-            
-            <pre><code>func String() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="FileInfoToDirEntry">
-            <h2>FileInfoToDirEntry</h2>
-            <hr />
-            
-            <p>FileInfoToDirEntry returns a [DirEntry] that returns information from info.
-If info is nil, FileInfoToDirEntry returns nil.</p>
-            
-            <pre><code>func FileInfoToDirEntry(info FileInfo) DirEntry</code></pre>
-         </article>
-         
-         <article class="function" data-name="ReadFile">
-            <h2>ReadFile</h2>
-            <hr />
-            
-            <p>ReadFile reads the named file from the file system fs and returns its contents.
-A successful call returns a nil error, not [io.EOF].
-(Because ReadFile reads the whole file, the expected EOF
-from the final Read is not treated as an error to be reported.)
-
-If fs implements [ReadFileFS], ReadFile calls fs.ReadFile.
-Otherwise ReadFile calls fs.Open and uses Read and Close
-on the returned [File].</p>
-            
-            <pre><code>func ReadFile(fsys FS, name string) ([]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Stat">
-            <h2>Stat</h2>
-            <hr />
-            
-            <p>Stat returns a [FileInfo] describing the named file from the file system.
-
-If fs implements [StatFS], Stat calls fs.Stat.
-Otherwise, Stat opens the [File] to stat it.</p>
-            
-            <pre><code>func Stat(fsys FS, name string) (FileInfo, error)</code></pre>
-         </article>
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -862,59 +1646,170 @@ Otherwise, Stat opens the [File] to stat it.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

@@ -6,153 +6,2149 @@
          name="viewport"
          content="width=device-width, initial-scale=1.0"
       />
-      <title>Docs - parser_test</title>
+      <title>Docs - parser</title>
       <link
          href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
          rel="stylesheet"
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                 
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>parser_test</code>
-         </h1>
-         <hr />
-           
-         <article class="function" data-name="ExampleParseFile">
-            <h2>ExampleParseFile</h2>
-            <hr />
+         <h1>parser</h1>
+         <div class="section-divider"></div>
+
+         
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"fmt"
+"go/ast"
+"go/build/constraint"
+"go/scanner"
+"go/token"
+"strings"
+"fmt"
+"go/ast"
+"go/token"
+"strings"
+"bytes"
+"errors"
+"go/ast"
+"go/token"
+"io"
+"io/fs"
+"os"
+"path/filepath"
+"strings"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <pre><code>func ExampleParseFile()</code></pre>
-         </article>
+            <article class="global" data-name="AllErrors">
+               <h3>
+                  AllErrors 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const AllErrors = SpuriousErrors</code></pre>
+            </article>
+            
+            <article class="global" data-name="DeclarationErrors">
+               <h3>
+                  DeclarationErrors 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const DeclarationErrors</code></pre>
+            </article>
+            
+            <article class="global" data-name="ImportsOnly">
+               <h3>
+                  ImportsOnly 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const ImportsOnly</code></pre>
+            </article>
+            
+            <article class="global" data-name="PackageClauseOnly">
+               <h3>
+                  PackageClauseOnly 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const PackageClauseOnly Mode = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="ParseComments">
+               <h3>
+                  ParseComments 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const ParseComments</code></pre>
+            </article>
+            
+            <article class="global" data-name="SkipObjectResolution">
+               <h3>
+                  SkipObjectResolution 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const SkipObjectResolution</code></pre>
+            </article>
+            
+            <article class="global" data-name="SpuriousErrors">
+               <h3>
+                  SpuriousErrors 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const SpuriousErrors</code></pre>
+            </article>
+            
+            <article class="global" data-name="Trace">
+               <h3>
+                  Trace 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const Trace</code></pre>
+            </article>
+            
+            <article class="global" data-name="basic">
+               <h3>
+                  basic 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Parsing modes for parseSimpleStmt.</p>
+               
+               <pre><code>const basic = iota</code></pre>
+            </article>
+            
+            <article class="global" data-name="debugResolve">
+               <h3>
+                  debugResolve 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const debugResolve = false</code></pre>
+            </article>
+            
+            <article class="global" data-name="declStart">
+               <h3>
+                  declStart 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var declStart = map[token.Token]bool{...}</code></pre>
+            </article>
+            
+            <article class="global" data-name="exprEnd">
+               <h3>
+                  exprEnd 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var exprEnd = map[token.Token]bool{...}</code></pre>
+            </article>
+            
+            <article class="global" data-name="labelOk">
+               <h3>
+                  labelOk 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Parsing modes for parseSimpleStmt.</p>
+               
+               <pre><code>const labelOk</code></pre>
+            </article>
+            
+            <article class="global" data-name="maxNestLev">
+               <h3>
+                  maxNestLev 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>maxNestLev is the deepest we're willing to recurse during parsing</p>
+               
+               <pre><code>const maxNestLev int = 1e5</code></pre>
+            </article>
+            
+            <article class="global" data-name="maxScopeDepth">
+               <h3>
+                  maxScopeDepth 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const maxScopeDepth int = 1e3</code></pre>
+            </article>
+            
+            <article class="global" data-name="rangeOk">
+               <h3>
+                  rangeOk 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Parsing modes for parseSimpleStmt.</p>
+               
+               <pre><code>const rangeOk</code></pre>
+            </article>
+            
+            <article class="global" data-name="stmtStart">
+               <h3>
+                  stmtStart 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var stmtStart = map[token.Token]bool{...}</code></pre>
+            </article>
+            
+            <article class="global" data-name="unresolved">
+               <h3>
+                  unresolved 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>The unresolved object is a sentinel to mark identifiers that have been added
+to the list of unresolved identifiers. The sentinel is only used for verifying
+internal consistency.</p>
+               
+               <pre><code>var unresolved = *ast.CallExpr</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="types">
+            <h2>Type Aliases</h2>
+            
+            <article class="type" data-name="Mode">
+               <h3>
+                  Mode
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>A Mode value is a set of flags (or 0).
+They control the amount of source code parsed and other optional
+parser functionality.</p>
+               
+               <pre><code>type Mode uint</code></pre>
+            </article>
+            
+            <article class="type" data-name="parseSpecFunction">
+               <h3>
+                  parseSpecFunction
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <pre><code>type parseSpecFunction func(doc *ast.CommentGroup, keyword token.Token, iota int) ast.Spec</code></pre>
+            </article>
+            
+         </section>
+           
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="bailout">
+               <h3>
+                  bailout
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A bailout panic is raised to indicate early termination. pos and msg are
+only populated when bailing out of object resolution.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type bailout struct {
+pos token.Pos
+msg string
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="field">
+               <h3>
+                  field
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type field struct {
+name *ast.Ident
+typ ast.Expr
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="parser">
+               <h3>
+                  parser
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>The parser structure holds the parser's internal state.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type parser struct {
+file *token.File
+errors scanner.ErrorList
+scanner scanner.Scanner
+mode Mode
+trace bool
+indent int
+comments []*ast.CommentGroup
+leadComment *ast.CommentGroup
+lineComment *ast.CommentGroup
+top bool
+goVersion string
+pos token.Pos
+tok token.Token
+lit string
+syncPos token.Pos
+syncCnt int
+exprLev int
+inRhs bool
+imports []*ast.ImportSpec
+nestLev int
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="resolver">
+               <h3>
+                  resolver
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type resolver struct {
+handle *token.File
+declErr func(token.Pos, string)
+pkgScope *ast.Scope
+topScope *ast.Scope
+unresolved []*ast.Ident
+depth int
+labelScope *ast.Scope
+targetStack [][]*ast.Ident
+}</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="functions">
+            <h2>Functions</h2>
+            
+            <article class="function" data-name="ParseDir">
+               <h3>
+                  ParseDir 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>ParseDir calls [ParseFile] for all files with names ending in ".go" in the
+directory specified by path and returns a map of package name -> package
+AST with all the packages found.
+If filter != nil, only the files with [fs.FileInfo] entries passing through
+the filter (and ending in ".go") are considered. The mode bits are passed
+to [ParseFile] unchanged. Position information is recorded in fset, which
+must not be nil.
+If the directory couldn't be read, a nil map and the respective error are
+returned. If a parse error occurred, a non-nil but incomplete map and the
+first error encountered are returned.</p>
+               
+               <pre><code>func ParseDir(fset *token.FileSet, path string, filter func(fs.FileInfo) bool, mode Mode) (pkgs map[string]*ast.Package, first error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="ParseExpr">
+               <h3>
+                  ParseExpr 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>ParseExpr is a convenience function for obtaining the AST of an expression x.
+The position information recorded in the AST is undefined. The filename used
+in error messages is the empty string.
+If syntax errors were found, the result is a partial AST (with [ast.Bad]* nodes
+representing the fragments of erroneous source code). Multiple errors are
+returned via a scanner.ErrorList which is sorted by source position.</p>
+               
+               <pre><code>func ParseExpr(x string) (ast.Expr, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="ParseExprFrom">
+               <h3>
+                  ParseExprFrom 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>ParseExprFrom is a convenience function for parsing an expression.
+The arguments have the same meaning as for [ParseFile], but the source must
+be a valid Go (type or value) expression. Specifically, fset must not
+be nil.
+If the source couldn't be read, the returned AST is nil and the error
+indicates the specific failure. If the source was read but syntax
+errors were found, the result is a partial AST (with [ast.Bad]* nodes
+representing the fragments of erroneous source code). Multiple errors
+are returned via a scanner.ErrorList which is sorted by source position.</p>
+               
+               <pre><code>func ParseExprFrom(fset *token.FileSet, filename string, src any, mode Mode) (expr ast.Expr, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="ParseFile">
+               <h3>
+                  ParseFile 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>ParseFile parses the source code of a single Go source file and returns
+the corresponding [ast.File] node. The source code may be provided via
+the filename of the source file, or via the src parameter.
+If src != nil, ParseFile parses the source from src and the filename is
+only used when recording position information. The type of the argument
+for the src parameter must be string, []byte, or [io.Reader].
+If src == nil, ParseFile parses the file specified by filename.
+The mode parameter controls the amount of source text parsed and
+other optional parser functionality. If the [SkipObjectResolution]
+mode bit is set (recommended), the object resolution phase of
+parsing will be skipped, causing File.Scope, File.Unresolved, and
+all Ident.Obj fields to be nil. Those fields are deprecated; see
+[ast.Object] for details.
+Position information is recorded in the file set fset, which must not be
+nil.
+If the source couldn't be read, the returned AST is nil and the error
+indicates the specific failure. If the source was read but syntax
+errors were found, the result is a partial AST (with [ast.Bad]* nodes
+representing the fragments of erroneous source code). Multiple errors
+are returned via a scanner.ErrorList which is sorted by source position.</p>
+               
+               <pre><code>func ParseFile(fset *token.FileSet, filename string, src any, mode Mode) (f *ast.File, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Visit">
+               <h3>
+                  Visit 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *resolver) Visit(node ast.Node) ast.Visitor</code></pre>
+            </article>
+            
+            <article class="function" data-name="advance">
+               <h3>
+                  advance 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>advance consumes tokens until the current token p.tok
+is in the 'to' set, or token.EOF. For error recovery.</p>
+               
+               <pre><code>func (p *parser) advance(to map[token.Token]bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="assert">
+               <h3>
+                  assert 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func assert(cond bool, msg string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="atComma">
+               <h3>
+                  atComma 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) atComma(context string, follow token.Token) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="closeLabelScope">
+               <h3>
+                  closeLabelScope 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *resolver) closeLabelScope()</code></pre>
+            </article>
+            
+            <article class="function" data-name="closeScope">
+               <h3>
+                  closeScope 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *resolver) closeScope()</code></pre>
+            </article>
+            
+            <article class="function" data-name="consumeComment">
+               <h3>
+                  consumeComment 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Consume a comment and return it and the line on which it ends.</p>
+               
+               <pre><code>func (p *parser) consumeComment() (comment *ast.Comment, endline int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="consumeCommentGroup">
+               <h3>
+                  consumeCommentGroup 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Consume a group of adjacent comments, add it to the parser's
+comments list, and return it together with the line at which
+the last comment in the group ends. A non-comment token or n
+empty lines terminate a comment group.</p>
+               
+               <pre><code>func (p *parser) consumeCommentGroup(n int) (comments *ast.CommentGroup, endline int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="decNestLev">
+               <h3>
+                  decNestLev 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>decNestLev is used to track nesting depth during parsing to prevent stack exhaustion.
+It is used along with incNestLev in a similar fashion to how un and trace are used.</p>
+               
+               <pre><code>func decNestLev(p *parser)</code></pre>
+            </article>
+            
+            <article class="function" data-name="declare">
+               <h3>
+                  declare 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *resolver) declare(decl any, data any, scope *ast.Scope, kind ast.ObjKind, idents ...*ast.Ident)</code></pre>
+            </article>
+            
+            <article class="function" data-name="declareList">
+               <h3>
+                  declareList 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *resolver) declareList(list *ast.FieldList, kind ast.ObjKind)</code></pre>
+            </article>
+            
+            <article class="function" data-name="embeddedElem">
+               <h3>
+                  embeddedElem 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) embeddedElem(x ast.Expr) ast.Expr</code></pre>
+            </article>
+            
+            <article class="function" data-name="embeddedTerm">
+               <h3>
+                  embeddedTerm 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) embeddedTerm() ast.Expr</code></pre>
+            </article>
+            
+            <article class="function" data-name="error">
+               <h3>
+                  error 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) error(pos token.Pos, msg string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="errorExpected">
+               <h3>
+                  errorExpected 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) errorExpected(pos token.Pos, msg string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="expect">
+               <h3>
+                  expect 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) expect(tok token.Token) token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="expect2">
+               <h3>
+                  expect2 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>expect2 is like expect, but it returns an invalid position
+if the expected token is not found.</p>
+               
+               <pre><code>func (p *parser) expect2(tok token.Token) (pos token.Pos)</code></pre>
+            </article>
+            
+            <article class="function" data-name="expectClosing">
+               <h3>
+                  expectClosing 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>expectClosing is like expect but provides a better error message
+for the common case of a missing comma before a newline.</p>
+               
+               <pre><code>func (p *parser) expectClosing(tok token.Token, context string) token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="expectSemi">
+               <h3>
+                  expectSemi 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>expectSemi consumes a semicolon and returns the applicable line comment.</p>
+               
+               <pre><code>func (p *parser) expectSemi() (comment *ast.CommentGroup)</code></pre>
+            </article>
+            
+            <article class="function" data-name="extractName">
+               <h3>
+                  extractName 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>extractName splits the expression x into (name, expr) if syntactically
+x can be written as name expr. The split only happens if expr is a type
+element (per the isTypeElem predicate) or if force is set.
+If x is just a name, the result is (name, nil). If the split succeeds,
+the result is (name, expr). Otherwise the result is (nil, x).
+Examples:
+x           force    name    expr
+------------------------------------
+P*[]int     T/F      P       *[]int
+P*E         T        P       *E
+P*E         F        nil     P*E
+P([]int)    T/F      P       ([]int)
+P(E)        T        P       (E)
+P(E)        F        nil     P(E)
+P*E|F|~G    T/F      P       *E|F|~G
+P*E|F|G     T        P       *E|F|G
+P*E|F|G     F        nil     P*E|F|G</p>
+               
+               <pre><code>func extractName(x ast.Expr, force bool) (*ast.Ident, ast.Expr)</code></pre>
+            </article>
+            
+            <article class="function" data-name="incNestLev">
+               <h3>
+                  incNestLev 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func incNestLev(p *parser) *parser</code></pre>
+            </article>
+            
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) init(file *token.File, src []byte, mode Mode)</code></pre>
+            </article>
+            
+            <article class="function" data-name="isTypeElem">
+               <h3>
+                  isTypeElem 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>isTypeElem reports whether x is a (possibly parenthesized) type element expression.
+The result is false if x could be a type element OR an ordinary (value) expression.</p>
+               
+               <pre><code>func isTypeElem(x ast.Expr) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="isTypeSwitchAssert">
+               <h3>
+                  isTypeSwitchAssert 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func isTypeSwitchAssert(x ast.Expr) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="isTypeSwitchGuard">
+               <h3>
+                  isTypeSwitchGuard 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) isTypeSwitchGuard(s ast.Stmt) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="makeExpr">
+               <h3>
+                  makeExpr 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) makeExpr(s ast.Stmt, want string) ast.Expr</code></pre>
+            </article>
+            
+            <article class="function" data-name="next">
+               <h3>
+                  next 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Advance to the next non-comment token. In the process, collect
+any comment groups encountered, and remember the last lead and
+line comments.
+A lead comment is a comment group that starts and ends in a
+line without any other tokens and that is followed by a non-comment
+token on the line immediately after the comment group.
+A line comment is a comment group that follows a non-comment
+token on the same line, and that has no tokens after it on the line
+where it ends.
+Lead and line comments may be considered documentation that is
+stored in the AST.</p>
+               
+               <pre><code>func (p *parser) next()</code></pre>
+            </article>
+            
+            <article class="function" data-name="next0">
+               <h3>
+                  next0 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Advance to the next token.</p>
+               
+               <pre><code>func (p *parser) next0()</code></pre>
+            </article>
+            
+            <article class="function" data-name="openLabelScope">
+               <h3>
+                  openLabelScope 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *resolver) openLabelScope()</code></pre>
+            </article>
+            
+            <article class="function" data-name="openScope">
+               <h3>
+                  openScope 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *resolver) openScope(pos token.Pos)</code></pre>
+            </article>
+            
+            <article class="function" data-name="packIndexExpr">
+               <h3>
+                  packIndexExpr 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>packIndexExpr returns an IndexExpr x[expr0] or IndexListExpr x[expr0, ...].</p>
+               
+               <pre><code>func packIndexExpr(x ast.Expr, lbrack token.Pos, exprs []ast.Expr, rbrack token.Pos) ast.Expr</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseArrayFieldOrTypeInstance">
+               <h3>
+                  parseArrayFieldOrTypeInstance 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseArrayFieldOrTypeInstance(x *ast.Ident) (*ast.Ident, ast.Expr)</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseArrayType">
+               <h3>
+                  parseArrayType 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>"[" has already been consumed, and lbrack is its position.
+If len != nil it is the already consumed array length.</p>
+               
+               <pre><code>func (p *parser) parseArrayType(lbrack token.Pos, len ast.Expr) *ast.ArrayType</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseBinaryExpr">
+               <h3>
+                  parseBinaryExpr 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>parseBinaryExpr parses a (possibly) binary expression.
+If x is non-nil, it is used as the left operand.
+TODO(rfindley): parseBinaryExpr has become overloaded. Consider refactoring.</p>
+               
+               <pre><code>func (p *parser) parseBinaryExpr(x ast.Expr, prec1 int) ast.Expr</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseBlockStmt">
+               <h3>
+                  parseBlockStmt 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseBlockStmt() *ast.BlockStmt</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseBody">
+               <h3>
+                  parseBody 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseBody() *ast.BlockStmt</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseBranchStmt">
+               <h3>
+                  parseBranchStmt 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseBranchStmt(tok token.Token) *ast.BranchStmt</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseCallExpr">
+               <h3>
+                  parseCallExpr 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseCallExpr(callType string) *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseCallOrConversion">
+               <h3>
+                  parseCallOrConversion 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseCallOrConversion(fun ast.Expr) *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseCaseClause">
+               <h3>
+                  parseCaseClause 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseCaseClause() *ast.CaseClause</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseChanType">
+               <h3>
+                  parseChanType 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseChanType() *ast.ChanType</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseCommClause">
+               <h3>
+                  parseCommClause 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseCommClause() *ast.CommClause</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseDecl">
+               <h3>
+                  parseDecl 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseDecl(sync map[token.Token]bool) ast.Decl</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseDeferStmt">
+               <h3>
+                  parseDeferStmt 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseDeferStmt() ast.Stmt</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseDotsType">
+               <h3>
+                  parseDotsType 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseDotsType() *ast.Ellipsis</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseElement">
+               <h3>
+                  parseElement 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseElement() ast.Expr</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseElementList">
+               <h3>
+                  parseElementList 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseElementList() (list []ast.Expr)</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseExpr">
+               <h3>
+                  parseExpr 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>The result may be a type or even a raw type ([...]int).</p>
+               
+               <pre><code>func (p *parser) parseExpr() ast.Expr</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseExprList">
+               <h3>
+                  parseExprList 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>If lhs is set, result list elements which are identifiers are not resolved.</p>
+               
+               <pre><code>func (p *parser) parseExprList() (list []ast.Expr)</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseFieldDecl">
+               <h3>
+                  parseFieldDecl 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseFieldDecl() *ast.Field</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseFile">
+               <h3>
+                  parseFile 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseFile() *ast.File</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseForStmt">
+               <h3>
+                  parseForStmt 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseForStmt() ast.Stmt</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseFuncDecl">
+               <h3>
+                  parseFuncDecl 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseFuncDecl() *ast.FuncDecl</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseFuncType">
+               <h3>
+                  parseFuncType 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseFuncType() *ast.FuncType</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseFuncTypeOrLit">
+               <h3>
+                  parseFuncTypeOrLit 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseFuncTypeOrLit() ast.Expr</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseGenDecl">
+               <h3>
+                  parseGenDecl 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseGenDecl(keyword token.Token, f parseSpecFunction) *ast.GenDecl</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseGenericType">
+               <h3>
+                  parseGenericType 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseGenericType(spec *ast.TypeSpec, openPos token.Pos, name0 *ast.Ident, typ0 ast.Expr)</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseGoStmt">
+               <h3>
+                  parseGoStmt 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseGoStmt() ast.Stmt</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseIdent">
+               <h3>
+                  parseIdent 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseIdent() *ast.Ident</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseIdentList">
+               <h3>
+                  parseIdentList 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseIdentList() (list []*ast.Ident)</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseIfHeader">
+               <h3>
+                  parseIfHeader 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>parseIfHeader is an adjusted version of parser.header
+in cmd/compile/internal/syntax/parser.go, which has
+been tuned for better error handling.</p>
+               
+               <pre><code>func (p *parser) parseIfHeader() (init ast.Stmt, cond ast.Expr)</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseIfStmt">
+               <h3>
+                  parseIfStmt 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseIfStmt() *ast.IfStmt</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseImportSpec">
+               <h3>
+                  parseImportSpec 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseImportSpec(doc *ast.CommentGroup, _ token.Token, _ int) ast.Spec</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseIndexOrSliceOrInstance">
+               <h3>
+                  parseIndexOrSliceOrInstance 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseIndexOrSliceOrInstance(x ast.Expr) ast.Expr</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseInterfaceType">
+               <h3>
+                  parseInterfaceType 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseInterfaceType() *ast.InterfaceType</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseList">
+               <h3>
+                  parseList 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseList(inRhs bool) []ast.Expr</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseLiteralValue">
+               <h3>
+                  parseLiteralValue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseLiteralValue(typ ast.Expr) ast.Expr</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseMapType">
+               <h3>
+                  parseMapType 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseMapType() *ast.MapType</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseMethodSpec">
+               <h3>
+                  parseMethodSpec 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseMethodSpec() *ast.Field</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseOperand">
+               <h3>
+                  parseOperand 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>parseOperand may return an expression or a raw type (incl. array
+types of the form [...]T). Callers must verify the result.</p>
+               
+               <pre><code>func (p *parser) parseOperand() ast.Expr</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseParamDecl">
+               <h3>
+                  parseParamDecl 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseParamDecl(name *ast.Ident, typeSetsOK bool) (f field)</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseParameterList">
+               <h3>
+                  parseParameterList 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseParameterList(name0 *ast.Ident, typ0 ast.Expr, closing token.Token) (params []*ast.Field)</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseParameters">
+               <h3>
+                  parseParameters 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseParameters(acceptTParams bool) (tparams *ast.FieldList, params *ast.FieldList)</code></pre>
+            </article>
+            
+            <article class="function" data-name="parsePointerType">
+               <h3>
+                  parsePointerType 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parsePointerType() *ast.StarExpr</code></pre>
+            </article>
+            
+            <article class="function" data-name="parsePrimaryExpr">
+               <h3>
+                  parsePrimaryExpr 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parsePrimaryExpr(x ast.Expr) ast.Expr</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseQualifiedIdent">
+               <h3>
+                  parseQualifiedIdent 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseQualifiedIdent(ident *ast.Ident) ast.Expr</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseResult">
+               <h3>
+                  parseResult 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseResult() *ast.FieldList</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseReturnStmt">
+               <h3>
+                  parseReturnStmt 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseReturnStmt() *ast.ReturnStmt</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseRhs">
+               <h3>
+                  parseRhs 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseRhs() ast.Expr</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseSelectStmt">
+               <h3>
+                  parseSelectStmt 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseSelectStmt() *ast.SelectStmt</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseSelector">
+               <h3>
+                  parseSelector 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseSelector(x ast.Expr) ast.Expr</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseSimpleStmt">
+               <h3>
+                  parseSimpleStmt 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>parseSimpleStmt returns true as 2nd result if it parsed the assignment
+of a range clause (with mode == rangeOk). The returned statement is an
+assignment with a right-hand side that is a single unary expression of
+the form "range x". No guarantees are given for the left-hand side.</p>
+               
+               <pre><code>func (p *parser) parseSimpleStmt(mode int) (ast.Stmt, bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseStmt">
+               <h3>
+                  parseStmt 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseStmt() (s ast.Stmt)</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseStmtList">
+               <h3>
+                  parseStmtList 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseStmtList() (list []ast.Stmt)</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseStructType">
+               <h3>
+                  parseStructType 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseStructType() *ast.StructType</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseSwitchStmt">
+               <h3>
+                  parseSwitchStmt 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseSwitchStmt() ast.Stmt</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseType">
+               <h3>
+                  parseType 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseType() ast.Expr</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseTypeAssertion">
+               <h3>
+                  parseTypeAssertion 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseTypeAssertion(x ast.Expr) ast.Expr</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseTypeInstance">
+               <h3>
+                  parseTypeInstance 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseTypeInstance(typ ast.Expr) ast.Expr</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseTypeName">
+               <h3>
+                  parseTypeName 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>If the result is an identifier, it is not resolved.</p>
+               
+               <pre><code>func (p *parser) parseTypeName(ident *ast.Ident) ast.Expr</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseTypeSpec">
+               <h3>
+                  parseTypeSpec 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseTypeSpec(doc *ast.CommentGroup, _ token.Token, _ int) ast.Spec</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseUnaryExpr">
+               <h3>
+                  parseUnaryExpr 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseUnaryExpr() ast.Expr</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseValue">
+               <h3>
+                  parseValue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseValue() ast.Expr</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseValueSpec">
+               <h3>
+                  parseValueSpec 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) parseValueSpec(doc *ast.CommentGroup, keyword token.Token, iota int) ast.Spec</code></pre>
+            </article>
+            
+            <article class="function" data-name="printTrace">
+               <h3>
+                  printTrace 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) printTrace(a ...any)</code></pre>
+            </article>
+            
+            <article class="function" data-name="readSource">
+               <h3>
+                  readSource 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>If src != nil, readSource converts src to a []byte if possible;
+otherwise it returns an error. If src == nil, readSource returns
+the result of reading the file specified by filename.</p>
+               
+               <pre><code>func readSource(filename string, src any) ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="resolve">
+               <h3>
+                  resolve 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>If x is an identifier, resolve attempts to resolve x by looking up
+the object it denotes. If no object is found and collectUnresolved is
+set, x is marked as unresolved and collected in the list of unresolved
+identifiers.</p>
+               
+               <pre><code>func (r *resolver) resolve(ident *ast.Ident, collectUnresolved bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="resolveFile">
+               <h3>
+                  resolveFile 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>resolveFile walks the given file to resolve identifiers within the file
+scope, updating ast.Ident.Obj fields with declaration information.
+If declErr is non-nil, it is used to report declaration errors during
+resolution. tok is used to format position in error messages.</p>
+               
+               <pre><code>func resolveFile(file *ast.File, handle *token.File, declErr func(token.Pos, string))</code></pre>
+            </article>
+            
+            <article class="function" data-name="resolveList">
+               <h3>
+                  resolveList 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *resolver) resolveList(list *ast.FieldList)</code></pre>
+            </article>
+            
+            <article class="function" data-name="safePos">
+               <h3>
+                  safePos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>safePos returns a valid file position for a given position: If pos
+is valid to begin with, safePos returns pos. If pos is out-of-range,
+safePos returns the EOF position.
+This is hack to work around "artificial" end positions in the AST which
+are computed by adding 1 to (presumably valid) token positions. If the
+token positions are invalid due to parse errors, the resulting end position
+may be past the file's EOF position, which would lead to panics if used
+later on.</p>
+               
+               <pre><code>func (p *parser) safePos(pos token.Pos) (res token.Pos)</code></pre>
+            </article>
+            
+            <article class="function" data-name="shortVarDecl">
+               <h3>
+                  shortVarDecl 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *resolver) shortVarDecl(decl *ast.AssignStmt)</code></pre>
+            </article>
+            
+            <article class="function" data-name="sprintf">
+               <h3>
+                  sprintf 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *resolver) sprintf(format string, args ...any) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="tokPrec">
+               <h3>
+                  tokPrec 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) tokPrec() (token.Token, int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="trace">
+               <h3>
+                  trace 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *resolver) trace(format string, args ...any)</code></pre>
+            </article>
+            
+            <article class="function" data-name="trace">
+               <h3>
+                  trace 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func trace(p *parser, msg string) *parser</code></pre>
+            </article>
+            
+            <article class="function" data-name="tryIdentOrType">
+               <h3>
+                  tryIdentOrType 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *parser) tryIdentOrType() ast.Expr</code></pre>
+            </article>
+            
+            <article class="function" data-name="un">
+               <h3>
+                  un 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Usage pattern: defer un(trace(p, "..."))</p>
+               
+               <pre><code>func un(p *parser)</code></pre>
+            </article>
+            
+            <article class="function" data-name="walkBody">
+               <h3>
+                  walkBody 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *resolver) walkBody(body *ast.BlockStmt)</code></pre>
+            </article>
+            
+            <article class="function" data-name="walkExprs">
+               <h3>
+                  walkExprs 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *resolver) walkExprs(list []ast.Expr)</code></pre>
+            </article>
+            
+            <article class="function" data-name="walkFieldList">
+               <h3>
+                  walkFieldList 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *resolver) walkFieldList(list *ast.FieldList, kind ast.ObjKind)</code></pre>
+            </article>
+            
+            <article class="function" data-name="walkFuncType">
+               <h3>
+                  walkFuncType 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *resolver) walkFuncType(typ *ast.FuncType)</code></pre>
+            </article>
+            
+            <article class="function" data-name="walkLHS">
+               <h3>
+                  walkLHS 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *resolver) walkLHS(list []ast.Expr)</code></pre>
+            </article>
+            
+            <article class="function" data-name="walkRecv">
+               <h3>
+                  walkRecv 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *resolver) walkRecv(recv *ast.FieldList)</code></pre>
+            </article>
+            
+            <article class="function" data-name="walkStmts">
+               <h3>
+                  walkStmts 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *resolver) walkStmts(list []ast.Stmt)</code></pre>
+            </article>
+            
+            <article class="function" data-name="walkTParams">
+               <h3>
+                  walkTParams 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>walkTParams is like walkFieldList, but declares type parameters eagerly so
+that they may be resolved in the constraint expressions held in the field
+Type.</p>
+               
+               <pre><code>func (r *resolver) walkTParams(list *ast.FieldList)</code></pre>
+            </article>
+            
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -160,59 +2156,170 @@
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

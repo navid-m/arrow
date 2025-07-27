@@ -13,416 +13,870 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                 
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
-      <main>
-         <h1>
-            Package
-            <code>printf</code>
-         </h1>
-         <hr />
-         
-         <article class="global" data-name="doc">
-            <h2>doc</h2>
-            <hr />
-            
-            <pre><code>doc string</code></pre>
-         </article>
-         
-         <article class="global" data-name="Analyzer">
-            <h2>Analyzer</h2>
-            <hr />
-            
-            <pre><code>Analyzer</code></pre>
-         </article>
-         
-         <article class="global" data-name="KindNone">
-            <h2>KindNone</h2>
-            <hr />
-            
-            <pre><code>KindNone Kind</code></pre>
-         </article>
-         
-         <article class="global" data-name="KindPrint">
-            <h2>KindPrint</h2>
-            <hr />
-            
-            <pre><code>KindPrint</code></pre>
-         </article>
-         
-         <article class="global" data-name="KindPrintf">
-            <h2>KindPrintf</h2>
-            <hr />
-            
-            <pre><code>KindPrintf</code></pre>
-         </article>
-         
-         <article class="global" data-name="KindErrorf">
-            <h2>KindErrorf</h2>
-            <hr />
-            
-            <pre><code>KindErrorf</code></pre>
-         </article>
-         
-         <article class="global" data-name="isPrint">
-            <h2>isPrint</h2>
-            <hr />
-            
-            <p>isPrint records the print functions.
-If a key ends in 'f' then it is assumed to be a formatted print.
 
+      <main>
+         <h1>printf</h1>
+         <div class="section-divider"></div>
+
+         
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"bytes"
+_ "embed"
+"fmt"
+"go/ast"
+"go/constant"
+"go/token"
+"go/types"
+"reflect"
+"regexp"
+"sort"
+"strconv"
+"strings"
+"unicode/utf8"
+"golang.org/x/tools/go/analysis"
+"golang.org/x/tools/go/analysis/passes/inspect"
+"golang.org/x/tools/go/analysis/passes/internal/analysisutil"
+"golang.org/x/tools/go/ast/inspector"
+"golang.org/x/tools/go/types/typeutil"
+"golang.org/x/tools/internal/typeparams"
+"golang.org/x/tools/internal/versions"
+"fmt"
+"go/ast"
+"go/types"
+"golang.org/x/tools/go/analysis"
+"golang.org/x/tools/internal/typeparams"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
+            
+            <article class="global" data-name="Analyzer">
+               <h3>
+                  Analyzer 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var Analyzer = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="KindErrorf">
+               <h3>
+                  KindErrorf 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const KindErrorf</code></pre>
+            </article>
+            
+            <article class="global" data-name="KindNone">
+               <h3>
+                  KindNone 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const KindNone Kind = iota</code></pre>
+            </article>
+            
+            <article class="global" data-name="KindPrint">
+               <h3>
+                  KindPrint 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const KindPrint</code></pre>
+            </article>
+            
+            <article class="global" data-name="KindPrintf">
+               <h3>
+                  KindPrintf 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const KindPrintf</code></pre>
+            </article>
+            
+            <article class="global" data-name="allFlags">
+               <h3>
+                  allFlags 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Common flag sets for printf verbs.</p>
+               
+               <pre><code>const allFlags = " -+.0#"</code></pre>
+            </article>
+            
+            <article class="global" data-name="anyType">
+               <h3>
+                  anyType 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const anyType printfArgType = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="argBool">
+               <h3>
+                  argBool 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const argBool printfArgType = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="argComplex">
+               <h3>
+                  argComplex 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const argComplex</code></pre>
+            </article>
+            
+            <article class="global" data-name="argError">
+               <h3>
+                  argError 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const argError</code></pre>
+            </article>
+            
+            <article class="global" data-name="argFloat">
+               <h3>
+                  argFloat 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const argFloat</code></pre>
+            </article>
+            
+            <article class="global" data-name="argInt">
+               <h3>
+                  argInt 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const argInt</code></pre>
+            </article>
+            
+            <article class="global" data-name="argPointer">
+               <h3>
+                  argPointer 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const argPointer</code></pre>
+            </article>
+            
+            <article class="global" data-name="argRune">
+               <h3>
+                  argRune 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const argRune</code></pre>
+            </article>
+            
+            <article class="global" data-name="argString">
+               <h3>
+                  argString 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const argString</code></pre>
+            </article>
+            
+            <article class="global" data-name="doc">
+               <h3>
+                  doc 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>go:embed doc.go</p>
+               
+               <pre><code>var doc string</code></pre>
+            </article>
+            
+            <article class="global" data-name="errorType">
+               <h3>
+                  errorType 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var errorType = *ast.TypeAssertExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="flagsRE">
+               <h3>
+                  flagsRE 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const flagsRE = `[+\-#]*`</code></pre>
+            </article>
+            
+            <article class="global" data-name="indexOptRE">
+               <h3>
+                  indexOptRE 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const indexOptRE = `(\[[0-9]+\])?`</code></pre>
+            </article>
+            
+            <article class="global" data-name="isPrint">
+               <h3>
+                  isPrint 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>isPrint records the print functions.
+If a key ends in 'f' then it is assumed to be a formatted print.
 Keys are either values returned by (*types.Func).FullName,
 or case-insensitive identifiers such as "errorf".
-
 The -funcs flag adds to this set.
-
 The set below includes facts for many important standard library
 functions, even though the analysis is capable of deducing that, for
 example, fmt.Printf forwards to fmt.Fprintf. We avoid relying on the
 driver applying analyzers to standard packages because "go vet" does
 not do so with gccgo, and nor do some other build systems.</p>
+               
+               <pre><code>var isPrint = stringSet{...}</code></pre>
+            </article>
             
-            <pre><code>isPrint</code></pre>
-         </article>
-         
-         <article class="global" data-name="argBool">
-            <h2>argBool</h2>
-            <hr />
+            <article class="global" data-name="noFlag">
+               <h3>
+                  noFlag 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Common flag sets for printf verbs.</p>
+               
+               <pre><code>const noFlag = ""</code></pre>
+            </article>
             
-            <pre><code>argBool printfArgType</code></pre>
-         </article>
-         
-         <article class="global" data-name="argInt">
-            <h2>argInt</h2>
-            <hr />
+            <article class="global" data-name="numFlag">
+               <h3>
+                  numFlag 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Common flag sets for printf verbs.</p>
+               
+               <pre><code>const numFlag = " -+.0"</code></pre>
+            </article>
             
-            <pre><code>argInt</code></pre>
-         </article>
-         
-         <article class="global" data-name="argRune">
-            <h2>argRune</h2>
-            <hr />
+            <article class="global" data-name="numOptRE">
+               <h3>
+                  numOptRE 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const numOptRE = *ast.BinaryExpr</code></pre>
+            </article>
             
-            <pre><code>argRune</code></pre>
-         </article>
-         
-         <article class="global" data-name="argString">
-            <h2>argString</h2>
-            <hr />
-            
-            <pre><code>argString</code></pre>
-         </article>
-         
-         <article class="global" data-name="argFloat">
-            <h2>argFloat</h2>
-            <hr />
-            
-            <pre><code>argFloat</code></pre>
-         </article>
-         
-         <article class="global" data-name="argComplex">
-            <h2>argComplex</h2>
-            <hr />
-            
-            <pre><code>argComplex</code></pre>
-         </article>
-         
-         <article class="global" data-name="argPointer">
-            <h2>argPointer</h2>
-            <hr />
-            
-            <pre><code>argPointer</code></pre>
-         </article>
-         
-         <article class="global" data-name="argError">
-            <h2>argError</h2>
-            <hr />
-            
-            <pre><code>argError</code></pre>
-         </article>
-         
-         <article class="global" data-name="anyType">
-            <h2>anyType</h2>
-            <hr />
-            
-            <pre><code>anyType printfArgType</code></pre>
-         </article>
-         
-         <article class="global" data-name="noFlag">
-            <h2>noFlag</h2>
-            <hr />
-            
-            <p>Common flag sets for printf verbs.</p>
-            
-            <pre><code>noFlag</code></pre>
-         </article>
-         
-         <article class="global" data-name="numFlag">
-            <h2>numFlag</h2>
-            <hr />
-            
-            <p>Common flag sets for printf verbs.</p>
-            
-            <pre><code>numFlag</code></pre>
-         </article>
-         
-         <article class="global" data-name="sharpNumFlag">
-            <h2>sharpNumFlag</h2>
-            <hr />
-            
-            <p>Common flag sets for printf verbs.</p>
-            
-            <pre><code>sharpNumFlag</code></pre>
-         </article>
-         
-         <article class="global" data-name="allFlags">
-            <h2>allFlags</h2>
-            <hr />
-            
-            <p>Common flag sets for printf verbs.</p>
-            
-            <pre><code>allFlags</code></pre>
-         </article>
-         
-         <article class="global" data-name="printVerbs">
-            <h2>printVerbs</h2>
-            <hr />
-            
-            <p>printVerbs identifies which flags are known to printf for each verb.</p>
-            
-            <pre><code>printVerbs</code></pre>
-         </article>
-         
-         <article class="global" data-name="printFormatRE">
-            <h2>printFormatRE</h2>
-            <hr />
-            
-            <p>printFormatRE is the regexp we match and report as a possible format string
+            <article class="global" data-name="printFormatRE">
+               <h3>
+                  printFormatRE 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>printFormatRE is the regexp we match and report as a possible format string
 in the first argument to unformatted prints like fmt.Print.
 We exclude the space flag, so that printing a string like "x % y" is not reported as a format.</p>
+               
+               <pre><code>var printFormatRE = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre><code>printFormatRE</code></pre>
-         </article>
-         
-         <article class="global" data-name="flagsRE">
-            <h2>flagsRE</h2>
-            <hr />
+            <article class="global" data-name="printVerbs">
+               <h3>
+                  printVerbs 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>printVerbs identifies which flags are known to printf for each verb.</p>
+               
+               <pre><code>var printVerbs = []printVerb{...}</code></pre>
+            </article>
             
-            <pre><code>flagsRE</code></pre>
-         </article>
-         
-         <article class="global" data-name="indexOptRE">
-            <h2>indexOptRE</h2>
-            <hr />
+            <article class="global" data-name="sharpNumFlag">
+               <h3>
+                  sharpNumFlag 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Common flag sets for printf verbs.</p>
+               
+               <pre><code>const sharpNumFlag = " -+.0#"</code></pre>
+            </article>
             
-            <pre><code>indexOptRE</code></pre>
-         </article>
-         
-         <article class="global" data-name="numOptRE">
-            <h2>numOptRE</h2>
-            <hr />
-            
-            <pre><code>numOptRE</code></pre>
-         </article>
-         
-         <article class="global" data-name="verbRE">
-            <h2>verbRE</h2>
-            <hr />
-            
-            <pre><code>verbRE</code></pre>
-         </article>
-         
-         <article class="global" data-name="suppressNonconstants">
-            <h2>suppressNonconstants</h2>
-            <hr />
-            
-            <p>suppressNonconstants suppresses reporting printf calls with
+            <article class="global" data-name="suppressNonconstants">
+               <h3>
+                  suppressNonconstants 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>suppressNonconstants suppresses reporting printf calls with
 non-constant formatting strings (proposal #60529) when true.
-
 This variable is to allow for staging the transition to newer
 versions of x/tools by vendoring.
-
 Remove this after the 1.24 release.</p>
+               
+               <pre><code>var suppressNonconstants bool</code></pre>
+            </article>
             
-            <pre><code>suppressNonconstants bool</code></pre>
-         </article>
-         
-         <article class="global" data-name="errorType">
-            <h2>errorType</h2>
-            <hr />
+            <article class="global" data-name="verbRE">
+               <h3>
+                  verbRE 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const verbRE = `[bcdefgopqstvxEFGTUX]`</code></pre>
+            </article>
             
-            <pre><code>errorType</code></pre>
-         </article>
+         </section>
           
-         <article class="struct" data-name="Result">
-            <h2>type Result struct</h2>
-            <hr />
+         <section id="types">
+            <h2>Type Aliases</h2>
             
-            <p>Result is the printf analyzer's result type. Clients may query the result
+            <article class="type" data-name="Kind">
+               <h3>
+                  Kind
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>Kind is a kind of fmt function behavior.</p>
+               
+               <pre><code>type Kind int</code></pre>
+            </article>
+            
+            <article class="type" data-name="printfArgType">
+               <h3>
+                  printfArgType
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>printfArgType encodes the types of expressions a printf verb accepts. It is a bitmask.</p>
+               
+               <pre><code>type printfArgType int</code></pre>
+            </article>
+            
+            <article class="type" data-name="stringSet">
+               <h3>
+                  stringSet
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>stringSet is a set-of-nonempty-strings-valued flag.
+Note: elements without a '.' get lower-cased.</p>
+               
+               <pre><code>type stringSet map[string]bool</code></pre>
+            </article>
+            
+         </section>
+           
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="Result">
+               <h3>
+                  Result
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Result is the printf analyzer's result type. Clients may query the result
 to learn whether a function behaves like fmt.Print or fmt.Printf.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Result struct {
+funcs map[*types.Func]Kind
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">funcs *ast.MapType</code></pre>
-         </article>
-         
-         <article class="struct" data-name="isWrapper">
-            <h2>type isWrapper struct</h2>
-            <hr />
+            <article class="struct" data-name="argMatcher">
+               <h3>
+                  argMatcher
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>argMatcher recursively matches types against the printfArgType t.
+To short-circuit recursion, it keeps track of types that have already been
+matched (or are in the process of being matched) via the seen map. Recursion
+arises from the compound types {map,chan,slice} which may be printed with %d
+etc. if that is appropriate for their element types, as well as from type
+parameters, which are expanded to the constituents of their type set.
+The reason field may be set to report the cause of the mismatch.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type argMatcher struct {
+t printfArgType
+seen map[types.Type]bool
+reason string
+}</code></pre>
+            </article>
             
-            <p>isWrapper is a fact indicating that a function is a print or printf wrapper.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Kind Kind</code></pre>
-         </article>
-         
-         <article class="struct" data-name="printfWrapper">
-            <h2>type printfWrapper struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">obj *types.Func
-fdecl *ast.FuncDecl
-format *types.Var
-args *types.Var
-callers []printfCaller
-failed bool</code></pre>
-         </article>
-         
-         <article class="struct" data-name="printfCaller">
-            <h2>type printfCaller struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">w *printfWrapper
-call *ast.CallExpr</code></pre>
-         </article>
-         
-         <article class="struct" data-name="formatState">
-            <h2>type formatState struct</h2>
-            <hr />
-            
-            <p>formatState holds the parsed representation of a printf directive such as "%3.*[4]d".
+            <article class="struct" data-name="formatState">
+               <h3>
+                  formatState
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>formatState holds the parsed representation of a printf directive such as "%3.*[4]d".
 It is constructed by parsePrintfVerb.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">verb rune
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type formatState struct {
+verb rune
 format string
 name string
 flags []byte
@@ -433,374 +887,519 @@ call *ast.CallExpr
 argNum int
 hasIndex bool
 indexPending bool
-nbytes int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="printVerb">
-            <h2>type printVerb struct</h2>
-            <hr />
+nbytes int
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">verb rune
+            <article class="struct" data-name="isWrapper">
+               <h3>
+                  isWrapper
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>isWrapper is a fact indicating that a function is a print or printf wrapper.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type isWrapper struct {
+Kind Kind
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="printVerb">
+               <h3>
+                  printVerb
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type printVerb struct {
+verb rune
 flags string
-typ printfArgType</code></pre>
-         </article>
-         
-         <article class="struct" data-name="argMatcher">
-            <h2>type argMatcher struct</h2>
-            <hr />
+typ printfArgType
+}</code></pre>
+            </article>
             
-            <p>argMatcher recursively matches types against the printfArgType t.
-
-To short-circuit recursion, it keeps track of types that have already been
-matched (or are in the process of being matched) via the seen map. Recursion
-arises from the compound types {map,chan,slice} which may be printed with %d
-etc. if that is appropriate for their element types, as well as from type
-parameters, which are expanded to the constituents of their type set.
-
-The reason field may be set to report the cause of the mismatch.</p>
+            <article class="struct" data-name="printfCaller">
+               <h3>
+                  printfCaller
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type printfCaller struct {
+w *printfWrapper
+call *ast.CallExpr
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">t printfArgType
-seen *ast.MapType
-reason string</code></pre>
-         </article>
+            <article class="struct" data-name="printfWrapper">
+               <h3>
+                  printfWrapper
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type printfWrapper struct {
+obj *types.Func
+fdecl *ast.FuncDecl
+format *types.Var
+args *types.Var
+callers []printfCaller
+failed bool
+}</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="function" data-name="init">
-            <h2>init</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <pre><code>func init()</code></pre>
-         </article>
-         
-         <article class="function" data-name="String">
-            <h2>String</h2>
-            <hr />
+            <article class="function" data-name="AFact">
+               <h3>
+                  AFact 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (f *isWrapper) AFact()</code></pre>
+            </article>
             
-            <pre><code>func String() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="Kind">
-            <h2>Kind</h2>
-            <hr />
+            <article class="function" data-name="Kind">
+               <h3>
+                  Kind 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Kind reports whether fn behaves like fmt.Print or fmt.Printf.</p>
+               
+               <pre><code>func (r *Result) Kind(fn *types.Func) Kind</code></pre>
+            </article>
             
-            <p>Kind reports whether fn behaves like fmt.Print or fmt.Printf.</p>
+            <article class="function" data-name="Set">
+               <h3>
+                  Set 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (ss stringSet) Set(flag string) error</code></pre>
+            </article>
             
-            <pre><code>func Kind(fn *types.Func) Kind</code></pre>
-         </article>
-         
-         <article class="function" data-name="AFact">
-            <h2>AFact</h2>
-            <hr />
+            <article class="function" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (ss stringSet) String() string</code></pre>
+            </article>
             
-            <pre><code>func AFact()</code></pre>
-         </article>
-         
-         <article class="function" data-name="String">
-            <h2>String</h2>
-            <hr />
+            <article class="function" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (kind Kind) String() string</code></pre>
+            </article>
             
-            <pre><code>func String() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="run">
-            <h2>run</h2>
-            <hr />
+            <article class="function" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (f *isWrapper) String() string</code></pre>
+            </article>
             
-            <pre><code>func run(pass *analysis.Pass) (any, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="maybePrintfWrapper">
-            <h2>maybePrintfWrapper</h2>
-            <hr />
+            <article class="function" data-name="argCanBeChecked">
+               <h3>
+                  argCanBeChecked 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>argCanBeChecked reports whether the specified argument is statically present;
+it may be beyond the list of arguments or in a terminal slice... argument, which
+means we can't see it.</p>
+               
+               <pre><code>func argCanBeChecked(pass *analysis.Pass, call *ast.CallExpr, formatArg int, state *formatState) bool</code></pre>
+            </article>
             
-            <p>maybePrintfWrapper decides whether decl (a declared function) may be a wrapper
+            <article class="function" data-name="checkCalls">
+               <h3>
+                  checkCalls 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>checkCalls triggers the print-specific checks for calls that invoke a print
+function.</p>
+               
+               <pre><code>func checkCalls(pass *analysis.Pass)</code></pre>
+            </article>
+            
+            <article class="function" data-name="checkPrint">
+               <h3>
+                  checkPrint 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>checkPrint checks a call to an unformatted print routine such as Println.</p>
+               
+               <pre><code>func checkPrint(pass *analysis.Pass, call *ast.CallExpr, fn *types.Func)</code></pre>
+            </article>
+            
+            <article class="function" data-name="checkPrintf">
+               <h3>
+                  checkPrintf 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>checkPrintf checks a call to a formatted print routine such as Printf.</p>
+               
+               <pre><code>func checkPrintf(pass *analysis.Pass, fileVersion string, kind Kind, call *ast.CallExpr, fn *types.Func)</code></pre>
+            </article>
+            
+            <article class="function" data-name="checkPrintfFwd">
+               <h3>
+                  checkPrintfFwd 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>checkPrintfFwd checks that a printf-forwarding wrapper is forwarding correctly.
+It diagnoses writing fmt.Printf(format, args) instead of fmt.Printf(format, args...).</p>
+               
+               <pre><code>func checkPrintfFwd(pass *analysis.Pass, w *printfWrapper, call *ast.CallExpr, kind Kind, res *Result)</code></pre>
+            </article>
+            
+            <article class="function" data-name="count">
+               <h3>
+                  count 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>count(n, what) returns "1 what" or "N whats"
+(assuming the plural of what is whats).</p>
+               
+               <pre><code>func count(n int, what string) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="findPrintfLike">
+               <h3>
+                  findPrintfLike 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>findPrintfLike scans the entire package to find printf-like functions.</p>
+               
+               <pre><code>func findPrintfLike(pass *analysis.Pass, res *Result) (any, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="formatStringIndex">
+               <h3>
+                  formatStringIndex 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>formatStringIndex returns the index of the format string (the last
+non-variadic parameter) within the given printf-like call
+expression, or -1 if unknown.</p>
+               
+               <pre><code>func formatStringIndex(pass *analysis.Pass, call *ast.CallExpr) int</code></pre>
+            </article>
+            
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func init()</code></pre>
+            </article>
+            
+            <article class="function" data-name="isConvertibleToString">
+               <h3>
+                  isConvertibleToString 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func isConvertibleToString(typ types.Type) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="isFormatter">
+               <h3>
+                  isFormatter 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>isFormatter reports whether t could satisfy fmt.Formatter.
+The only interface method to look for is "Format(State, rune)".</p>
+               
+               <pre><code>func isFormatter(typ types.Type) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="isFunctionValue">
+               <h3>
+                  isFunctionValue 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>isFunctionValue reports whether the expression is a function as opposed to a function call.
+It is almost always a mistake to print a function value.</p>
+               
+               <pre><code>func isFunctionValue(pass *analysis.Pass, e ast.Expr) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="isStringer">
+               <h3>
+                  isStringer 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>isStringer reports whether the method signature matches the String() definition in fmt.Stringer.</p>
+               
+               <pre><code>func isStringer(sig *types.Signature) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="match">
+               <h3>
+                  match 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func match(info *types.Info, arg ast.Expr, param *types.Var) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="match">
+               <h3>
+                  match 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>match checks if typ matches m's printf arg type. If topLevel is true, typ is
+the actual type of the printf arg, for which special rules apply. As a
+special case, top level type parameters pass topLevel=true when checking for
+matches among the constituents of their type set, as type arguments will
+replace the type parameter at compile time.</p>
+               
+               <pre><code>func (m *argMatcher) match(typ types.Type, topLevel bool) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="matchArgType">
+               <h3>
+                  matchArgType 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>matchArgType reports an error if printf verb t is not appropriate for
+operand arg.
+If arg is a type parameter, the verb t must be appropriate for every type in
+the type parameter type set.</p>
+               
+               <pre><code>func matchArgType(pass *analysis.Pass, t printfArgType, arg ast.Expr) (reason string, ok bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="maybePrintfWrapper">
+               <h3>
+                  maybePrintfWrapper 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>maybePrintfWrapper decides whether decl (a declared function) may be a wrapper
 around a fmt.Printf or fmt.Print function. If so it returns a printfWrapper
 function describing the declaration. Later processing will analyze the
 graph of potential printf wrappers to pick out the ones that are true wrappers.
 A function may be a Printf or Print wrapper if its last argument is ...interface{}.
 If the next-to-last argument is a string, then this may be a Printf wrapper.
 Otherwise it may be a Print wrapper.</p>
+               
+               <pre><code>func maybePrintfWrapper(info *types.Info, decl ast.Decl) *printfWrapper</code></pre>
+            </article>
             
-            <pre><code>func maybePrintfWrapper(info *types.Info, decl ast.Decl) *printfWrapper</code></pre>
-         </article>
-         
-         <article class="function" data-name="findPrintfLike">
-            <h2>findPrintfLike</h2>
-            <hr />
-            
-            <p>findPrintfLike scans the entire package to find printf-like functions.</p>
-            
-            <pre><code>func findPrintfLike(pass *analysis.Pass, res *Result) (any, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="match">
-            <h2>match</h2>
-            <hr />
-            
-            <pre><code>func match(info *types.Info, arg ast.Expr, param *types.Var) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="checkPrintfFwd">
-            <h2>checkPrintfFwd</h2>
-            <hr />
-            
-            <p>checkPrintfFwd checks that a printf-forwarding wrapper is forwarding correctly.
-It diagnoses writing fmt.Printf(format, args) instead of fmt.Printf(format, args...).</p>
-            
-            <pre><code>func checkPrintfFwd(pass *analysis.Pass, w *printfWrapper, call *ast.CallExpr, kind Kind, res *Result)</code></pre>
-         </article>
-         
-         <article class="function" data-name="formatStringIndex">
-            <h2>formatStringIndex</h2>
-            <hr />
-            
-            <p>formatStringIndex returns the index of the format string (the last
-non-variadic parameter) within the given printf-like call
-expression, or -1 if unknown.</p>
-            
-            <pre><code>func formatStringIndex(pass *analysis.Pass, call *ast.CallExpr) int</code></pre>
-         </article>
-         
-         <article class="function" data-name="stringConstantExpr">
-            <h2>stringConstantExpr</h2>
-            <hr />
-            
-            <p>stringConstantExpr returns expression's string constant value.
-
-("", false) is returned if expression isn't a string
-constant.</p>
-            
-            <pre><code>func stringConstantExpr(pass *analysis.Pass, expr ast.Expr) (string, bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="checkCalls">
-            <h2>checkCalls</h2>
-            <hr />
-            
-            <p>checkCalls triggers the print-specific checks for calls that invoke a print
-function.</p>
-            
-            <pre><code>func checkCalls(pass *analysis.Pass)</code></pre>
-         </article>
-         
-         <article class="function" data-name="printfNameAndKind">
-            <h2>printfNameAndKind</h2>
-            <hr />
-            
-            <pre><code>func printfNameAndKind(pass *analysis.Pass, call *ast.CallExpr) (fn *types.Func, kind Kind)</code></pre>
-         </article>
-         
-         <article class="function" data-name="isFormatter">
-            <h2>isFormatter</h2>
-            <hr />
-            
-            <p>isFormatter reports whether t could satisfy fmt.Formatter.
-The only interface method to look for is "Format(State, rune)".</p>
-            
-            <pre><code>func isFormatter(typ types.Type) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="checkPrintf">
-            <h2>checkPrintf</h2>
-            <hr />
-            
-            <p>checkPrintf checks a call to a formatted print routine such as Printf.</p>
-            
-            <pre><code>func checkPrintf(pass *analysis.Pass, fileVersion string, kind Kind, call *ast.CallExpr, fn *types.Func)</code></pre>
-         </article>
-         
-         <article class="function" data-name="parseFlags">
-            <h2>parseFlags</h2>
-            <hr />
-            
-            <p>parseFlags accepts any printf flags.</p>
-            
-            <pre><code>func parseFlags()</code></pre>
-         </article>
-         
-         <article class="function" data-name="scanNum">
-            <h2>scanNum</h2>
-            <hr />
-            
-            <p>scanNum advances through a decimal number if present.</p>
-            
-            <pre><code>func scanNum()</code></pre>
-         </article>
-         
-         <article class="function" data-name="parseIndex">
-            <h2>parseIndex</h2>
-            <hr />
-            
-            <p>parseIndex scans an index expression. It returns false if there is a syntax error.</p>
-            
-            <pre><code>func parseIndex() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="parseNum">
-            <h2>parseNum</h2>
-            <hr />
-            
-            <p>parseNum scans a width or precision (or *). It returns false if there's a bad index expression.</p>
-            
-            <pre><code>func parseNum() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="parsePrecision">
-            <h2>parsePrecision</h2>
-            <hr />
-            
-            <p>parsePrecision scans for a precision. It returns false if there's a bad index expression.</p>
-            
-            <pre><code>func parsePrecision() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="parsePrintfVerb">
-            <h2>parsePrintfVerb</h2>
-            <hr />
-            
-            <p>parsePrintfVerb looks the formatting directive that begins the format string
-and returns a formatState that encodes what the directive wants, without looking
-at the actual arguments present in the call. The result is nil if there is an error.</p>
-            
-            <pre><code>func parsePrintfVerb(pass *analysis.Pass, call *ast.CallExpr, name string, format string, firstArg int, argNum int) *formatState</code></pre>
-         </article>
-         
-         <article class="function" data-name="okPrintfArg">
-            <h2>okPrintfArg</h2>
-            <hr />
-            
-            <p>okPrintfArg compares the formatState to the arguments actually present,
+            <article class="function" data-name="okPrintfArg">
+               <h3>
+                  okPrintfArg 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>okPrintfArg compares the formatState to the arguments actually present,
 reporting any discrepancies it can discern. If the final argument is ellipsissed,
 there's little it can do for that.</p>
+               
+               <pre><code>func okPrintfArg(pass *analysis.Pass, call *ast.CallExpr, state *formatState) (ok bool)</code></pre>
+            </article>
             
-            <pre><code>func okPrintfArg(pass *analysis.Pass, call *ast.CallExpr, state *formatState) ok bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="recursiveStringer">
-            <h2>recursiveStringer</h2>
-            <hr />
+            <article class="function" data-name="parseFlags">
+               <h3>
+                  parseFlags 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>parseFlags accepts any printf flags.</p>
+               
+               <pre><code>func (s *formatState) parseFlags()</code></pre>
+            </article>
             
-            <p>recursiveStringer reports whether the argument e is a potential
+            <article class="function" data-name="parseIndex">
+               <h3>
+                  parseIndex 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>parseIndex scans an index expression. It returns false if there is a syntax error.</p>
+               
+               <pre><code>func (s *formatState) parseIndex() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseNum">
+               <h3>
+                  parseNum 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>parseNum scans a width or precision (or *). It returns false if there's a bad index expression.</p>
+               
+               <pre><code>func (s *formatState) parseNum() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="parsePrecision">
+               <h3>
+                  parsePrecision 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>parsePrecision scans for a precision. It returns false if there's a bad index expression.</p>
+               
+               <pre><code>func (s *formatState) parsePrecision() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="parsePrintfVerb">
+               <h3>
+                  parsePrintfVerb 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>parsePrintfVerb looks the formatting directive that begins the format string
+and returns a formatState that encodes what the directive wants, without looking
+at the actual arguments present in the call. The result is nil if there is an error.</p>
+               
+               <pre><code>func parsePrintfVerb(pass *analysis.Pass, call *ast.CallExpr, name string, format string, firstArg int, argNum int) *formatState</code></pre>
+            </article>
+            
+            <article class="function" data-name="printfNameAndKind">
+               <h3>
+                  printfNameAndKind 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func printfNameAndKind(pass *analysis.Pass, call *ast.CallExpr) (fn *types.Func, kind Kind)</code></pre>
+            </article>
+            
+            <article class="function" data-name="recursiveStringer">
+               <h3>
+                  recursiveStringer 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>recursiveStringer reports whether the argument e is a potential
 recursive call to stringer or is an error, such as t and &t in these examples:
-
-	func (t *T) String() string { printf("%s",  t) }
-	func (t  T) Error() string { printf("%s",  t) }
-	func (t  T) String() string { printf("%s", &t) }</p>
+func (t *T) String() string { printf("%s",  t) }
+func (t  T) Error() string { printf("%s",  t) }
+func (t  T) String() string { printf("%s", &t) }</p>
+               
+               <pre><code>func recursiveStringer(pass *analysis.Pass, e ast.Expr) (string, bool)</code></pre>
+            </article>
             
-            <pre><code>func recursiveStringer(pass *analysis.Pass, e ast.Expr) (string, bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="isStringer">
-            <h2>isStringer</h2>
-            <hr />
+            <article class="function" data-name="run">
+               <h3>
+                  run 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func run(pass *analysis.Pass) (any, error)</code></pre>
+            </article>
             
-            <p>isStringer reports whether the method signature matches the String() definition in fmt.Stringer.</p>
+            <article class="function" data-name="scanNum">
+               <h3>
+                  scanNum 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>scanNum advances through a decimal number if present.</p>
+               
+               <pre><code>func (s *formatState) scanNum()</code></pre>
+            </article>
             
-            <pre><code>func isStringer(sig *types.Signature) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="isFunctionValue">
-            <h2>isFunctionValue</h2>
-            <hr />
+            <article class="function" data-name="stringConstantExpr">
+               <h3>
+                  stringConstantExpr 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>stringConstantExpr returns expression's string constant value.
+("", false) is returned if expression isn't a string
+constant.</p>
+               
+               <pre><code>func stringConstantExpr(pass *analysis.Pass, expr ast.Expr) (string, bool)</code></pre>
+            </article>
             
-            <p>isFunctionValue reports whether the expression is a function as opposed to a function call.
-It is almost always a mistake to print a function value.</p>
-            
-            <pre><code>func isFunctionValue(pass *analysis.Pass, e ast.Expr) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="argCanBeChecked">
-            <h2>argCanBeChecked</h2>
-            <hr />
-            
-            <p>argCanBeChecked reports whether the specified argument is statically present;
-it may be beyond the list of arguments or in a terminal slice... argument, which
-means we can't see it.</p>
-            
-            <pre><code>func argCanBeChecked(pass *analysis.Pass, call *ast.CallExpr, formatArg int, state *formatState) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="checkPrint">
-            <h2>checkPrint</h2>
-            <hr />
-            
-            <p>checkPrint checks a call to an unformatted print routine such as Println.</p>
-            
-            <pre><code>func checkPrint(pass *analysis.Pass, call *ast.CallExpr, fn *types.Func)</code></pre>
-         </article>
-         
-         <article class="function" data-name="count">
-            <h2>count</h2>
-            <hr />
-            
-            <p>count(n, what) returns "1 what" or "N whats"
-(assuming the plural of what is whats).</p>
-            
-            <pre><code>func count(n int, what string) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="String">
-            <h2>String</h2>
-            <hr />
-            
-            <pre><code>func String() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="Set">
-            <h2>Set</h2>
-            <hr />
-            
-            <pre><code>func Set(flag string) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="matchArgType">
-            <h2>matchArgType</h2>
-            <hr />
-            
-            <p>matchArgType reports an error if printf verb t is not appropriate for
-operand arg.
-
-If arg is a type parameter, the verb t must be appropriate for every type in
-the type parameter type set.</p>
-            
-            <pre><code>func matchArgType(pass *analysis.Pass, t printfArgType, arg ast.Expr) (reason string, ok bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="match">
-            <h2>match</h2>
-            <hr />
-            
-            <p>match checks if typ matches m's printf arg type. If topLevel is true, typ is
-the actual type of the printf arg, for which special rules apply. As a
-special case, top level type parameters pass topLevel=true when checking for
-matches among the constituents of their type set, as type arguments will
-replace the type parameter at compile time.</p>
-            
-            <pre><code>func match(typ types.Type, topLevel bool) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="isConvertibleToString">
-            <h2>isConvertibleToString</h2>
-            <hr />
-            
-            <pre><code>func isConvertibleToString(typ types.Type) bool</code></pre>
-         </article>
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -808,59 +1407,170 @@ replace the type parameter at compile time.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

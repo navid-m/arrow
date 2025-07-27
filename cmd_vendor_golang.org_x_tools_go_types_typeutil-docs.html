@@ -13,522 +13,931 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+                  
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>typeutil</code>
-         </h1>
-         <hr />
-          
-         <article class="struct" data-name="Map">
-            <h2>type Map struct</h2>
-            <hr />
-            
-            <p>Map is a hash-table-based mapping from types (types.Type) to
-arbitrary any values.  The concrete types that implement
-the Type interface are pointers.  Since they are not canonicalized,
-== cannot be used to check for equivalence, and thus we cannot
-simply use a Go map.
+         <h1>typeutil</h1>
+         <div class="section-divider"></div>
 
-Just as with map[K]V, a nil *Map is a valid empty map.
-
-Not thread-safe.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">hasher Hasher
-table *ast.MapType
-length int</code></pre>
-         </article>
          
-         <article class="struct" data-name="entry">
-            <h2>type entry struct</h2>
-            <hr />
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"go/ast"
+"go/types"
+"golang.org/x/tools/internal/typeparams"
+"go/types"
+"bytes"
+"fmt"
+"go/types"
+"reflect"
+"golang.org/x/tools/internal/typeparams"
+"go/types"
+"sync"
+"go/types"
+</code></pre>
+            </article>
+         </section>
+             
+         <section id="structs">
+            <h2>Structs</h2>
             
-            <p>entry is an entry (key/value association) in a hash bucket.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">key types.Type
-value any</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Hasher">
-            <h2>type Hasher struct</h2>
-            <hr />
-            
-            <p>A Hasher maps each type to its hash value.
+            <article class="struct" data-name="Hasher">
+               <h3>
+                  Hasher
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Hasher maps each type to its hash value.
 For efficiency, a hasher uses memoization; thus its memory
 footprint grows monotonically over time.
 Hashers are not thread-safe.
 Hashers have reference semantics.
 Call MakeHasher to create a Hasher.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Hasher struct {
+memo map[types.Type]uint32
+ptrMap map[any]uint32
+sigTParams *types.TypeParamList
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">memo *ast.MapType
-ptrMap *ast.MapType
-sigTParams *types.TypeParamList</code></pre>
-         </article>
-         
-         <article class="struct" data-name="MethodSetCache">
-            <h2>type MethodSetCache struct</h2>
-            <hr />
+            <article class="struct" data-name="Map">
+               <h3>
+                  Map
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Map is a hash-table-based mapping from types (types.Type) to
+arbitrary any values.  The concrete types that implement
+the Type interface are pointers.  Since they are not canonicalized,
+== cannot be used to check for equivalence, and thus we cannot
+simply use a Go map.
+Just as with map[K]V, a nil *Map is a valid empty map.
+Not thread-safe.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Map struct {
+hasher Hasher
+table map[uint32][]entry
+length int
+}</code></pre>
+            </article>
             
-            <p>A MethodSetCache records the method set of each type T for which
+            <article class="struct" data-name="MethodSetCache">
+               <h3>
+                  MethodSetCache
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A MethodSetCache records the method set of each type T for which
 MethodSet(T) is called so that repeat queries are fast.
 The zero value is a ready-to-use cache instance.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type MethodSetCache struct {
+mu sync.Mutex
+named map[*types.Named]struct{...}
+others map[types.Type]*types.MethodSet
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">mu sync.Mutex
-named *ast.MapType
-others *ast.MapType</code></pre>
-         </article>
+            <article class="struct" data-name="entry">
+               <h3>
+                  entry
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>entry is an entry (key/value association) in a hash bucket.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type entry struct {
+key types.Type
+value any
+}</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="function" data-name="Dependencies">
-            <h2>Dependencies</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <p>Dependencies returns all dependencies of the specified packages.
-
+            <article class="function" data-name="At">
+               <h3>
+                  At 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>At returns the map entry for the given key.
+The result is nil if the entry is not present.</p>
+               
+               <pre><code>func (m *Map) At(key types.Type) any</code></pre>
+            </article>
+            
+            <article class="function" data-name="Callee">
+               <h3>
+                  Callee 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Callee returns the named target of a function call, if any:
+a function, method, builtin, or variable.
+Functions and methods may potentially have type parameters.</p>
+               
+               <pre><code>func Callee(info *types.Info, call *ast.CallExpr) types.Object</code></pre>
+            </article>
+            
+            <article class="function" data-name="Delete">
+               <h3>
+                  Delete 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Delete removes the entry with the given key, if any.
+It returns true if the entry was found.</p>
+               
+               <pre><code>func (m *Map) Delete(key types.Type) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="Dependencies">
+               <h3>
+                  Dependencies 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Dependencies returns all dependencies of the specified packages.
 Dependent packages appear in topological order: if package P imports
 package Q, Q appears earlier than P in the result.
 The algorithm follows import statements in the order they
 appear in the source code, so the result is a total order.</p>
+               
+               <pre><code>func Dependencies(pkgs ...*types.Package) []*types.Package</code></pre>
+            </article>
             
-            <pre><code>func Dependencies(pkgs ...*types.Package) []*types.Package</code></pre>
-         </article>
-         
-         <article class="function" data-name="SetHasher">
-            <h2>SetHasher</h2>
-            <hr />
+            <article class="function" data-name="Hash">
+               <h3>
+                  Hash 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Hash computes a hash value for the given type t such that
+Identical(t, t') => Hash(t) == Hash(t').</p>
+               
+               <pre><code>func (h Hasher) Hash(t types.Type) uint32</code></pre>
+            </article>
             
-            <p>SetHasher sets the hasher used by Map.
-
-All Hashers are functionally equivalent but contain internal state
-used to cache the results of hashing previously seen types.
-
-A single Hasher created by MakeHasher() may be shared among many
-Maps.  This is recommended if the instances have many keys in
-common, as it will amortize the cost of hash computation.
-
-A Hasher may grow without bound as new types are seen.  Even when a
-type is deleted from the map, the Hasher never shrinks, since other
-types in the map may reference the deleted type indirectly.
-
-Hashers are not thread-safe, and read-only operations such as
-Map.Lookup require updates to the hasher, so a full Mutex lock (not a
-read-lock) is require around all Map operations if a shared
-hasher is accessed from multiple threads.
-
-If SetHasher is not called, the Map will create a private hasher at
-the first call to Insert.</p>
+            <article class="function" data-name="IntuitiveMethodSet">
+               <h3>
+                  IntuitiveMethodSet 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>IntuitiveMethodSet returns the intuitive method set of a type T,
+which is the set of methods you can call on an addressable value of
+that type.
+The result always contains MethodSet(T), and is exactly MethodSet(T)
+for interface types and for pointer-to-concrete types.
+For all other concrete types T, the result additionally
+contains each method belonging to *T if there is no identically
+named method on T itself.
+This corresponds to user intuition about method sets;
+this function is intended only for user interfaces.
+The order of the result is as for types.MethodSet(T).</p>
+               
+               <pre><code>func IntuitiveMethodSet(T types.Type, msets *MethodSetCache) []*types.Selection</code></pre>
+            </article>
             
-            <pre><code>func SetHasher(hasher Hasher)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Delete">
-            <h2>Delete</h2>
-            <hr />
-            
-            <p>Delete removes the entry with the given key, if any.
-It returns true if the entry was found.</p>
-            
-            <pre><code>func Delete(key types.Type) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="At">
-            <h2>At</h2>
-            <hr />
-            
-            <p>At returns the map entry for the given key.
-The result is nil if the entry is not present.</p>
-            
-            <pre><code>func At(key types.Type) any</code></pre>
-         </article>
-         
-         <article class="function" data-name="Set">
-            <h2>Set</h2>
-            <hr />
-            
-            <p>Set sets the map entry for key to val,
-and returns the previous entry, if any.</p>
-            
-            <pre><code>func Set(key types.Type, value any) prev any</code></pre>
-         </article>
-         
-         <article class="function" data-name="Len">
-            <h2>Len</h2>
-            <hr />
-            
-            <p>Len returns the number of map entries.</p>
-            
-            <pre><code>func Len() int</code></pre>
-         </article>
-         
-         <article class="function" data-name="Iterate">
-            <h2>Iterate</h2>
-            <hr />
-            
-            <p>Iterate calls function f on each entry in the map in unspecified order.
-
+            <article class="function" data-name="Iterate">
+               <h3>
+                  Iterate 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Iterate calls function f on each entry in the map in unspecified order.
 If f should mutate the map, Iterate provides the same guarantees as
 Go maps: if f deletes a map entry that Iterate has not yet reached,
 f will not be invoked for it, but if f inserts a map entry that
 Iterate has not yet reached, whether or not f will be invoked for
 it is unspecified.</p>
+               
+               <pre><code>func (m *Map) Iterate(f func(key types.Type, value any))</code></pre>
+            </article>
             
-            <pre><code>func Iterate(f func)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Keys">
-            <h2>Keys</h2>
-            <hr />
-            
-            <p>Keys returns a new slice containing the set of map keys.
+            <article class="function" data-name="Keys">
+               <h3>
+                  Keys 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Keys returns a new slice containing the set of map keys.
 The order is unspecified.</p>
+               
+               <pre><code>func (m *Map) Keys() []types.Type</code></pre>
+            </article>
             
-            <pre><code>func Keys() []types.Type</code></pre>
-         </article>
-         
-         <article class="function" data-name="toString">
-            <h2>toString</h2>
-            <hr />
+            <article class="function" data-name="KeysString">
+               <h3>
+                  KeysString 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>KeysString returns a string representation of the map's key set.
+Order is unspecified.</p>
+               
+               <pre><code>func (m *Map) KeysString() string</code></pre>
+            </article>
             
-            <pre><code>func toString(values bool) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="String">
-            <h2>String</h2>
-            <hr />
+            <article class="function" data-name="Len">
+               <h3>
+                  Len 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Len returns the number of map entries.</p>
+               
+               <pre><code>func (m *Map) Len() int</code></pre>
+            </article>
             
-            <p>String returns a string representation of the map's entries.
+            <article class="function" data-name="MakeHasher">
+               <h3>
+                  MakeHasher 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>MakeHasher returns a new Hasher instance.</p>
+               
+               <pre><code>func MakeHasher() Hasher</code></pre>
+            </article>
+            
+            <article class="function" data-name="MethodSet">
+               <h3>
+                  MethodSet 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>MethodSet returns the method set of type T.  It is thread-safe.
+If cache is nil, this function is equivalent to types.NewMethodSet(T).
+Utility functions can thus expose an optional *MethodSetCache
+parameter to clients that care about performance.</p>
+               
+               <pre><code>func (cache *MethodSetCache) MethodSet(T types.Type) *types.MethodSet</code></pre>
+            </article>
+            
+            <article class="function" data-name="Set">
+               <h3>
+                  Set 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Set sets the map entry for key to val,
+and returns the previous entry, if any.</p>
+               
+               <pre><code>func (m *Map) Set(key types.Type, value any) (prev any)</code></pre>
+            </article>
+            
+            <article class="function" data-name="SetHasher">
+               <h3>
+                  SetHasher 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>SetHasher sets the hasher used by Map.
+All Hashers are functionally equivalent but contain internal state
+used to cache the results of hashing previously seen types.
+A single Hasher created by MakeHasher() may be shared among many
+Maps.  This is recommended if the instances have many keys in
+common, as it will amortize the cost of hash computation.
+A Hasher may grow without bound as new types are seen.  Even when a
+type is deleted from the map, the Hasher never shrinks, since other
+types in the map may reference the deleted type indirectly.
+Hashers are not thread-safe, and read-only operations such as
+Map.Lookup require updates to the hasher, so a full Mutex lock (not a
+read-lock) is require around all Map operations if a shared
+hasher is accessed from multiple threads.
+If SetHasher is not called, the Map will create a private hasher at
+the first call to Insert.</p>
+               
+               <pre><code>func (m *Map) SetHasher(hasher Hasher)</code></pre>
+            </article>
+            
+            <article class="function" data-name="StaticCallee">
+               <h3>
+                  StaticCallee 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>StaticCallee returns the target (function or method) of a static function
+call, if any. It returns nil for calls to builtins.
+Note: for calls of instantiated functions and methods, StaticCallee returns
+the corresponding generic function or method on the generic type.</p>
+               
+               <pre><code>func StaticCallee(info *types.Info, call *ast.CallExpr) *types.Func</code></pre>
+            </article>
+            
+            <article class="function" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>String returns a string representation of the map's entries.
 Values are printed using fmt.Sprintf("%v", v).
 Order is unspecified.</p>
+               
+               <pre><code>func (m *Map) String() string</code></pre>
+            </article>
             
-            <pre><code>func String() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="KeysString">
-            <h2>KeysString</h2>
-            <hr />
+            <article class="function" data-name="hashFor">
+               <h3>
+                  hashFor 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>hashFor computes the hash of t.</p>
+               
+               <pre><code>func (h Hasher) hashFor(t types.Type) uint32</code></pre>
+            </article>
             
-            <p>KeysString returns a string representation of the map's key set.
-Order is unspecified.</p>
+            <article class="function" data-name="hashPtr">
+               <h3>
+                  hashPtr 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>hashPtr hashes the pointer identity of ptr. It uses h.ptrMap to ensure that
+pointers values are not dependent on the GC.</p>
+               
+               <pre><code>func (h Hasher) hashPtr(ptr any) uint32</code></pre>
+            </article>
             
-            <pre><code>func KeysString() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="MakeHasher">
-            <h2>MakeHasher</h2>
-            <hr />
+            <article class="function" data-name="hashString">
+               <h3>
+                  hashString 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>hashString computes the Fowler–Noll–Vo hash of s.</p>
+               
+               <pre><code>func hashString(s string) uint32</code></pre>
+            </article>
             
-            <p>MakeHasher returns a new Hasher instance.</p>
+            <article class="function" data-name="hashTermSet">
+               <h3>
+                  hashTermSet 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (h Hasher) hashTermSet(terms []*types.Term) uint32</code></pre>
+            </article>
             
-            <pre><code>func MakeHasher() Hasher</code></pre>
-         </article>
-         
-         <article class="function" data-name="Hash">
-            <h2>Hash</h2>
-            <hr />
+            <article class="function" data-name="hashTuple">
+               <h3>
+                  hashTuple 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (h Hasher) hashTuple(tuple *types.Tuple) uint32</code></pre>
+            </article>
             
-            <p>Hash computes a hash value for the given type t such that
-Identical(t, t') => Hash(t) == Hash(t').</p>
-            
-            <pre><code>func Hash(t types.Type) uint32</code></pre>
-         </article>
-         
-         <article class="function" data-name="hashString">
-            <h2>hashString</h2>
-            <hr />
-            
-            <p>hashString computes the Fowler–Noll–Vo hash of s.</p>
-            
-            <pre><code>func hashString(s string) uint32</code></pre>
-         </article>
-         
-         <article class="function" data-name="hashFor">
-            <h2>hashFor</h2>
-            <hr />
-            
-            <p>hashFor computes the hash of t.</p>
-            
-            <pre><code>func hashFor(t types.Type) uint32</code></pre>
-         </article>
-         
-         <article class="function" data-name="hashTuple">
-            <h2>hashTuple</h2>
-            <hr />
-            
-            <pre><code>func hashTuple(tuple *types.Tuple) uint32</code></pre>
-         </article>
-         
-         <article class="function" data-name="hashUnion">
-            <h2>hashUnion</h2>
-            <hr />
-            
-            <pre><code>func hashUnion(t *types.Union) uint32</code></pre>
-         </article>
-         
-         <article class="function" data-name="hashTermSet">
-            <h2>hashTermSet</h2>
-            <hr />
-            
-            <pre><code>func hashTermSet(terms []*types.Term) uint32</code></pre>
-         </article>
-         
-         <article class="function" data-name="hashTypeParam">
-            <h2>hashTypeParam</h2>
-            <hr />
-            
-            <p>hashTypeParam returns a hash of the type parameter t, with a hash value
+            <article class="function" data-name="hashTypeParam">
+               <h3>
+                  hashTypeParam 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>hashTypeParam returns a hash of the type parameter t, with a hash value
 depending on whether t is contained in h.sigTParams.
-
 If h.sigTParams is set and contains t, then we are in the process of hashing
 a signature, and the hash value of t must depend only on t's index and
 constraint: signatures are considered identical modulo type parameter
 renaming. To avoid infinite recursion, we only hash the type parameter
 index, and rely on types.Identical to handle signatures where constraints
 are not identical.
-
 Otherwise the hash of t depends only on t's pointer identity.</p>
+               
+               <pre><code>func (h Hasher) hashTypeParam(t *types.TypeParam) uint32</code></pre>
+            </article>
             
-            <pre><code>func hashTypeParam(t *types.TypeParam) uint32</code></pre>
-         </article>
-         
-         <article class="function" data-name="hashPtr">
-            <h2>hashPtr</h2>
-            <hr />
+            <article class="function" data-name="hashUnion">
+               <h3>
+                  hashUnion 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (h Hasher) hashUnion(t *types.Union) uint32</code></pre>
+            </article>
             
-            <p>hashPtr hashes the pointer identity of ptr. It uses h.ptrMap to ensure that
-pointers values are not dependent on the GC.</p>
+            <article class="function" data-name="interfaceMethod">
+               <h3>
+                  interfaceMethod 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func interfaceMethod(f *types.Func) bool</code></pre>
+            </article>
             
-            <pre><code>func hashPtr(ptr any) uint32</code></pre>
-         </article>
-         
-         <article class="function" data-name="shallowHash">
-            <h2>shallowHash</h2>
-            <hr />
+            <article class="function" data-name="lookupNamed">
+               <h3>
+                  lookupNamed 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (cache *MethodSetCache) lookupNamed(named *types.Named) struct{...}</code></pre>
+            </article>
             
-            <p>shallowHash computes a hash of t without looking at any of its
+            <article class="function" data-name="shallowHash">
+               <h3>
+                  shallowHash 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>shallowHash computes a hash of t without looking at any of its
 element Types, to avoid potential anonymous cycles in the types of
 interface methods.
-
 When an unnamed non-empty interface type appears anywhere among the
 arguments or results of an interface method, there is a potential
 for endless recursion. Consider:
-
-	type X interface { m() []*interface { X } }
-
+type X interface { m() []*interface { X } }
 The problem is that the Methods of the interface in m's result type
 include m itself; there is no mention of the named type X that
 might help us break the cycle.
 (See comment in go/types.identical, case *Interface, for more.)</p>
+               
+               <pre><code>func (h Hasher) shallowHash(t types.Type) uint32</code></pre>
+            </article>
             
-            <pre><code>func shallowHash(t types.Type) uint32</code></pre>
-         </article>
-         
-         <article class="function" data-name="MethodSet">
-            <h2>MethodSet</h2>
-            <hr />
+            <article class="function" data-name="toString">
+               <h3>
+                  toString 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (m *Map) toString(values bool) string</code></pre>
+            </article>
             
-            <p>MethodSet returns the method set of type T.  It is thread-safe.
-
-If cache is nil, this function is equivalent to types.NewMethodSet(T).
-Utility functions can thus expose an optional *MethodSetCache
-parameter to clients that care about performance.</p>
-            
-            <pre><code>func MethodSet(T types.Type) *types.MethodSet</code></pre>
-         </article>
-         
-         <article class="function" data-name="lookupNamed">
-            <h2>lookupNamed</h2>
-            <hr />
-            
-            <pre><code>func lookupNamed(named *types.Named) *ast.StructType</code></pre>
-         </article>
-         
-         <article class="function" data-name="IntuitiveMethodSet">
-            <h2>IntuitiveMethodSet</h2>
-            <hr />
-            
-            <p>IntuitiveMethodSet returns the intuitive method set of a type T,
-which is the set of methods you can call on an addressable value of
-that type.
-
-The result always contains MethodSet(T), and is exactly MethodSet(T)
-for interface types and for pointer-to-concrete types.
-For all other concrete types T, the result additionally
-contains each method belonging to *T if there is no identically
-named method on T itself.
-
-This corresponds to user intuition about method sets;
-this function is intended only for user interfaces.
-
-The order of the result is as for types.MethodSet(T).</p>
-            
-            <pre><code>func IntuitiveMethodSet(T types.Type, msets *MethodSetCache) []*types.Selection</code></pre>
-         </article>
-         
-         <article class="function" data-name="Callee">
-            <h2>Callee</h2>
-            <hr />
-            
-            <p>Callee returns the named target of a function call, if any:
-a function, method, builtin, or variable.
-
-Functions and methods may potentially have type parameters.</p>
-            
-            <pre><code>func Callee(info *types.Info, call *ast.CallExpr) types.Object</code></pre>
-         </article>
-         
-         <article class="function" data-name="StaticCallee">
-            <h2>StaticCallee</h2>
-            <hr />
-            
-            <p>StaticCallee returns the target (function or method) of a static function
-call, if any. It returns nil for calls to builtins.
-
-Note: for calls of instantiated functions and methods, StaticCallee returns
-the corresponding generic function or method on the generic type.</p>
-            
-            <pre><code>func StaticCallee(info *types.Info, call *ast.CallExpr) *types.Func</code></pre>
-         </article>
-         
-         <article class="function" data-name="interfaceMethod">
-            <h2>interfaceMethod</h2>
-            <hr />
-            
-            <pre><code>func interfaceMethod(f *types.Func) bool</code></pre>
-         </article>
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -536,59 +945,170 @@ the corresponding generic function or method on the generic type.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

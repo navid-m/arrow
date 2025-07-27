@@ -13,840 +13,1463 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                
+               <li><a href="#interfaces">Interfaces</a></li>
+                
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>jpeg</code>
-         </h1>
-         <hr />
+         <h1>jpeg</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="cosines">
-            <h2>cosines</h2>
-            <hr />
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"io"
+"image"
+"image/color"
+"image/internal/imageutil"
+"io"
+"image"
+"bufio"
+"errors"
+"image"
+"image/color"
+"io"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <pre><code>cosines</code></pre>
-         </article>
-         
-         <article class="global" data-name="testBlocks">
-            <h2>testBlocks</h2>
-            <hr />
+            <article class="global" data-name="DefaultQuality">
+               <h3>
+                  DefaultQuality 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>DefaultQuality is the default quality encoding parameter.</p>
+               
+               <pre><code>const DefaultQuality = 75</code></pre>
+            </article>
             
-            <p>testBlocks are the first 10 pre-IDCT blocks from ../testdata/video-001.jpeg.</p>
+            <article class="global" data-name="acTable">
+               <h3>
+                  acTable 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const acTable = 1</code></pre>
+            </article>
             
-            <pre><code>testBlocks</code></pre>
-         </article>
-         
-         <article class="global" data-name="maxCodeLength">
-            <h2>maxCodeLength</h2>
-            <hr />
+            <article class="global" data-name="adobeTransformUnknown">
+               <h3>
+                  adobeTransformUnknown 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>See https://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/JPEG.html#Adobe</p>
+               
+               <pre><code>const adobeTransformUnknown = 0</code></pre>
+            </article>
             
-            <p>maxCodeLength is the maximum (inclusive) number of bits in a Huffman code.</p>
+            <article class="global" data-name="adobeTransformYCbCr">
+               <h3>
+                  adobeTransformYCbCr 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>See https://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/JPEG.html#Adobe</p>
+               
+               <pre><code>const adobeTransformYCbCr = 1</code></pre>
+            </article>
             
-            <pre><code>maxCodeLength</code></pre>
-         </article>
-         
-         <article class="global" data-name="maxNCodes">
-            <h2>maxNCodes</h2>
-            <hr />
+            <article class="global" data-name="adobeTransformYCbCrK">
+               <h3>
+                  adobeTransformYCbCrK 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>See https://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/JPEG.html#Adobe</p>
+               
+               <pre><code>const adobeTransformYCbCrK = 2</code></pre>
+            </article>
             
-            <p>maxNCodes is the maximum (inclusive) number of codes in a Huffman tree.</p>
-            
-            <pre><code>maxNCodes</code></pre>
-         </article>
-         
-         <article class="global" data-name="lutSize">
-            <h2>lutSize</h2>
-            <hr />
-            
-            <p>lutSize is the log-2 size of the Huffman decoder's look-up table.</p>
-            
-            <pre><code>lutSize</code></pre>
-         </article>
-         
-         <article class="global" data-name="errShortHuffmanData">
-            <h2>errShortHuffmanData</h2>
-            <hr />
-            
-            <p>errShortHuffmanData means that an unexpected EOF occurred while decoding
-Huffman data.</p>
-            
-            <pre><code>errShortHuffmanData</code></pre>
-         </article>
-         
-         <article class="global" data-name="errUnsupportedSubsamplingRatio">
-            <h2>errUnsupportedSubsamplingRatio</h2>
-            <hr />
-            
-            <pre><code>errUnsupportedSubsamplingRatio</code></pre>
-         </article>
-         
-         <article class="global" data-name="dcTable">
-            <h2>dcTable</h2>
-            <hr />
-            
-            <pre><code>dcTable</code></pre>
-         </article>
-         
-         <article class="global" data-name="acTable">
-            <h2>acTable</h2>
-            <hr />
-            
-            <pre><code>acTable</code></pre>
-         </article>
-         
-         <article class="global" data-name="maxTc">
-            <h2>maxTc</h2>
-            <hr />
-            
-            <pre><code>maxTc</code></pre>
-         </article>
-         
-         <article class="global" data-name="maxTh">
-            <h2>maxTh</h2>
-            <hr />
-            
-            <pre><code>maxTh</code></pre>
-         </article>
-         
-         <article class="global" data-name="maxTq">
-            <h2>maxTq</h2>
-            <hr />
-            
-            <pre><code>maxTq</code></pre>
-         </article>
-         
-         <article class="global" data-name="maxComponents">
-            <h2>maxComponents</h2>
-            <hr />
-            
-            <pre><code>maxComponents</code></pre>
-         </article>
-         
-         <article class="global" data-name="sof0Marker">
-            <h2>sof0Marker</h2>
-            <hr />
-            
-            <pre><code>sof0Marker</code></pre>
-         </article>
-         
-         <article class="global" data-name="sof1Marker">
-            <h2>sof1Marker</h2>
-            <hr />
-            
-            <pre><code>sof1Marker</code></pre>
-         </article>
-         
-         <article class="global" data-name="sof2Marker">
-            <h2>sof2Marker</h2>
-            <hr />
-            
-            <pre><code>sof2Marker</code></pre>
-         </article>
-         
-         <article class="global" data-name="dhtMarker">
-            <h2>dhtMarker</h2>
-            <hr />
-            
-            <pre><code>dhtMarker</code></pre>
-         </article>
-         
-         <article class="global" data-name="rst0Marker">
-            <h2>rst0Marker</h2>
-            <hr />
-            
-            <pre><code>rst0Marker</code></pre>
-         </article>
-         
-         <article class="global" data-name="rst7Marker">
-            <h2>rst7Marker</h2>
-            <hr />
-            
-            <pre><code>rst7Marker</code></pre>
-         </article>
-         
-         <article class="global" data-name="soiMarker">
-            <h2>soiMarker</h2>
-            <hr />
-            
-            <pre><code>soiMarker</code></pre>
-         </article>
-         
-         <article class="global" data-name="eoiMarker">
-            <h2>eoiMarker</h2>
-            <hr />
-            
-            <pre><code>eoiMarker</code></pre>
-         </article>
-         
-         <article class="global" data-name="sosMarker">
-            <h2>sosMarker</h2>
-            <hr />
-            
-            <pre><code>sosMarker</code></pre>
-         </article>
-         
-         <article class="global" data-name="dqtMarker">
-            <h2>dqtMarker</h2>
-            <hr />
-            
-            <pre><code>dqtMarker</code></pre>
-         </article>
-         
-         <article class="global" data-name="driMarker">
-            <h2>driMarker</h2>
-            <hr />
-            
-            <pre><code>driMarker</code></pre>
-         </article>
-         
-         <article class="global" data-name="comMarker">
-            <h2>comMarker</h2>
-            <hr />
-            
-            <pre><code>comMarker</code></pre>
-         </article>
-         
-         <article class="global" data-name="app0Marker">
-            <h2>app0Marker</h2>
-            <hr />
-            
-            <p>"APPlication specific" markers aren't part of the JPEG spec per se,
+            <article class="global" data-name="app0Marker">
+               <h3>
+                  app0Marker 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>"APPlication specific" markers aren't part of the JPEG spec per se,
 but in practice, their use is described at
 https://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/JPEG.html</p>
+               
+               <pre><code>const app0Marker = 0xe0</code></pre>
+            </article>
             
-            <pre><code>app0Marker</code></pre>
-         </article>
-         
-         <article class="global" data-name="app14Marker">
-            <h2>app14Marker</h2>
-            <hr />
+            <article class="global" data-name="app14Marker">
+               <h3>
+                  app14Marker 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const app14Marker = 0xee</code></pre>
+            </article>
             
-            <pre><code>app14Marker</code></pre>
-         </article>
-         
-         <article class="global" data-name="app15Marker">
-            <h2>app15Marker</h2>
-            <hr />
+            <article class="global" data-name="app15Marker">
+               <h3>
+                  app15Marker 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const app15Marker = 0xef</code></pre>
+            </article>
             
-            <pre><code>app15Marker</code></pre>
-         </article>
-         
-         <article class="global" data-name="adobeTransformUnknown">
-            <h2>adobeTransformUnknown</h2>
-            <hr />
+            <article class="global" data-name="bitCount">
+               <h3>
+                  bitCount 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>bitCount counts the number of bits needed to hold an integer.</p>
+               
+               <pre><code>var bitCount = [256]byte{...}</code></pre>
+            </article>
             
-            <p>See https://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/JPEG.html#Adobe</p>
+            <article class="global" data-name="blockSize">
+               <h3>
+                  blockSize 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const blockSize = 64</code></pre>
+            </article>
             
-            <pre><code>adobeTransformUnknown</code></pre>
-         </article>
-         
-         <article class="global" data-name="adobeTransformYCbCr">
-            <h2>adobeTransformYCbCr</h2>
-            <hr />
+            <article class="global" data-name="centerJSample">
+               <h3>
+                  centerJSample 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const centerJSample = 128</code></pre>
+            </article>
             
-            <p>See https://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/JPEG.html#Adobe</p>
+            <article class="global" data-name="comMarker">
+               <h3>
+                  comMarker 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const comMarker = 0xfe</code></pre>
+            </article>
             
-            <pre><code>adobeTransformYCbCr</code></pre>
-         </article>
-         
-         <article class="global" data-name="adobeTransformYCbCrK">
-            <h2>adobeTransformYCbCrK</h2>
-            <hr />
+            <article class="global" data-name="constBits">
+               <h3>
+                  constBits 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const constBits = 13</code></pre>
+            </article>
             
-            <p>See https://www.sno.phy.queensu.ca/~phil/exiftool/TagNames/JPEG.html#Adobe</p>
+            <article class="global" data-name="dcTable">
+               <h3>
+                  dcTable 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const dcTable = 0</code></pre>
+            </article>
             
-            <pre><code>adobeTransformYCbCrK</code></pre>
-         </article>
-         
-         <article class="global" data-name="unzig">
-            <h2>unzig</h2>
-            <hr />
+            <article class="global" data-name="dhtMarker">
+               <h3>
+                  dhtMarker 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const dhtMarker = 0xc4</code></pre>
+            </article>
             
-            <p>unzig maps from the zig-zag ordering to the natural ordering. For example,
-unzig[3] is the column and row of the fourth element in zig-zag order. The
-value is 16, which means first column (16%8 == 0) and third row (16/8 == 2).</p>
+            <article class="global" data-name="dqtMarker">
+               <h3>
+                  dqtMarker 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const dqtMarker = 0xdb</code></pre>
+            </article>
             
-            <pre><code>unzig</code></pre>
-         </article>
-         
-         <article class="global" data-name="errMissingFF00">
-            <h2>errMissingFF00</h2>
-            <hr />
+            <article class="global" data-name="driMarker">
+               <h3>
+                  driMarker 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const driMarker = 0xdd</code></pre>
+            </article>
             
-            <p>errMissingFF00 means that readByteStuffedByte encountered an 0xff byte (a
+            <article class="global" data-name="eoiMarker">
+               <h3>
+                  eoiMarker 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const eoiMarker = 0xd9</code></pre>
+            </article>
+            
+            <article class="global" data-name="errMissingFF00">
+               <h3>
+                  errMissingFF00 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>errMissingFF00 means that readByteStuffedByte encountered an 0xff byte (a
 marker byte) that wasn't the expected byte-stuffed sequence 0xff, 0x00.</p>
+               
+               <pre><code>var errMissingFF00 = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre><code>errMissingFF00</code></pre>
-         </article>
-         
-         <article class="global" data-name="zigzag">
-            <h2>zigzag</h2>
-            <hr />
+            <article class="global" data-name="errShortHuffmanData">
+               <h3>
+                  errShortHuffmanData 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>errShortHuffmanData means that an unexpected EOF occurred while decoding
+Huffman data.</p>
+               
+               <pre><code>var errShortHuffmanData = *ast.CallExpr</code></pre>
+            </article>
             
-            <p>zigzag maps from the natural ordering to the zig-zag ordering. For example,
-zigzag[0*8 + 3] is the zig-zag sequence number of the element in the fourth
-column and first row.</p>
+            <article class="global" data-name="errUnsupportedSubsamplingRatio">
+               <h3>
+                  errUnsupportedSubsamplingRatio 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var errUnsupportedSubsamplingRatio = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre><code>zigzag</code></pre>
-         </article>
-         
-         <article class="global" data-name="unscaledQuantInNaturalOrder">
-            <h2>unscaledQuantInNaturalOrder</h2>
-            <hr />
+            <article class="global" data-name="fix_0_298631336">
+               <h3>
+                  fix_0_298631336 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Trigonometric constants in 13-bit fixed point format.</p>
+               
+               <pre><code>const fix_0_298631336 = 2446</code></pre>
+            </article>
             
-            <p>unscaledQuantInNaturalOrder are the unscaled quantization tables in
-natural (not zig-zag) order, as specified in section K.1.</p>
+            <article class="global" data-name="fix_0_390180644">
+               <h3>
+                  fix_0_390180644 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Trigonometric constants in 13-bit fixed point format.</p>
+               
+               <pre><code>const fix_0_390180644 = 3196</code></pre>
+            </article>
             
-            <pre><code>unscaledQuantInNaturalOrder</code></pre>
-         </article>
-         
-         <article class="global" data-name="testCase">
-            <h2>testCase</h2>
-            <hr />
+            <article class="global" data-name="fix_0_541196100">
+               <h3>
+                  fix_0_541196100 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Trigonometric constants in 13-bit fixed point format.</p>
+               
+               <pre><code>const fix_0_541196100 = 4433</code></pre>
+            </article>
             
-            <pre><code>testCase</code></pre>
-         </article>
-         
-         <article class="global" data-name="fix_0_298631336">
-            <h2>fix_0_298631336</h2>
-            <hr />
+            <article class="global" data-name="fix_0_765366865">
+               <h3>
+                  fix_0_765366865 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Trigonometric constants in 13-bit fixed point format.</p>
+               
+               <pre><code>const fix_0_765366865 = 6270</code></pre>
+            </article>
             
-            <p>Trigonometric constants in 13-bit fixed point format.</p>
+            <article class="global" data-name="fix_0_899976223">
+               <h3>
+                  fix_0_899976223 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Trigonometric constants in 13-bit fixed point format.</p>
+               
+               <pre><code>const fix_0_899976223 = 7373</code></pre>
+            </article>
             
-            <pre><code>fix_0_298631336</code></pre>
-         </article>
-         
-         <article class="global" data-name="fix_0_390180644">
-            <h2>fix_0_390180644</h2>
-            <hr />
+            <article class="global" data-name="fix_1_175875602">
+               <h3>
+                  fix_1_175875602 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Trigonometric constants in 13-bit fixed point format.</p>
+               
+               <pre><code>const fix_1_175875602 = 9633</code></pre>
+            </article>
             
-            <p>Trigonometric constants in 13-bit fixed point format.</p>
+            <article class="global" data-name="fix_1_501321110">
+               <h3>
+                  fix_1_501321110 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Trigonometric constants in 13-bit fixed point format.</p>
+               
+               <pre><code>const fix_1_501321110 = 12299</code></pre>
+            </article>
             
-            <pre><code>fix_0_390180644</code></pre>
-         </article>
-         
-         <article class="global" data-name="fix_0_541196100">
-            <h2>fix_0_541196100</h2>
-            <hr />
+            <article class="global" data-name="fix_1_847759065">
+               <h3>
+                  fix_1_847759065 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Trigonometric constants in 13-bit fixed point format.</p>
+               
+               <pre><code>const fix_1_847759065 = 15137</code></pre>
+            </article>
             
-            <p>Trigonometric constants in 13-bit fixed point format.</p>
+            <article class="global" data-name="fix_1_961570560">
+               <h3>
+                  fix_1_961570560 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Trigonometric constants in 13-bit fixed point format.</p>
+               
+               <pre><code>const fix_1_961570560 = 16069</code></pre>
+            </article>
             
-            <pre><code>fix_0_541196100</code></pre>
-         </article>
-         
-         <article class="global" data-name="fix_0_765366865">
-            <h2>fix_0_765366865</h2>
-            <hr />
+            <article class="global" data-name="fix_2_053119869">
+               <h3>
+                  fix_2_053119869 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Trigonometric constants in 13-bit fixed point format.</p>
+               
+               <pre><code>const fix_2_053119869 = 16819</code></pre>
+            </article>
             
-            <p>Trigonometric constants in 13-bit fixed point format.</p>
+            <article class="global" data-name="fix_2_562915447">
+               <h3>
+                  fix_2_562915447 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Trigonometric constants in 13-bit fixed point format.</p>
+               
+               <pre><code>const fix_2_562915447 = 20995</code></pre>
+            </article>
             
-            <pre><code>fix_0_765366865</code></pre>
-         </article>
-         
-         <article class="global" data-name="fix_0_899976223">
-            <h2>fix_0_899976223</h2>
-            <hr />
+            <article class="global" data-name="fix_3_072711026">
+               <h3>
+                  fix_3_072711026 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Trigonometric constants in 13-bit fixed point format.</p>
+               
+               <pre><code>const fix_3_072711026 = 25172</code></pre>
+            </article>
             
-            <p>Trigonometric constants in 13-bit fixed point format.</p>
+            <article class="global" data-name="huffIndexChrominanceAC">
+               <h3>
+                  huffIndexChrominanceAC 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const huffIndexChrominanceAC</code></pre>
+            </article>
             
-            <pre><code>fix_0_899976223</code></pre>
-         </article>
-         
-         <article class="global" data-name="fix_1_175875602">
-            <h2>fix_1_175875602</h2>
-            <hr />
+            <article class="global" data-name="huffIndexChrominanceDC">
+               <h3>
+                  huffIndexChrominanceDC 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const huffIndexChrominanceDC</code></pre>
+            </article>
             
-            <p>Trigonometric constants in 13-bit fixed point format.</p>
+            <article class="global" data-name="huffIndexLuminanceAC">
+               <h3>
+                  huffIndexLuminanceAC 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const huffIndexLuminanceAC</code></pre>
+            </article>
             
-            <pre><code>fix_1_175875602</code></pre>
-         </article>
-         
-         <article class="global" data-name="fix_1_501321110">
-            <h2>fix_1_501321110</h2>
-            <hr />
+            <article class="global" data-name="huffIndexLuminanceDC">
+               <h3>
+                  huffIndexLuminanceDC 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const huffIndexLuminanceDC huffIndex = iota</code></pre>
+            </article>
             
-            <p>Trigonometric constants in 13-bit fixed point format.</p>
+            <article class="global" data-name="lutSize">
+               <h3>
+                  lutSize 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>lutSize is the log-2 size of the Huffman decoder's look-up table.</p>
+               
+               <pre><code>const lutSize = 8</code></pre>
+            </article>
             
-            <pre><code>fix_1_501321110</code></pre>
-         </article>
-         
-         <article class="global" data-name="fix_1_847759065">
-            <h2>fix_1_847759065</h2>
-            <hr />
+            <article class="global" data-name="maxCodeLength">
+               <h3>
+                  maxCodeLength 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>maxCodeLength is the maximum (inclusive) number of bits in a Huffman code.</p>
+               
+               <pre><code>const maxCodeLength = 16</code></pre>
+            </article>
             
-            <p>Trigonometric constants in 13-bit fixed point format.</p>
+            <article class="global" data-name="maxComponents">
+               <h3>
+                  maxComponents 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const maxComponents = 4</code></pre>
+            </article>
             
-            <pre><code>fix_1_847759065</code></pre>
-         </article>
-         
-         <article class="global" data-name="fix_1_961570560">
-            <h2>fix_1_961570560</h2>
-            <hr />
+            <article class="global" data-name="maxNCodes">
+               <h3>
+                  maxNCodes 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>maxNCodes is the maximum (inclusive) number of codes in a Huffman tree.</p>
+               
+               <pre><code>const maxNCodes = 256</code></pre>
+            </article>
             
-            <p>Trigonometric constants in 13-bit fixed point format.</p>
+            <article class="global" data-name="maxTc">
+               <h3>
+                  maxTc 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const maxTc = 1</code></pre>
+            </article>
             
-            <pre><code>fix_1_961570560</code></pre>
-         </article>
-         
-         <article class="global" data-name="fix_2_053119869">
-            <h2>fix_2_053119869</h2>
-            <hr />
+            <article class="global" data-name="maxTh">
+               <h3>
+                  maxTh 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const maxTh = 3</code></pre>
+            </article>
             
-            <p>Trigonometric constants in 13-bit fixed point format.</p>
+            <article class="global" data-name="maxTq">
+               <h3>
+                  maxTq 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const maxTq = 3</code></pre>
+            </article>
             
-            <pre><code>fix_2_053119869</code></pre>
-         </article>
-         
-         <article class="global" data-name="fix_2_562915447">
-            <h2>fix_2_562915447</h2>
-            <hr />
+            <article class="global" data-name="nHuffIndex">
+               <h3>
+                  nHuffIndex 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const nHuffIndex</code></pre>
+            </article>
             
-            <p>Trigonometric constants in 13-bit fixed point format.</p>
+            <article class="global" data-name="nQuantIndex">
+               <h3>
+                  nQuantIndex 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const nQuantIndex</code></pre>
+            </article>
             
-            <pre><code>fix_2_562915447</code></pre>
-         </article>
-         
-         <article class="global" data-name="fix_3_072711026">
-            <h2>fix_3_072711026</h2>
-            <hr />
+            <article class="global" data-name="pass1Bits">
+               <h3>
+                  pass1Bits 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const pass1Bits = 2</code></pre>
+            </article>
             
-            <p>Trigonometric constants in 13-bit fixed point format.</p>
+            <article class="global" data-name="quantIndexChrominance">
+               <h3>
+                  quantIndexChrominance 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const quantIndexChrominance</code></pre>
+            </article>
             
-            <pre><code>fix_3_072711026</code></pre>
-         </article>
-         
-         <article class="global" data-name="constBits">
-            <h2>constBits</h2>
-            <hr />
+            <article class="global" data-name="quantIndexLuminance">
+               <h3>
+                  quantIndexLuminance 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const quantIndexLuminance quantIndex = iota</code></pre>
+            </article>
             
-            <pre><code>constBits</code></pre>
-         </article>
-         
-         <article class="global" data-name="pass1Bits">
-            <h2>pass1Bits</h2>
-            <hr />
+            <article class="global" data-name="r2">
+               <h3>
+                  r2 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const r2 = 181</code></pre>
+            </article>
             
-            <pre><code>pass1Bits</code></pre>
-         </article>
-         
-         <article class="global" data-name="centerJSample">
-            <h2>centerJSample</h2>
-            <hr />
+            <article class="global" data-name="rst0Marker">
+               <h3>
+                  rst0Marker 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const rst0Marker = 0xd0</code></pre>
+            </article>
             
-            <pre><code>centerJSample</code></pre>
-         </article>
-         
-         <article class="global" data-name="blockSize">
-            <h2>blockSize</h2>
-            <hr />
+            <article class="global" data-name="rst7Marker">
+               <h3>
+                  rst7Marker 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const rst7Marker = 0xd7</code></pre>
+            </article>
             
-            <pre><code>blockSize</code></pre>
-         </article>
-         
-         <article class="global" data-name="w1">
-            <h2>w1</h2>
-            <hr />
+            <article class="global" data-name="sof0Marker">
+               <h3>
+                  sof0Marker 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const sof0Marker = 0xc0</code></pre>
+            </article>
             
-            <pre><code>w1</code></pre>
-         </article>
-         
-         <article class="global" data-name="w2">
-            <h2>w2</h2>
-            <hr />
+            <article class="global" data-name="sof1Marker">
+               <h3>
+                  sof1Marker 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const sof1Marker = 0xc1</code></pre>
+            </article>
             
-            <pre><code>w2</code></pre>
-         </article>
-         
-         <article class="global" data-name="w3">
-            <h2>w3</h2>
-            <hr />
+            <article class="global" data-name="sof2Marker">
+               <h3>
+                  sof2Marker 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const sof2Marker = 0xc2</code></pre>
+            </article>
             
-            <pre><code>w3</code></pre>
-         </article>
-         
-         <article class="global" data-name="w5">
-            <h2>w5</h2>
-            <hr />
+            <article class="global" data-name="soiMarker">
+               <h3>
+                  soiMarker 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const soiMarker = 0xd8</code></pre>
+            </article>
             
-            <pre><code>w5</code></pre>
-         </article>
-         
-         <article class="global" data-name="w6">
-            <h2>w6</h2>
-            <hr />
+            <article class="global" data-name="sosHeaderY">
+               <h3>
+                  sosHeaderY 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>sosHeaderY is the SOS marker "\xff\xda" followed by 8 bytes:
+- the marker length "\x00\x08",
+- the number of components "\x01",
+- component 1 uses DC table 0 and AC table 0 "\x01\x00",
+- the bytes "\x00\x3f\x00". Section B.2.3 of the spec says that for
+sequential DCTs, those bytes (8-bit Ss, 8-bit Se, 4-bit Ah, 4-bit Al)
+should be 0x00, 0x3f, 0x00<<4 | 0x00.</p>
+               
+               <pre><code>var sosHeaderY = []byte{...}</code></pre>
+            </article>
             
-            <pre><code>w6</code></pre>
-         </article>
-         
-         <article class="global" data-name="w7">
-            <h2>w7</h2>
-            <hr />
+            <article class="global" data-name="sosHeaderYCbCr">
+               <h3>
+                  sosHeaderYCbCr 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>sosHeaderYCbCr is the SOS marker "\xff\xda" followed by 12 bytes:
+- the marker length "\x00\x0c",
+- the number of components "\x03",
+- component 1 uses DC table 0 and AC table 0 "\x01\x00",
+- component 2 uses DC table 1 and AC table 1 "\x02\x11",
+- component 3 uses DC table 1 and AC table 1 "\x03\x11",
+- the bytes "\x00\x3f\x00". Section B.2.3 of the spec says that for
+sequential DCTs, those bytes (8-bit Ss, 8-bit Se, 4-bit Ah, 4-bit Al)
+should be 0x00, 0x3f, 0x00<<4 | 0x00.</p>
+               
+               <pre><code>var sosHeaderYCbCr = []byte{...}</code></pre>
+            </article>
             
-            <pre><code>w7</code></pre>
-         </article>
-         
-         <article class="global" data-name="w1pw7">
-            <h2>w1pw7</h2>
-            <hr />
+            <article class="global" data-name="sosMarker">
+               <h3>
+                  sosMarker 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const sosMarker = 0xda</code></pre>
+            </article>
             
-            <pre><code>w1pw7</code></pre>
-         </article>
-         
-         <article class="global" data-name="w1mw7">
-            <h2>w1mw7</h2>
-            <hr />
+            <article class="global" data-name="theHuffmanLUT">
+               <h3>
+                  theHuffmanLUT 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>theHuffmanLUT are compiled representations of theHuffmanSpec.</p>
+               
+               <pre><code>var theHuffmanLUT [4]huffmanLUT</code></pre>
+            </article>
             
-            <pre><code>w1mw7</code></pre>
-         </article>
-         
-         <article class="global" data-name="w2pw6">
-            <h2>w2pw6</h2>
-            <hr />
-            
-            <pre><code>w2pw6</code></pre>
-         </article>
-         
-         <article class="global" data-name="w2mw6">
-            <h2>w2mw6</h2>
-            <hr />
-            
-            <pre><code>w2mw6</code></pre>
-         </article>
-         
-         <article class="global" data-name="w3pw5">
-            <h2>w3pw5</h2>
-            <hr />
-            
-            <pre><code>w3pw5</code></pre>
-         </article>
-         
-         <article class="global" data-name="w3mw5">
-            <h2>w3mw5</h2>
-            <hr />
-            
-            <pre><code>w3mw5</code></pre>
-         </article>
-         
-         <article class="global" data-name="r2">
-            <h2>r2</h2>
-            <hr />
-            
-            <pre><code>r2</code></pre>
-         </article>
-         
-         <article class="global" data-name="bitCount">
-            <h2>bitCount</h2>
-            <hr />
-            
-            <p>bitCount counts the number of bits needed to hold an integer.</p>
-            
-            <pre><code>bitCount</code></pre>
-         </article>
-         
-         <article class="global" data-name="quantIndexLuminance">
-            <h2>quantIndexLuminance</h2>
-            <hr />
-            
-            <pre><code>quantIndexLuminance quantIndex</code></pre>
-         </article>
-         
-         <article class="global" data-name="quantIndexChrominance">
-            <h2>quantIndexChrominance</h2>
-            <hr />
-            
-            <pre><code>quantIndexChrominance</code></pre>
-         </article>
-         
-         <article class="global" data-name="nQuantIndex">
-            <h2>nQuantIndex</h2>
-            <hr />
-            
-            <pre><code>nQuantIndex</code></pre>
-         </article>
-         
-         <article class="global" data-name="unscaledQuant">
-            <h2>unscaledQuant</h2>
-            <hr />
-            
-            <p>unscaledQuant are the unscaled quantization tables in zig-zag order. Each
-encoder copies and scales the tables according to its quality parameter.
-The values are derived from section K.1 of the spec, after converting from
-natural to zig-zag order.</p>
-            
-            <pre><code>unscaledQuant</code></pre>
-         </article>
-         
-         <article class="global" data-name="huffIndexLuminanceDC">
-            <h2>huffIndexLuminanceDC</h2>
-            <hr />
-            
-            <pre><code>huffIndexLuminanceDC huffIndex</code></pre>
-         </article>
-         
-         <article class="global" data-name="huffIndexLuminanceAC">
-            <h2>huffIndexLuminanceAC</h2>
-            <hr />
-            
-            <pre><code>huffIndexLuminanceAC</code></pre>
-         </article>
-         
-         <article class="global" data-name="huffIndexChrominanceDC">
-            <h2>huffIndexChrominanceDC</h2>
-            <hr />
-            
-            <pre><code>huffIndexChrominanceDC</code></pre>
-         </article>
-         
-         <article class="global" data-name="huffIndexChrominanceAC">
-            <h2>huffIndexChrominanceAC</h2>
-            <hr />
-            
-            <pre><code>huffIndexChrominanceAC</code></pre>
-         </article>
-         
-         <article class="global" data-name="nHuffIndex">
-            <h2>nHuffIndex</h2>
-            <hr />
-            
-            <pre><code>nHuffIndex</code></pre>
-         </article>
-         
-         <article class="global" data-name="theHuffmanSpec">
-            <h2>theHuffmanSpec</h2>
-            <hr />
-            
-            <p>theHuffmanSpec is the Huffman encoding specifications.
-
+            <article class="global" data-name="theHuffmanSpec">
+               <h3>
+                  theHuffmanSpec 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>theHuffmanSpec is the Huffman encoding specifications.
 This encoder uses the same Huffman encoding for all images. It is also the
 same Huffman encoding used by section K.3 of the spec.
-
 The DC tables have 12 decoded values, called categories.
-
 The AC tables have 162 decoded values: bytes that pack a 4-bit Run and a
 4-bit Size. There are 16 valid Runs and 10 valid Sizes, plus two special R|S
 cases: 0|0 (meaning EOB) and F|0 (meaning ZRL).</p>
+               
+               <pre><code>var theHuffmanSpec = [nHuffIndex]huffmanSpec{...}</code></pre>
+            </article>
             
-            <pre><code>theHuffmanSpec</code></pre>
-         </article>
-         
-         <article class="global" data-name="theHuffmanLUT">
-            <h2>theHuffmanLUT</h2>
-            <hr />
+            <article class="global" data-name="unscaledQuant">
+               <h3>
+                  unscaledQuant 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>unscaledQuant are the unscaled quantization tables in zig-zag order. Each
+encoder copies and scales the tables according to its quality parameter.
+The values are derived from section K.1 of the spec, after converting from
+natural to zig-zag order.</p>
+               
+               <pre><code>var unscaledQuant = [nQuantIndex][blockSize]byte{...}</code></pre>
+            </article>
             
-            <p>theHuffmanLUT are compiled representations of theHuffmanSpec.</p>
+            <article class="global" data-name="unzig">
+               <h3>
+                  unzig 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>unzig maps from the zig-zag ordering to the natural ordering. For example,
+unzig[3] is the column and row of the fourth element in zig-zag order. The
+value is 16, which means first column (16%8 == 0) and third row (16/8 == 2).</p>
+               
+               <pre><code>var unzig = [blockSize]int{...}</code></pre>
+            </article>
             
-            <pre><code>theHuffmanLUT []huffmanLUT</code></pre>
-         </article>
-         
-         <article class="global" data-name="sosHeaderY">
-            <h2>sosHeaderY</h2>
-            <hr />
+            <article class="global" data-name="w1">
+               <h3>
+                  w1 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const w1 = 2841</code></pre>
+            </article>
             
-            <p>sosHeaderY is the SOS marker "\xff\xda" followed by 8 bytes:
-  - the marker length "\x00\x08",
-  - the number of components "\x01",
-  - component 1 uses DC table 0 and AC table 0 "\x01\x00",
-  - the bytes "\x00\x3f\x00". Section B.2.3 of the spec says that for
-    sequential DCTs, those bytes (8-bit Ss, 8-bit Se, 4-bit Ah, 4-bit Al)
-    should be 0x00, 0x3f, 0x00<<4 | 0x00.</p>
+            <article class="global" data-name="w1mw7">
+               <h3>
+                  w1mw7 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const w1mw7 = *ast.BinaryExpr</code></pre>
+            </article>
             
-            <pre><code>sosHeaderY</code></pre>
-         </article>
-         
-         <article class="global" data-name="sosHeaderYCbCr">
-            <h2>sosHeaderYCbCr</h2>
-            <hr />
+            <article class="global" data-name="w1pw7">
+               <h3>
+                  w1pw7 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const w1pw7 = *ast.BinaryExpr</code></pre>
+            </article>
             
-            <p>sosHeaderYCbCr is the SOS marker "\xff\xda" followed by 12 bytes:
-  - the marker length "\x00\x0c",
-  - the number of components "\x03",
-  - component 1 uses DC table 0 and AC table 0 "\x01\x00",
-  - component 2 uses DC table 1 and AC table 1 "\x02\x11",
-  - component 3 uses DC table 1 and AC table 1 "\x03\x11",
-  - the bytes "\x00\x3f\x00". Section B.2.3 of the spec says that for
-    sequential DCTs, those bytes (8-bit Ss, 8-bit Se, 4-bit Ah, 4-bit Al)
-    should be 0x00, 0x3f, 0x00<<4 | 0x00.</p>
+            <article class="global" data-name="w2">
+               <h3>
+                  w2 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const w2 = 2676</code></pre>
+            </article>
             
-            <pre><code>sosHeaderYCbCr</code></pre>
-         </article>
-         
-         <article class="global" data-name="DefaultQuality">
-            <h2>DefaultQuality</h2>
-            <hr />
+            <article class="global" data-name="w2mw6">
+               <h3>
+                  w2mw6 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const w2mw6 = *ast.BinaryExpr</code></pre>
+            </article>
             
-            <p>DefaultQuality is the default quality encoding parameter.</p>
+            <article class="global" data-name="w2pw6">
+               <h3>
+                  w2pw6 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const w2pw6 = *ast.BinaryExpr</code></pre>
+            </article>
             
-            <pre><code>DefaultQuality</code></pre>
-         </article>
+            <article class="global" data-name="w3">
+               <h3>
+                  w3 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const w3 = 2408</code></pre>
+            </article>
+            
+            <article class="global" data-name="w3mw5">
+               <h3>
+                  w3mw5 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const w3mw5 = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="w3pw5">
+               <h3>
+                  w3pw5 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const w3pw5 = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="w5">
+               <h3>
+                  w5 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const w5 = 1609</code></pre>
+            </article>
+            
+            <article class="global" data-name="w6">
+               <h3>
+                  w6 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const w6 = 1108</code></pre>
+            </article>
+            
+            <article class="global" data-name="w7">
+               <h3>
+                  w7 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const w7 = 565</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="struct" data-name="huffman">
-            <h2>type huffman struct</h2>
-            <hr />
+         <section id="types">
+            <h2>Type Aliases</h2>
             
-            <p>huffman is a Huffman decoder, specified in section C.</p>
+            <article class="type" data-name="FormatError">
+               <h3>
+                  FormatError
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>A FormatError reports that the input is not a valid JPEG.</p>
+               
+               <pre><code>type FormatError string</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">nCodes int32
-lut []uint16
-vals []uint8
-minCodes []int32
-maxCodes []int32
-valsIndices []int32</code></pre>
-         </article>
-         
-         <article class="struct" data-name="component">
-            <h2>type component struct</h2>
-            <hr />
+            <article class="type" data-name="UnsupportedError">
+               <h3>
+                  UnsupportedError
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>An UnsupportedError reports that the input uses a valid but unimplemented JPEG feature.</p>
+               
+               <pre><code>type UnsupportedError string</code></pre>
+            </article>
             
-            <p>Component specification, specified in section B.2.2.</p>
+            <article class="type" data-name="block">
+               <h3>
+                  block
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <pre><code>type block [blockSize]int32</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">h int
-v int
-c uint8
-tq uint8</code></pre>
-         </article>
-         
-         <article class="struct" data-name="bits">
-            <h2>type bits struct</h2>
-            <hr />
+            <article class="type" data-name="huffIndex">
+               <h3>
+                  huffIndex
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <pre><code>type huffIndex int</code></pre>
+            </article>
             
-            <p>bits holds the unprocessed bits that have been taken from the byte-stream.
+            <article class="type" data-name="huffmanLUT">
+               <h3>
+                  huffmanLUT
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>huffmanLUT is a compiled look-up table representation of a huffmanSpec.
+Each value maps to a uint32 of which the 8 most significant bits hold the
+codeword size in bits and the 24 least significant bits hold the codeword.
+The maximum codeword size is 16 bits.</p>
+               
+               <pre><code>type huffmanLUT []uint32</code></pre>
+            </article>
+            
+            <article class="type" data-name="quantIndex">
+               <h3>
+                  quantIndex
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <pre><code>type quantIndex int</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="interfaces">
+            <h2>Interfaces</h2>
+            
+            <article class="interface" data-name="Reader">
+               <h3>
+                  Reader
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>Deprecated: Reader is not used by the [image/jpeg] package and should
+not be used by others. It is kept for compatibility.</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type Reader interface {
+io.ByteReader
+io.Reader
+}</code></pre>
+            </article>
+            
+            <article class="interface" data-name="writer">
+               <h3>
+                  writer
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>writer is a buffered writer.</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type writer interface {
+Flush() error
+io.Writer
+io.ByteWriter
+}</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="Options">
+               <h3>
+                  Options
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Options are the encoding parameters.
+Quality ranges from 1 to 100 inclusive, higher is better.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Options struct {
+Quality int
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="bits">
+               <h3>
+                  bits
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>bits holds the unprocessed bits that have been taken from the byte-stream.
 The n least significant bits of a form the unread bits, to be read in MSB to
 LSB order.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">a uint32
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type bits struct {
+a uint32
 m uint32
-n int32</code></pre>
-         </article>
-         
-         <article class="struct" data-name="decoder">
-            <h2>type decoder struct</h2>
-            <hr />
+n int32
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">r io.Reader
+            <article class="struct" data-name="component">
+               <h3>
+                  component
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Component specification, specified in section B.2.2.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type component struct {
+h int
+v int
+c uint8
+tq uint8
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="decoder">
+               <h3>
+                  decoder
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type decoder struct {
+r io.Reader
 bits bits
-bytes *ast.StructType
+bytes struct{...}
 width int
 height int
 img1 *image.Gray
@@ -861,881 +1484,781 @@ jfif bool
 adobeTransformValid bool
 adobeTransform uint8
 eobRun uint16
-comp []component
-progCoeffs [][]block
-huff [][]huffman
-quant []block
-tmp []byte</code></pre>
-         </article>
-         
-         <article class="struct" data-name="eofReader">
-            <h2>type eofReader struct</h2>
-            <hr />
+comp [maxComponents]component
+progCoeffs [maxComponents][]block
+huff [*ast.BinaryExpr][*ast.BinaryExpr]huffman
+quant [*ast.BinaryExpr]block
+tmp [*ast.BinaryExpr]byte
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">data []byte
-dataEOF []byte
-lenAtEOF int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="huffmanSpec">
-            <h2>type huffmanSpec struct</h2>
-            <hr />
-            
-            <p>huffmanSpec specifies a Huffman encoding.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">count []byte
-value []byte</code></pre>
-         </article>
-         
-         <article class="struct" data-name="encoder">
-            <h2>type encoder struct</h2>
-            <hr />
-            
-            <p>encoder encodes an image to the JPEG format.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">w writer
+            <article class="struct" data-name="encoder">
+               <h3>
+                  encoder
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>encoder encodes an image to the JPEG format.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type encoder struct {
+w writer
 err error
-buf []byte
+buf [16]byte
 bits uint32
 nBits uint32
-quant [][]byte</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Options">
-            <h2>type Options struct</h2>
-            <hr />
+quant [nQuantIndex][blockSize]byte
+}</code></pre>
+            </article>
             
-            <p>Options are the encoding parameters.
-Quality ranges from 1 to 100 inclusive, higher is better.</p>
+            <article class="struct" data-name="huffman">
+               <h3>
+                  huffman
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>huffman is a Huffman decoder, specified in section C.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type huffman struct {
+nCodes int32
+lut [*ast.BinaryExpr]uint16
+vals [maxNCodes]uint8
+minCodes [maxCodeLength]int32
+maxCodes [maxCodeLength]int32
+valsIndices [maxCodeLength]int32
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Quality int</code></pre>
-         </article>
+            <article class="struct" data-name="huffmanSpec">
+               <h3>
+                  huffmanSpec
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>huffmanSpec specifies a Huffman encoding.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type huffmanSpec struct {
+count [16]byte
+value []byte
+}</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="function" data-name="benchmarkDCT">
-            <h2>benchmarkDCT</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <pre><code>func benchmarkDCT(b *testing.B, f func)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkFDCT">
-            <h2>BenchmarkFDCT</h2>
-            <hr />
+            <article class="function" data-name="Decode">
+               <h3>
+                  Decode 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Decode reads a JPEG image from r and returns it as an [image.Image].</p>
+               
+               <pre><code>func Decode(r io.Reader) (image.Image, error)</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkFDCT(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkIDCT">
-            <h2>BenchmarkIDCT</h2>
-            <hr />
+            <article class="function" data-name="DecodeConfig">
+               <h3>
+                  DecodeConfig 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>DecodeConfig returns the color model and dimensions of a JPEG image without
+decoding the entire image.</p>
+               
+               <pre><code>func DecodeConfig(r io.Reader) (image.Config, error)</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkIDCT(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestDCT">
-            <h2>TestDCT</h2>
-            <hr />
+            <article class="function" data-name="Encode">
+               <h3>
+                  Encode 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Encode writes the Image m to w in JPEG 4:2:0 baseline format with the given
+options. Default parameters are used if a nil *[Options] is passed.</p>
+               
+               <pre><code>func Encode(w io.Writer, m image.Image, o *Options) error</code></pre>
+            </article>
             
-            <pre><code>func TestDCT(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="differ">
-            <h2>differ</h2>
-            <hr />
+            <article class="function" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e FormatError) Error() string</code></pre>
+            </article>
             
-            <p>differ reports whether any pair-wise elements in b0 and b1 differ by 2 or
-more. That tolerance is because there isn't a single definitive decoding of
-a given JPEG image, even before the YCbCr to RGB conversion; implementations
-can have different IDCT rounding errors.</p>
+            <article class="function" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e UnsupportedError) Error() string</code></pre>
+            </article>
             
-            <pre><code>func differ(b0 *block, b1 *block) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="alpha">
-            <h2>alpha</h2>
-            <hr />
-            
-            <p>alpha returns 1 if i is 0 and returns √2 otherwise.</p>
-            
-            <pre><code>func alpha(i int) float64</code></pre>
-         </article>
-         
-         <article class="function" data-name="slowFDCT">
-            <h2>slowFDCT</h2>
-            <hr />
-            
-            <p>slowFDCT performs the 8*8 2-dimensional forward discrete cosine transform:
-
-	dst[u,v] = (1/8) * Σ_x Σ_y alpha(u) * alpha(v) * src[x,y] *
-		cos((π/2) * (2*x + 1) * u / 8) *
-		cos((π/2) * (2*y + 1) * v / 8)
-
-x and y are in pixel space, and u and v are in transform space.
-
-b acts as both dst and src.</p>
-            
-            <pre><code>func slowFDCT(b *block)</code></pre>
-         </article>
-         
-         <article class="function" data-name="slowIDCT">
-            <h2>slowIDCT</h2>
-            <hr />
-            
-            <p>slowIDCT performs the 8*8 2-dimensional inverse discrete cosine transform:
-
-	dst[x,y] = (1/8) * Σ_u Σ_v alpha(u) * alpha(v) * src[u,v] *
-		cos((π/2) * (2*x + 1) * u / 8) *
-		cos((π/2) * (2*y + 1) * v / 8)
-
-x and y are in pixel space, and u and v are in transform space.
-
-b acts as both dst and src.</p>
-            
-            <pre><code>func slowIDCT(b *block)</code></pre>
-         </article>
-         
-         <article class="function" data-name="String">
-            <h2>String</h2>
-            <hr />
-            
-            <pre><code>func String() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="FuzzDecode">
-            <h2>FuzzDecode</h2>
-            <hr />
-            
-            <pre><code>func FuzzDecode(f *testing.F)</code></pre>
-         </article>
-         
-         <article class="function" data-name="ensureNBits">
-            <h2>ensureNBits</h2>
-            <hr />
-            
-            <p>ensureNBits reads bytes from the byte buffer to ensure that d.bits.n is at
-least n. For best performance (avoiding function calls inside hot loops),
-the caller is the one responsible for first checking that d.bits.n < n.</p>
-            
-            <pre><code>func ensureNBits(n int32) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="receiveExtend">
-            <h2>receiveExtend</h2>
-            <hr />
-            
-            <p>receiveExtend is the composition of RECEIVE and EXTEND, specified in section
-F.2.2.1.</p>
-            
-            <pre><code>func receiveExtend(t uint8) (int32, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="processDHT">
-            <h2>processDHT</h2>
-            <hr />
-            
-            <p>processDHT processes a Define Huffman Table marker, and initializes a huffman
-struct from its contents. Specified in section B.2.4.2.</p>
-            
-            <pre><code>func processDHT(n int) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="decodeHuffman">
-            <h2>decodeHuffman</h2>
-            <hr />
-            
-            <p>decodeHuffman returns the next Huffman-coded value from the bit-stream,
-decoded according to h.</p>
-            
-            <pre><code>func decodeHuffman(h *huffman) (uint8, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="decodeBit">
-            <h2>decodeBit</h2>
-            <hr />
-            
-            <pre><code>func decodeBit() (bool, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="decodeBits">
-            <h2>decodeBits</h2>
-            <hr />
-            
-            <pre><code>func decodeBits(n int32) (uint32, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Error">
-            <h2>Error</h2>
-            <hr />
-            
-            <pre><code>func Error() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="Error">
-            <h2>Error</h2>
-            <hr />
-            
-            <pre><code>func Error() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="fill">
-            <h2>fill</h2>
-            <hr />
-            
-            <p>fill fills up the d.bytes.buf buffer from the underlying io.Reader. It
-should only be called when there are no unread bytes in d.bytes.</p>
-            
-            <pre><code>func fill() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="unreadByteStuffedByte">
-            <h2>unreadByteStuffedByte</h2>
-            <hr />
-            
-            <p>unreadByteStuffedByte undoes the most recent readByteStuffedByte call,
-giving a byte of data back from d.bits to d.bytes. The Huffman look-up table
-requires at least 8 bits for look-up, which means that Huffman decoding can
-sometimes overshoot and read one or two too many bytes. Two-byte overshoot
-can happen when expecting to read a 0xff 0x00 byte-stuffed byte.</p>
-            
-            <pre><code>func unreadByteStuffedByte()</code></pre>
-         </article>
-         
-         <article class="function" data-name="readByte">
-            <h2>readByte</h2>
-            <hr />
-            
-            <p>readByte returns the next byte, whether buffered or not buffered. It does
-not care about byte stuffing.</p>
-            
-            <pre><code>func readByte() (x byte, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="readByteStuffedByte">
-            <h2>readByteStuffedByte</h2>
-            <hr />
-            
-            <p>readByteStuffedByte is like readByte but is for byte-stuffed Huffman data.</p>
-            
-            <pre><code>func readByteStuffedByte() (x byte, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="readFull">
-            <h2>readFull</h2>
-            <hr />
-            
-            <p>readFull reads exactly len(p) bytes into p. It does not care about byte
-stuffing.</p>
-            
-            <pre><code>func readFull(p []byte) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="ignore">
-            <h2>ignore</h2>
-            <hr />
-            
-            <p>ignore ignores the next n bytes.</p>
-            
-            <pre><code>func ignore(n int) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="processSOF">
-            <h2>processSOF</h2>
-            <hr />
-            
-            <p>Specified in section B.2.2.</p>
-            
-            <pre><code>func processSOF(n int) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="processDQT">
-            <h2>processDQT</h2>
-            <hr />
-            
-            <p>Specified in section B.2.4.1.</p>
-            
-            <pre><code>func processDQT(n int) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="processDRI">
-            <h2>processDRI</h2>
-            <hr />
-            
-            <p>Specified in section B.2.4.4.</p>
-            
-            <pre><code>func processDRI(n int) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="processApp0Marker">
-            <h2>processApp0Marker</h2>
-            <hr />
-            
-            <pre><code>func processApp0Marker(n int) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="processApp14Marker">
-            <h2>processApp14Marker</h2>
-            <hr />
-            
-            <pre><code>func processApp14Marker(n int) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="decode">
-            <h2>decode</h2>
-            <hr />
-            
-            <p>decode reads a JPEG image from r and returns it as an image.Image.</p>
-            
-            <pre><code>func decode(r io.Reader, configOnly bool) (image.Image, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="applyBlack">
-            <h2>applyBlack</h2>
-            <hr />
-            
-            <p>applyBlack combines d.img3 and d.blackPix into a CMYK image. The formula
+            <article class="function" data-name="applyBlack">
+               <h3>
+                  applyBlack 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>applyBlack combines d.img3 and d.blackPix into a CMYK image. The formula
 used depends on whether the JPEG image is stored as CMYK or YCbCrK,
 indicated by the APP14 (Adobe) metadata.
-
 Adobe CMYK JPEG images are inverted, where 255 means no ink instead of full
 ink, so we apply "v = 255 - v" at various points. Note that a double
 inversion is a no-op, so inversions might be implicit in the code below.</p>
+               
+               <pre><code>func (d *decoder) applyBlack() (image.Image, error)</code></pre>
+            </article>
             
-            <pre><code>func applyBlack() (image.Image, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="isRGB">
-            <h2>isRGB</h2>
-            <hr />
+            <article class="function" data-name="convertToRGB">
+               <h3>
+                  convertToRGB 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d *decoder) convertToRGB() (image.Image, error)</code></pre>
+            </article>
             
-            <pre><code>func isRGB() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="convertToRGB">
-            <h2>convertToRGB</h2>
-            <hr />
+            <article class="function" data-name="decode">
+               <h3>
+                  decode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>decode reads a JPEG image from r and returns it as an image.Image.</p>
+               
+               <pre><code>func (d *decoder) decode(r io.Reader, configOnly bool) (image.Image, error)</code></pre>
+            </article>
             
-            <pre><code>func convertToRGB() (image.Image, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Decode">
-            <h2>Decode</h2>
-            <hr />
+            <article class="function" data-name="decodeBit">
+               <h3>
+                  decodeBit 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d *decoder) decodeBit() (bool, error)</code></pre>
+            </article>
             
-            <p>Decode reads a JPEG image from r and returns it as an [image.Image].</p>
+            <article class="function" data-name="decodeBits">
+               <h3>
+                  decodeBits 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d *decoder) decodeBits(n int32) (uint32, error)</code></pre>
+            </article>
             
-            <pre><code>func Decode(r io.Reader) (image.Image, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="DecodeConfig">
-            <h2>DecodeConfig</h2>
-            <hr />
+            <article class="function" data-name="decodeHuffman">
+               <h3>
+                  decodeHuffman 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>decodeHuffman returns the next Huffman-coded value from the bit-stream,
+decoded according to h.</p>
+               
+               <pre><code>func (d *decoder) decodeHuffman(h *huffman) (uint8, error)</code></pre>
+            </article>
             
-            <p>DecodeConfig returns the color model and dimensions of a JPEG image without
-decoding the entire image.</p>
+            <article class="function" data-name="div">
+               <h3>
+                  div 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>div returns a/b rounded to the nearest integer, instead of rounded to zero.</p>
+               
+               <pre><code>func div(a int32, b int32) int32</code></pre>
+            </article>
             
-            <pre><code>func DecodeConfig(r io.Reader) (image.Config, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="init">
-            <h2>init</h2>
-            <hr />
+            <article class="function" data-name="emit">
+               <h3>
+                  emit 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>emit emits the least significant nBits bits of bits to the bit-stream.
+The precondition is bits < 1<<nBits && nBits <= 16.</p>
+               
+               <pre><code>func (e *encoder) emit(bits uint32, nBits uint32)</code></pre>
+            </article>
             
-            <pre><code>func init()</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestZigUnzig">
-            <h2>TestZigUnzig</h2>
-            <hr />
+            <article class="function" data-name="emitHuff">
+               <h3>
+                  emitHuff 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>emitHuff emits the given value with the given Huffman encoder.</p>
+               
+               <pre><code>func (e *encoder) emitHuff(h huffIndex, value int32)</code></pre>
+            </article>
             
-            <pre><code>func TestZigUnzig(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestUnscaledQuant">
-            <h2>TestUnscaledQuant</h2>
-            <hr />
+            <article class="function" data-name="emitHuffRLE">
+               <h3>
+                  emitHuffRLE 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>emitHuffRLE emits a run of runLength copies of value encoded with the given
+Huffman encoder.</p>
+               
+               <pre><code>func (e *encoder) emitHuffRLE(h huffIndex, runLength int32, value int32)</code></pre>
+            </article>
             
-            <pre><code>func TestUnscaledQuant(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="delta">
-            <h2>delta</h2>
-            <hr />
+            <article class="function" data-name="ensureNBits">
+               <h3>
+                  ensureNBits 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ensureNBits reads bytes from the byte buffer to ensure that d.bits.n is at
+least n. For best performance (avoiding function calls inside hot loops),
+the caller is the one responsible for first checking that d.bits.n < n.</p>
+               
+               <pre><code>func (d *decoder) ensureNBits(n int32) error</code></pre>
+            </article>
             
-            <pre><code>func delta(u0 uint32, u1 uint32) int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="readPng">
-            <h2>readPng</h2>
-            <hr />
-            
-            <pre><code>func readPng(filename string) (image.Image, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWriter">
-            <h2>TestWriter</h2>
-            <hr />
-            
-            <pre><code>func TestWriter(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWriteGrayscale">
-            <h2>TestWriteGrayscale</h2>
-            <hr />
-            
-            <p>TestWriteGrayscale tests that a grayscale images survives a round-trip
-through encode/decode cycle.</p>
-            
-            <pre><code>func TestWriteGrayscale(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="averageDelta">
-            <h2>averageDelta</h2>
-            <hr />
-            
-            <p>averageDelta returns the average delta in RGB space. The two images must
-have the same bounds.</p>
-            
-            <pre><code>func averageDelta(m0 image.Image, m1 image.Image) int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestEncodeYCbCr">
-            <h2>TestEncodeYCbCr</h2>
-            <hr />
-            
-            <pre><code>func TestEncodeYCbCr(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkEncodeRGBA">
-            <h2>BenchmarkEncodeRGBA</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkEncodeRGBA(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkEncodeYCbCr">
-            <h2>BenchmarkEncodeYCbCr</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkEncodeYCbCr(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="fdct">
-            <h2>fdct</h2>
-            <hr />
-            
-            <p>fdct performs a forward DCT on an 8x8 block of coefficients, including a
+            <article class="function" data-name="fdct">
+               <h3>
+                  fdct 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>fdct performs a forward DCT on an 8x8 block of coefficients, including a
 level shift.</p>
+               
+               <pre><code>func fdct(b *block)</code></pre>
+            </article>
             
-            <pre><code>func fdct(b *block)</code></pre>
-         </article>
-         
-         <article class="function" data-name="idct">
-            <h2>idct</h2>
-            <hr />
+            <article class="function" data-name="fill">
+               <h3>
+                  fill 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>fill fills up the d.bytes.buf buffer from the underlying io.Reader. It
+should only be called when there are no unread bytes in d.bytes.</p>
+               
+               <pre><code>func (d *decoder) fill() error</code></pre>
+            </article>
             
-            <p>idct performs a 2-D Inverse Discrete Cosine Transformation.
-
+            <article class="function" data-name="findRST">
+               <h3>
+                  findRST 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>findRST advances past the next RST restart marker that matches expectedRST.
+Other than I/O errors, it is also an error if we encounter an {0xFF, M}
+two-byte marker sequence where M is not 0x00, 0xFF or the expectedRST.
+This is similar to libjpeg's jdmarker.c's next_marker function.
+https://github.com/libjpeg-turbo/libjpeg-turbo/blob/2dfe6c0fe9e18671105e94f7cbf044d4a1d157e6/jdmarker.c#L892-L935
+Precondition: d.tmp[:2] holds the next two bytes of JPEG-encoded input
+(input in the d.readFull sense).</p>
+               
+               <pre><code>func (d *decoder) findRST(expectedRST uint8) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="flush">
+               <h3>
+                  flush 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *encoder) flush()</code></pre>
+            </article>
+            
+            <article class="function" data-name="grayToY">
+               <h3>
+                  grayToY 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>grayToY stores the 8x8 region of m whose top-left corner is p in yBlock.</p>
+               
+               <pre><code>func grayToY(m *image.Gray, p image.Point, yBlock *block)</code></pre>
+            </article>
+            
+            <article class="function" data-name="idct">
+               <h3>
+                  idct 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>idct performs a 2-D Inverse Discrete Cosine Transformation.
 The input coefficients should already have been multiplied by the
 appropriate quantization table. We use fixed-point computation, with the
 number of bits for the fractional component varying over the intermediate
 stages.
-
 For more on the actual algorithm, see Z. Wang, "Fast algorithms for the
 discrete W transform and for the discrete Fourier transform", IEEE Trans. on
 ASSP, Vol. ASSP- 32, pp. 803-816, Aug. 1984.</p>
+               
+               <pre><code>func idct(src *block)</code></pre>
+            </article>
             
-            <pre><code>func idct(src *block)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestDecodeProgressive">
-            <h2>TestDecodeProgressive</h2>
-            <hr />
+            <article class="function" data-name="ignore">
+               <h3>
+                  ignore 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ignore ignores the next n bytes.</p>
+               
+               <pre><code>func (d *decoder) ignore(n int) error</code></pre>
+            </article>
             
-            <p>TestDecodeProgressive tests that decoding the baseline and progressive
-versions of the same image result in exactly the same pixel data, in YCbCr
-space for color images, and Y space for grayscale images.</p>
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func init()</code></pre>
+            </article>
             
-            <pre><code>func TestDecodeProgressive(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="decodeFile">
-            <h2>decodeFile</h2>
-            <hr />
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (h *huffmanLUT) init(s huffmanSpec)</code></pre>
+            </article>
             
-            <pre><code>func decodeFile(filename string) (image.Image, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Read">
-            <h2>Read</h2>
-            <hr />
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func init()</code></pre>
+            </article>
             
-            <pre><code>func Read(b []byte) (n int, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestDecodeEOF">
-            <h2>TestDecodeEOF</h2>
-            <hr />
+            <article class="function" data-name="isRGB">
+               <h3>
+                  isRGB 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d *decoder) isRGB() bool</code></pre>
+            </article>
             
-            <pre><code>func TestDecodeEOF(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="check">
-            <h2>check</h2>
-            <hr />
+            <article class="function" data-name="makeImg">
+               <h3>
+                  makeImg 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>makeImg allocates and initializes the destination image.</p>
+               
+               <pre><code>func (d *decoder) makeImg(mxx int, myy int)</code></pre>
+            </article>
             
-            <p>check checks that the two pix data are equal, within the given bounds.</p>
+            <article class="function" data-name="processApp0Marker">
+               <h3>
+                  processApp0Marker 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d *decoder) processApp0Marker(n int) error</code></pre>
+            </article>
             
-            <pre><code>func check(bounds image.Rectangle, pix0 []byte, pix1 []byte, stride0 int, stride1 int) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="pixString">
-            <h2>pixString</h2>
-            <hr />
+            <article class="function" data-name="processApp14Marker">
+               <h3>
+                  processApp14Marker 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d *decoder) processApp14Marker(n int) error</code></pre>
+            </article>
             
-            <pre><code>func pixString(pix []byte, stride int, x int, y int) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestTruncatedSOSDataDoesntPanic">
-            <h2>TestTruncatedSOSDataDoesntPanic</h2>
-            <hr />
+            <article class="function" data-name="processDHT">
+               <h3>
+                  processDHT 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>processDHT processes a Define Huffman Table marker, and initializes a huffman
+struct from its contents. Specified in section B.2.4.2.</p>
+               
+               <pre><code>func (d *decoder) processDHT(n int) error</code></pre>
+            </article>
             
-            <pre><code>func TestTruncatedSOSDataDoesntPanic(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestLargeImageWithShortData">
-            <h2>TestLargeImageWithShortData</h2>
-            <hr />
+            <article class="function" data-name="processDQT">
+               <h3>
+                  processDQT 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Specified in section B.2.4.1.</p>
+               
+               <pre><code>func (d *decoder) processDQT(n int) error</code></pre>
+            </article>
             
-            <pre><code>func TestLargeImageWithShortData(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestPaddedRSTMarker">
-            <h2>TestPaddedRSTMarker</h2>
-            <hr />
+            <article class="function" data-name="processDRI">
+               <h3>
+                  processDRI 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Specified in section B.2.4.4.</p>
+               
+               <pre><code>func (d *decoder) processDRI(n int) error</code></pre>
+            </article>
             
-            <pre><code>func TestPaddedRSTMarker(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestExtraneousData">
-            <h2>TestExtraneousData</h2>
-            <hr />
+            <article class="function" data-name="processSOF">
+               <h3>
+                  processSOF 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Specified in section B.2.2.</p>
+               
+               <pre><code>func (d *decoder) processSOF(n int) error</code></pre>
+            </article>
             
-            <pre><code>func TestExtraneousData(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestIssue56724">
-            <h2>TestIssue56724</h2>
-            <hr />
+            <article class="function" data-name="processSOS">
+               <h3>
+                  processSOS 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Specified in section B.2.3.</p>
+               
+               <pre><code>func (d *decoder) processSOS(n int) error</code></pre>
+            </article>
             
-            <pre><code>func TestIssue56724(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestBadRestartMarker">
-            <h2>TestBadRestartMarker</h2>
-            <hr />
+            <article class="function" data-name="readByte">
+               <h3>
+                  readByte 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>readByte returns the next byte, whether buffered or not buffered. It does
+not care about byte stuffing.</p>
+               
+               <pre><code>func (d *decoder) readByte() (x byte, err error)</code></pre>
+            </article>
             
-            <pre><code>func TestBadRestartMarker(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="benchmarkDecode">
-            <h2>benchmarkDecode</h2>
-            <hr />
+            <article class="function" data-name="readByteStuffedByte">
+               <h3>
+                  readByteStuffedByte 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>readByteStuffedByte is like readByte but is for byte-stuffed Huffman data.</p>
+               
+               <pre><code>func (d *decoder) readByteStuffedByte() (x byte, err error)</code></pre>
+            </article>
             
-            <pre><code>func benchmarkDecode(b *testing.B, filename string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkDecodeBaseline">
-            <h2>BenchmarkDecodeBaseline</h2>
-            <hr />
+            <article class="function" data-name="readFull">
+               <h3>
+                  readFull 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>readFull reads exactly len(p) bytes into p. It does not care about byte
+stuffing.</p>
+               
+               <pre><code>func (d *decoder) readFull(p []byte) error</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkDecodeBaseline(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkDecodeProgressive">
-            <h2>BenchmarkDecodeProgressive</h2>
-            <hr />
+            <article class="function" data-name="receiveExtend">
+               <h3>
+                  receiveExtend 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>receiveExtend is the composition of RECEIVE and EXTEND, specified in section
+F.2.2.1.</p>
+               
+               <pre><code>func (d *decoder) receiveExtend(t uint8) (int32, error)</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkDecodeProgressive(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="makeImg">
-            <h2>makeImg</h2>
-            <hr />
-            
-            <p>makeImg allocates and initializes the destination image.</p>
-            
-            <pre><code>func makeImg(mxx int, myy int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="processSOS">
-            <h2>processSOS</h2>
-            <hr />
-            
-            <p>Specified in section B.2.3.</p>
-            
-            <pre><code>func processSOS(n int) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="refine">
-            <h2>refine</h2>
-            <hr />
-            
-            <p>refine decodes a successive approximation refinement block, as specified in
-section G.1.2.</p>
-            
-            <pre><code>func refine(b *block, h *huffman, zigStart int32, zigEnd int32, delta int32) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="refineNonZeroes">
-            <h2>refineNonZeroes</h2>
-            <hr />
-            
-            <p>refineNonZeroes refines non-zero entries of b in zig-zag order. If nz >= 0,
-the first nz zero entries are skipped over.</p>
-            
-            <pre><code>func refineNonZeroes(b *block, zig int32, zigEnd int32, nz int32, delta int32) (int32, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="reconstructProgressiveImage">
-            <h2>reconstructProgressiveImage</h2>
-            <hr />
-            
-            <pre><code>func reconstructProgressiveImage() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="reconstructBlock">
-            <h2>reconstructBlock</h2>
-            <hr />
-            
-            <p>reconstructBlock dequantizes, performs the inverse DCT and stores the block
+            <article class="function" data-name="reconstructBlock">
+               <h3>
+                  reconstructBlock 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>reconstructBlock dequantizes, performs the inverse DCT and stores the block
 to the image.</p>
+               
+               <pre><code>func (d *decoder) reconstructBlock(b *block, bx int, by int, compIndex int) error</code></pre>
+            </article>
             
-            <pre><code>func reconstructBlock(b *block, bx int, by int, compIndex int) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="findRST">
-            <h2>findRST</h2>
-            <hr />
+            <article class="function" data-name="reconstructProgressiveImage">
+               <h3>
+                  reconstructProgressiveImage 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d *decoder) reconstructProgressiveImage() error</code></pre>
+            </article>
             
-            <p>findRST advances past the next RST restart marker that matches expectedRST.
-Other than I/O errors, it is also an error if we encounter an {0xFF, M}
-two-byte marker sequence where M is not 0x00, 0xFF or the expectedRST.
-
-This is similar to libjpeg's jdmarker.c's next_marker function.
-https://github.com/libjpeg-turbo/libjpeg-turbo/blob/2dfe6c0fe9e18671105e94f7cbf044d4a1d157e6/jdmarker.c#L892-L935
-
-Precondition: d.tmp[:2] holds the next two bytes of JPEG-encoded input
-(input in the d.readFull sense).</p>
+            <article class="function" data-name="refine">
+               <h3>
+                  refine 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>refine decodes a successive approximation refinement block, as specified in
+section G.1.2.</p>
+               
+               <pre><code>func (d *decoder) refine(b *block, h *huffman, zigStart int32, zigEnd int32, delta int32) error</code></pre>
+            </article>
             
-            <pre><code>func findRST(expectedRST uint8) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="div">
-            <h2>div</h2>
-            <hr />
+            <article class="function" data-name="refineNonZeroes">
+               <h3>
+                  refineNonZeroes 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>refineNonZeroes refines non-zero entries of b in zig-zag order. If nz >= 0,
+the first nz zero entries are skipped over.</p>
+               
+               <pre><code>func (d *decoder) refineNonZeroes(b *block, zig int32, zigEnd int32, nz int32, delta int32) (int32, error)</code></pre>
+            </article>
             
-            <p>div returns a/b rounded to the nearest integer, instead of rounded to zero.</p>
+            <article class="function" data-name="rgbaToYCbCr">
+               <h3>
+                  rgbaToYCbCr 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>rgbaToYCbCr is a specialized version of toYCbCr for image.RGBA images.</p>
+               
+               <pre><code>func rgbaToYCbCr(m *image.RGBA, p image.Point, yBlock *block, cbBlock *block, crBlock *block)</code></pre>
+            </article>
             
-            <pre><code>func div(a int32, b int32) int32</code></pre>
-         </article>
-         
-         <article class="function" data-name="init">
-            <h2>init</h2>
-            <hr />
+            <article class="function" data-name="scale">
+               <h3>
+                  scale 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>scale scales the 16x16 region represented by the 4 src blocks to the 8x8
+dst block.</p>
+               
+               <pre><code>func scale(dst *block, src *[4]block)</code></pre>
+            </article>
             
-            <pre><code>func init(s huffmanSpec)</code></pre>
-         </article>
-         
-         <article class="function" data-name="init">
-            <h2>init</h2>
-            <hr />
+            <article class="function" data-name="toYCbCr">
+               <h3>
+                  toYCbCr 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>toYCbCr converts the 8x8 region of m whose top-left corner is p to its
+YCbCr values.</p>
+               
+               <pre><code>func toYCbCr(m image.Image, p image.Point, yBlock *block, cbBlock *block, crBlock *block)</code></pre>
+            </article>
             
-            <pre><code>func init()</code></pre>
-         </article>
-         
-         <article class="function" data-name="flush">
-            <h2>flush</h2>
-            <hr />
+            <article class="function" data-name="unreadByteStuffedByte">
+               <h3>
+                  unreadByteStuffedByte 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>unreadByteStuffedByte undoes the most recent readByteStuffedByte call,
+giving a byte of data back from d.bits to d.bytes. The Huffman look-up table
+requires at least 8 bits for look-up, which means that Huffman decoding can
+sometimes overshoot and read one or two too many bytes. Two-byte overshoot
+can happen when expecting to read a 0xff 0x00 byte-stuffed byte.</p>
+               
+               <pre><code>func (d *decoder) unreadByteStuffedByte()</code></pre>
+            </article>
             
-            <pre><code>func flush()</code></pre>
-         </article>
-         
-         <article class="function" data-name="write">
-            <h2>write</h2>
-            <hr />
+            <article class="function" data-name="write">
+               <h3>
+                  write 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *encoder) write(p []byte)</code></pre>
+            </article>
             
-            <pre><code>func write(p []byte)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeByte">
-            <h2>writeByte</h2>
-            <hr />
-            
-            <pre><code>func writeByte(b byte)</code></pre>
-         </article>
-         
-         <article class="function" data-name="emit">
-            <h2>emit</h2>
-            <hr />
-            
-            <p>emit emits the least significant nBits bits of bits to the bit-stream.
-The precondition is bits < 1<<nBits && nBits <= 16.</p>
-            
-            <pre><code>func emit(bits uint32, nBits uint32)</code></pre>
-         </article>
-         
-         <article class="function" data-name="emitHuff">
-            <h2>emitHuff</h2>
-            <hr />
-            
-            <p>emitHuff emits the given value with the given Huffman encoder.</p>
-            
-            <pre><code>func emitHuff(h huffIndex, value int32)</code></pre>
-         </article>
-         
-         <article class="function" data-name="emitHuffRLE">
-            <h2>emitHuffRLE</h2>
-            <hr />
-            
-            <p>emitHuffRLE emits a run of runLength copies of value encoded with the given
-Huffman encoder.</p>
-            
-            <pre><code>func emitHuffRLE(h huffIndex, runLength int32, value int32)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeMarkerHeader">
-            <h2>writeMarkerHeader</h2>
-            <hr />
-            
-            <p>writeMarkerHeader writes the header for a marker with the given length.</p>
-            
-            <pre><code>func writeMarkerHeader(marker uint8, markerlen int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeDQT">
-            <h2>writeDQT</h2>
-            <hr />
-            
-            <p>writeDQT writes the Define Quantization Table marker.</p>
-            
-            <pre><code>func writeDQT()</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeSOF0">
-            <h2>writeSOF0</h2>
-            <hr />
-            
-            <p>writeSOF0 writes the Start Of Frame (Baseline Sequential) marker.</p>
-            
-            <pre><code>func writeSOF0(size image.Point, nComponent int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeDHT">
-            <h2>writeDHT</h2>
-            <hr />
-            
-            <p>writeDHT writes the Define Huffman Table marker.</p>
-            
-            <pre><code>func writeDHT(nComponent int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeBlock">
-            <h2>writeBlock</h2>
-            <hr />
-            
-            <p>writeBlock writes a block of pixel data using the given quantization table,
+            <article class="function" data-name="writeBlock">
+               <h3>
+                  writeBlock 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>writeBlock writes a block of pixel data using the given quantization table,
 returning the post-quantized DC value of the DCT-transformed block. b is in
 natural (not zig-zag) order.</p>
+               
+               <pre><code>func (e *encoder) writeBlock(b *block, q quantIndex, prevDC int32) int32</code></pre>
+            </article>
             
-            <pre><code>func writeBlock(b *block, q quantIndex, prevDC int32) int32</code></pre>
-         </article>
-         
-         <article class="function" data-name="toYCbCr">
-            <h2>toYCbCr</h2>
-            <hr />
+            <article class="function" data-name="writeByte">
+               <h3>
+                  writeByte 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *encoder) writeByte(b byte)</code></pre>
+            </article>
             
-            <p>toYCbCr converts the 8x8 region of m whose top-left corner is p to its
-YCbCr values.</p>
+            <article class="function" data-name="writeDHT">
+               <h3>
+                  writeDHT 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>writeDHT writes the Define Huffman Table marker.</p>
+               
+               <pre><code>func (e *encoder) writeDHT(nComponent int)</code></pre>
+            </article>
             
-            <pre><code>func toYCbCr(m image.Image, p image.Point, yBlock *block, cbBlock *block, crBlock *block)</code></pre>
-         </article>
-         
-         <article class="function" data-name="grayToY">
-            <h2>grayToY</h2>
-            <hr />
+            <article class="function" data-name="writeDQT">
+               <h3>
+                  writeDQT 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>writeDQT writes the Define Quantization Table marker.</p>
+               
+               <pre><code>func (e *encoder) writeDQT()</code></pre>
+            </article>
             
-            <p>grayToY stores the 8x8 region of m whose top-left corner is p in yBlock.</p>
+            <article class="function" data-name="writeMarkerHeader">
+               <h3>
+                  writeMarkerHeader 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>writeMarkerHeader writes the header for a marker with the given length.</p>
+               
+               <pre><code>func (e *encoder) writeMarkerHeader(marker uint8, markerlen int)</code></pre>
+            </article>
             
-            <pre><code>func grayToY(m *image.Gray, p image.Point, yBlock *block)</code></pre>
-         </article>
-         
-         <article class="function" data-name="rgbaToYCbCr">
-            <h2>rgbaToYCbCr</h2>
-            <hr />
+            <article class="function" data-name="writeSOF0">
+               <h3>
+                  writeSOF0 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>writeSOF0 writes the Start Of Frame (Baseline Sequential) marker.</p>
+               
+               <pre><code>func (e *encoder) writeSOF0(size image.Point, nComponent int)</code></pre>
+            </article>
             
-            <p>rgbaToYCbCr is a specialized version of toYCbCr for image.RGBA images.</p>
+            <article class="function" data-name="writeSOS">
+               <h3>
+                  writeSOS 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>writeSOS writes the StartOfScan marker.</p>
+               
+               <pre><code>func (e *encoder) writeSOS(m image.Image)</code></pre>
+            </article>
             
-            <pre><code>func rgbaToYCbCr(m *image.RGBA, p image.Point, yBlock *block, cbBlock *block, crBlock *block)</code></pre>
-         </article>
-         
-         <article class="function" data-name="yCbCrToYCbCr">
-            <h2>yCbCrToYCbCr</h2>
-            <hr />
+            <article class="function" data-name="yCbCrToYCbCr">
+               <h3>
+                  yCbCrToYCbCr 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>yCbCrToYCbCr is a specialized version of toYCbCr for image.YCbCr images.</p>
+               
+               <pre><code>func yCbCrToYCbCr(m *image.YCbCr, p image.Point, yBlock *block, cbBlock *block, crBlock *block)</code></pre>
+            </article>
             
-            <p>yCbCrToYCbCr is a specialized version of toYCbCr for image.YCbCr images.</p>
-            
-            <pre><code>func yCbCrToYCbCr(m *image.YCbCr, p image.Point, yBlock *block, cbBlock *block, crBlock *block)</code></pre>
-         </article>
-         
-         <article class="function" data-name="scale">
-            <h2>scale</h2>
-            <hr />
-            
-            <p>scale scales the 16x16 region represented by the 4 src blocks to the 8x8
-dst block.</p>
-            
-            <pre><code>func scale(dst *block, src *[]block)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeSOS">
-            <h2>writeSOS</h2>
-            <hr />
-            
-            <p>writeSOS writes the StartOfScan marker.</p>
-            
-            <pre><code>func writeSOS(m image.Image)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Encode">
-            <h2>Encode</h2>
-            <hr />
-            
-            <p>Encode writes the Image m to w in JPEG 4:2:0 baseline format with the given
-options. Default parameters are used if a nil *[Options] is passed.</p>
-            
-            <pre><code>func Encode(w io.Writer, m image.Image, o *Options) error</code></pre>
-         </article>
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -1743,59 +2266,170 @@ options. Default parameters are used if a nil *[Options] is passed.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

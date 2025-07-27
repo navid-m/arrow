@@ -13,316 +13,685 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                 
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>test2json</code>
-         </h1>
-         <hr />
-         
-         <article class="global" data-name="Timestamp">
-            <h2>Timestamp</h2>
-            <hr />
-            
-            <pre><code>Timestamp Mode</code></pre>
-         </article>
-         
-         <article class="global" data-name="inBuffer">
-            <h2>inBuffer</h2>
-            <hr />
-            
-            <p>inBuffer and outBuffer are the input and output buffer sizes.
-They're variables so that they can be reduced during testing.
+         <h1>test2json</h1>
+         <div class="section-divider"></div>
 
-The input buffer needs to be able to hold any single test
-directive line we want to recognize, like:
-
-	<many spaces> --- PASS: very/nested/s/u/b/t/e/s/t
-
-If anyone reports a test directive line > 4k not working, it will
-be defensible to suggest they restructure their test or test names.
-
-The output buffer must be >= utf8.UTFMax, so that it can
-accumulate any single UTF8 sequence. Lines that fit entirely
-within the output buffer are emitted in single output events.
-Otherwise they are split into multiple events.
-The output buffer size therefore limits the size of the encoding
-of a single JSON output event. 1k seems like a reasonable balance
-between wanting to avoid splitting an output line and not wanting to
-generate enormous output events.</p>
-            
-            <pre><code>inBuffer</code></pre>
-         </article>
          
-         <article class="global" data-name="outBuffer">
-            <h2>outBuffer</h2>
-            <hr />
-            
-            <p>inBuffer and outBuffer are the input and output buffer sizes.
-They're variables so that they can be reduced during testing.
-
-The input buffer needs to be able to hold any single test
-directive line we want to recognize, like:
-
-	<many spaces> --- PASS: very/nested/s/u/b/t/e/s/t
-
-If anyone reports a test directive line > 4k not working, it will
-be defensible to suggest they restructure their test or test names.
-
-The output buffer must be >= utf8.UTFMax, so that it can
-accumulate any single UTF8 sequence. Lines that fit entirely
-within the output buffer are emitted in single output events.
-Otherwise they are split into multiple events.
-The output buffer size therefore limits the size of the encoding
-of a single JSON output event. 1k seems like a reasonable balance
-between wanting to avoid splitting an output line and not wanting to
-generate enormous output events.</p>
-            
-            <pre><code>outBuffer</code></pre>
-         </article>
-         
-         <article class="global" data-name="marker">
-            <h2>marker</h2>
-            <hr />
-            
-            <pre><code>marker</code></pre>
-         </article>
-         
-         <article class="global" data-name="bigPass">
-            <h2>bigPass</h2>
-            <hr />
-            
-            <p>printed by test on successful run.</p>
-            
-            <pre><code>bigPass</code></pre>
-         </article>
-         
-         <article class="global" data-name="bigFail">
-            <h2>bigFail</h2>
-            <hr />
-            
-            <p>printed by test after a normal test failure.</p>
-            
-            <pre><code>bigFail</code></pre>
-         </article>
-         
-         <article class="global" data-name="bigFailErrorPrefix">
-            <h2>bigFailErrorPrefix</h2>
-            <hr />
-            
-            <p>printed by 'go test' along with an error if the test binary terminates
-with an error.</p>
-            
-            <pre><code>bigFailErrorPrefix</code></pre>
-         </article>
-         
-         <article class="global" data-name="emptyName">
-            <h2>emptyName</h2>
-            <hr />
-            
-            <p>an === NAME line with no test name, if trailing spaces are deleted</p>
-            
-            <pre><code>emptyName</code></pre>
-         </article>
-         
-         <article class="global" data-name="emptyNameLine">
-            <h2>emptyNameLine</h2>
-            <hr />
-            
-            <pre><code>emptyNameLine</code></pre>
-         </article>
-         
-         <article class="global" data-name="updates">
-            <h2>updates</h2>
-            <hr />
-            
-            <pre><code>updates</code></pre>
-         </article>
-         
-         <article class="global" data-name="reports">
-            <h2>reports</h2>
-            <hr />
-            
-            <pre><code>reports</code></pre>
-         </article>
-         
-         <article class="global" data-name="fourSpace">
-            <h2>fourSpace</h2>
-            <hr />
-            
-            <pre><code>fourSpace</code></pre>
-         </article>
-         
-         <article class="global" data-name="skipLinePrefix">
-            <h2>skipLinePrefix</h2>
-            <hr />
-            
-            <pre><code>skipLinePrefix</code></pre>
-         </article>
-         
-         <article class="global" data-name="skipLineSuffix">
-            <h2>skipLineSuffix</h2>
-            <hr />
-            
-            <pre><code>skipLineSuffix</code></pre>
-         </article>
-         
-         <article class="global" data-name="benchmark">
-            <h2>benchmark</h2>
-            <hr />
-            
-            <pre><code>benchmark</code></pre>
-         </article>
-         
-         <article class="global" data-name="update">
-            <h2>update</h2>
-            <hr />
-            
-            <pre><code>update</code></pre>
-         </article>
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"bytes"
+"encoding/json"
+"fmt"
+"io"
+"strconv"
+"strings"
+"time"
+"unicode"
+"unicode/utf8"
+</code></pre>
+            </article>
+         </section>
           
-         <article class="struct" data-name="event">
-            <h2>type event struct</h2>
-            <hr />
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <p>event is the JSON struct we emit.</p>
+            <article class="global" data-name="Timestamp">
+               <h3>
+                  Timestamp 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const Timestamp Mode = *ast.BinaryExpr</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Time *time.Time
-Action string
-Package string
-Test string
-Elapsed *float64
-Output *textBytes
-FailedBuild string</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Converter">
-            <h2>type Converter struct</h2>
-            <hr />
+            <article class="global" data-name="benchmark">
+               <h3>
+                  benchmark 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var benchmark = *ast.CallExpr</code></pre>
+            </article>
             
-            <p>A Converter holds the state of a test-to-JSON conversion.
+            <article class="global" data-name="bigFail">
+               <h3>
+                  bigFail 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>printed by test after a normal test failure.</p>
+               
+               <pre><code>var bigFail = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="bigFailErrorPrefix">
+               <h3>
+                  bigFailErrorPrefix 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>printed by 'go test' along with an error if the test binary terminates
+with an error.</p>
+               
+               <pre><code>var bigFailErrorPrefix = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="bigPass">
+               <h3>
+                  bigPass 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>printed by test on successful run.</p>
+               
+               <pre><code>var bigPass = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="emptyName">
+               <h3>
+                  emptyName 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>an === NAME line with no test name, if trailing spaces are deleted</p>
+               
+               <pre><code>var emptyName = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="emptyNameLine">
+               <h3>
+                  emptyNameLine 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var emptyNameLine = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="fourSpace">
+               <h3>
+                  fourSpace 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var fourSpace = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="inBuffer">
+               <h3>
+                  inBuffer 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>inBuffer and outBuffer are the input and output buffer sizes.
+They're variables so that they can be reduced during testing.
+The input buffer needs to be able to hold any single test
+directive line we want to recognize, like:
+<many spaces> --- PASS: very/nested/s/u/b/t/e/s/t
+If anyone reports a test directive line > 4k not working, it will
+be defensible to suggest they restructure their test or test names.
+The output buffer must be >= utf8.UTFMax, so that it can
+accumulate any single UTF8 sequence. Lines that fit entirely
+within the output buffer are emitted in single output events.
+Otherwise they are split into multiple events.
+The output buffer size therefore limits the size of the encoding
+of a single JSON output event. 1k seems like a reasonable balance
+between wanting to avoid splitting an output line and not wanting to
+generate enormous output events.</p>
+               
+               <pre><code>var inBuffer = 4096</code></pre>
+            </article>
+            
+            <article class="global" data-name="marker">
+               <h3>
+                  marker 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const marker = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="outBuffer">
+               <h3>
+                  outBuffer 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>inBuffer and outBuffer are the input and output buffer sizes.
+They're variables so that they can be reduced during testing.
+The input buffer needs to be able to hold any single test
+directive line we want to recognize, like:
+<many spaces> --- PASS: very/nested/s/u/b/t/e/s/t
+If anyone reports a test directive line > 4k not working, it will
+be defensible to suggest they restructure their test or test names.
+The output buffer must be >= utf8.UTFMax, so that it can
+accumulate any single UTF8 sequence. Lines that fit entirely
+within the output buffer are emitted in single output events.
+Otherwise they are split into multiple events.
+The output buffer size therefore limits the size of the encoding
+of a single JSON output event. 1k seems like a reasonable balance
+between wanting to avoid splitting an output line and not wanting to
+generate enormous output events.</p>
+               
+               <pre><code>var outBuffer = 1024</code></pre>
+            </article>
+            
+            <article class="global" data-name="reports">
+               <h3>
+                  reports 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var reports = [][]byte{...}</code></pre>
+            </article>
+            
+            <article class="global" data-name="skipLinePrefix">
+               <h3>
+                  skipLinePrefix 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var skipLinePrefix = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="skipLineSuffix">
+               <h3>
+                  skipLineSuffix 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var skipLineSuffix = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="updates">
+               <h3>
+                  updates 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var updates = [][]byte{...}</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="types">
+            <h2>Type Aliases</h2>
+            
+            <article class="type" data-name="Mode">
+               <h3>
+                  Mode
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>Mode controls details of the conversion.</p>
+               
+               <pre><code>type Mode int</code></pre>
+            </article>
+            
+            <article class="type" data-name="textBytes">
+               <h3>
+                  textBytes
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>textBytes is a hack to get JSON to emit a []byte as a string
+without actually copying it to a string.
+It implements encoding.TextMarshaler, which returns its text form as a []byte,
+and then json encodes that text form as a string (which was our goal).</p>
+               
+               <pre><code>type textBytes []byte</code></pre>
+            </article>
+            
+         </section>
+           
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="Converter">
+               <h3>
+                  Converter
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Converter holds the state of a test-to-JSON conversion.
 It implements io.WriteCloser; the caller writes test output in,
 and the converter writes JSON output to w.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">w io.Writer
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Converter struct {
+w io.Writer
 pkg string
 mode Mode
 start time.Time
@@ -332,243 +701,289 @@ result string
 input lineBuffer
 output lineBuffer
 needMarker bool
-failedBuild string</code></pre>
-         </article>
-         
-         <article class="struct" data-name="lineBuffer">
-            <h2>type lineBuffer struct</h2>
-            <hr />
+failedBuild string
+}</code></pre>
+            </article>
             
-            <p>A lineBuffer is an I/O buffer that reacts to writes by invoking
+            <article class="struct" data-name="event">
+               <h3>
+                  event
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>event is the JSON struct we emit.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type event struct {
+Time *time.Time `json:",omitempty"`
+Action string
+Package string `json:",omitempty"`
+Test string `json:",omitempty"`
+Elapsed *float64 `json:",omitempty"`
+Output *textBytes `json:",omitempty"`
+FailedBuild string `json:",omitempty"`
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="lineBuffer">
+               <h3>
+                  lineBuffer
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A lineBuffer is an I/O buffer that reacts to writes by invoking
 input-processing callbacks on whole lines or (for long lines that
 have been split) line fragments.
-
 It should be initialized with b set to a buffer of length 0 but non-zero capacity,
 and line and part set to the desired input processors.
 The lineBuffer will call line(x) for any whole line x (including the final newline)
 that fits entirely in cap(b). It will handle input lines longer than cap(b) by
 calling part(x) for sections of the line. The line will be split at UTF8 boundaries,
 and the final call to part for a long line includes the final newline.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">b []byte
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type lineBuffer struct {
+b []byte
 mid bool
-line func
-part func</code></pre>
-         </article>
+line func([]byte)
+part func([]byte)
+}</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="function" data-name="MarshalText">
-            <h2>MarshalText</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <pre><code>func MarshalText() ([]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="NewConverter">
-            <h2>NewConverter</h2>
-            <hr />
+            <article class="function" data-name="Close">
+               <h3>
+                  Close 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Close marks the end of the go test output.
+It flushes any pending input and then output (only partial lines at this point)
+and then emits the final overall package-level pass/fail event.</p>
+               
+               <pre><code>func (c *Converter) Close() error</code></pre>
+            </article>
             
-            <p>NewConverter returns a "test to json" converter.
+            <article class="function" data-name="Exited">
+               <h3>
+                  Exited 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Exited marks the test process as having exited with the given error.</p>
+               
+               <pre><code>func (c *Converter) Exited(err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="MarshalText">
+               <h3>
+                  MarshalText 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (b textBytes) MarshalText() ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="NewConverter">
+               <h3>
+                  NewConverter 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewConverter returns a "test to json" converter.
 Writes on the returned writer are written as JSON to w,
 with minimal delay.
-
 The writes to w are whole JSON events ending in \n,
 so that it is safe to run multiple tests writing to multiple converters
 writing to a single underlying output stream w.
 As long as the underlying output w can handle concurrent writes
 from multiple goroutines, the result will be a JSON stream
 describing the relative ordering of execution in all the concurrent tests.
-
 The mode flag adjusts the behavior of the converter.
 Passing ModeTime includes event timestamps and elapsed times.
-
 The pkg string, if present, specifies the import path to
 report in the JSON stream.</p>
+               
+               <pre><code>func NewConverter(w io.Writer, pkg string, mode Mode) *Converter</code></pre>
+            </article>
             
-            <pre><code>func NewConverter(w io.Writer, pkg string, mode Mode) *Converter</code></pre>
-         </article>
-         
-         <article class="function" data-name="Write">
-            <h2>Write</h2>
-            <hr />
-            
-            <p>Write writes the test input to the converter.</p>
-            
-            <pre><code>func Write(b []byte) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Exited">
-            <h2>Exited</h2>
-            <hr />
-            
-            <p>Exited marks the test process as having exited with the given error.</p>
-            
-            <pre><code>func Exited(err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="SetFailedBuild">
-            <h2>SetFailedBuild</h2>
-            <hr />
-            
-            <p>SetFailedBuild sets the package ID that is the root cause of a build failure
+            <article class="function" data-name="SetFailedBuild">
+               <h3>
+                  SetFailedBuild 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>SetFailedBuild sets the package ID that is the root cause of a build failure
 for this test. This will be reported in the final "fail" event's FailedBuild
 field.</p>
+               
+               <pre><code>func (c *Converter) SetFailedBuild(pkgID string)</code></pre>
+            </article>
             
-            <pre><code>func SetFailedBuild(pkgID string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="handleInputLine">
-            <h2>handleInputLine</h2>
-            <hr />
+            <article class="function" data-name="Write">
+               <h3>
+                  Write 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Write writes the test input to the converter.</p>
+               
+               <pre><code>func (c *Converter) Write(b []byte) (int, error)</code></pre>
+            </article>
             
-            <p>handleInputLine handles a single whole test output line.
+            <article class="function" data-name="flush">
+               <h3>
+                  flush 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>flush flushes the line buffer.</p>
+               
+               <pre><code>func (l *lineBuffer) flush()</code></pre>
+            </article>
+            
+            <article class="function" data-name="flushReport">
+               <h3>
+                  flushReport 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>flushReport flushes all pending PASS/FAIL reports at levels >= depth.</p>
+               
+               <pre><code>func (c *Converter) flushReport(depth int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="handleInputLine">
+               <h3>
+                  handleInputLine 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>handleInputLine handles a single whole test output line.
 It must write the line to c.output but may choose to do so
 before or after emitting other events.</p>
+               
+               <pre><code>func (c *Converter) handleInputLine(line []byte)</code></pre>
+            </article>
             
-            <pre><code>func handleInputLine(line []byte)</code></pre>
-         </article>
-         
-         <article class="function" data-name="flushReport">
-            <h2>flushReport</h2>
-            <hr />
-            
-            <p>flushReport flushes all pending PASS/FAIL reports at levels >= depth.</p>
-            
-            <pre><code>func flushReport(depth int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Close">
-            <h2>Close</h2>
-            <hr />
-            
-            <p>Close marks the end of the go test output.
-It flushes any pending input and then output (only partial lines at this point)
-and then emits the final overall package-level pass/fail event.</p>
-            
-            <pre><code>func Close() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeOutputEvent">
-            <h2>writeOutputEvent</h2>
-            <hr />
-            
-            <p>writeOutputEvent writes a single output event with the given bytes.</p>
-            
-            <pre><code>func writeOutputEvent(out []byte)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeEvent">
-            <h2>writeEvent</h2>
-            <hr />
-            
-            <p>writeEvent writes a single event.
-It adds the package, time (if requested), and test name (if needed).</p>
-            
-            <pre><code>func writeEvent(e *event)</code></pre>
-         </article>
-         
-         <article class="function" data-name="write">
-            <h2>write</h2>
-            <hr />
-            
-            <p>write writes b to the buffer.</p>
-            
-            <pre><code>func write(b []byte)</code></pre>
-         </article>
-         
-         <article class="function" data-name="indexEOL">
-            <h2>indexEOL</h2>
-            <hr />
-            
-            <p>indexEOL finds the index of a line ending,
+            <article class="function" data-name="indexEOL">
+               <h3>
+                  indexEOL 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>indexEOL finds the index of a line ending,
 returning its position and output width.
 A line ending is either a \n or the empty string just before a ^V not beginning a line.
 The output width for \n is 1 (meaning it should be printed)
 but the output width for ^V is 0 (meaning it should be left to begin the next line).</p>
+               
+               <pre><code>func indexEOL(b []byte) (pos int, wid int)</code></pre>
+            </article>
             
-            <pre><code>func indexEOL(b []byte) (pos int, wid int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="flush">
-            <h2>flush</h2>
-            <hr />
-            
-            <p>flush flushes the line buffer.</p>
-            
-            <pre><code>func flush()</code></pre>
-         </article>
-         
-         <article class="function" data-name="isBenchmarkName">
-            <h2>isBenchmarkName</h2>
-            <hr />
-            
-            <p>isBenchmarkName reports whether b is a valid benchmark name
+            <article class="function" data-name="isBenchmarkName">
+               <h3>
+                  isBenchmarkName 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>isBenchmarkName reports whether b is a valid benchmark name
 that might appear as the first field in a benchmark result line.</p>
+               
+               <pre><code>func isBenchmarkName(b []byte) bool</code></pre>
+            </article>
             
-            <pre><code>func isBenchmarkName(b []byte) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="trimUTF8">
-            <h2>trimUTF8</h2>
-            <hr />
-            
-            <p>trimUTF8 returns a length t as close to len(b) as possible such that b[:t]
+            <article class="function" data-name="trimUTF8">
+               <h3>
+                  trimUTF8 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>trimUTF8 returns a length t as close to len(b) as possible such that b[:t]
 does not end in the middle of a possibly-valid UTF-8 sequence.
-
 If a large text buffer must be split before position i at the latest,
 splitting at position trimUTF(b[:i]) avoids splitting a UTF-8 sequence.</p>
+               
+               <pre><code>func trimUTF8(b []byte) int</code></pre>
+            </article>
             
-            <pre><code>func trimUTF8(b []byte) int</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestGolden">
-            <h2>TestGolden</h2>
-            <hr />
+            <article class="function" data-name="write">
+               <h3>
+                  write 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>write writes b to the buffer.</p>
+               
+               <pre><code>func (l *lineBuffer) write(b []byte)</code></pre>
+            </article>
             
-            <pre><code>func TestGolden(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeAndKill">
-            <h2>writeAndKill</h2>
-            <hr />
+            <article class="function" data-name="writeEvent">
+               <h3>
+                  writeEvent 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>writeEvent writes a single event.
+It adds the package, time (if requested), and test name (if needed).</p>
+               
+               <pre><code>func (c *Converter) writeEvent(e *event)</code></pre>
+            </article>
             
-            <p>writeAndKill writes b to w and then fills b with Zs.
-The filling makes sure that if w is holding onto b for
-future use, that future use will have obviously wrong data.</p>
+            <article class="function" data-name="writeOutputEvent">
+               <h3>
+                  writeOutputEvent 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>writeOutputEvent writes a single output event with the given bytes.</p>
+               
+               <pre><code>func (c *Converter) writeOutputEvent(out []byte)</code></pre>
+            </article>
             
-            <pre><code>func writeAndKill(w io.Writer, b []byte)</code></pre>
-         </article>
-         
-         <article class="function" data-name="diffJSON">
-            <h2>diffJSON</h2>
-            <hr />
-            
-            <p>diffJSON diffs the stream we have against the stream we want
-and fails the test with a useful message if they don't match.</p>
-            
-            <pre><code>func diffJSON(t *testing.T, have []byte, want []byte)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestTrimUTF8">
-            <h2>TestTrimUTF8</h2>
-            <hr />
-            
-            <pre><code>func TestTrimUTF8(t *testing.T)</code></pre>
-         </article>
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -576,59 +991,170 @@ and fails the test with a useful message if they don't match.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

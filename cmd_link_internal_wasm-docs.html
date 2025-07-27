@@ -13,563 +13,1087 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                 
+               <li><a href="#interfaces">Interfaces</a></li>
+                
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>wasm</code>
-         </h1>
-         <hr />
+         <h1>wasm</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="I32">
-            <h2>I32</h2>
-            <hr />
-            
-            <pre><code>I32</code></pre>
-         </article>
-         
-         <article class="global" data-name="I64">
-            <h2>I64</h2>
-            <hr />
-            
-            <pre><code>I64</code></pre>
-         </article>
-         
-         <article class="global" data-name="F32">
-            <h2>F32</h2>
-            <hr />
-            
-            <pre><code>F32</code></pre>
-         </article>
-         
-         <article class="global" data-name="F64">
-            <h2>F64</h2>
-            <hr />
-            
-            <pre><code>F64</code></pre>
-         </article>
-         
-         <article class="global" data-name="sectionCustom">
-            <h2>sectionCustom</h2>
-            <hr />
-            
-            <pre><code>sectionCustom</code></pre>
-         </article>
-         
-         <article class="global" data-name="sectionType">
-            <h2>sectionType</h2>
-            <hr />
-            
-            <pre><code>sectionType</code></pre>
-         </article>
-         
-         <article class="global" data-name="sectionImport">
-            <h2>sectionImport</h2>
-            <hr />
-            
-            <pre><code>sectionImport</code></pre>
-         </article>
-         
-         <article class="global" data-name="sectionFunction">
-            <h2>sectionFunction</h2>
-            <hr />
-            
-            <pre><code>sectionFunction</code></pre>
-         </article>
-         
-         <article class="global" data-name="sectionTable">
-            <h2>sectionTable</h2>
-            <hr />
-            
-            <pre><code>sectionTable</code></pre>
-         </article>
-         
-         <article class="global" data-name="sectionMemory">
-            <h2>sectionMemory</h2>
-            <hr />
-            
-            <pre><code>sectionMemory</code></pre>
-         </article>
-         
-         <article class="global" data-name="sectionGlobal">
-            <h2>sectionGlobal</h2>
-            <hr />
-            
-            <pre><code>sectionGlobal</code></pre>
-         </article>
-         
-         <article class="global" data-name="sectionExport">
-            <h2>sectionExport</h2>
-            <hr />
-            
-            <pre><code>sectionExport</code></pre>
-         </article>
-         
-         <article class="global" data-name="sectionStart">
-            <h2>sectionStart</h2>
-            <hr />
-            
-            <pre><code>sectionStart</code></pre>
-         </article>
-         
-         <article class="global" data-name="sectionElement">
-            <h2>sectionElement</h2>
-            <hr />
-            
-            <pre><code>sectionElement</code></pre>
-         </article>
-         
-         <article class="global" data-name="sectionCode">
-            <h2>sectionCode</h2>
-            <hr />
-            
-            <pre><code>sectionCode</code></pre>
-         </article>
-         
-         <article class="global" data-name="sectionData">
-            <h2>sectionData</h2>
-            <hr />
-            
-            <pre><code>sectionData</code></pre>
-         </article>
-         
-         <article class="global" data-name="funcValueOffset">
-            <h2>funcValueOffset</h2>
-            <hr />
-            
-            <p>funcValueOffset is the offset between the PC_F value of a function and the index of the function in WebAssembly</p>
-            
-            <pre><code>funcValueOffset</code></pre>
-         </article>
-         
-         <article class="global" data-name="wasmFuncTypes">
-            <h2>wasmFuncTypes</h2>
-            <hr />
-            
-            <pre><code>wasmFuncTypes</code></pre>
-         </article>
-         
-         <article class="global" data-name="dataSects">
-            <h2>dataSects</h2>
-            <hr />
-            
-            <pre><code>dataSects []wasmDataSect</code></pre>
-         </article>
-         
-         <article class="global" data-name="nameRegexp">
-            <h2>nameRegexp</h2>
-            <hr />
-            
-            <pre><code>nameRegexp</code></pre>
-         </article>
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"bytes"
+"cmd/internal/obj"
+"cmd/internal/obj/wasm"
+"cmd/internal/objabi"
+"cmd/link/internal/ld"
+"cmd/link/internal/loader"
+"cmd/link/internal/sym"
+"fmt"
+"internal/abi"
+"internal/buildcfg"
+"io"
+"regexp"
+"cmd/internal/sys"
+"cmd/link/internal/ld"
+</code></pre>
+            </article>
+         </section>
           
-         <article class="struct" data-name="wasmFunc">
-            <h2>type wasmFunc struct</h2>
-            <hr />
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Module string
+            <article class="global" data-name="F32">
+               <h3>
+                  F32 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const F32 = 0x7D</code></pre>
+            </article>
+            
+            <article class="global" data-name="F64">
+               <h3>
+                  F64 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const F64 = 0x7C</code></pre>
+            </article>
+            
+            <article class="global" data-name="I32">
+               <h3>
+                  I32 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const I32 = 0x7F</code></pre>
+            </article>
+            
+            <article class="global" data-name="I64">
+               <h3>
+                  I64 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const I64 = 0x7E</code></pre>
+            </article>
+            
+            <article class="global" data-name="dataSects">
+               <h3>
+                  dataSects 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var dataSects []wasmDataSect</code></pre>
+            </article>
+            
+            <article class="global" data-name="funcValueOffset">
+               <h3>
+                  funcValueOffset 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>funcValueOffset is the offset between the PC_F value of a function and the index of the function in WebAssembly</p>
+               
+               <pre><code>const funcValueOffset = 0x1000</code></pre>
+            </article>
+            
+            <article class="global" data-name="nameRegexp">
+               <h3>
+                  nameRegexp 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var nameRegexp = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="sectionCode">
+               <h3>
+                  sectionCode 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const sectionCode = 10</code></pre>
+            </article>
+            
+            <article class="global" data-name="sectionCustom">
+               <h3>
+                  sectionCustom 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const sectionCustom = 0</code></pre>
+            </article>
+            
+            <article class="global" data-name="sectionData">
+               <h3>
+                  sectionData 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const sectionData = 11</code></pre>
+            </article>
+            
+            <article class="global" data-name="sectionElement">
+               <h3>
+                  sectionElement 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const sectionElement = 9</code></pre>
+            </article>
+            
+            <article class="global" data-name="sectionExport">
+               <h3>
+                  sectionExport 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const sectionExport = 7</code></pre>
+            </article>
+            
+            <article class="global" data-name="sectionFunction">
+               <h3>
+                  sectionFunction 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const sectionFunction = 3</code></pre>
+            </article>
+            
+            <article class="global" data-name="sectionGlobal">
+               <h3>
+                  sectionGlobal 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const sectionGlobal = 6</code></pre>
+            </article>
+            
+            <article class="global" data-name="sectionImport">
+               <h3>
+                  sectionImport 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const sectionImport = 2</code></pre>
+            </article>
+            
+            <article class="global" data-name="sectionMemory">
+               <h3>
+                  sectionMemory 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const sectionMemory = 5</code></pre>
+            </article>
+            
+            <article class="global" data-name="sectionStart">
+               <h3>
+                  sectionStart 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const sectionStart = 8</code></pre>
+            </article>
+            
+            <article class="global" data-name="sectionTable">
+               <h3>
+                  sectionTable 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const sectionTable = 4</code></pre>
+            </article>
+            
+            <article class="global" data-name="sectionType">
+               <h3>
+                  sectionType 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const sectionType = 1</code></pre>
+            </article>
+            
+            <article class="global" data-name="wasmFuncTypes">
+               <h3>
+                  wasmFuncTypes 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var wasmFuncTypes = map[string]*wasmFuncType{...}</code></pre>
+            </article>
+            
+         </section>
+           
+         <section id="interfaces">
+            <h2>Interfaces</h2>
+            
+            <article class="interface" data-name="nameWriter">
+               <h3>
+                  nameWriter
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type nameWriter interface {
+io.ByteWriter
+io.Writer
+}</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="wasmDataSect">
+               <h3>
+                  wasmDataSect
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type wasmDataSect struct {
+sect *sym.Section
+data []byte
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="wasmFunc">
+               <h3>
+                  wasmFunc
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type wasmFunc struct {
+Module string
 Name string
 Type uint32
-Code []byte</code></pre>
-         </article>
-         
-         <article class="struct" data-name="wasmFuncType">
-            <h2>type wasmFuncType struct</h2>
-            <hr />
+Code []byte
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Params []byte
-Results []byte</code></pre>
-         </article>
-         
-         <article class="struct" data-name="wasmDataSect">
-            <h2>type wasmDataSect struct</h2>
-            <hr />
+            <article class="struct" data-name="wasmFuncType">
+               <h3>
+                  wasmFuncType
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type wasmFuncType struct {
+Params []byte
+Results []byte
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">sect *sym.Section
-data []byte</code></pre>
-         </article>
+         </section>
           
-         <article class="function" data-name="gentext">
-            <h2>gentext</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <pre><code>func gentext(ctxt *ld.Link, ldr *loader.Loader)</code></pre>
-         </article>
-         
-         <article class="function" data-name="readWasmImport">
-            <h2>readWasmImport</h2>
-            <hr />
+            <article class="function" data-name="Init">
+               <h3>
+                  Init 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func Init() (*sys.Arch, ld.Arch)</code></pre>
+            </article>
             
-            <pre><code>func readWasmImport(ldr *loader.Loader, s loader.Sym) obj.WasmImport</code></pre>
-         </article>
-         
-         <article class="function" data-name="assignAddress">
-            <h2>assignAddress</h2>
-            <hr />
+            <article class="function" data-name="archinit">
+               <h3>
+                  archinit 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func archinit(ctxt *ld.Link)</code></pre>
+            </article>
             
-            <pre><code>func assignAddress(ldr *loader.Loader, sect *sym.Section, n int, s loader.Sym, va uint64, isTramp bool) (*sym.Section, int, uint64)</code></pre>
-         </article>
-         
-         <article class="function" data-name="asmb">
-            <h2>asmb</h2>
-            <hr />
+            <article class="function" data-name="asmb">
+               <h3>
+                  asmb 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func asmb(ctxt *ld.Link, ldr *loader.Loader)</code></pre>
+            </article>
             
-            <pre><code>func asmb(ctxt *ld.Link, ldr *loader.Loader)</code></pre>
-         </article>
-         
-         <article class="function" data-name="asmb2">
-            <h2>asmb2</h2>
-            <hr />
-            
-            <p>asmb writes the final WebAssembly module binary.
+            <article class="function" data-name="asmb2">
+               <h3>
+                  asmb2 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>asmb writes the final WebAssembly module binary.
 Spec: https://webassembly.github.io/spec/core/binary/modules.html</p>
+               
+               <pre><code>func asmb2(ctxt *ld.Link, ldr *loader.Loader)</code></pre>
+            </article>
             
-            <pre><code>func asmb2(ctxt *ld.Link, ldr *loader.Loader)</code></pre>
-         </article>
-         
-         <article class="function" data-name="lookupType">
-            <h2>lookupType</h2>
-            <hr />
+            <article class="function" data-name="assignAddress">
+               <h3>
+                  assignAddress 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func assignAddress(ldr *loader.Loader, sect *sym.Section, n int, s loader.Sym, va uint64, isTramp bool) (*sym.Section, int, uint64)</code></pre>
+            </article>
             
-            <pre><code>func lookupType(sig *wasmFuncType, types *[]*wasmFuncType) uint32</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeSecHeader">
-            <h2>writeSecHeader</h2>
-            <hr />
+            <article class="function" data-name="fieldsToTypes">
+               <h3>
+                  fieldsToTypes 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func fieldsToTypes(fields []obj.WasmField) []byte</code></pre>
+            </article>
             
-            <pre><code>func writeSecHeader(ctxt *ld.Link, id uint8) int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeSecSize">
-            <h2>writeSecSize</h2>
-            <hr />
+            <article class="function" data-name="gentext">
+               <h3>
+                  gentext 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func gentext(ctxt *ld.Link, ldr *loader.Loader)</code></pre>
+            </article>
             
-            <pre><code>func writeSecSize(ctxt *ld.Link, sizeOffset int64)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeBuildID">
-            <h2>writeBuildID</h2>
-            <hr />
+            <article class="function" data-name="lookupType">
+               <h3>
+                  lookupType 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func lookupType(sig *wasmFuncType, types *[]*wasmFuncType) uint32</code></pre>
+            </article>
             
-            <pre><code>func writeBuildID(ctxt *ld.Link, buildid []byte)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeTypeSec">
-            <h2>writeTypeSec</h2>
-            <hr />
+            <article class="function" data-name="readWasmImport">
+               <h3>
+                  readWasmImport 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func readWasmImport(ldr *loader.Loader, s loader.Sym) obj.WasmImport</code></pre>
+            </article>
             
-            <p>writeTypeSec writes the section that declares all function types
-so they can be referenced by index.</p>
+            <article class="function" data-name="writeBuildID">
+               <h3>
+                  writeBuildID 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func writeBuildID(ctxt *ld.Link, buildid []byte)</code></pre>
+            </article>
             
-            <pre><code>func writeTypeSec(ctxt *ld.Link, types []*wasmFuncType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeImportSec">
-            <h2>writeImportSec</h2>
-            <hr />
+            <article class="function" data-name="writeCodeSec">
+               <h3>
+                  writeCodeSec 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>writeCodeSec writes the section that provides the function bodies for the functions
+declared by the "func" section.</p>
+               
+               <pre><code>func writeCodeSec(ctxt *ld.Link, fns []*wasmFunc)</code></pre>
+            </article>
             
-            <p>writeImportSec writes the section that lists the functions that get
-imported from the WebAssembly host, usually JavaScript.</p>
+            <article class="function" data-name="writeDataSec">
+               <h3>
+                  writeDataSec 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>writeDataSec writes the section that provides data that will be used to initialize the linear memory.</p>
+               
+               <pre><code>func writeDataSec(ctxt *ld.Link)</code></pre>
+            </article>
             
-            <pre><code>func writeImportSec(ctxt *ld.Link, hostImports []*wasmFunc)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeFunctionSec">
-            <h2>writeFunctionSec</h2>
-            <hr />
-            
-            <p>writeFunctionSec writes the section that declares the types of functions.
-The bodies of these functions will later be provided in the "code" section.</p>
-            
-            <pre><code>func writeFunctionSec(ctxt *ld.Link, fns []*wasmFunc)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeTableSec">
-            <h2>writeTableSec</h2>
-            <hr />
-            
-            <p>writeTableSec writes the section that declares tables. Currently there is only a single table
-that is used by the CallIndirect operation to dynamically call any function.
-The contents of the table get initialized by the "element" section.</p>
-            
-            <pre><code>func writeTableSec(ctxt *ld.Link, fns []*wasmFunc)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeMemorySec">
-            <h2>writeMemorySec</h2>
-            <hr />
-            
-            <p>writeMemorySec writes the section that declares linear memories. Currently one linear memory is being used.
-Linear memory always starts at address zero. More memory can be requested with the GrowMemory instruction.</p>
-            
-            <pre><code>func writeMemorySec(ctxt *ld.Link, ldr *loader.Loader)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeGlobalSec">
-            <h2>writeGlobalSec</h2>
-            <hr />
-            
-            <p>writeGlobalSec writes the section that declares global variables.</p>
-            
-            <pre><code>func writeGlobalSec(ctxt *ld.Link)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeExportSec">
-            <h2>writeExportSec</h2>
-            <hr />
-            
-            <p>writeExportSec writes the section that declares exports.
-Exports can be accessed by the WebAssembly host, usually JavaScript.
-The wasm_export_* functions and the linear memory get exported.</p>
-            
-            <pre><code>func writeExportSec(ctxt *ld.Link, ldr *loader.Loader, lenHostImports int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeElementSec">
-            <h2>writeElementSec</h2>
-            <hr />
-            
-            <p>writeElementSec writes the section that initializes the tables declared by the "table" section.
+            <article class="function" data-name="writeElementSec">
+               <h3>
+                  writeElementSec 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>writeElementSec writes the section that initializes the tables declared by the "table" section.
 The table for CallIndirect gets initialized in a very simple way so that each table index (PC_F value)
 maps linearly to the function index (numImports + PC_F).</p>
+               
+               <pre><code>func writeElementSec(ctxt *ld.Link, numImports uint64, numFns uint64)</code></pre>
+            </article>
             
-            <pre><code>func writeElementSec(ctxt *ld.Link, numImports uint64, numFns uint64)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeCodeSec">
-            <h2>writeCodeSec</h2>
-            <hr />
+            <article class="function" data-name="writeExportSec">
+               <h3>
+                  writeExportSec 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>writeExportSec writes the section that declares exports.
+Exports can be accessed by the WebAssembly host, usually JavaScript.
+The wasm_export_* functions and the linear memory get exported.</p>
+               
+               <pre><code>func writeExportSec(ctxt *ld.Link, ldr *loader.Loader, lenHostImports int)</code></pre>
+            </article>
             
-            <p>writeCodeSec writes the section that provides the function bodies for the functions
-declared by the "func" section.</p>
+            <article class="function" data-name="writeFunctionSec">
+               <h3>
+                  writeFunctionSec 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>writeFunctionSec writes the section that declares the types of functions.
+The bodies of these functions will later be provided in the "code" section.</p>
+               
+               <pre><code>func writeFunctionSec(ctxt *ld.Link, fns []*wasmFunc)</code></pre>
+            </article>
             
-            <pre><code>func writeCodeSec(ctxt *ld.Link, fns []*wasmFunc)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeDataSec">
-            <h2>writeDataSec</h2>
-            <hr />
+            <article class="function" data-name="writeGlobalSec">
+               <h3>
+                  writeGlobalSec 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>writeGlobalSec writes the section that declares global variables.</p>
+               
+               <pre><code>func writeGlobalSec(ctxt *ld.Link)</code></pre>
+            </article>
             
-            <p>writeDataSec writes the section that provides data that will be used to initialize the linear memory.</p>
+            <article class="function" data-name="writeI32Const">
+               <h3>
+                  writeI32Const 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func writeI32Const(w io.ByteWriter, v int32)</code></pre>
+            </article>
             
-            <pre><code>func writeDataSec(ctxt *ld.Link)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeProducerSec">
-            <h2>writeProducerSec</h2>
-            <hr />
+            <article class="function" data-name="writeI64Const">
+               <h3>
+                  writeI64Const 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func writeI64Const(w io.ByteWriter, v int64)</code></pre>
+            </article>
             
-            <p>writeProducerSec writes an optional section that reports the source language and compiler version.</p>
+            <article class="function" data-name="writeImportSec">
+               <h3>
+                  writeImportSec 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>writeImportSec writes the section that lists the functions that get
+imported from the WebAssembly host, usually JavaScript.</p>
+               
+               <pre><code>func writeImportSec(ctxt *ld.Link, hostImports []*wasmFunc)</code></pre>
+            </article>
             
-            <pre><code>func writeProducerSec(ctxt *ld.Link)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeNameSec">
-            <h2>writeNameSec</h2>
-            <hr />
+            <article class="function" data-name="writeMemorySec">
+               <h3>
+                  writeMemorySec 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>writeMemorySec writes the section that declares linear memories. Currently one linear memory is being used.
+Linear memory always starts at address zero. More memory can be requested with the GrowMemory instruction.</p>
+               
+               <pre><code>func writeMemorySec(ctxt *ld.Link, ldr *loader.Loader)</code></pre>
+            </article>
             
-            <p>writeNameSec writes an optional section that assigns names to the functions declared by the "func" section.
+            <article class="function" data-name="writeName">
+               <h3>
+                  writeName 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func writeName(w nameWriter, name string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="writeNameSec">
+               <h3>
+                  writeNameSec 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>writeNameSec writes an optional section that assigns names to the functions declared by the "func" section.
 The names are only used by WebAssembly stack traces, debuggers and decompilers.
 TODO(neelance): add symbol table of DATA symbols</p>
+               
+               <pre><code>func writeNameSec(ctxt *ld.Link, firstFnIndex int, fns []*wasmFunc)</code></pre>
+            </article>
             
-            <pre><code>func writeNameSec(ctxt *ld.Link, firstFnIndex int, fns []*wasmFunc)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeI32Const">
-            <h2>writeI32Const</h2>
-            <hr />
+            <article class="function" data-name="writeProducerSec">
+               <h3>
+                  writeProducerSec 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>writeProducerSec writes an optional section that reports the source language and compiler version.</p>
+               
+               <pre><code>func writeProducerSec(ctxt *ld.Link)</code></pre>
+            </article>
             
-            <pre><code>func writeI32Const(w io.ByteWriter, v int32)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeI64Const">
-            <h2>writeI64Const</h2>
-            <hr />
+            <article class="function" data-name="writeSecHeader">
+               <h3>
+                  writeSecHeader 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func writeSecHeader(ctxt *ld.Link, id uint8) int64</code></pre>
+            </article>
             
-            <pre><code>func writeI64Const(w io.ByteWriter, v int64)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeName">
-            <h2>writeName</h2>
-            <hr />
+            <article class="function" data-name="writeSecSize">
+               <h3>
+                  writeSecSize 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func writeSecSize(ctxt *ld.Link, sizeOffset int64)</code></pre>
+            </article>
             
-            <pre><code>func writeName(w nameWriter, name string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeUleb128">
-            <h2>writeUleb128</h2>
-            <hr />
+            <article class="function" data-name="writeSleb128">
+               <h3>
+                  writeSleb128 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func writeSleb128(w io.ByteWriter, v int64)</code></pre>
+            </article>
             
-            <pre><code>func writeUleb128(w io.ByteWriter, v uint64)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeUleb128FixedLength">
-            <h2>writeUleb128FixedLength</h2>
-            <hr />
+            <article class="function" data-name="writeTableSec">
+               <h3>
+                  writeTableSec 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>writeTableSec writes the section that declares tables. Currently there is only a single table
+that is used by the CallIndirect operation to dynamically call any function.
+The contents of the table get initialized by the "element" section.</p>
+               
+               <pre><code>func writeTableSec(ctxt *ld.Link, fns []*wasmFunc)</code></pre>
+            </article>
             
-            <pre><code>func writeUleb128FixedLength(w io.ByteWriter, v uint64, length int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeSleb128">
-            <h2>writeSleb128</h2>
-            <hr />
+            <article class="function" data-name="writeTypeSec">
+               <h3>
+                  writeTypeSec 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>writeTypeSec writes the section that declares all function types
+so they can be referenced by index.</p>
+               
+               <pre><code>func writeTypeSec(ctxt *ld.Link, types []*wasmFuncType)</code></pre>
+            </article>
             
-            <pre><code>func writeSleb128(w io.ByteWriter, v int64)</code></pre>
-         </article>
-         
-         <article class="function" data-name="fieldsToTypes">
-            <h2>fieldsToTypes</h2>
-            <hr />
+            <article class="function" data-name="writeUleb128">
+               <h3>
+                  writeUleb128 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func writeUleb128(w io.ByteWriter, v uint64)</code></pre>
+            </article>
             
-            <pre><code>func fieldsToTypes(fields []obj.WasmField) []byte</code></pre>
-         </article>
-         
-         <article class="function" data-name="Init">
-            <h2>Init</h2>
-            <hr />
+            <article class="function" data-name="writeUleb128FixedLength">
+               <h3>
+                  writeUleb128FixedLength 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func writeUleb128FixedLength(w io.ByteWriter, v uint64, length int)</code></pre>
+            </article>
             
-            <pre><code>func Init() (*sys.Arch, ld.Arch)</code></pre>
-         </article>
-         
-         <article class="function" data-name="archinit">
-            <h2>archinit</h2>
-            <hr />
-            
-            <pre><code>func archinit(ctxt *ld.Link)</code></pre>
-         </article>
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -577,59 +1101,170 @@ TODO(neelance): add symbol table of DATA symbols</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

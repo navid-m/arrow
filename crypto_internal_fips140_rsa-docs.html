@@ -13,684 +13,1143 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                  
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>rsa</code>
-         </h1>
-         <hr />
-         
-         <article class="global" data-name="ErrMessageTooLong">
-            <h2>ErrMessageTooLong</h2>
-            <hr />
-            
-            <pre><code>ErrMessageTooLong</code></pre>
-         </article>
-         
-         <article class="global" data-name="ErrDecryption">
-            <h2>ErrDecryption</h2>
-            <hr />
-            
-            <pre><code>ErrDecryption</code></pre>
-         </article>
-         
-         <article class="global" data-name="ErrVerification">
-            <h2>ErrVerification</h2>
-            <hr />
-            
-            <pre><code>ErrVerification</code></pre>
-         </article>
-         
-         <article class="global" data-name="withCheck">
-            <h2>withCheck</h2>
-            <hr />
-            
-            <pre><code>withCheck</code></pre>
-         </article>
-         
-         <article class="global" data-name="noCheck">
-            <h2>noCheck</h2>
-            <hr />
-            
-            <pre><code>noCheck</code></pre>
-         </article>
-         
-         <article class="global" data-name="fipsSelfTest">
-            <h2>fipsSelfTest</h2>
-            <hr />
-            
-            <pre><code>fipsSelfTest</code></pre>
-         </article>
-         
-         <article class="global" data-name="errDivisorTooLarge">
-            <h2>errDivisorTooLarge</h2>
-            <hr />
-            
-            <p>errDivisorTooLarge is returned by [totient] when gcd(p-1, q-1) is too large.</p>
-            
-            <pre><code>errDivisorTooLarge</code></pre>
-         </article>
-         
-         <article class="global" data-name="productOfPrimes">
-            <h2>productOfPrimes</h2>
-            <hr />
-            
-            <p>productOfPrimes is the product of the first 74 primes higher than 2.
+         <h1>rsa</h1>
+         <div class="section-divider"></div>
 
-The number of primes was selected to be the highest such that the product fit
-in 512 bits, so to be usable for 1024 bit RSA keys.
-
-Higher values cause fewer Miller-Rabin tests of composites (nothing can help
-with the final test on the actual prime) but make InverseVarTime take longer.</p>
-            
-            <pre><code>productOfPrimes</code></pre>
-         </article>
          
-         <article class="global" data-name="millerRabinCOMPOSITE">
-            <h2>millerRabinCOMPOSITE</h2>
-            <hr />
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"bytes"
+"crypto/internal/fips140"
+"crypto/internal/fips140/bigmod"
+_ "crypto/internal/fips140/check"
+"errors"
+"sync"
+"crypto/internal/fips140"
+"crypto/internal/fips140/bigmod"
+"crypto/internal/fips140/drbg"
+"errors"
+"io"
+"bytes"
+"crypto/internal/fips140"
+"errors"
+"bytes"
+"crypto/internal/fips140"
+"crypto/internal/fips140/drbg"
+"crypto/internal/fips140/sha256"
+"crypto/internal/fips140/sha3"
+"crypto/internal/fips140/sha512"
+"crypto/internal/fips140/subtle"
+"errors"
+"io"
+"bytes"
+"crypto/internal/fips140"
+"crypto/internal/fips140/bigmod"
+"errors"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <pre><code>millerRabinCOMPOSITE</code></pre>
-         </article>
-         
-         <article class="global" data-name="millerRabinPOSSIBLYPRIME">
-            <h2>millerRabinPOSSIBLYPRIME</h2>
-            <hr />
+            <article class="global" data-name="ErrDecryption">
+               <h3>
+                  ErrDecryption 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var ErrDecryption = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre><code>millerRabinPOSSIBLYPRIME</code></pre>
-         </article>
-         
-         <article class="global" data-name="hashPrefixes">
-            <h2>hashPrefixes</h2>
-            <hr />
+            <article class="global" data-name="ErrMessageTooLong">
+               <h3>
+                  ErrMessageTooLong 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var ErrMessageTooLong = *ast.CallExpr</code></pre>
+            </article>
             
-            <p>These are ASN1 DER structures:
-
-	DigestInfo ::= SEQUENCE {
-	  digestAlgorithm AlgorithmIdentifier,
-	  digest OCTET STRING
-	}
-
+            <article class="global" data-name="ErrVerification">
+               <h3>
+                  ErrVerification 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var ErrVerification = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="errDivisorTooLarge">
+               <h3>
+                  errDivisorTooLarge 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>errDivisorTooLarge is returned by [totient] when gcd(p-1, q-1) is too large.</p>
+               
+               <pre><code>var errDivisorTooLarge = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="fipsSelfTest">
+               <h3>
+                  fipsSelfTest 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var fipsSelfTest = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="hashPrefixes">
+               <h3>
+                  hashPrefixes 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>These are ASN1 DER structures:
+DigestInfo ::= SEQUENCE {
+digestAlgorithm AlgorithmIdentifier,
+digest OCTET STRING
+}
 For performance, we don't use the generic ASN1 encoder. Rather, we
 precompute a prefix of the digest value that makes a valid ASN1 DER string
 with the correct contents.</p>
+               
+               <pre><code>var hashPrefixes = map[string][]byte{...}</code></pre>
+            </article>
             
-            <pre><code>hashPrefixes</code></pre>
-         </article>
-         
-         <article class="global" data-name="pssSaltLengthAutodetect">
-            <h2>pssSaltLengthAutodetect</h2>
-            <hr />
+            <article class="global" data-name="millerRabinCOMPOSITE">
+               <h3>
+                  millerRabinCOMPOSITE 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const millerRabinCOMPOSITE = false</code></pre>
+            </article>
             
-            <pre><code>pssSaltLengthAutodetect</code></pre>
-         </article>
-          
-         <article class="struct" data-name="PublicKey">
-            <h2>type PublicKey struct</h2>
-            <hr />
+            <article class="global" data-name="millerRabinPOSSIBLYPRIME">
+               <h3>
+                  millerRabinPOSSIBLYPRIME 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const millerRabinPOSSIBLYPRIME = true</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">N *bigmod.Modulus
-E int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="PrivateKey">
-            <h2>type PrivateKey struct</h2>
-            <hr />
+            <article class="global" data-name="noCheck">
+               <h3>
+                  noCheck 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const noCheck = false</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">pub PublicKey
+            <article class="global" data-name="productOfPrimes">
+               <h3>
+                  productOfPrimes 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>productOfPrimes is the product of the first 74 primes higher than 2.
+The number of primes was selected to be the highest such that the product fit
+in 512 bits, so to be usable for 1024 bit RSA keys.
+Higher values cause fewer Miller-Rabin tests of composites (nothing can help
+with the final test on the actual prime) but make InverseVarTime take longer.</p>
+               
+               <pre><code>var productOfPrimes = []byte{...}</code></pre>
+            </article>
+            
+            <article class="global" data-name="pssSaltLengthAutodetect">
+               <h3>
+                  pssSaltLengthAutodetect 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const pssSaltLengthAutodetect = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="withCheck">
+               <h3>
+                  withCheck 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const withCheck = true</code></pre>
+            </article>
+            
+         </section>
+            
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="PrivateKey">
+               <h3>
+                  PrivateKey
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type PrivateKey struct {
+pub PublicKey
 d *bigmod.Nat
 p *bigmod.Modulus
 q *bigmod.Modulus
 dP []byte
 dQ []byte
 qInv *bigmod.Nat
-fipsApproved bool</code></pre>
-         </article>
-         
-         <article class="struct" data-name="millerRabin">
-            <h2>type millerRabin struct</h2>
-            <hr />
+fipsApproved bool
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">w *bigmod.Modulus
+            <article class="struct" data-name="PublicKey">
+               <h3>
+                  PublicKey
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type PublicKey struct {
+N *bigmod.Modulus
+E int
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="millerRabin">
+               <h3>
+                  millerRabin
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type millerRabin struct {
+w *bigmod.Modulus
 a uint
-m []byte</code></pre>
-         </article>
+m []byte
+}</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="function" data-name="Size">
-            <h2>Size</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <p>Size returns the modulus size in bytes. Raw signatures and ciphertexts
-for or by this public key will have the same size.</p>
+            <article class="function" data-name="DecryptOAEP">
+               <h3>
+                  DecryptOAEP 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>DecryptOAEP decrypts ciphertext using RSAES-OAEP.</p>
+               
+               <pre><code>func DecryptOAEP(hash fips140.Hash, mgfHash fips140.Hash, priv *PrivateKey, ciphertext []byte, label []byte) ([]byte, error)</code></pre>
+            </article>
             
-            <pre><code>func Size() int</code></pre>
-         </article>
-         
-         <article class="function" data-name="PublicKey">
-            <h2>PublicKey</h2>
-            <hr />
+            <article class="function" data-name="DecryptWithCheck">
+               <h3>
+                  DecryptWithCheck 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>DecryptWithCheck performs the RSA private key operation and checks the
+result to defend against errors in the CRT computation.</p>
+               
+               <pre><code>func DecryptWithCheck(priv *PrivateKey, ciphertext []byte) ([]byte, error)</code></pre>
+            </article>
             
-            <pre><code>func PublicKey() *PublicKey</code></pre>
-         </article>
-         
-         <article class="function" data-name="NewPrivateKey">
-            <h2>NewPrivateKey</h2>
-            <hr />
+            <article class="function" data-name="DecryptWithoutCheck">
+               <h3>
+                  DecryptWithoutCheck 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>DecryptWithoutCheck performs the RSA private key operation.</p>
+               
+               <pre><code>func DecryptWithoutCheck(priv *PrivateKey, ciphertext []byte) ([]byte, error)</code></pre>
+            </article>
             
-            <p>NewPrivateKey creates a new RSA private key from the given parameters.
-
-All values are in big-endian byte slice format, and may have leading zeros
-or be shorter if leading zeroes were trimmed.</p>
+            <article class="function" data-name="Encrypt">
+               <h3>
+                  Encrypt 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Encrypt performs the RSA public key operation.</p>
+               
+               <pre><code>func Encrypt(pub *PublicKey, plaintext []byte) ([]byte, error)</code></pre>
+            </article>
             
-            <pre><code>func NewPrivateKey(N []byte, e int, d []byte, P []byte, Q []byte) (*PrivateKey, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="newPrivateKey">
-            <h2>newPrivateKey</h2>
-            <hr />
+            <article class="function" data-name="EncryptOAEP">
+               <h3>
+                  EncryptOAEP 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>EncryptOAEP encrypts the given message with RSAES-OAEP.</p>
+               
+               <pre><code>func EncryptOAEP(hash fips140.Hash, mgfHash fips140.Hash, random io.Reader, pub *PublicKey, msg []byte, label []byte) ([]byte, error)</code></pre>
+            </article>
             
-            <pre><code>func newPrivateKey(n *bigmod.Modulus, e int, d *bigmod.Nat, p *bigmod.Modulus, q *bigmod.Modulus) (*PrivateKey, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="NewPrivateKeyWithPrecomputation">
-            <h2>NewPrivateKeyWithPrecomputation</h2>
-            <hr />
-            
-            <p>NewPrivateKeyWithPrecomputation creates a new RSA private key from the given
-parameters, which include precomputed CRT values.</p>
-            
-            <pre><code>func NewPrivateKeyWithPrecomputation(N []byte, e int, d []byte, P []byte, Q []byte, dP []byte, dQ []byte, qInv []byte) (*PrivateKey, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="NewPrivateKeyWithoutCRT">
-            <h2>NewPrivateKeyWithoutCRT</h2>
-            <hr />
-            
-            <p>NewPrivateKeyWithoutCRT creates a new RSA private key from the given parameters.
-
-This is meant for deprecated multi-prime keys, and is not FIPS 140 compliant.</p>
-            
-            <pre><code>func NewPrivateKeyWithoutCRT(N []byte, e int, d []byte) (*PrivateKey, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Export">
-            <h2>Export</h2>
-            <hr />
-            
-            <p>Export returns the key parameters in big-endian byte slice format.
-
+            <article class="function" data-name="Export">
+               <h3>
+                  Export 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Export returns the key parameters in big-endian byte slice format.
 P, Q, dP, dQ, and qInv may be nil if the key was created with
 NewPrivateKeyWithoutCRT.</p>
+               
+               <pre><code>func (priv *PrivateKey) Export() (N []byte, e int, d []byte, P []byte, Q []byte, dP []byte, dQ []byte, qInv []byte)</code></pre>
+            </article>
             
-            <pre><code>func Export() (N []byte, e int, d []byte, P []byte, Q []byte, dP []byte, dQ []byte, qInv []byte)</code></pre>
-         </article>
-         
-         <article class="function" data-name="checkPrivateKey">
-            <h2>checkPrivateKey</h2>
-            <hr />
+            <article class="function" data-name="GenerateKey">
+               <h3>
+                  GenerateKey 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>GenerateKey generates a new RSA key pair of the given bit size.
+bits must be at least 32.</p>
+               
+               <pre><code>func GenerateKey(rand io.Reader, bits int) (*PrivateKey, error)</code></pre>
+            </article>
             
-            <p>checkPrivateKey is called by the NewPrivateKey and GenerateKey functions, and
+            <article class="function" data-name="NewPrivateKey">
+               <h3>
+                  NewPrivateKey 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewPrivateKey creates a new RSA private key from the given parameters.
+All values are in big-endian byte slice format, and may have leading zeros
+or be shorter if leading zeroes were trimmed.</p>
+               
+               <pre><code>func NewPrivateKey(N []byte, e int, d []byte, P []byte, Q []byte) (*PrivateKey, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="NewPrivateKeyWithPrecomputation">
+               <h3>
+                  NewPrivateKeyWithPrecomputation 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewPrivateKeyWithPrecomputation creates a new RSA private key from the given
+parameters, which include precomputed CRT values.</p>
+               
+               <pre><code>func NewPrivateKeyWithPrecomputation(N []byte, e int, d []byte, P []byte, Q []byte, dP []byte, dQ []byte, qInv []byte) (*PrivateKey, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="NewPrivateKeyWithoutCRT">
+               <h3>
+                  NewPrivateKeyWithoutCRT 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewPrivateKeyWithoutCRT creates a new RSA private key from the given parameters.
+This is meant for deprecated multi-prime keys, and is not FIPS 140 compliant.</p>
+               
+               <pre><code>func NewPrivateKeyWithoutCRT(N []byte, e int, d []byte) (*PrivateKey, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="PSSMaxSaltLength">
+               <h3>
+                  PSSMaxSaltLength 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>PSSMaxSaltLength returns the maximum salt length for a given public key and
+hash function.</p>
+               
+               <pre><code>func PSSMaxSaltLength(pub *PublicKey, hash fips140.Hash) (int, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="PublicKey">
+               <h3>
+                  PublicKey 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (priv *PrivateKey) PublicKey() *PublicKey</code></pre>
+            </article>
+            
+            <article class="function" data-name="SignPKCS1v15">
+               <h3>
+                  SignPKCS1v15 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>SignPKCS1v15 calculates an RSASSA-PKCS1-v1.5 signature.
+hash is the name of the hash function as returned by [crypto.Hash.String]
+or the empty string to indicate that the message is signed directly.</p>
+               
+               <pre><code>func SignPKCS1v15(priv *PrivateKey, hash string, hashed []byte) ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="SignPSS">
+               <h3>
+                  SignPSS 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>SignPSS calculates the signature of hashed using RSASSA-PSS.</p>
+               
+               <pre><code>func SignPSS(rand io.Reader, priv *PrivateKey, hash fips140.Hash, hashed []byte, saltLength int) ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Size">
+               <h3>
+                  Size 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Size returns the modulus size in bytes. Raw signatures and ciphertexts
+for or by this public key will have the same size.</p>
+               
+               <pre><code>func (pub *PublicKey) Size() int</code></pre>
+            </article>
+            
+            <article class="function" data-name="VerifyPKCS1v15">
+               <h3>
+                  VerifyPKCS1v15 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>VerifyPKCS1v15 verifies an RSASSA-PKCS1-v1.5 signature.
+hash is the name of the hash function as returned by [crypto.Hash.String]
+or the empty string to indicate that the message is signed directly.</p>
+               
+               <pre><code>func VerifyPKCS1v15(pub *PublicKey, hash string, hashed []byte, sig []byte) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="VerifyPSS">
+               <h3>
+                  VerifyPSS 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>VerifyPSS verifies sig with RSASSA-PSS automatically detecting the salt length.</p>
+               
+               <pre><code>func VerifyPSS(pub *PublicKey, hash fips140.Hash, digest []byte, sig []byte) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="VerifyPSSWithSaltLength">
+               <h3>
+                  VerifyPSSWithSaltLength 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>VerifyPSS verifies sig with RSASSA-PSS and an expected salt length.</p>
+               
+               <pre><code>func VerifyPSSWithSaltLength(pub *PublicKey, hash fips140.Hash, digest []byte, sig []byte, saltLength int) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="checkApprovedHash">
+               <h3>
+                  checkApprovedHash 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func checkApprovedHash(hash fips140.Hash)</code></pre>
+            </article>
+            
+            <article class="function" data-name="checkApprovedHashName">
+               <h3>
+                  checkApprovedHashName 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func checkApprovedHashName(hash string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="checkPrivateKey">
+               <h3>
+                  checkPrivateKey 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>checkPrivateKey is called by the NewPrivateKey and GenerateKey functions, and
 is allowed to modify priv.fipsApproved.</p>
+               
+               <pre><code>func checkPrivateKey(priv *PrivateKey) error</code></pre>
+            </article>
             
-            <pre><code>func checkPrivateKey(priv *PrivateKey) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="checkPublicKey">
-            <h2>checkPublicKey</h2>
-            <hr />
+            <article class="function" data-name="checkPublicKey">
+               <h3>
+                  checkPublicKey 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func checkPublicKey(pub *PublicKey) (fipsApproved bool, err error)</code></pre>
+            </article>
             
-            <pre><code>func checkPublicKey(pub *PublicKey) (fipsApproved bool, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Encrypt">
-            <h2>Encrypt</h2>
-            <hr />
-            
-            <p>Encrypt performs the RSA public key operation.</p>
-            
-            <pre><code>func Encrypt(pub *PublicKey, plaintext []byte) ([]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="encrypt">
-            <h2>encrypt</h2>
-            <hr />
-            
-            <pre><code>func encrypt(pub *PublicKey, plaintext []byte) ([]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="DecryptWithoutCheck">
-            <h2>DecryptWithoutCheck</h2>
-            <hr />
-            
-            <p>DecryptWithoutCheck performs the RSA private key operation.</p>
-            
-            <pre><code>func DecryptWithoutCheck(priv *PrivateKey, ciphertext []byte) ([]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="DecryptWithCheck">
-            <h2>DecryptWithCheck</h2>
-            <hr />
-            
-            <p>DecryptWithCheck performs the RSA private key operation and checks the
-result to defend against errors in the CRT computation.</p>
-            
-            <pre><code>func DecryptWithCheck(priv *PrivateKey, ciphertext []byte) ([]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="decrypt">
-            <h2>decrypt</h2>
-            <hr />
-            
-            <p>decrypt performs an RSA decryption of ciphertext into out. If check is true,
+            <article class="function" data-name="decrypt">
+               <h3>
+                  decrypt 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>decrypt performs an RSA decryption of ciphertext into out. If check is true,
 m^e is calculated and compared with ciphertext, in order to defend against
 errors in the CRT computation.</p>
+               
+               <pre><code>func decrypt(priv *PrivateKey, ciphertext []byte, check bool) ([]byte, error)</code></pre>
+            </article>
             
-            <pre><code>func decrypt(priv *PrivateKey, ciphertext []byte, check bool) ([]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testPrivateKey">
-            <h2>testPrivateKey</h2>
-            <hr />
+            <article class="function" data-name="emsaPSSEncode">
+               <h3>
+                  emsaPSSEncode 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func emsaPSSEncode(mHash []byte, emBits int, salt []byte, hash fips140.Hash) ([]byte, error)</code></pre>
+            </article>
             
-            <pre><code>func testPrivateKey() *PrivateKey</code></pre>
-         </article>
-         
-         <article class="function" data-name="GenerateKey">
-            <h2>GenerateKey</h2>
-            <hr />
+            <article class="function" data-name="emsaPSSVerify">
+               <h3>
+                  emsaPSSVerify 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func emsaPSSVerify(mHash []byte, em []byte, emBits int, sLen int, hash fips140.Hash) error</code></pre>
+            </article>
             
-            <p>GenerateKey generates a new RSA key pair of the given bit size.
-bits must be at least 32.</p>
+            <article class="function" data-name="encrypt">
+               <h3>
+                  encrypt 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func encrypt(pub *PublicKey, plaintext []byte) ([]byte, error)</code></pre>
+            </article>
             
-            <pre><code>func GenerateKey(rand io.Reader, bits int) (*PrivateKey, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="totient">
-            <h2>totient</h2>
-            <hr />
+            <article class="function" data-name="incCounter">
+               <h3>
+                  incCounter 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>incCounter increments a four byte, big-endian counter.</p>
+               
+               <pre><code>func incCounter(c *[4]byte)</code></pre>
+            </article>
             
-            <p>totient computes the Carmichael totient function λ(N) = lcm(p-1, q-1).</p>
-            
-            <pre><code>func totient(p *bigmod.Modulus, q *bigmod.Modulus) (*bigmod.Modulus, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="randomPrime">
-            <h2>randomPrime</h2>
-            <hr />
-            
-            <p>randomPrime returns a random prime number of the given bit size following
-the process in FIPS 186-5, Appendix A.1.3.</p>
-            
-            <pre><code>func randomPrime(rand io.Reader, bits int) ([]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="isPrime">
-            <h2>isPrime</h2>
-            <hr />
-            
-            <p>isPrime runs the Miller-Rabin Probabilistic Primality Test from
+            <article class="function" data-name="isPrime">
+               <h3>
+                  isPrime 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>isPrime runs the Miller-Rabin Probabilistic Primality Test from
 FIPS 186-5, Appendix B.3.1.
-
 w must be a random odd integer greater than three in big-endian order.
 isPrime might return false positives for adversarially chosen values.
-
 isPrime is not constant-time.</p>
+               
+               <pre><code>func isPrime(w []byte) bool</code></pre>
+            </article>
             
-            <pre><code>func isPrime(w []byte) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="millerRabinSetup">
-            <h2>millerRabinSetup</h2>
-            <hr />
-            
-            <p>millerRabinSetup prepares state that's reused across multiple iterations of
-the Miller-Rabin test.</p>
-            
-            <pre><code>func millerRabinSetup(w []byte) (*millerRabin, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="millerRabinIteration">
-            <h2>millerRabinIteration</h2>
-            <hr />
-            
-            <pre><code>func millerRabinIteration(mr *millerRabin, bb []byte) (bool, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestMillerRabin">
-            <h2>TestMillerRabin</h2>
-            <hr />
-            
-            <pre><code>func TestMillerRabin(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestTotient">
-            <h2>TestTotient</h2>
-            <hr />
-            
-            <pre><code>func TestTotient(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="oddDivisorLargerThan32Bits">
-            <h2>oddDivisorLargerThan32Bits</h2>
-            <hr />
-            
-            <pre><code>func oddDivisorLargerThan32Bits(b []byte) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="addOne">
-            <h2>addOne</h2>
-            <hr />
-            
-            <pre><code>func addOne(b []byte) []byte</code></pre>
-         </article>
-         
-         <article class="function" data-name="decodeHex">
-            <h2>decodeHex</h2>
-            <hr />
-            
-            <pre><code>func decodeHex(t *testing.T, s string) []byte</code></pre>
-         </article>
-         
-         <article class="function" data-name="SignPKCS1v15">
-            <h2>SignPKCS1v15</h2>
-            <hr />
-            
-            <p>SignPKCS1v15 calculates an RSASSA-PKCS1-v1.5 signature.
-
-hash is the name of the hash function as returned by [crypto.Hash.String]
-or the empty string to indicate that the message is signed directly.</p>
-            
-            <pre><code>func SignPKCS1v15(priv *PrivateKey, hash string, hashed []byte) ([]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="signPKCS1v15">
-            <h2>signPKCS1v15</h2>
-            <hr />
-            
-            <pre><code>func signPKCS1v15(priv *PrivateKey, hash string, hashed []byte) ([]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="pkcs1v15ConstructEM">
-            <h2>pkcs1v15ConstructEM</h2>
-            <hr />
-            
-            <pre><code>func pkcs1v15ConstructEM(pub *PublicKey, hash string, hashed []byte) ([]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="VerifyPKCS1v15">
-            <h2>VerifyPKCS1v15</h2>
-            <hr />
-            
-            <p>VerifyPKCS1v15 verifies an RSASSA-PKCS1-v1.5 signature.
-
-hash is the name of the hash function as returned by [crypto.Hash.String]
-or the empty string to indicate that the message is signed directly.</p>
-            
-            <pre><code>func VerifyPKCS1v15(pub *PublicKey, hash string, hashed []byte, sig []byte) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="verifyPKCS1v15">
-            <h2>verifyPKCS1v15</h2>
-            <hr />
-            
-            <pre><code>func verifyPKCS1v15(pub *PublicKey, hash string, hashed []byte, sig []byte) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="checkApprovedHashName">
-            <h2>checkApprovedHashName</h2>
-            <hr />
-            
-            <pre><code>func checkApprovedHashName(hash string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestHashPrefixes">
-            <h2>TestHashPrefixes</h2>
-            <hr />
-            
-            <pre><code>func TestHashPrefixes(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="incCounter">
-            <h2>incCounter</h2>
-            <hr />
-            
-            <p>incCounter increments a four byte, big-endian counter.</p>
-            
-            <pre><code>func incCounter(c *[]byte)</code></pre>
-         </article>
-         
-         <article class="function" data-name="mgf1XOR">
-            <h2>mgf1XOR</h2>
-            <hr />
-            
-            <p>mgf1XOR XORs the bytes in out with a mask generated using the MGF1 function
+            <article class="function" data-name="mgf1XOR">
+               <h3>
+                  mgf1XOR 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>mgf1XOR XORs the bytes in out with a mask generated using the MGF1 function
 specified in PKCS #1 v2.1.</p>
+               
+               <pre><code>func mgf1XOR(out []byte, hash fips140.Hash, seed []byte)</code></pre>
+            </article>
             
-            <pre><code>func mgf1XOR(out []byte, hash fips140.Hash, seed []byte)</code></pre>
-         </article>
-         
-         <article class="function" data-name="emsaPSSEncode">
-            <h2>emsaPSSEncode</h2>
-            <hr />
+            <article class="function" data-name="millerRabinIteration">
+               <h3>
+                  millerRabinIteration 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func millerRabinIteration(mr *millerRabin, bb []byte) (bool, error)</code></pre>
+            </article>
             
-            <pre><code>func emsaPSSEncode(mHash []byte, emBits int, salt []byte, hash fips140.Hash) ([]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="emsaPSSVerify">
-            <h2>emsaPSSVerify</h2>
-            <hr />
+            <article class="function" data-name="millerRabinSetup">
+               <h3>
+                  millerRabinSetup 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>millerRabinSetup prepares state that's reused across multiple iterations of
+the Miller-Rabin test.</p>
+               
+               <pre><code>func millerRabinSetup(w []byte) (*millerRabin, error)</code></pre>
+            </article>
             
-            <pre><code>func emsaPSSVerify(mHash []byte, em []byte, emBits int, sLen int, hash fips140.Hash) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="PSSMaxSaltLength">
-            <h2>PSSMaxSaltLength</h2>
-            <hr />
+            <article class="function" data-name="newPrivateKey">
+               <h3>
+                  newPrivateKey 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func newPrivateKey(n *bigmod.Modulus, e int, d *bigmod.Nat, p *bigmod.Modulus, q *bigmod.Modulus) (*PrivateKey, error)</code></pre>
+            </article>
             
-            <p>PSSMaxSaltLength returns the maximum salt length for a given public key and
-hash function.</p>
+            <article class="function" data-name="pkcs1v15ConstructEM">
+               <h3>
+                  pkcs1v15ConstructEM 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func pkcs1v15ConstructEM(pub *PublicKey, hash string, hashed []byte) ([]byte, error)</code></pre>
+            </article>
             
-            <pre><code>func PSSMaxSaltLength(pub *PublicKey, hash fips140.Hash) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="SignPSS">
-            <h2>SignPSS</h2>
-            <hr />
+            <article class="function" data-name="randomPrime">
+               <h3>
+                  randomPrime 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>randomPrime returns a random prime number of the given bit size following
+the process in FIPS 186-5, Appendix A.1.3.</p>
+               
+               <pre><code>func randomPrime(rand io.Reader, bits int) ([]byte, error)</code></pre>
+            </article>
             
-            <p>SignPSS calculates the signature of hashed using RSASSA-PSS.</p>
+            <article class="function" data-name="signPKCS1v15">
+               <h3>
+                  signPKCS1v15 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func signPKCS1v15(priv *PrivateKey, hash string, hashed []byte) ([]byte, error)</code></pre>
+            </article>
             
-            <pre><code>func SignPSS(rand io.Reader, priv *PrivateKey, hash fips140.Hash, hashed []byte, saltLength int) ([]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="VerifyPSS">
-            <h2>VerifyPSS</h2>
-            <hr />
+            <article class="function" data-name="testPrivateKey">
+               <h3>
+                  testPrivateKey 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func testPrivateKey() *PrivateKey</code></pre>
+            </article>
             
-            <p>VerifyPSS verifies sig with RSASSA-PSS automatically detecting the salt length.</p>
+            <article class="function" data-name="totient">
+               <h3>
+                  totient 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>totient computes the Carmichael totient function λ(N) = lcm(p-1, q-1).</p>
+               
+               <pre><code>func totient(p *bigmod.Modulus, q *bigmod.Modulus) (*bigmod.Modulus, error)</code></pre>
+            </article>
             
-            <pre><code>func VerifyPSS(pub *PublicKey, hash fips140.Hash, digest []byte, sig []byte) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="VerifyPSSWithSaltLength">
-            <h2>VerifyPSSWithSaltLength</h2>
-            <hr />
+            <article class="function" data-name="verifyPKCS1v15">
+               <h3>
+                  verifyPKCS1v15 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func verifyPKCS1v15(pub *PublicKey, hash string, hashed []byte, sig []byte) error</code></pre>
+            </article>
             
-            <p>VerifyPSS verifies sig with RSASSA-PSS and an expected salt length.</p>
+            <article class="function" data-name="verifyPSS">
+               <h3>
+                  verifyPSS 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func verifyPSS(pub *PublicKey, hash fips140.Hash, digest []byte, sig []byte, saltLength int) error</code></pre>
+            </article>
             
-            <pre><code>func VerifyPSSWithSaltLength(pub *PublicKey, hash fips140.Hash, digest []byte, sig []byte, saltLength int) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="verifyPSS">
-            <h2>verifyPSS</h2>
-            <hr />
-            
-            <pre><code>func verifyPSS(pub *PublicKey, hash fips140.Hash, digest []byte, sig []byte, saltLength int) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="checkApprovedHash">
-            <h2>checkApprovedHash</h2>
-            <hr />
-            
-            <pre><code>func checkApprovedHash(hash fips140.Hash)</code></pre>
-         </article>
-         
-         <article class="function" data-name="EncryptOAEP">
-            <h2>EncryptOAEP</h2>
-            <hr />
-            
-            <p>EncryptOAEP encrypts the given message with RSAES-OAEP.</p>
-            
-            <pre><code>func EncryptOAEP(hash fips140.Hash, mgfHash fips140.Hash, random io.Reader, pub *PublicKey, msg []byte, label []byte) ([]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="DecryptOAEP">
-            <h2>DecryptOAEP</h2>
-            <hr />
-            
-            <p>DecryptOAEP decrypts ciphertext using RSAES-OAEP.</p>
-            
-            <pre><code>func DecryptOAEP(hash fips140.Hash, mgfHash fips140.Hash, priv *PrivateKey, ciphertext []byte, label []byte) ([]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestEMSAPSS">
-            <h2>TestEMSAPSS</h2>
-            <hr />
-            
-            <pre><code>func TestEMSAPSS(t *testing.T)</code></pre>
-         </article>
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -698,59 +1157,170 @@ hash function.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

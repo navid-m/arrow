@@ -6,343 +6,1443 @@
          name="viewport"
          content="width=device-width, initial-scale=1.0"
       />
-      <title>Docs - registry_test</title>
+      <title>Docs - registry</title>
       <link
          href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
          rel="stylesheet"
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                 
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>registry_test</code>
-         </h1>
-         <hr />
+         <h1>registry</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="ValueTests">
-            <h2>ValueTests</h2>
-            <hr />
-            
-            <pre><code>ValueTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="modkernel32">
-            <h2>modkernel32</h2>
-            <hr />
-            
-            <pre><code>modkernel32</code></pre>
-         </article>
-         
-         <article class="global" data-name="procGetDynamicTimeZoneInformation">
-            <h2>procGetDynamicTimeZoneInformation</h2>
-            <hr />
-            
-            <pre><code>procGetDynamicTimeZoneInformation</code></pre>
-         </article>
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"syscall"
+"errors"
+"syscall"
+"unicode/utf16"
+"unsafe"
+"internal/syscall/windows/sysdll"
+"syscall"
+"unsafe"
+"runtime"
+"syscall"
+</code></pre>
+            </article>
+         </section>
           
-         <article class="struct" data-name="ValueTest">
-            <h2>type ValueTest struct</h2>
-            <hr />
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Type uint32
-Name string
-Value any
-WillFail bool</code></pre>
-         </article>
-         
-         <article class="struct" data-name="DynamicTimezoneinformation">
-            <h2>type DynamicTimezoneinformation struct</h2>
-            <hr />
+            <article class="global" data-name="ALL_ACCESS">
+               <h3>
+                  ALL_ACCESS 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Registry key security and access rights.
+See https://learn.microsoft.com/en-us/windows/win32/sysinfo/registry-key-security-and-access-rights
+for details.</p>
+               
+               <pre><code>const ALL_ACCESS = 0xf003f</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Bias int32
-StandardName []uint16
-StandardDate syscall.Systemtime
-StandardBias int32
-DaylightName []uint16
-DaylightDate syscall.Systemtime
-DaylightBias int32
-TimeZoneKeyName []uint16
-DynamicDaylightTimeDisabled uint8</code></pre>
-         </article>
+            <article class="global" data-name="BINARY">
+               <h3>
+                  BINARY 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const BINARY = 3</code></pre>
+            </article>
+            
+            <article class="global" data-name="CLASSES_ROOT">
+               <h3>
+                  CLASSES_ROOT 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Windows defines some predefined root keys that are always open.
+An application can use these keys as entry points to the registry.
+Normally these keys are used in OpenKey to open new keys,
+but they can also be used anywhere a Key is required.</p>
+               
+               <pre><code>const CLASSES_ROOT = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="CREATE_LINK">
+               <h3>
+                  CREATE_LINK 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const CREATE_LINK = 0x00020</code></pre>
+            </article>
+            
+            <article class="global" data-name="CREATE_SUB_KEY">
+               <h3>
+                  CREATE_SUB_KEY 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const CREATE_SUB_KEY = 0x00004</code></pre>
+            </article>
+            
+            <article class="global" data-name="CURRENT_CONFIG">
+               <h3>
+                  CURRENT_CONFIG 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const CURRENT_CONFIG = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="CURRENT_USER">
+               <h3>
+                  CURRENT_USER 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const CURRENT_USER = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="DWORD">
+               <h3>
+                  DWORD 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const DWORD = 4</code></pre>
+            </article>
+            
+            <article class="global" data-name="DWORD_BIG_ENDIAN">
+               <h3>
+                  DWORD_BIG_ENDIAN 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const DWORD_BIG_ENDIAN = 5</code></pre>
+            </article>
+            
+            <article class="global" data-name="ENUMERATE_SUB_KEYS">
+               <h3>
+                  ENUMERATE_SUB_KEYS 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const ENUMERATE_SUB_KEYS = 0x00008</code></pre>
+            </article>
+            
+            <article class="global" data-name="EXECUTE">
+               <h3>
+                  EXECUTE 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const EXECUTE = 0x20019</code></pre>
+            </article>
+            
+            <article class="global" data-name="EXPAND_SZ">
+               <h3>
+                  EXPAND_SZ 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const EXPAND_SZ = 2</code></pre>
+            </article>
+            
+            <article class="global" data-name="ErrNotExist">
+               <h3>
+                  ErrNotExist 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>ErrNotExist is returned when a registry key or value does not exist.</p>
+               
+               <pre><code>var ErrNotExist = syscall.ERROR_FILE_NOT_FOUND</code></pre>
+            </article>
+            
+            <article class="global" data-name="ErrShortBuffer">
+               <h3>
+                  ErrShortBuffer 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>ErrShortBuffer is returned when the buffer was too short for the operation.</p>
+               
+               <pre><code>var ErrShortBuffer = syscall.ERROR_MORE_DATA</code></pre>
+            </article>
+            
+            <article class="global" data-name="ErrUnexpectedType">
+               <h3>
+                  ErrUnexpectedType 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>ErrUnexpectedType is returned by Get*Value when the value's type was unexpected.</p>
+               
+               <pre><code>var ErrUnexpectedType = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="FULL_RESOURCE_DESCRIPTOR">
+               <h3>
+                  FULL_RESOURCE_DESCRIPTOR 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const FULL_RESOURCE_DESCRIPTOR = 9</code></pre>
+            </article>
+            
+            <article class="global" data-name="LINK">
+               <h3>
+                  LINK 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const LINK = 6</code></pre>
+            </article>
+            
+            <article class="global" data-name="LOCAL_MACHINE">
+               <h3>
+                  LOCAL_MACHINE 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const LOCAL_MACHINE = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="MULTI_SZ">
+               <h3>
+                  MULTI_SZ 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const MULTI_SZ = 7</code></pre>
+            </article>
+            
+            <article class="global" data-name="NONE">
+               <h3>
+                  NONE 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Registry value types.</p>
+               
+               <pre><code>const NONE = 0</code></pre>
+            </article>
+            
+            <article class="global" data-name="NOTIFY">
+               <h3>
+                  NOTIFY 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const NOTIFY = 0x00010</code></pre>
+            </article>
+            
+            <article class="global" data-name="QUERY_VALUE">
+               <h3>
+                  QUERY_VALUE 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const QUERY_VALUE = 0x00001</code></pre>
+            </article>
+            
+            <article class="global" data-name="QWORD">
+               <h3>
+                  QWORD 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const QWORD = 11</code></pre>
+            </article>
+            
+            <article class="global" data-name="READ">
+               <h3>
+                  READ 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const READ = 0x20019</code></pre>
+            </article>
+            
+            <article class="global" data-name="RESOURCE_LIST">
+               <h3>
+                  RESOURCE_LIST 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const RESOURCE_LIST = 8</code></pre>
+            </article>
+            
+            <article class="global" data-name="RESOURCE_REQUIREMENTS_LIST">
+               <h3>
+                  RESOURCE_REQUIREMENTS_LIST 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const RESOURCE_REQUIREMENTS_LIST = 10</code></pre>
+            </article>
+            
+            <article class="global" data-name="SET_VALUE">
+               <h3>
+                  SET_VALUE 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const SET_VALUE = 0x00002</code></pre>
+            </article>
+            
+            <article class="global" data-name="SZ">
+               <h3>
+                  SZ 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const SZ = 1</code></pre>
+            </article>
+            
+            <article class="global" data-name="USERS">
+               <h3>
+                  USERS 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const USERS = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="WOW64_32KEY">
+               <h3>
+                  WOW64_32KEY 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const WOW64_32KEY = 0x00200</code></pre>
+            </article>
+            
+            <article class="global" data-name="WOW64_64KEY">
+               <h3>
+                  WOW64_64KEY 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const WOW64_64KEY = 0x00100</code></pre>
+            </article>
+            
+            <article class="global" data-name="WRITE">
+               <h3>
+                  WRITE 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const WRITE = 0x20006</code></pre>
+            </article>
+            
+            <article class="global" data-name="_">
+               <h3>
+                  _ 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var _ unsafe.Pointer</code></pre>
+            </article>
+            
+            <article class="global" data-name="_ERROR_NO_MORE_ITEMS">
+               <h3>
+                  _ERROR_NO_MORE_ITEMS 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const _ERROR_NO_MORE_ITEMS syscall.Errno = 259</code></pre>
+            </article>
+            
+            <article class="global" data-name="_REG_CREATED_NEW_KEY">
+               <h3>
+                  _REG_CREATED_NEW_KEY 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const _REG_CREATED_NEW_KEY = 1</code></pre>
+            </article>
+            
+            <article class="global" data-name="_REG_OPENED_EXISTING_KEY">
+               <h3>
+                  _REG_OPENED_EXISTING_KEY 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const _REG_OPENED_EXISTING_KEY = 2</code></pre>
+            </article>
+            
+            <article class="global" data-name="_REG_OPTION_NON_VOLATILE">
+               <h3>
+                  _REG_OPTION_NON_VOLATILE 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const _REG_OPTION_NON_VOLATILE = 0</code></pre>
+            </article>
+            
+            <article class="global" data-name="errERROR_EINVAL">
+               <h3>
+                  errERROR_EINVAL 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var errERROR_EINVAL error = syscall.EINVAL</code></pre>
+            </article>
+            
+            <article class="global" data-name="errERROR_IO_PENDING">
+               <h3>
+                  errERROR_IO_PENDING 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var errERROR_IO_PENDING error = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="errnoERROR_IO_PENDING">
+               <h3>
+                  errnoERROR_IO_PENDING 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Do the interface allocations only once for common
+Errno values.</p>
+               
+               <pre><code>const errnoERROR_IO_PENDING = 997</code></pre>
+            </article>
+            
+            <article class="global" data-name="modadvapi32">
+               <h3>
+                  modadvapi32 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var modadvapi32 = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="modkernel32">
+               <h3>
+                  modkernel32 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var modkernel32 = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="procExpandEnvironmentStringsW">
+               <h3>
+                  procExpandEnvironmentStringsW 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var procExpandEnvironmentStringsW = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="procRegCreateKeyExW">
+               <h3>
+                  procRegCreateKeyExW 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var procRegCreateKeyExW = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="procRegDeleteKeyW">
+               <h3>
+                  procRegDeleteKeyW 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var procRegDeleteKeyW = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="procRegDeleteValueW">
+               <h3>
+                  procRegDeleteValueW 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var procRegDeleteValueW = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="procRegEnumValueW">
+               <h3>
+                  procRegEnumValueW 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var procRegEnumValueW = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="procRegLoadMUIStringW">
+               <h3>
+                  procRegLoadMUIStringW 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var procRegLoadMUIStringW = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="procRegSetValueExW">
+               <h3>
+                  procRegSetValueExW 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var procRegSetValueExW = *ast.CallExpr</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="function" data-name="randKeyName">
-            <h2>randKeyName</h2>
-            <hr />
+         <section id="types">
+            <h2>Type Aliases</h2>
             
-            <pre><code>func randKeyName(prefix string) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestReadSubKeyNames">
-            <h2>TestReadSubKeyNames</h2>
-            <hr />
+            <article class="type" data-name="Key">
+               <h3>
+                  Key
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>Key is a handle to an open Windows registry key.
+Keys can be obtained by calling OpenKey; there are
+also some predefined root keys such as CURRENT_USER.
+Keys can be used directly in the Windows API.</p>
+               
+               <pre><code>type Key syscall.Handle</code></pre>
+            </article>
             
-            <pre><code>func TestReadSubKeyNames(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestCreateOpenDeleteKey">
-            <h2>TestCreateOpenDeleteKey</h2>
-            <hr />
+         </section>
+           
+         <section id="structs">
+            <h2>Structs</h2>
             
-            <pre><code>func TestCreateOpenDeleteKey(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="equalStringSlice">
-            <h2>equalStringSlice</h2>
-            <hr />
+            <article class="struct" data-name="KeyInfo">
+               <h3>
+                  KeyInfo
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A KeyInfo describes the statistics of a key. It is returned by Stat.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type KeyInfo struct {
+SubKeyCount uint32
+MaxSubKeyLen uint32
+ValueCount uint32
+MaxValueNameLen uint32
+MaxValueLen uint32
+lastWriteTime syscall.Filetime
+}</code></pre>
+            </article>
             
-            <pre><code>func equalStringSlice(a []string, b []string) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="setValues">
-            <h2>setValues</h2>
-            <hr />
+         </section>
+          
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <pre><code>func setValues(t *testing.T, k registry.Key)</code></pre>
-         </article>
-         
-         <article class="function" data-name="enumerateValues">
-            <h2>enumerateValues</h2>
-            <hr />
+            <article class="function" data-name="Close">
+               <h3>
+                  Close 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Close closes open key k.</p>
+               
+               <pre><code>func (k Key) Close() error</code></pre>
+            </article>
             
-            <pre><code>func enumerateValues(t *testing.T, k registry.Key)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testErrNotExist">
-            <h2>testErrNotExist</h2>
-            <hr />
+            <article class="function" data-name="CreateKey">
+               <h3>
+                  CreateKey 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>CreateKey creates a key named path under open key k.
+CreateKey returns the new key and a boolean flag that reports
+whether the key already existed.
+The access parameter specifies the access rights for the key
+to be created.</p>
+               
+               <pre><code>func CreateKey(k Key, path string, access uint32) (newk Key, openedExisting bool, err error)</code></pre>
+            </article>
             
-            <pre><code>func testErrNotExist(t *testing.T, name string, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testErrUnexpectedType">
-            <h2>testErrUnexpectedType</h2>
-            <hr />
+            <article class="function" data-name="DeleteKey">
+               <h3>
+                  DeleteKey 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>DeleteKey deletes the subkey path of key k and its values.</p>
+               
+               <pre><code>func DeleteKey(k Key, path string) error</code></pre>
+            </article>
             
-            <pre><code>func testErrUnexpectedType(t *testing.T, test ValueTest, gottype uint32, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testGetStringValue">
-            <h2>testGetStringValue</h2>
-            <hr />
+            <article class="function" data-name="DeleteValue">
+               <h3>
+                  DeleteValue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>DeleteValue removes a named value from the key k.</p>
+               
+               <pre><code>func (k Key) DeleteValue(name string) error</code></pre>
+            </article>
             
-            <pre><code>func testGetStringValue(t *testing.T, k registry.Key, test ValueTest)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testGetIntegerValue">
-            <h2>testGetIntegerValue</h2>
-            <hr />
+            <article class="function" data-name="ExpandString">
+               <h3>
+                  ExpandString 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>ExpandString expands environment-variable strings and replaces
+them with the values defined for the current user.
+Use ExpandString to expand EXPAND_SZ strings.</p>
+               
+               <pre><code>func ExpandString(value string) (string, error)</code></pre>
+            </article>
             
-            <pre><code>func testGetIntegerValue(t *testing.T, k registry.Key, test ValueTest)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testGetBinaryValue">
-            <h2>testGetBinaryValue</h2>
-            <hr />
+            <article class="function" data-name="GetBinaryValue">
+               <h3>
+                  GetBinaryValue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>GetBinaryValue retrieves the binary value for the specified
+value name associated with an open key k. It also returns the value's type.
+If value does not exist, GetBinaryValue returns ErrNotExist.
+If value is not BINARY, it will return the correct value
+type and ErrUnexpectedType.</p>
+               
+               <pre><code>func (k Key) GetBinaryValue(name string) (val []byte, valtype uint32, err error)</code></pre>
+            </article>
             
-            <pre><code>func testGetBinaryValue(t *testing.T, k registry.Key, test ValueTest)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testGetStringsValue">
-            <h2>testGetStringsValue</h2>
-            <hr />
+            <article class="function" data-name="GetIntegerValue">
+               <h3>
+                  GetIntegerValue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>GetIntegerValue retrieves the integer value for the specified
+value name associated with an open key k. It also returns the value's type.
+If value does not exist, GetIntegerValue returns ErrNotExist.
+If value is not DWORD or QWORD, it will return the correct value
+type and ErrUnexpectedType.</p>
+               
+               <pre><code>func (k Key) GetIntegerValue(name string) (val uint64, valtype uint32, err error)</code></pre>
+            </article>
             
-            <pre><code>func testGetStringsValue(t *testing.T, k registry.Key, test ValueTest)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testGetValue">
-            <h2>testGetValue</h2>
-            <hr />
+            <article class="function" data-name="GetMUIStringValue">
+               <h3>
+                  GetMUIStringValue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>GetMUIStringValue retrieves the localized string value for
+the specified value name associated with an open key k.
+If the value name doesn't exist or the localized string value
+can't be resolved, GetMUIStringValue returns ErrNotExist.</p>
+               
+               <pre><code>func (k Key) GetMUIStringValue(name string) (string, error)</code></pre>
+            </article>
             
-            <pre><code>func testGetValue(t *testing.T, k registry.Key, test ValueTest, size int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testValues">
-            <h2>testValues</h2>
-            <hr />
+            <article class="function" data-name="GetStringValue">
+               <h3>
+                  GetStringValue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>GetStringValue retrieves the string value for the specified
+value name associated with an open key k. It also returns the value's type.
+If value does not exist, GetStringValue returns ErrNotExist.
+If value is not SZ or EXPAND_SZ, it will return the correct value
+type and ErrUnexpectedType.</p>
+               
+               <pre><code>func (k Key) GetStringValue(name string) (val string, valtype uint32, err error)</code></pre>
+            </article>
             
-            <pre><code>func testValues(t *testing.T, k registry.Key)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testStat">
-            <h2>testStat</h2>
-            <hr />
+            <article class="function" data-name="GetStringsValue">
+               <h3>
+                  GetStringsValue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>GetStringsValue retrieves the []string value for the specified
+value name associated with an open key k. It also returns the value's type.
+If value does not exist, GetStringsValue returns ErrNotExist.
+If value is not MULTI_SZ, it will return the correct value
+type and ErrUnexpectedType.</p>
+               
+               <pre><code>func (k Key) GetStringsValue(name string) (val []string, valtype uint32, err error)</code></pre>
+            </article>
             
-            <pre><code>func testStat(t *testing.T, k registry.Key)</code></pre>
-         </article>
-         
-         <article class="function" data-name="deleteValues">
-            <h2>deleteValues</h2>
-            <hr />
+            <article class="function" data-name="GetValue">
+               <h3>
+                  GetValue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>GetValue retrieves the type and data for the specified value associated
+with an open key k. It fills up buffer buf and returns the retrieved
+byte count n. If buf is too small to fit the stored value it returns
+ErrShortBuffer error along with the required buffer size n.
+If no buffer is provided, it returns true and actual buffer size n.
+If no buffer is provided, GetValue returns the value's type only.
+If the value does not exist, the error returned is ErrNotExist.
+GetValue is a low level function. If value's type is known, use the appropriate
+Get*Value function instead.</p>
+               
+               <pre><code>func (k Key) GetValue(name string, buf []byte) (n int, valtype uint32, err error)</code></pre>
+            </article>
             
-            <pre><code>func deleteValues(t *testing.T, k registry.Key)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestValues">
-            <h2>TestValues</h2>
-            <hr />
+            <article class="function" data-name="OpenKey">
+               <h3>
+                  OpenKey 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>OpenKey opens a new key with path name relative to key k.
+It accepts any open key, including CURRENT_USER and others,
+and returns the new key and an error.
+The access parameter specifies desired access rights to the
+key to be opened.</p>
+               
+               <pre><code>func OpenKey(k Key, path string, access uint32) (Key, error)</code></pre>
+            </article>
             
-            <pre><code>func TestValues(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestExpandString">
-            <h2>TestExpandString</h2>
-            <hr />
+            <article class="function" data-name="ReadSubKeyNames">
+               <h3>
+                  ReadSubKeyNames 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ReadSubKeyNames returns the names of subkeys of key k.</p>
+               
+               <pre><code>func (k Key) ReadSubKeyNames() ([]string, error)</code></pre>
+            </article>
             
-            <pre><code>func TestExpandString(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestInvalidValues">
-            <h2>TestInvalidValues</h2>
-            <hr />
+            <article class="function" data-name="ReadValueNames">
+               <h3>
+                  ReadValueNames 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ReadValueNames returns the value names of key k.</p>
+               
+               <pre><code>func (k Key) ReadValueNames() ([]string, error)</code></pre>
+            </article>
             
-            <pre><code>func TestInvalidValues(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestGetMUIStringValue">
-            <h2>TestGetMUIStringValue</h2>
-            <hr />
+            <article class="function" data-name="SetBinaryValue">
+               <h3>
+                  SetBinaryValue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>SetBinaryValue sets the data and type of a name value
+under key k to value and BINARY.</p>
+               
+               <pre><code>func (k Key) SetBinaryValue(name string, value []byte) error</code></pre>
+            </article>
             
-            <pre><code>func TestGetMUIStringValue(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="GetDynamicTimeZoneInformation">
-            <h2>GetDynamicTimeZoneInformation</h2>
-            <hr />
+            <article class="function" data-name="SetDWordValue">
+               <h3>
+                  SetDWordValue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>SetDWordValue sets the data and type of a name value
+under key k to value and DWORD.</p>
+               
+               <pre><code>func (k Key) SetDWordValue(name string, value uint32) error</code></pre>
+            </article>
             
-            <pre><code>func GetDynamicTimeZoneInformation(dtzi *DynamicTimezoneinformation) (rc uint32, err error)</code></pre>
-         </article>
+            <article class="function" data-name="SetExpandStringValue">
+               <h3>
+                  SetExpandStringValue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>SetExpandStringValue sets the data and type of a name value
+under key k to value and EXPAND_SZ. The value must not contain a zero byte.</p>
+               
+               <pre><code>func (k Key) SetExpandStringValue(name string, value string) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="SetQWordValue">
+               <h3>
+                  SetQWordValue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>SetQWordValue sets the data and type of a name value
+under key k to value and QWORD.</p>
+               
+               <pre><code>func (k Key) SetQWordValue(name string, value uint64) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="SetStringValue">
+               <h3>
+                  SetStringValue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>SetStringValue sets the data and type of a name value
+under key k to value and SZ. The value must not contain a zero byte.</p>
+               
+               <pre><code>func (k Key) SetStringValue(name string, value string) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="SetStringsValue">
+               <h3>
+                  SetStringsValue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>SetStringsValue sets the data and type of a name value
+under key k to value and MULTI_SZ. The value strings
+must not contain a zero byte.</p>
+               
+               <pre><code>func (k Key) SetStringsValue(name string, value []string) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="Stat">
+               <h3>
+                  Stat 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Stat retrieves information about the open key k.</p>
+               
+               <pre><code>func (k Key) Stat() (*KeyInfo, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="errnoErr">
+               <h3>
+                  errnoErr 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>errnoErr returns common boxed Errno values, to prevent
+allocations at runtime.</p>
+               
+               <pre><code>func errnoErr(e syscall.Errno) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="expandEnvironmentStrings">
+               <h3>
+                  expandEnvironmentStrings 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func expandEnvironmentStrings(src *uint16, dst *uint16, size uint32) (n uint32, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="getValue">
+               <h3>
+                  getValue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (k Key) getValue(name string, buf []byte) (date []byte, valtype uint32, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="regCreateKeyEx">
+               <h3>
+                  regCreateKeyEx 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func regCreateKeyEx(key syscall.Handle, subkey *uint16, reserved uint32, class *uint16, options uint32, desired uint32, sa *syscall.SecurityAttributes, result *syscall.Handle, disposition *uint32) (regerrno error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="regDeleteKey">
+               <h3>
+                  regDeleteKey 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func regDeleteKey(key syscall.Handle, subkey *uint16) (regerrno error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="regDeleteValue">
+               <h3>
+                  regDeleteValue 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func regDeleteValue(key syscall.Handle, name *uint16) (regerrno error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="regEnumValue">
+               <h3>
+                  regEnumValue 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func regEnumValue(key syscall.Handle, index uint32, name *uint16, nameLen *uint32, reserved *uint32, valtype *uint32, buf *byte, buflen *uint32) (regerrno error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="regLoadMUIString">
+               <h3>
+                  regLoadMUIString 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func regLoadMUIString(key syscall.Handle, name *uint16, buf *uint16, buflen uint32, buflenCopied *uint32, flags uint32, dir *uint16) (regerrno error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="regSetValueEx">
+               <h3>
+                  regSetValueEx 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func regSetValueEx(key syscall.Handle, valueName *uint16, reserved uint32, vtype uint32, buf *byte, bufsize uint32) (regerrno error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="setStringValue">
+               <h3>
+                  setStringValue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (k Key) setStringValue(name string, valtype uint32, value string) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="setValue">
+               <h3>
+                  setValue 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (k Key) setValue(name string, valtype uint32, data []byte) error</code></pre>
+            </article>
+            
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -350,59 +1450,170 @@ DynamicDaylightTimeDisabled uint8</code></pre>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

@@ -13,642 +13,1085 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                 
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>typeparams</code>
-         </h1>
-         <hr />
+         <h1>typeparams</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="debug">
-            <h2>debug</h2>
-            <hr />
-            
-            <pre><code>debug</code></pre>
-         </article>
-         
-         <article class="global" data-name="ErrEmptyTypeSet">
-            <h2>ErrEmptyTypeSet</h2>
-            <hr />
-            
-            <pre><code>ErrEmptyTypeSet</code></pre>
-         </article>
-         
-         <article class="global" data-name="allTermlist">
-            <h2>allTermlist</h2>
-            <hr />
-            
-            <p>allTermlist represents the set of all types.
-It is in normal form.</p>
-            
-            <pre><code>allTermlist</code></pre>
-         </article>
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"fmt"
+"go/types"
+"go/types"
+"golang.org/x/tools/internal/aliases"
+"errors"
+"fmt"
+"go/types"
+"os"
+"strings"
+"bytes"
+"go/types"
+"go/types"
+"go/ast"
+"go/token"
+"go/types"
+</code></pre>
+            </article>
+         </section>
           
-         <article class="struct" data-name="Free">
-            <h2>type Free struct</h2>
-            <hr />
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <p>Free is a memoization of the set of free type parameters within a
+            <article class="global" data-name="ErrEmptyTypeSet">
+               <h3>
+                  ErrEmptyTypeSet 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var ErrEmptyTypeSet = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="allTermlist">
+               <h3>
+                  allTermlist 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>allTermlist represents the set of all types.
+It is in normal form.</p>
+               
+               <pre><code>var allTermlist = termlist{...}</code></pre>
+            </article>
+            
+            <article class="global" data-name="debug">
+               <h3>
+                  debug 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const debug = false</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="types">
+            <h2>Type Aliases</h2>
+            
+            <article class="type" data-name="termlist">
+               <h3>
+                  termlist
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>A termlist represents the type set represented by the union
+t1 ∪ y2 ∪ ... tn of the type sets of the terms t1 to tn.
+A termlist is in normal form if all terms are disjoint.
+termlist operations don't require the operands to be in
+normal form.</p>
+               
+               <pre><code>type termlist []*term</code></pre>
+            </article>
+            
+         </section>
+           
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="Free">
+               <h3>
+                  Free
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Free is a memoization of the set of free type parameters within a
 type. It makes a sequence of calls to [Free.Has] for overlapping
 types more efficient. The zero value is ready for use.
-
 NOTE: Adapted from go/types/infer.go. If it is later exported, factor.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Free struct {
+seen map[types.Type]bool
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">seen *ast.MapType</code></pre>
-         </article>
-         
-         <article class="struct" data-name="termSet">
-            <h2>type termSet struct</h2>
-            <hr />
+            <article class="struct" data-name="term">
+               <h3>
+                  term
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A term describes elementary type sets:
+∅:  (*term)(nil)     == ∅                      // set of no types (empty set)
+𝓤:  &term{}          == 𝓤                      // set of all types (𝓤niverse)
+T:  &term{false, T}  == {T}                    // set of type T
+~t:  &term{true, t}   == {t' | under(t') == t}  // set of types with underlying type t</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type term struct {
+tilde bool
+typ types.Type
+}</code></pre>
+            </article>
             
-            <p>A termSet holds the normalized set of terms for a given type.
-
+            <article class="struct" data-name="termSet">
+               <h3>
+                  termSet
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A termSet holds the normalized set of terms for a given type.
 The name termSet is intentionally distinct from 'type set': a type set is
 all types that implement a type (and includes method restrictions), whereas
 a term set just represents the structural restrictions on a type.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type termSet struct {
+complete bool
+terms termlist
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">complete bool
-terms termlist</code></pre>
-         </article>
-         
-         <article class="struct" data-name="term">
-            <h2>type term struct</h2>
-            <hr />
-            
-            <p>A term describes elementary type sets:
-
-	 ∅:  (*term)(nil)     == ∅                      // set of no types (empty set)
-	 𝓤:  &term{}          == 𝓤                      // set of all types (𝓤niverse)
-	 T:  &term{false, T}  == {T}                    // set of type T
-	~t:  &term{true, t}   == {t' | under(t') == t}  // set of types with underlying type t</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">tilde bool
-typ types.Type</code></pre>
-         </article>
+         </section>
           
-         <article class="function" data-name="UnpackIndexExpr">
-            <h2>UnpackIndexExpr</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <p>UnpackIndexExpr extracts data from AST nodes that represent index
-expressions.
-
-For an ast.IndexExpr, the resulting indices slice will contain exactly one
-index expression. For an ast.IndexListExpr (go1.18+), it may have a variable
-number of index expressions.
-
-For nodes that don't represent index expressions, the first return value of
-UnpackIndexExpr will be nil.</p>
+            <article class="function" data-name="CoreType">
+               <h3>
+                  CoreType 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>CoreType returns the core type of T or nil if T does not have a core type.
+See https://go.dev/ref/spec#Core_types for the definition of a core type.</p>
+               
+               <pre><code>func CoreType(T types.Type) types.Type</code></pre>
+            </article>
             
-            <pre><code>func UnpackIndexExpr(n ast.Node) (x ast.Expr, lbrack token.Pos, indices []ast.Expr, rbrack token.Pos)</code></pre>
-         </article>
-         
-         <article class="function" data-name="PackIndexExpr">
-            <h2>PackIndexExpr</h2>
-            <hr />
+            <article class="function" data-name="Deref">
+               <h3>
+                  Deref 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Deref returns the type of the variable pointed to by t,
+if t's core type is a pointer; otherwise it returns t.
+Do not assume that Deref(T)==T implies T is not a pointer:
+consider "type T *T", for example.
+TODO(adonovan): ideally this would live in typesinternal, but that
+creates an import cycle. Move there when we melt this package down.</p>
+               
+               <pre><code>func Deref(t types.Type) types.Type</code></pre>
+            </article>
             
-            <p>PackIndexExpr returns an *ast.IndexExpr or *ast.IndexListExpr, depending on
-the cardinality of indices. Calling PackIndexExpr with len(indices) == 0
-will panic.</p>
-            
-            <pre><code>func PackIndexExpr(x ast.Expr, lbrack token.Pos, indices []ast.Expr, rbrack token.Pos) ast.Expr</code></pre>
-         </article>
-         
-         <article class="function" data-name="IsTypeParam">
-            <h2>IsTypeParam</h2>
-            <hr />
-            
-            <p>IsTypeParam reports whether t is a type parameter (or an alias of one).</p>
-            
-            <pre><code>func IsTypeParam(t types.Type) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="GenericAssignableTo">
-            <h2>GenericAssignableTo</h2>
-            <hr />
-            
-            <p>GenericAssignableTo is a generalization of types.AssignableTo that
+            <article class="function" data-name="GenericAssignableTo">
+               <h3>
+                  GenericAssignableTo 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>GenericAssignableTo is a generalization of types.AssignableTo that
 implements the following rule for uninstantiated generic types:
-
 If V and T are generic named types, then V is considered assignable to T if,
 for every possible instantiation of V[A_1, ..., A_N], the instantiation
 T[A_1, ..., A_N] is valid and V[A_1, ..., A_N] implements T[A_1, ..., A_N].
-
 If T has structural constraints, they must be satisfied by V.
-
 For example, consider the following type declarations:
-
-	type Interface[T any] interface {
-		Accept(T)
-	}
-
-	type Container[T any] struct {
-		Element T
-	}
-
-	func (c Container[T]) Accept(t T) { c.Element = t }
-
+type Interface[T any] interface {
+Accept(T)
+}
+type Container[T any] struct {
+Element T
+}
+func (c Container[T]) Accept(t T) { c.Element = t }
 In this case, GenericAssignableTo reports that instantiations of Container
 are assignable to the corresponding instantiation of Interface.</p>
+               
+               <pre><code>func GenericAssignableTo(ctxt *types.Context, V types.Type, T types.Type) bool</code></pre>
+            </article>
             
-            <pre><code>func GenericAssignableTo(ctxt *types.Context, V types.Type, T types.Type) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="CoreType">
-            <h2>CoreType</h2>
-            <hr />
+            <article class="function" data-name="Has">
+               <h3>
+                  Has 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Has reports whether the specified type has a free type parameter.</p>
+               
+               <pre><code>func (w *Free) Has(typ types.Type) (res bool)</code></pre>
+            </article>
             
-            <p>CoreType returns the core type of T or nil if T does not have a core type.
-
-See https://go.dev/ref/spec#Core_types for the definition of a core type.</p>
+            <article class="function" data-name="InterfaceTermSet">
+               <h3>
+                  InterfaceTermSet 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>InterfaceTermSet computes the normalized terms for a constraint interface,
+returning an error if the term set cannot be computed or is empty. In the
+latter case, the error will be ErrEmptyTypeSet.
+See the documentation of StructuralTerms for more information on
+normalization.</p>
+               
+               <pre><code>func InterfaceTermSet(iface *types.Interface) ([]*types.Term, error)</code></pre>
+            </article>
             
-            <pre><code>func CoreType(T types.Type) types.Type</code></pre>
-         </article>
-         
-         <article class="function" data-name="NormalTerms">
-            <h2>NormalTerms</h2>
-            <hr />
+            <article class="function" data-name="IsTypeParam">
+               <h3>
+                  IsTypeParam 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>IsTypeParam reports whether t is a type parameter (or an alias of one).</p>
+               
+               <pre><code>func IsTypeParam(t types.Type) bool</code></pre>
+            </article>
             
-            <p>NormalTerms returns a slice of terms representing the normalized structural
+            <article class="function" data-name="MustDeref">
+               <h3>
+                  MustDeref 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>MustDeref returns the type of the variable pointed to by t.
+It panics if t's core type is not a pointer.
+TODO(adonovan): ideally this would live in typesinternal, but that
+creates an import cycle. Move there when we melt this package down.</p>
+               
+               <pre><code>func MustDeref(t types.Type) types.Type</code></pre>
+            </article>
+            
+            <article class="function" data-name="NormalTerms">
+               <h3>
+                  NormalTerms 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NormalTerms returns a slice of terms representing the normalized structural
 type restrictions of a type, if any.
-
 For all types other than *types.TypeParam, *types.Interface, and
 *types.Union, this is just a single term with Tilde() == false and
 Type() == typ. For *types.TypeParam, *types.Interface, and *types.Union, see
 below.
-
 Structural type restrictions of a type parameter are created via
 non-interface types embedded in its constraint interface (directly, or via a
 chain of interface embeddings). For example, in the declaration type
 T[P interface{~int; m()}] int the structural restriction of the type
 parameter P is ~int.
-
 With interface embedding and unions, the specification of structural type
 restrictions may be arbitrarily complex. For example, consider the
 following:
-
-	type A interface{ ~string|~[]byte }
-
-	type B interface{ int|string }
-
-	type C interface { ~string|~int }
-
-	type T[P interface{ A|B; C }] int
-
+type A interface{ ~string|~[]byte }
+type B interface{ int|string }
+type C interface { ~string|~int }
+type T[P interface{ A|B; C }] int
 In this example, the structural type restriction of P is ~string|int: A|B
 expands to ~string|~[]byte|int|string, which reduces to ~string|~[]byte|int,
 which when intersected with C (~string|~int) yields ~string|int.
-
 NormalTerms computes these expansions and reductions, producing a
 "normalized" form of the embeddings. A structural restriction is normalized
 if it is a single union containing no interface terms, and is minimal in the
 sense that removing any term changes the set of types satisfying the
 constraint. It is left as a proof for the reader that, modulo sorting, there
 is exactly one such normalized form.
-
 Because the minimal representation always takes this form, NormalTerms
 returns a slice of tilde terms corresponding to the terms of the union in
 the normalized structural restriction. An error is returned if the type is
 invalid, exceeds complexity bounds, or has an empty type set. In the latter
 case, NormalTerms returns ErrEmptyTypeSet.
-
 NormalTerms makes no guarantees about the order of terms, except that it
 is deterministic.</p>
+               
+               <pre><code>func NormalTerms(typ types.Type) ([]*types.Term, error)</code></pre>
+            </article>
             
-            <pre><code>func NormalTerms(typ types.Type) ([]*types.Term, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Deref">
-            <h2>Deref</h2>
-            <hr />
+            <article class="function" data-name="PackIndexExpr">
+               <h3>
+                  PackIndexExpr 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>PackIndexExpr returns an *ast.IndexExpr or *ast.IndexListExpr, depending on
+the cardinality of indices. Calling PackIndexExpr with len(indices) == 0
+will panic.</p>
+               
+               <pre><code>func PackIndexExpr(x ast.Expr, lbrack token.Pos, indices []ast.Expr, rbrack token.Pos) ast.Expr</code></pre>
+            </article>
             
-            <p>Deref returns the type of the variable pointed to by t,
-if t's core type is a pointer; otherwise it returns t.
-
-Do not assume that Deref(T)==T implies T is not a pointer:
-consider "type T *T", for example.
-
-TODO(adonovan): ideally this would live in typesinternal, but that
-creates an import cycle. Move there when we melt this package down.</p>
+            <article class="function" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>String prints the termlist exactly (without normalization).</p>
+               
+               <pre><code>func (xl termlist) String() string</code></pre>
+            </article>
             
-            <pre><code>func Deref(t types.Type) types.Type</code></pre>
-         </article>
-         
-         <article class="function" data-name="MustDeref">
-            <h2>MustDeref</h2>
-            <hr />
+            <article class="function" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *term) String() string</code></pre>
+            </article>
             
-            <p>MustDeref returns the type of the variable pointed to by t.
-It panics if t's core type is not a pointer.
-
-TODO(adonovan): ideally this would live in typesinternal, but that
-creates an import cycle. Move there when we melt this package down.</p>
-            
-            <pre><code>func MustDeref(t types.Type) types.Type</code></pre>
-         </article>
-         
-         <article class="function" data-name="Has">
-            <h2>Has</h2>
-            <hr />
-            
-            <p>Has reports whether the specified type has a free type parameter.</p>
-            
-            <pre><code>func Has(typ types.Type) res bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="StructuralTerms">
-            <h2>StructuralTerms</h2>
-            <hr />
-            
-            <p>StructuralTerms returns a slice of terms representing the normalized
+            <article class="function" data-name="StructuralTerms">
+               <h3>
+                  StructuralTerms 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>StructuralTerms returns a slice of terms representing the normalized
 structural type restrictions of a type parameter, if any.
-
 Structural type restrictions of a type parameter are created via
 non-interface types embedded in its constraint interface (directly, or via a
 chain of interface embeddings). For example, in the declaration
-
-	type T[P interface{~int; m()}] int
-
+type T[P interface{~int; m()}] int
 the structural restriction of the type parameter P is ~int.
-
 With interface embedding and unions, the specification of structural type
 restrictions may be arbitrarily complex. For example, consider the
 following:
-
-	type A interface{ ~string|~[]byte }
-
-	type B interface{ int|string }
-
-	type C interface { ~string|~int }
-
-	type T[P interface{ A|B; C }] int
-
+type A interface{ ~string|~[]byte }
+type B interface{ int|string }
+type C interface { ~string|~int }
+type T[P interface{ A|B; C }] int
 In this example, the structural type restriction of P is ~string|int: A|B
 expands to ~string|~[]byte|int|string, which reduces to ~string|~[]byte|int,
 which when intersected with C (~string|~int) yields ~string|int.
-
 StructuralTerms computes these expansions and reductions, producing a
 "normalized" form of the embeddings. A structural restriction is normalized
 if it is a single union containing no interface terms, and is minimal in the
 sense that removing any term changes the set of types satisfying the
 constraint. It is left as a proof for the reader that, modulo sorting, there
 is exactly one such normalized form.
-
 Because the minimal representation always takes this form, StructuralTerms
 returns a slice of tilde terms corresponding to the terms of the union in
 the normalized structural restriction. An error is returned if the
 constraint interface is invalid, exceeds complexity bounds, or has an empty
 type set. In the latter case, StructuralTerms returns ErrEmptyTypeSet.
-
 StructuralTerms makes no guarantees about the order of terms, except that it
 is deterministic.</p>
+               
+               <pre><code>func StructuralTerms(tparam *types.TypeParam) ([]*types.Term, error)</code></pre>
+            </article>
             
-            <pre><code>func StructuralTerms(tparam *types.TypeParam) ([]*types.Term, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="InterfaceTermSet">
-            <h2>InterfaceTermSet</h2>
-            <hr />
-            
-            <p>InterfaceTermSet computes the normalized terms for a constraint interface,
-returning an error if the term set cannot be computed or is empty. In the
-latter case, the error will be ErrEmptyTypeSet.
-
-See the documentation of StructuralTerms for more information on
-normalization.</p>
-            
-            <pre><code>func InterfaceTermSet(iface *types.Interface) ([]*types.Term, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="UnionTermSet">
-            <h2>UnionTermSet</h2>
-            <hr />
-            
-            <p>UnionTermSet computes the normalized terms for a union, returning an error
+            <article class="function" data-name="UnionTermSet">
+               <h3>
+                  UnionTermSet 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>UnionTermSet computes the normalized terms for a union, returning an error
 if the term set cannot be computed or is empty. In the latter case, the
 error will be ErrEmptyTypeSet.
-
 See the documentation of StructuralTerms for more information on
 normalization.</p>
+               
+               <pre><code>func UnionTermSet(union *types.Union) ([]*types.Term, error)</code></pre>
+            </article>
             
-            <pre><code>func UnionTermSet(union *types.Union) ([]*types.Term, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="computeTermSet">
-            <h2>computeTermSet</h2>
-            <hr />
+            <article class="function" data-name="UnpackIndexExpr">
+               <h3>
+                  UnpackIndexExpr 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>UnpackIndexExpr extracts data from AST nodes that represent index
+expressions.
+For an ast.IndexExpr, the resulting indices slice will contain exactly one
+index expression. For an ast.IndexListExpr (go1.18+), it may have a variable
+number of index expressions.
+For nodes that don't represent index expressions, the first return value of
+UnpackIndexExpr will be nil.</p>
+               
+               <pre><code>func UnpackIndexExpr(n ast.Node) (x ast.Expr, lbrack token.Pos, indices []ast.Expr, rbrack token.Pos)</code></pre>
+            </article>
             
-            <pre><code>func computeTermSet(typ types.Type) ([]*types.Term, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="indentf">
-            <h2>indentf</h2>
-            <hr />
+            <article class="function" data-name="computeTermSet">
+               <h3>
+                  computeTermSet 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func computeTermSet(typ types.Type) ([]*types.Term, error)</code></pre>
+            </article>
             
-            <pre><code>func indentf(depth int, format string, args ...*ast.InterfaceType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="computeTermSetInternal">
-            <h2>computeTermSetInternal</h2>
-            <hr />
+            <article class="function" data-name="computeTermSetInternal">
+               <h3>
+                  computeTermSetInternal 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func computeTermSetInternal(t types.Type, seen map[types.Type]*termSet, depth int) (res *termSet, err error)</code></pre>
+            </article>
             
-            <pre><code>func computeTermSetInternal(t types.Type, seen *ast.MapType, depth int) (res *termSet, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="under">
-            <h2>under</h2>
-            <hr />
-            
-            <p>under is a facade for the go/types internal function of the same name. It is
-used by typeterm.go.</p>
-            
-            <pre><code>func under(t types.Type) types.Type</code></pre>
-         </article>
-         
-         <article class="function" data-name="String">
-            <h2>String</h2>
-            <hr />
-            
-            <p>String prints the termlist exactly (without normalization).</p>
-            
-            <pre><code>func String() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="isEmpty">
-            <h2>isEmpty</h2>
-            <hr />
-            
-            <p>isEmpty reports whether the termlist xl represents the empty set of types.</p>
-            
-            <pre><code>func isEmpty() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="isAll">
-            <h2>isAll</h2>
-            <hr />
-            
-            <p>isAll reports whether the termlist xl represents the set of all types.</p>
-            
-            <pre><code>func isAll() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="norm">
-            <h2>norm</h2>
-            <hr />
-            
-            <p>norm returns the normal form of xl.</p>
-            
-            <pre><code>func norm() termlist</code></pre>
-         </article>
-         
-         <article class="function" data-name="union">
-            <h2>union</h2>
-            <hr />
-            
-            <p>union returns the union xl ∪ yl.</p>
-            
-            <pre><code>func union(yl termlist) termlist</code></pre>
-         </article>
-         
-         <article class="function" data-name="intersect">
-            <h2>intersect</h2>
-            <hr />
-            
-            <p>intersect returns the intersection xl ∩ yl.</p>
-            
-            <pre><code>func intersect(yl termlist) termlist</code></pre>
-         </article>
-         
-         <article class="function" data-name="equal">
-            <h2>equal</h2>
-            <hr />
-            
-            <p>equal reports whether xl and yl represent the same type set.</p>
-            
-            <pre><code>func equal(yl termlist) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="includes">
-            <h2>includes</h2>
-            <hr />
-            
-            <p>includes reports whether t ∈ xl.</p>
-            
-            <pre><code>func includes(t types.Type) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="supersetOf">
-            <h2>supersetOf</h2>
-            <hr />
-            
-            <p>supersetOf reports whether y ⊆ xl.</p>
-            
-            <pre><code>func supersetOf(y *term) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="subsetOf">
-            <h2>subsetOf</h2>
-            <hr />
-            
-            <p>subsetOf reports whether xl ⊆ yl.</p>
-            
-            <pre><code>func subsetOf(yl termlist) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="String">
-            <h2>String</h2>
-            <hr />
-            
-            <pre><code>func String() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="equal">
-            <h2>equal</h2>
-            <hr />
-            
-            <p>equal reports whether x and y represent the same type set.</p>
-            
-            <pre><code>func equal(y *term) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="union">
-            <h2>union</h2>
-            <hr />
-            
-            <p>union returns the union x ∪ y: zero, one, or two non-nil terms.</p>
-            
-            <pre><code>func union(y *term) (_ *term, _ *term)</code></pre>
-         </article>
-         
-         <article class="function" data-name="intersect">
-            <h2>intersect</h2>
-            <hr />
-            
-            <p>intersect returns the intersection x ∩ y.</p>
-            
-            <pre><code>func intersect(y *term) *term</code></pre>
-         </article>
-         
-         <article class="function" data-name="includes">
-            <h2>includes</h2>
-            <hr />
-            
-            <p>includes reports whether t ∈ x.</p>
-            
-            <pre><code>func includes(t types.Type) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="subsetOf">
-            <h2>subsetOf</h2>
-            <hr />
-            
-            <p>subsetOf reports whether x ⊆ y.</p>
-            
-            <pre><code>func subsetOf(y *term) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="disjoint">
-            <h2>disjoint</h2>
-            <hr />
-            
-            <p>disjoint reports whether x ∩ y == ∅.
+            <article class="function" data-name="disjoint">
+               <h3>
+                  disjoint 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>disjoint reports whether x ∩ y == ∅.
 x.typ and y.typ must not be nil.</p>
+               
+               <pre><code>func (x *term) disjoint(y *term) bool</code></pre>
+            </article>
             
-            <pre><code>func disjoint(y *term) bool</code></pre>
-         </article>
+            <article class="function" data-name="equal">
+               <h3>
+                  equal 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>equal reports whether xl and yl represent the same type set.</p>
+               
+               <pre><code>func (xl termlist) equal(yl termlist) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="equal">
+               <h3>
+                  equal 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>equal reports whether x and y represent the same type set.</p>
+               
+               <pre><code>func (x *term) equal(y *term) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="includes">
+               <h3>
+                  includes 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>includes reports whether t ∈ xl.</p>
+               
+               <pre><code>func (xl termlist) includes(t types.Type) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="includes">
+               <h3>
+                  includes 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>includes reports whether t ∈ x.</p>
+               
+               <pre><code>func (x *term) includes(t types.Type) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="indentf">
+               <h3>
+                  indentf 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func indentf(depth int, format string, args ...interface{})</code></pre>
+            </article>
+            
+            <article class="function" data-name="intersect">
+               <h3>
+                  intersect 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>intersect returns the intersection xl ∩ yl.</p>
+               
+               <pre><code>func (xl termlist) intersect(yl termlist) termlist</code></pre>
+            </article>
+            
+            <article class="function" data-name="intersect">
+               <h3>
+                  intersect 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>intersect returns the intersection x ∩ y.</p>
+               
+               <pre><code>func (x *term) intersect(y *term) *term</code></pre>
+            </article>
+            
+            <article class="function" data-name="isAll">
+               <h3>
+                  isAll 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>isAll reports whether the termlist xl represents the set of all types.</p>
+               
+               <pre><code>func (xl termlist) isAll() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="isEmpty">
+               <h3>
+                  isEmpty 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>isEmpty reports whether the termlist xl represents the empty set of types.</p>
+               
+               <pre><code>func (xl termlist) isEmpty() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="norm">
+               <h3>
+                  norm 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>norm returns the normal form of xl.</p>
+               
+               <pre><code>func (xl termlist) norm() termlist</code></pre>
+            </article>
+            
+            <article class="function" data-name="subsetOf">
+               <h3>
+                  subsetOf 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>subsetOf reports whether x ⊆ y.</p>
+               
+               <pre><code>func (x *term) subsetOf(y *term) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="subsetOf">
+               <h3>
+                  subsetOf 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>subsetOf reports whether xl ⊆ yl.</p>
+               
+               <pre><code>func (xl termlist) subsetOf(yl termlist) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="supersetOf">
+               <h3>
+                  supersetOf 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>supersetOf reports whether y ⊆ xl.</p>
+               
+               <pre><code>func (xl termlist) supersetOf(y *term) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="under">
+               <h3>
+                  under 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>under is a facade for the go/types internal function of the same name. It is
+used by typeterm.go.</p>
+               
+               <pre><code>func under(t types.Type) types.Type</code></pre>
+            </article>
+            
+            <article class="function" data-name="union">
+               <h3>
+                  union 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>union returns the union xl ∪ yl.</p>
+               
+               <pre><code>func (xl termlist) union(yl termlist) termlist</code></pre>
+            </article>
+            
+            <article class="function" data-name="union">
+               <h3>
+                  union 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>union returns the union x ∪ y: zero, one, or two non-nil terms.</p>
+               
+               <pre><code>func (x *term) union(y *term) (_ *term, _ *term)</code></pre>
+            </article>
+            
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -656,59 +1099,170 @@ x.typ and y.typ must not be nil.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

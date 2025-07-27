@@ -13,338 +13,845 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
-          
-         <a href="cmd_cover_testdata-docs.html">testdata</a>
-         <br />
-          
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
+         
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                 
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
+         
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>main</code>
-         </h1>
-         <hr />
+         <h1>main</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="htmlTemplate">
-            <h2>htmlTemplate</h2>
-            <hr />
-            
-            <pre><code>htmlTemplate</code></pre>
-         </article>
-         
-         <article class="global" data-name="tmplHTML">
-            <h2>tmplHTML</h2>
-            <hr />
-            
-            <pre><code>tmplHTML</code></pre>
-         </article>
-         
-         <article class="global" data-name="usageMessage">
-            <h2>usageMessage</h2>
-            <hr />
-            
-            <pre><code>usageMessage</code></pre>
-         </article>
-         
-         <article class="global" data-name="mode">
-            <h2>mode</h2>
-            <hr />
-            
-            <pre><code>mode</code></pre>
-         </article>
-         
-         <article class="global" data-name="varVar">
-            <h2>varVar</h2>
-            <hr />
-            
-            <pre><code>varVar</code></pre>
-         </article>
-         
-         <article class="global" data-name="output">
-            <h2>output</h2>
-            <hr />
-            
-            <pre><code>output</code></pre>
-         </article>
-         
-         <article class="global" data-name="outfilelist">
-            <h2>outfilelist</h2>
-            <hr />
-            
-            <pre><code>outfilelist</code></pre>
-         </article>
-         
-         <article class="global" data-name="htmlOut">
-            <h2>htmlOut</h2>
-            <hr />
-            
-            <pre><code>htmlOut</code></pre>
-         </article>
-         
-         <article class="global" data-name="funcOut">
-            <h2>funcOut</h2>
-            <hr />
-            
-            <pre><code>funcOut</code></pre>
-         </article>
-         
-         <article class="global" data-name="pkgcfg">
-            <h2>pkgcfg</h2>
-            <hr />
-            
-            <pre><code>pkgcfg</code></pre>
-         </article>
-         
-         <article class="global" data-name="pkgconfig">
-            <h2>pkgconfig</h2>
-            <hr />
-            
-            <pre><code>pkgconfig covcmd.CoverPkgConfig</code></pre>
-         </article>
-         
-         <article class="global" data-name="outputfiles">
-            <h2>outputfiles</h2>
-            <hr />
-            
-            <pre><code>outputfiles []string</code></pre>
-         </article>
-         
-         <article class="global" data-name="profile">
-            <h2>profile</h2>
-            <hr />
-            
-            <pre><code>profile string</code></pre>
-         </article>
-         
-         <article class="global" data-name="counterStmt">
-            <h2>counterStmt</h2>
-            <hr />
-            
-            <pre><code>counterStmt func</code></pre>
-         </article>
-         
-         <article class="global" data-name="covervarsoutfile">
-            <h2>covervarsoutfile</h2>
-            <hr />
-            
-            <pre><code>covervarsoutfile string</code></pre>
-         </article>
-         
-         <article class="global" data-name="cmode">
-            <h2>cmode</h2>
-            <hr />
-            
-            <pre><code>cmode coverage.CounterMode</code></pre>
-         </article>
-         
-         <article class="global" data-name="cgran">
-            <h2>cgran</h2>
-            <hr />
-            
-            <pre><code>cgran coverage.CounterGranularity</code></pre>
-         </article>
-         
-         <article class="global" data-name="atomicPackagePath">
-            <h2>atomicPackagePath</h2>
-            <hr />
-            
-            <pre><code>atomicPackagePath</code></pre>
-         </article>
-         
-         <article class="global" data-name="atomicPackageName">
-            <h2>atomicPackageName</h2>
-            <hr />
-            
-            <pre><code>atomicPackageName</code></pre>
-         </article>
-         
-         <article class="global" data-name="seenPos2">
-            <h2>seenPos2</h2>
-            <hr />
-            
-            <p>seenPos2 tracks whether we have seen a token.Position pair.</p>
-            
-            <pre><code>seenPos2</code></pre>
-         </article>
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"bytes"
+"cmd/internal/cov/covcmd"
+"cmp"
+"encoding/json"
+"flag"
+"fmt"
+"go/ast"
+"go/parser"
+"go/token"
+"internal/coverage"
+"internal/coverage/encodemeta"
+"internal/coverage/slicewriter"
+"io"
+"log"
+"os"
+"path/filepath"
+"slices"
+"strconv"
+"strings"
+"cmd/internal/edit"
+"cmd/internal/objabi"
+"cmd/internal/telemetry/counter"
+"bufio"
+"bytes"
+"encoding/json"
+"errors"
+"fmt"
+"go/ast"
+"go/parser"
+"go/token"
+"io"
+"os"
+"os/exec"
+"path"
+"path/filepath"
+"runtime"
+"strings"
+"text/tabwriter"
+"golang.org/x/tools/cover"
+"bufio"
+"cmd/internal/browser"
+"fmt"
+"html/template"
+"io"
+"math"
+"os"
+"path/filepath"
+"strings"
+"golang.org/x/tools/cover"
+</code></pre>
+            </article>
+         </section>
           
-         <article class="struct" data-name="templateData">
-            <h2>type templateData struct</h2>
-            <hr />
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Files []*templateFile
-Set bool</code></pre>
-         </article>
-         
-         <article class="struct" data-name="templateFile">
-            <h2>type templateFile struct</h2>
-            <hr />
+            <article class="global" data-name="atomicPackageName">
+               <h3>
+                  atomicPackageName 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const atomicPackageName = "_cover_atomic_"</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Name string
-Body template.HTML
-Coverage float64</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Block">
-            <h2>type Block struct</h2>
-            <hr />
+            <article class="global" data-name="atomicPackagePath">
+               <h3>
+                  atomicPackagePath 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const atomicPackagePath = "sync/atomic"</code></pre>
+            </article>
             
-            <p>Block represents the information about a basic block to be recorded in the analysis.
+            <article class="global" data-name="cgran">
+               <h3>
+                  cgran 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var cgran coverage.CounterGranularity</code></pre>
+            </article>
+            
+            <article class="global" data-name="cmode">
+               <h3>
+                  cmode 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var cmode coverage.CounterMode</code></pre>
+            </article>
+            
+            <article class="global" data-name="counterStmt">
+               <h3>
+                  counterStmt 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var counterStmt func(*File, string) string</code></pre>
+            </article>
+            
+            <article class="global" data-name="covervarsoutfile">
+               <h3>
+                  covervarsoutfile 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var covervarsoutfile string</code></pre>
+            </article>
+            
+            <article class="global" data-name="funcOut">
+               <h3>
+                  funcOut 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var funcOut = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="htmlOut">
+               <h3>
+                  htmlOut 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var htmlOut = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="htmlTemplate">
+               <h3>
+                  htmlTemplate 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var htmlTemplate = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="mode">
+               <h3>
+                  mode 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var mode = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="outfilelist">
+               <h3>
+                  outfilelist 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var outfilelist = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="output">
+               <h3>
+                  output 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var output = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="outputfiles">
+               <h3>
+                  outputfiles 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var outputfiles []string</code></pre>
+            </article>
+            
+            <article class="global" data-name="pkgcfg">
+               <h3>
+                  pkgcfg 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var pkgcfg = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="pkgconfig">
+               <h3>
+                  pkgconfig 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var pkgconfig covcmd.CoverPkgConfig</code></pre>
+            </article>
+            
+            <article class="global" data-name="profile">
+               <h3>
+                  profile 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var profile string</code></pre>
+            </article>
+            
+            <article class="global" data-name="seenPos2">
+               <h3>
+                  seenPos2 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>seenPos2 tracks whether we have seen a token.Position pair.</p>
+               
+               <pre><code>var seenPos2 = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="tmplHTML">
+               <h3>
+                  tmplHTML 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const tmplHTML = `
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+		<title>{{$pkg := .PackageName}}{{if $pkg}}{{$pkg}}: {{end}}Go Coverage Report</title>
+		<style>
+			body {
+				background: black;
+				color: rgb(80, 80, 80);
+			}
+			body, pre, #legend span {
+				font-family: Menlo, monospace;
+				font-weight: bold;
+			}
+			#topbar {
+				background: black;
+				position: fixed;
+				top: 0; left: 0; right: 0;
+				height: 42px;
+				border-bottom: 1px solid rgb(80, 80, 80);
+			}
+			#content {
+				margin-top: 50px;
+			}
+			#nav, #legend {
+				float: left;
+				margin-left: 10px;
+			}
+			#legend {
+				margin-top: 12px;
+			}
+			#nav {
+				margin-top: 10px;
+			}
+			#legend span {
+				margin: 0 5px;
+			}
+			{{colors}}
+		</style>
+	</head>
+	<body>
+		<div id="topbar">
+			<div id="nav">
+				<select id="files">
+				{{range $i, $f := .Files}}
+				<option value="file{{$i}}">{{$f.Name}} ({{printf "%.1f" $f.Coverage}}%)</option>
+				{{end}}
+				</select>
+			</div>
+			<div id="legend">
+				<span>not tracked</span>
+			{{if .Set}}
+				<span class="cov0">not covered</span>
+				<span class="cov8">covered</span>
+			{{else}}
+				<span class="cov0">no coverage</span>
+				<span class="cov1">low coverage</span>
+				<span class="cov2">*</span>
+				<span class="cov3">*</span>
+				<span class="cov4">*</span>
+				<span class="cov5">*</span>
+				<span class="cov6">*</span>
+				<span class="cov7">*</span>
+				<span class="cov8">*</span>
+				<span class="cov9">*</span>
+				<span class="cov10">high coverage</span>
+			{{end}}
+			</div>
+		</div>
+		<div id="content">
+		{{range $i, $f := .Files}}
+		<pre class="file" id="file{{$i}}" style="display: none">{{$f.Body}}</pre>
+		{{end}}
+		</div>
+	</body>
+	<script>
+	(function() {
+		var files = document.getElementById('files');
+		var visible;
+		files.addEventListener('change', onChange, false);
+		function select(part) {
+			if (visible)
+				visible.style.display = 'none';
+			visible = document.getElementById(part);
+			if (!visible)
+				return;
+			files.value = part;
+			visible.style.display = 'block';
+			location.hash = part;
+		}
+		function onChange() {
+			select(files.value);
+			window.scrollTo(0, 0);
+		}
+		if (location.hash != "") {
+			select(location.hash.substr(1));
+		}
+		if (!visible) {
+			select("file0");
+		}
+	})();
+	</script>
+</html>
+`</code></pre>
+            </article>
+            
+            <article class="global" data-name="usageMessage">
+               <h3>
+                  usageMessage 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const usageMessage = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="varVar">
+               <h3>
+                  varVar 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var varVar = *ast.CallExpr</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="types">
+            <h2>Type Aliases</h2>
+            
+            <article class="type" data-name="funcLitFinder">
+               <h3>
+                  funcLitFinder
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>funcLitFinder implements the ast.Visitor pattern to find the location of any
+function literal in a subtree.</p>
+               
+               <pre><code>type funcLitFinder token.Pos</code></pre>
+            </article>
+            
+         </section>
+           
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="Block">
+               <h3>
+                  Block
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Block represents the information about a basic block to be recorded in the analysis.
 Note: Our definition of basic block is based on control structures; we don't break
 apart && and ||. We could but it doesn't seem important enough to bother.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">startByte token.Pos
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Block struct {
+startByte token.Pos
 endByte token.Pos
-numStmt int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Package">
-            <h2>type Package struct</h2>
-            <hr />
+numStmt int
+}</code></pre>
+            </article>
             
-            <p>Package holds package-specific state.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">mdb *encodemeta.CoverageMetaDataBuilder
-counterLengths []int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Func">
-            <h2>type Func struct</h2>
-            <hr />
-            
-            <p>Function holds func-specific state.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">units []coverage.CoverableUnit
-counterVar string</code></pre>
-         </article>
-         
-         <article class="struct" data-name="File">
-            <h2>type File struct</h2>
-            <hr />
-            
-            <p>File is a wrapper for the state of a file used in the parser.
+            <article class="struct" data-name="File">
+               <h3>
+                  File
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>File is a wrapper for the state of a file used in the parser.
 The basic parse tree walker is a method of this type.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">fset *token.FileSet
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type File struct {
+fset *token.FileSet
 name string
 astFile *ast.File
 blocks []Block
@@ -352,514 +859,733 @@ content []byte
 edit *edit.Buffer
 mdb *encodemeta.CoverageMetaDataBuilder
 fn Func
-pkg *Package</code></pre>
-         </article>
-         
-         <article class="struct" data-name="block1">
-            <h2>type block1 struct</h2>
-            <hr />
+pkg *Package
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Block
-index int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="pos2">
-            <h2>type pos2 struct</h2>
-            <hr />
+            <article class="struct" data-name="Func">
+               <h3>
+                  Func
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Function holds func-specific state.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Func struct {
+units []coverage.CoverableUnit
+counterVar string
+}</code></pre>
+            </article>
             
-            <p>pos2 is a pair of token.Position values, used as a map key type.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">p1 token.Position
-p2 token.Position</code></pre>
-         </article>
-         
-         <article class="struct" data-name="FuncExtent">
-            <h2>type FuncExtent struct</h2>
-            <hr />
-            
-            <p>FuncExtent describes a function's extent in the source by file and position.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">name string
+            <article class="struct" data-name="FuncExtent">
+               <h3>
+                  FuncExtent
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>FuncExtent describes a function's extent in the source by file and position.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type FuncExtent struct {
+name string
 startLine int
 startCol int
 endLine int
-endCol int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="FuncVisitor">
-            <h2>type FuncVisitor struct</h2>
-            <hr />
+endCol int
+}</code></pre>
+            </article>
             
-            <p>FuncVisitor implements the visitor that builds the function position list for a file.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">fset *token.FileSet
+            <article class="struct" data-name="FuncVisitor">
+               <h3>
+                  FuncVisitor
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>FuncVisitor implements the visitor that builds the function position list for a file.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type FuncVisitor struct {
+fset *token.FileSet
 name string
 astFile *ast.File
-funcs []*FuncExtent</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Pkg">
-            <h2>type Pkg struct</h2>
-            <hr />
+funcs []*FuncExtent
+}</code></pre>
+            </article>
             
-            <p>Pkg describes a single package, compatible with the JSON output from 'go list'; see 'go help list'.</p>
+            <article class="struct" data-name="Package">
+               <h3>
+                  Package
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Package holds package-specific state.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Package struct {
+mdb *encodemeta.CoverageMetaDataBuilder
+counterLengths []int
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">ImportPath string
+            <article class="struct" data-name="Pkg">
+               <h3>
+                  Pkg
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Pkg describes a single package, compatible with the JSON output from 'go list'; see 'go help list'.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Pkg struct {
+ImportPath string
 Dir string
-Error **ast.StructType</code></pre>
-         </article>
+Error *struct{...}
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="block1">
+               <h3>
+                  block1
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type block1 struct {
+Block
+index int
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="pos2">
+               <h3>
+                  pos2
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>pos2 is a pair of token.Position values, used as a map key type.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type pos2 struct {
+p1 token.Position
+p2 token.Position
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="templateData">
+               <h3>
+                  templateData
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type templateData struct {
+Files []*templateFile
+Set bool
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="templateFile">
+               <h3>
+                  templateFile
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type templateFile struct {
+Name string
+Body template.HTML
+Coverage float64
+}</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="function" data-name="htmlOutput">
-            <h2>htmlOutput</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <p>htmlOutput reads the profile data from profile and generates an HTML
-coverage report, writing it to outfile. If outfile is empty,
-it writes the report to a temporary file and opens it in a web browser.</p>
-            
-            <pre><code>func htmlOutput(profile string, outfile string) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="percentCovered">
-            <h2>percentCovered</h2>
-            <hr />
-            
-            <p>percentCovered returns, as a percentage, the fraction of the statements in
-the profile covered by the test run.
-In effect, it reports the coverage of a given source file.</p>
-            
-            <pre><code>func percentCovered(p *cover.Profile) float64</code></pre>
-         </article>
-         
-         <article class="function" data-name="htmlGen">
-            <h2>htmlGen</h2>
-            <hr />
-            
-            <p>htmlGen generates an HTML coverage report with the provided filename,
-source code, and tokens, and writes it to the given Writer.</p>
-            
-            <pre><code>func htmlGen(w io.Writer, src []byte, boundaries []cover.Boundary) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="rgb">
-            <h2>rgb</h2>
-            <hr />
-            
-            <p>rgb returns an rgb value for the specified coverage value
-between 0 (no coverage) and 10 (max coverage).</p>
-            
-            <pre><code>func rgb(n int) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="colors">
-            <h2>colors</h2>
-            <hr />
-            
-            <p>colors generates the CSS rules for coverage colors.</p>
-            
-            <pre><code>func colors() template.CSS</code></pre>
-         </article>
-         
-         <article class="function" data-name="PackageName">
-            <h2>PackageName</h2>
-            <hr />
-            
-            <p>PackageName returns a name for the package being shown.
+            <article class="function" data-name="PackageName">
+               <h3>
+                  PackageName 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>PackageName returns a name for the package being shown.
 It does this by choosing the penultimate element of the path
 name, so foo.bar/baz/foo.go chooses 'baz'. This is cheap
 and easy, avoids parsing the Go file, and gets a better answer
 for package main. It returns the empty string if there is
 a problem.</p>
+               
+               <pre><code>func (td templateData) PackageName() string</code></pre>
+            </article>
             
-            <pre><code>func PackageName() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestPackageName">
-            <h2>TestPackageName</h2>
-            <hr />
+            <article class="function" data-name="Visit">
+               <h3>
+                  Visit 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Visit implements the ast.Visitor interface.</p>
+               
+               <pre><code>func (f *File) Visit(node ast.Node) ast.Visitor</code></pre>
+            </article>
             
-            <pre><code>func TestPackageName(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="usage">
-            <h2>usage</h2>
-            <hr />
+            <article class="function" data-name="Visit">
+               <h3>
+                  Visit 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Visit implements the ast.Visitor interface.</p>
+               
+               <pre><code>func (v *FuncVisitor) Visit(node ast.Node) ast.Visitor</code></pre>
+            </article>
             
-            <pre><code>func usage()</code></pre>
-         </article>
-         
-         <article class="function" data-name="main">
-            <h2>main</h2>
-            <hr />
+            <article class="function" data-name="Visit">
+               <h3>
+                  Visit 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (f *funcLitFinder) Visit(node ast.Node) (w ast.Visitor)</code></pre>
+            </article>
             
-            <pre><code>func main()</code></pre>
-         </article>
-         
-         <article class="function" data-name="parseFlags">
-            <h2>parseFlags</h2>
-            <hr />
-            
-            <p>parseFlags sets the profile and counterStmt globals and performs validations.</p>
-            
-            <pre><code>func parseFlags() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="readOutFileList">
-            <h2>readOutFileList</h2>
-            <hr />
-            
-            <pre><code>func readOutFileList(path string) ([]string, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="readPackageConfig">
-            <h2>readPackageConfig</h2>
-            <hr />
-            
-            <pre><code>func readPackageConfig(path string) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="findText">
-            <h2>findText</h2>
-            <hr />
-            
-            <p>findText finds text in the original source, starting at pos.
-It correctly skips over comments and assumes it need not
-handle quoted strings.
-It returns a byte offset within f.src.</p>
-            
-            <pre><code>func findText(pos token.Pos, text string) int</code></pre>
-         </article>
-         
-         <article class="function" data-name="Visit">
-            <h2>Visit</h2>
-            <hr />
-            
-            <p>Visit implements the ast.Visitor interface.</p>
-            
-            <pre><code>func Visit(node ast.Node) ast.Visitor</code></pre>
-         </article>
-         
-         <article class="function" data-name="mkCounterVarName">
-            <h2>mkCounterVarName</h2>
-            <hr />
-            
-            <pre><code>func mkCounterVarName(idx int) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="mkPackageIdVar">
-            <h2>mkPackageIdVar</h2>
-            <hr />
-            
-            <pre><code>func mkPackageIdVar() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="mkMetaVar">
-            <h2>mkMetaVar</h2>
-            <hr />
-            
-            <pre><code>func mkMetaVar() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="mkPackageIdExpression">
-            <h2>mkPackageIdExpression</h2>
-            <hr />
-            
-            <pre><code>func mkPackageIdExpression() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="preFunc">
-            <h2>preFunc</h2>
-            <hr />
-            
-            <pre><code>func preFunc(fn ast.Node, fname string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="postFunc">
-            <h2>postFunc</h2>
-            <hr />
-            
-            <pre><code>func postFunc(fn ast.Node, funcname string, flit bool, body *ast.BlockStmt)</code></pre>
-         </article>
-         
-         <article class="function" data-name="annotate">
-            <h2>annotate</h2>
-            <hr />
-            
-            <pre><code>func annotate(names []string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="annotateFile">
-            <h2>annotateFile</h2>
-            <hr />
-            
-            <pre><code>func annotateFile(name string, fd io.Writer)</code></pre>
-         </article>
-         
-         <article class="function" data-name="setCounterStmt">
-            <h2>setCounterStmt</h2>
-            <hr />
-            
-            <p>setCounterStmt returns the expression: __count[23] = 1.</p>
-            
-            <pre><code>func setCounterStmt(f *File, counter string) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="incCounterStmt">
-            <h2>incCounterStmt</h2>
-            <hr />
-            
-            <p>incCounterStmt returns the expression: __count[23]++.</p>
-            
-            <pre><code>func incCounterStmt(f *File, counter string) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="atomicCounterStmt">
-            <h2>atomicCounterStmt</h2>
-            <hr />
-            
-            <p>atomicCounterStmt returns the expression: atomic.AddUint32(&__count[23], 1)</p>
-            
-            <pre><code>func atomicCounterStmt(f *File, counter string) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="newCounter">
-            <h2>newCounter</h2>
-            <hr />
-            
-            <p>newCounter creates a new counter expression of the appropriate form.</p>
-            
-            <pre><code>func newCounter(start token.Pos, end token.Pos, numStmt int) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="addCounters">
-            <h2>addCounters</h2>
-            <hr />
-            
-            <p>addCounters takes a list of statements and adds counters to the beginning of
+            <article class="function" data-name="addCounters">
+               <h3>
+                  addCounters 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>addCounters takes a list of statements and adds counters to the beginning of
 each basic block at the top level of that list. For instance, given
-
-	S1
-	if cond {
-		S2
-	}
-	S3
-
+S1
+if cond {
+S2
+}
+S3
 counters will be added before S1 and before S3. The block containing S2
 will be visited in a separate call.
 TODO: Nested simple blocks get unnecessary (but correct) counters</p>
+               
+               <pre><code>func (f *File) addCounters(pos token.Pos, insertPos token.Pos, blockEnd token.Pos, list []ast.Stmt, extendToClosingBrace bool)</code></pre>
+            </article>
             
-            <pre><code>func addCounters(pos token.Pos, insertPos token.Pos, blockEnd token.Pos, list []ast.Stmt, extendToClosingBrace bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="hasFuncLiteral">
-            <h2>hasFuncLiteral</h2>
-            <hr />
+            <article class="function" data-name="addVariables">
+               <h3>
+                  addVariables 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>addVariables adds to the end of the file the declarations to set up the counter and position variables.</p>
+               
+               <pre><code>func (f *File) addVariables(w io.Writer)</code></pre>
+            </article>
             
-            <p>hasFuncLiteral reports the existence and position of the first func literal
+            <article class="function" data-name="annotate">
+               <h3>
+                  annotate 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func annotate(names []string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="annotateFile">
+               <h3>
+                  annotateFile 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *Package) annotateFile(name string, fd io.Writer)</code></pre>
+            </article>
+            
+            <article class="function" data-name="atomicCounterStmt">
+               <h3>
+                  atomicCounterStmt 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>atomicCounterStmt returns the expression: atomic.AddUint32(&__count[23], 1)</p>
+               
+               <pre><code>func atomicCounterStmt(f *File, counter string) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="atomicOnAtomic">
+               <h3>
+                  atomicOnAtomic 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>atomicOnAtomic returns true if we're instrumenting
+the sync/atomic package AND using atomic mode.</p>
+               
+               <pre><code>func atomicOnAtomic() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="atomicPackagePrefix">
+               <h3>
+                  atomicPackagePrefix 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>atomicPackagePrefix returns the import path prefix used to refer to
+our special import of sync/atomic; this is either set to the
+constant atomicPackageName plus a dot or the empty string if we're
+instrumenting the sync/atomic package itself.</p>
+               
+               <pre><code>func atomicPackagePrefix() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="colors">
+               <h3>
+                  colors 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>colors generates the CSS rules for coverage colors.</p>
+               
+               <pre><code>func colors() template.CSS</code></pre>
+            </article>
+            
+            <article class="function" data-name="coverage">
+               <h3>
+                  coverage 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>coverage returns the fraction of the statements in the function that were covered, as a numerator and denominator.</p>
+               
+               <pre><code>func (f *FuncExtent) coverage(profile *cover.Profile) (num int64, den int64)</code></pre>
+            </article>
+            
+            <article class="function" data-name="dedup">
+               <h3>
+                  dedup 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>dedup takes a token.Position pair and returns a pair that does not
+duplicate any existing pair. The returned pair will have the Offset
+fields cleared.</p>
+               
+               <pre><code>func dedup(p1 token.Position, p2 token.Position) (r1 token.Position, r2 token.Position)</code></pre>
+            </article>
+            
+            <article class="function" data-name="emitMetaData">
+               <h3>
+                  emitMetaData 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *Package) emitMetaData(w io.Writer)</code></pre>
+            </article>
+            
+            <article class="function" data-name="emitMetaFile">
+               <h3>
+                  emitMetaFile 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *Package) emitMetaFile(outpath string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="endsBasicSourceBlock">
+               <h3>
+                  endsBasicSourceBlock 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>endsBasicSourceBlock reports whether s changes the flow of control: break, if, etc.,
+or if it's just problematic, for instance contains a function literal, which will complicate
+accounting due to the block-within-an expression.</p>
+               
+               <pre><code>func (f *File) endsBasicSourceBlock(s ast.Stmt) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="findFile">
+               <h3>
+                  findFile 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>findFile finds the location of the named file in GOROOT, GOPATH etc.</p>
+               
+               <pre><code>func findFile(pkgs map[string]*Pkg, file string) (string, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="findFuncs">
+               <h3>
+                  findFuncs 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>findFuncs parses the file and returns a slice of FuncExtent descriptors.</p>
+               
+               <pre><code>func findFuncs(name string) ([]*FuncExtent, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="findPkgs">
+               <h3>
+                  findPkgs 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func findPkgs(profiles []*cover.Profile) (map[string]*Pkg, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="findText">
+               <h3>
+                  findText 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>findText finds text in the original source, starting at pos.
+It correctly skips over comments and assumes it need not
+handle quoted strings.
+It returns a byte offset within f.src.</p>
+               
+               <pre><code>func (f *File) findText(pos token.Pos, text string) int</code></pre>
+            </article>
+            
+            <article class="function" data-name="found">
+               <h3>
+                  found 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (f *funcLitFinder) found() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="funcOutput">
+               <h3>
+                  funcOutput 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func funcOutput(profile string, outputFile string) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="hasFuncLiteral">
+               <h3>
+                  hasFuncLiteral 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>hasFuncLiteral reports the existence and position of the first func literal
 in the node, if any. If a func literal appears, it usually marks the termination
 of a basic block because the function body is itself a block.
 Therefore we draw a line at the start of the body of the first function literal we find.
 TODO: what if there's more than one? Probably doesn't matter much.</p>
+               
+               <pre><code>func hasFuncLiteral(n ast.Node) (bool, token.Pos)</code></pre>
+            </article>
             
-            <pre><code>func hasFuncLiteral(n ast.Node) (bool, token.Pos)</code></pre>
-         </article>
-         
-         <article class="function" data-name="statementBoundary">
-            <h2>statementBoundary</h2>
-            <hr />
+            <article class="function" data-name="htmlGen">
+               <h3>
+                  htmlGen 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>htmlGen generates an HTML coverage report with the provided filename,
+source code, and tokens, and writes it to the given Writer.</p>
+               
+               <pre><code>func htmlGen(w io.Writer, src []byte, boundaries []cover.Boundary) error</code></pre>
+            </article>
             
-            <p>statementBoundary finds the location in s that terminates the current basic
-block in the source.</p>
+            <article class="function" data-name="htmlOutput">
+               <h3>
+                  htmlOutput 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>htmlOutput reads the profile data from profile and generates an HTML
+coverage report, writing it to outfile. If outfile is empty,
+it writes the report to a temporary file and opens it in a web browser.</p>
+               
+               <pre><code>func htmlOutput(profile string, outfile string) error</code></pre>
+            </article>
             
-            <pre><code>func statementBoundary(s ast.Stmt) token.Pos</code></pre>
-         </article>
-         
-         <article class="function" data-name="endsBasicSourceBlock">
-            <h2>endsBasicSourceBlock</h2>
-            <hr />
+            <article class="function" data-name="incCounterStmt">
+               <h3>
+                  incCounterStmt 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>incCounterStmt returns the expression: __count[23]++.</p>
+               
+               <pre><code>func incCounterStmt(f *File, counter string) string</code></pre>
+            </article>
             
-            <p>endsBasicSourceBlock reports whether s changes the flow of control: break, if, etc.,
-or if it's just problematic, for instance contains a function literal, which will complicate
-accounting due to the block-within-an expression.</p>
-            
-            <pre><code>func endsBasicSourceBlock(s ast.Stmt) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="isControl">
-            <h2>isControl</h2>
-            <hr />
-            
-            <p>isControl reports whether s is a control statement that, if labeled, cannot be
+            <article class="function" data-name="isControl">
+               <h3>
+                  isControl 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>isControl reports whether s is a control statement that, if labeled, cannot be
 separated from its label.</p>
+               
+               <pre><code>func (f *File) isControl(s ast.Stmt) bool</code></pre>
+            </article>
             
-            <pre><code>func isControl(s ast.Stmt) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="Visit">
-            <h2>Visit</h2>
-            <hr />
+            <article class="function" data-name="main">
+               <h3>
+                  main 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func main()</code></pre>
+            </article>
             
-            <pre><code>func Visit(node ast.Node) w ast.Visitor</code></pre>
-         </article>
-         
-         <article class="function" data-name="found">
-            <h2>found</h2>
-            <hr />
+            <article class="function" data-name="mkCounterVarName">
+               <h3>
+                  mkCounterVarName 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func mkCounterVarName(idx int) string</code></pre>
+            </article>
             
-            <pre><code>func found() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="offset">
-            <h2>offset</h2>
-            <hr />
+            <article class="function" data-name="mkMetaVar">
+               <h3>
+                  mkMetaVar 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func mkMetaVar() string</code></pre>
+            </article>
             
-            <p>offset translates a token position into a 0-indexed byte offset.</p>
+            <article class="function" data-name="mkPackageIdExpression">
+               <h3>
+                  mkPackageIdExpression 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func mkPackageIdExpression() string</code></pre>
+            </article>
             
-            <pre><code>func offset(pos token.Pos) int</code></pre>
-         </article>
-         
-         <article class="function" data-name="addVariables">
-            <h2>addVariables</h2>
-            <hr />
+            <article class="function" data-name="mkPackageIdVar">
+               <h3>
+                  mkPackageIdVar 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func mkPackageIdVar() string</code></pre>
+            </article>
             
-            <p>addVariables adds to the end of the file the declarations to set up the counter and position variables.</p>
+            <article class="function" data-name="newCounter">
+               <h3>
+                  newCounter 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>newCounter creates a new counter expression of the appropriate form.</p>
+               
+               <pre><code>func (f *File) newCounter(start token.Pos, end token.Pos, numStmt int) string</code></pre>
+            </article>
             
-            <pre><code>func addVariables(w io.Writer)</code></pre>
-         </article>
-         
-         <article class="function" data-name="dedup">
-            <h2>dedup</h2>
-            <hr />
+            <article class="function" data-name="offset">
+               <h3>
+                  offset 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>offset translates a token position into a 0-indexed byte offset.</p>
+               
+               <pre><code>func (f *File) offset(pos token.Pos) int</code></pre>
+            </article>
             
-            <p>dedup takes a token.Position pair and returns a pair that does not
-duplicate any existing pair. The returned pair will have the Offset
-fields cleared.</p>
+            <article class="function" data-name="parseFlags">
+               <h3>
+                  parseFlags 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>parseFlags sets the profile and counterStmt globals and performs validations.</p>
+               
+               <pre><code>func parseFlags() error</code></pre>
+            </article>
             
-            <pre><code>func dedup(p1 token.Position, p2 token.Position) (r1 token.Position, r2 token.Position)</code></pre>
-         </article>
-         
-         <article class="function" data-name="emitMetaData">
-            <h2>emitMetaData</h2>
-            <hr />
+            <article class="function" data-name="percent">
+               <h3>
+                  percent 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func percent(covered int64, total int64) float64</code></pre>
+            </article>
             
-            <pre><code>func emitMetaData(w io.Writer)</code></pre>
-         </article>
-         
-         <article class="function" data-name="atomicOnAtomic">
-            <h2>atomicOnAtomic</h2>
-            <hr />
+            <article class="function" data-name="percentCovered">
+               <h3>
+                  percentCovered 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>percentCovered returns, as a percentage, the fraction of the statements in
+the profile covered by the test run.
+In effect, it reports the coverage of a given source file.</p>
+               
+               <pre><code>func percentCovered(p *cover.Profile) float64</code></pre>
+            </article>
             
-            <p>atomicOnAtomic returns true if we're instrumenting
-the sync/atomic package AND using atomic mode.</p>
+            <article class="function" data-name="postFunc">
+               <h3>
+                  postFunc 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (f *File) postFunc(fn ast.Node, funcname string, flit bool, body *ast.BlockStmt)</code></pre>
+            </article>
             
-            <pre><code>func atomicOnAtomic() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="atomicPackagePrefix">
-            <h2>atomicPackagePrefix</h2>
-            <hr />
+            <article class="function" data-name="preFunc">
+               <h3>
+                  preFunc 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (f *File) preFunc(fn ast.Node, fname string)</code></pre>
+            </article>
             
-            <p>atomicPackagePrefix returns the import path prefix used to refer to
-our special import of sync/atomic; this is either set to the
-constant atomicPackageName plus a dot or the empty string if we're
-instrumenting the sync/atomic package itself.</p>
+            <article class="function" data-name="readOutFileList">
+               <h3>
+                  readOutFileList 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func readOutFileList(path string) ([]string, error)</code></pre>
+            </article>
             
-            <pre><code>func atomicPackagePrefix() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="emitMetaFile">
-            <h2>emitMetaFile</h2>
-            <hr />
+            <article class="function" data-name="readPackageConfig">
+               <h3>
+                  readPackageConfig 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func readPackageConfig(path string) error</code></pre>
+            </article>
             
-            <pre><code>func emitMetaFile(outpath string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Main">
-            <h2>Main</h2>
-            <hr />
+            <article class="function" data-name="rgb">
+               <h3>
+                  rgb 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>rgb returns an rgb value for the specified coverage value
+between 0 (no coverage) and 10 (max coverage).</p>
+               
+               <pre><code>func rgb(n int) string</code></pre>
+            </article>
             
-            <pre><code>func Main()</code></pre>
-         </article>
-         
-         <article class="function" data-name="funcOutput">
-            <h2>funcOutput</h2>
-            <hr />
+            <article class="function" data-name="setCounterStmt">
+               <h3>
+                  setCounterStmt 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>setCounterStmt returns the expression: __count[23] = 1.</p>
+               
+               <pre><code>func setCounterStmt(f *File, counter string) string</code></pre>
+            </article>
             
-            <pre><code>func funcOutput(profile string, outputFile string) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="findFuncs">
-            <h2>findFuncs</h2>
-            <hr />
+            <article class="function" data-name="statementBoundary">
+               <h3>
+                  statementBoundary 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>statementBoundary finds the location in s that terminates the current basic
+block in the source.</p>
+               
+               <pre><code>func (f *File) statementBoundary(s ast.Stmt) token.Pos</code></pre>
+            </article>
             
-            <p>findFuncs parses the file and returns a slice of FuncExtent descriptors.</p>
+            <article class="function" data-name="usage">
+               <h3>
+                  usage 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func usage()</code></pre>
+            </article>
             
-            <pre><code>func findFuncs(name string) ([]*FuncExtent, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Visit">
-            <h2>Visit</h2>
-            <hr />
-            
-            <p>Visit implements the ast.Visitor interface.</p>
-            
-            <pre><code>func Visit(node ast.Node) ast.Visitor</code></pre>
-         </article>
-         
-         <article class="function" data-name="coverage">
-            <h2>coverage</h2>
-            <hr />
-            
-            <p>coverage returns the fraction of the statements in the function that were covered, as a numerator and denominator.</p>
-            
-            <pre><code>func coverage(profile *cover.Profile) (num int64, den int64)</code></pre>
-         </article>
-         
-         <article class="function" data-name="findPkgs">
-            <h2>findPkgs</h2>
-            <hr />
-            
-            <pre><code>func findPkgs(profiles []*cover.Profile) (*ast.MapType, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="findFile">
-            <h2>findFile</h2>
-            <hr />
-            
-            <p>findFile finds the location of the named file in GOROOT, GOPATH etc.</p>
-            
-            <pre><code>func findFile(pkgs *ast.MapType, file string) (string, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="percent">
-            <h2>percent</h2>
-            <hr />
-            
-            <pre><code>func percent(covered int64, total int64) float64</code></pre>
-         </article>
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -867,59 +1593,170 @@ instrumenting the sync/atomic package itself.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

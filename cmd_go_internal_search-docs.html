@@ -13,359 +13,749 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+                  
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>search</code>
-         </h1>
-         <hr />
-          
-         <article class="struct" data-name="Match">
-            <h2>type Match struct</h2>
-            <hr />
+         <h1>search</h1>
+         <div class="section-divider"></div>
+
+         
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"cmd/go/internal/base"
+"cmd/go/internal/cfg"
+"cmd/go/internal/fsys"
+"cmd/go/internal/str"
+"cmd/internal/pkgpattern"
+"fmt"
+"go/build"
+"io/fs"
+"os"
+"path"
+"path/filepath"
+"strings"
+</code></pre>
+            </article>
+         </section>
+             
+         <section id="structs">
+            <h2>Structs</h2>
             
-            <p>A Match represents the result of matching a single package pattern.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">pattern string
+            <article class="struct" data-name="Match">
+               <h3>
+                  Match
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Match represents the result of matching a single package pattern.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Match struct {
+pattern string
 Dirs []string
 Pkgs []string
-Errs []error</code></pre>
-         </article>
-         
-         <article class="struct" data-name="MatchError">
-            <h2>type MatchError struct</h2>
-            <hr />
+Errs []error
+}</code></pre>
+            </article>
             
-            <p>A MatchError indicates an error that occurred while attempting to match a
+            <article class="struct" data-name="MatchError">
+               <h3>
+                  MatchError
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A MatchError indicates an error that occurred while attempting to match a
 pattern.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type MatchError struct {
+Match *Match
+Err error
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Match *Match
-Err error</code></pre>
-         </article>
+         </section>
           
-         <article class="function" data-name="NewMatch">
-            <h2>NewMatch</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <p>NewMatch returns a Match describing the given pattern,
-without resolving its packages or errors.</p>
+            <article class="function" data-name="AddError">
+               <h3>
+                  AddError 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>AddError appends a MatchError wrapping err to m.Errs.</p>
+               
+               <pre><code>func (m *Match) AddError(err error)</code></pre>
+            </article>
             
-            <pre><code>func NewMatch(pattern string) *Match</code></pre>
-         </article>
-         
-         <article class="function" data-name="Pattern">
-            <h2>Pattern</h2>
-            <hr />
-            
-            <p>Pattern returns the pattern to be matched.</p>
-            
-            <pre><code>func Pattern() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="AddError">
-            <h2>AddError</h2>
-            <hr />
-            
-            <p>AddError appends a MatchError wrapping err to m.Errs.</p>
-            
-            <pre><code>func AddError(err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="IsLiteral">
-            <h2>IsLiteral</h2>
-            <hr />
-            
-            <p>IsLiteral reports whether the pattern is free of wildcards and meta-patterns.
-
-A literal pattern must match at most one package.</p>
-            
-            <pre><code>func IsLiteral() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="IsLocal">
-            <h2>IsLocal</h2>
-            <hr />
-            
-            <p>IsLocal reports whether the pattern must be resolved from a specific root or
-directory, such as a filesystem path or a single module.</p>
-            
-            <pre><code>func IsLocal() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="IsMeta">
-            <h2>IsMeta</h2>
-            <hr />
-            
-            <p>IsMeta reports whether the pattern is a “meta-package” keyword that represents
-multiple packages, such as "std", "cmd", "tool", or "all".</p>
-            
-            <pre><code>func IsMeta() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="IsMetaPackage">
-            <h2>IsMetaPackage</h2>
-            <hr />
-            
-            <p>IsMetaPackage checks if name is a reserved package name that expands to multiple packages.</p>
-            
-            <pre><code>func IsMetaPackage(name string) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="Error">
-            <h2>Error</h2>
-            <hr />
-            
-            <pre><code>func Error() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="Unwrap">
-            <h2>Unwrap</h2>
-            <hr />
-            
-            <pre><code>func Unwrap() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="MatchPackages">
-            <h2>MatchPackages</h2>
-            <hr />
-            
-            <p>MatchPackages sets m.Pkgs to a non-nil slice containing all the packages that
-can be found under the $GOPATH directories and $GOROOT that match the
-pattern. The pattern must be either "all" (all packages), "std" (standard
-packages), "cmd" (standard commands), or a path including "...".
-
-If any errors may have caused the set of packages to be incomplete,
-MatchPackages appends those errors to m.Errs.</p>
-            
-            <pre><code>func MatchPackages()</code></pre>
-         </article>
-         
-         <article class="function" data-name="MatchDirs">
-            <h2>MatchDirs</h2>
-            <hr />
-            
-            <p>MatchDirs sets m.Dirs to a non-nil slice containing all directories that
-potentially match a local pattern. The pattern must begin with an absolute
-path, or "./", or "../". On Windows, the pattern may use slash or backslash
-separators or a mix of both.
-
-If any errors may have caused the set of directories to be incomplete,
-MatchDirs appends those errors to m.Errs.</p>
-            
-            <pre><code>func MatchDirs(modRoots []string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="WarnUnmatched">
-            <h2>WarnUnmatched</h2>
-            <hr />
-            
-            <p>WarnUnmatched warns about patterns that didn't match any packages.</p>
-            
-            <pre><code>func WarnUnmatched(matches []*Match)</code></pre>
-         </article>
-         
-         <article class="function" data-name="ImportPaths">
-            <h2>ImportPaths</h2>
-            <hr />
-            
-            <p>ImportPaths returns the matching paths to use for the given command line.
-It calls ImportPathsQuiet and then WarnUnmatched.</p>
-            
-            <pre><code>func ImportPaths(patterns []string, modRoots []string) []*Match</code></pre>
-         </article>
-         
-         <article class="function" data-name="ImportPathsQuiet">
-            <h2>ImportPathsQuiet</h2>
-            <hr />
-            
-            <p>ImportPathsQuiet is like ImportPaths but does not warn about patterns with no matches.</p>
-            
-            <pre><code>func ImportPathsQuiet(patterns []string, modRoots []string) []*Match</code></pre>
-         </article>
-         
-         <article class="function" data-name="CleanPatterns">
-            <h2>CleanPatterns</h2>
-            <hr />
-            
-            <p>CleanPatterns returns the patterns to use for the given command line. It
+            <article class="function" data-name="CleanPatterns">
+               <h3>
+                  CleanPatterns 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>CleanPatterns returns the patterns to use for the given command line. It
 canonicalizes the patterns but does not evaluate any matches. For patterns
 that are not local or absolute paths, it preserves text after '@' to avoid
 modifying version queries.</p>
+               
+               <pre><code>func CleanPatterns(patterns []string) []string</code></pre>
+            </article>
             
-            <pre><code>func CleanPatterns(patterns []string) []string</code></pre>
-         </article>
-         
-         <article class="function" data-name="IsStandardImportPath">
-            <h2>IsStandardImportPath</h2>
-            <hr />
+            <article class="function" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *MatchError) Error() string</code></pre>
+            </article>
             
-            <p>IsStandardImportPath reports whether $GOROOT/src/path should be considered
+            <article class="function" data-name="ImportPaths">
+               <h3>
+                  ImportPaths 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>ImportPaths returns the matching paths to use for the given command line.
+It calls ImportPathsQuiet and then WarnUnmatched.</p>
+               
+               <pre><code>func ImportPaths(patterns []string, modRoots []string) []*Match</code></pre>
+            </article>
+            
+            <article class="function" data-name="ImportPathsQuiet">
+               <h3>
+                  ImportPathsQuiet 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>ImportPathsQuiet is like ImportPaths but does not warn about patterns with no matches.</p>
+               
+               <pre><code>func ImportPathsQuiet(patterns []string, modRoots []string) []*Match</code></pre>
+            </article>
+            
+            <article class="function" data-name="InDir">
+               <h3>
+                  InDir 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>InDir checks whether path is in the file tree rooted at dir.
+If so, InDir returns an equivalent path relative to dir.
+If not, InDir returns an empty string.
+InDir makes some effort to succeed even in the presence of symbolic links.</p>
+               
+               <pre><code>func InDir(path string, dir string) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="IsLiteral">
+               <h3>
+                  IsLiteral 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>IsLiteral reports whether the pattern is free of wildcards and meta-patterns.
+A literal pattern must match at most one package.</p>
+               
+               <pre><code>func (m *Match) IsLiteral() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="IsLocal">
+               <h3>
+                  IsLocal 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>IsLocal reports whether the pattern must be resolved from a specific root or
+directory, such as a filesystem path or a single module.</p>
+               
+               <pre><code>func (m *Match) IsLocal() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="IsMeta">
+               <h3>
+                  IsMeta 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>IsMeta reports whether the pattern is a “meta-package” keyword that represents
+multiple packages, such as "std", "cmd", "tool", or "all".</p>
+               
+               <pre><code>func (m *Match) IsMeta() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="IsMetaPackage">
+               <h3>
+                  IsMetaPackage 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>IsMetaPackage checks if name is a reserved package name that expands to multiple packages.</p>
+               
+               <pre><code>func IsMetaPackage(name string) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="IsRelativePath">
+               <h3>
+                  IsRelativePath 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>IsRelativePath reports whether pattern should be interpreted as a directory
+path relative to the current directory, as opposed to a pattern matching
+import paths.</p>
+               
+               <pre><code>func IsRelativePath(pattern string) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="IsStandardImportPath">
+               <h3>
+                  IsStandardImportPath 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>IsStandardImportPath reports whether $GOROOT/src/path should be considered
 part of the standard distribution. For historical reasons we allow people to add
 their own code to $GOROOT instead of using $GOPATH, but we assume that
 code will start with a domain name (dot in the first element).
-
 Note that this function is meant to evaluate whether a directory found in GOROOT
 should be treated as part of the standard library. It should not be used to decide
 that a directory found in GOPATH should be rejected: directories in GOPATH
 need not have dots in the first element, and they just take their chances
 with future collisions in the standard library.</p>
+               
+               <pre><code>func IsStandardImportPath(path string) bool</code></pre>
+            </article>
             
-            <pre><code>func IsStandardImportPath(path string) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="IsRelativePath">
-            <h2>IsRelativePath</h2>
-            <hr />
+            <article class="function" data-name="MatchDirs">
+               <h3>
+                  MatchDirs 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>MatchDirs sets m.Dirs to a non-nil slice containing all directories that
+potentially match a local pattern. The pattern must begin with an absolute
+path, or "./", or "../". On Windows, the pattern may use slash or backslash
+separators or a mix of both.
+If any errors may have caused the set of directories to be incomplete,
+MatchDirs appends those errors to m.Errs.</p>
+               
+               <pre><code>func (m *Match) MatchDirs(modRoots []string)</code></pre>
+            </article>
             
-            <p>IsRelativePath reports whether pattern should be interpreted as a directory
-path relative to the current directory, as opposed to a pattern matching
-import paths.</p>
+            <article class="function" data-name="MatchPackages">
+               <h3>
+                  MatchPackages 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>MatchPackages sets m.Pkgs to a non-nil slice containing all the packages that
+can be found under the $GOPATH directories and $GOROOT that match the
+pattern. The pattern must be either "all" (all packages), "std" (standard
+packages), "cmd" (standard commands), or a path including "...".
+If any errors may have caused the set of packages to be incomplete,
+MatchPackages appends those errors to m.Errs.</p>
+               
+               <pre><code>func (m *Match) MatchPackages()</code></pre>
+            </article>
             
-            <pre><code>func IsRelativePath(pattern string) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="InDir">
-            <h2>InDir</h2>
-            <hr />
+            <article class="function" data-name="NewMatch">
+               <h3>
+                  NewMatch 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewMatch returns a Match describing the given pattern,
+without resolving its packages or errors.</p>
+               
+               <pre><code>func NewMatch(pattern string) *Match</code></pre>
+            </article>
             
-            <p>InDir checks whether path is in the file tree rooted at dir.
-If so, InDir returns an equivalent path relative to dir.
-If not, InDir returns an empty string.
-InDir makes some effort to succeed even in the presence of symbolic links.</p>
+            <article class="function" data-name="Pattern">
+               <h3>
+                  Pattern 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Pattern returns the pattern to be matched.</p>
+               
+               <pre><code>func (m *Match) Pattern() string</code></pre>
+            </article>
             
-            <pre><code>func InDir(path string, dir string) string</code></pre>
-         </article>
+            <article class="function" data-name="Unwrap">
+               <h3>
+                  Unwrap 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *MatchError) Unwrap() error</code></pre>
+            </article>
+            
+            <article class="function" data-name="WarnUnmatched">
+               <h3>
+                  WarnUnmatched 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>WarnUnmatched warns about patterns that didn't match any packages.</p>
+               
+               <pre><code>func WarnUnmatched(matches []*Match)</code></pre>
+            </article>
+            
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -373,59 +763,170 @@ InDir makes some effort to succeed even in the presence of symbolic links.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

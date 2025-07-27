@@ -13,422 +13,803 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                  
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>plan9obj</code>
-         </h1>
-         <hr />
+         <h1>plan9obj</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="ErrNoSymbols">
-            <h2>ErrNoSymbols</h2>
-            <hr />
-            
-            <p>ErrNoSymbols is returned by [File.Symbols] if there is no such section
-in the File.</p>
-            
-            <pre><code>ErrNoSymbols</code></pre>
-         </article>
-         
-         <article class="global" data-name="fileTests">
-            <h2>fileTests</h2>
-            <hr />
-            
-            <pre><code>fileTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="Magic64">
-            <h2>Magic64</h2>
-            <hr />
-            
-            <pre><code>Magic64</code></pre>
-         </article>
-         
-         <article class="global" data-name="Magic386">
-            <h2>Magic386</h2>
-            <hr />
-            
-            <pre><code>Magic386</code></pre>
-         </article>
-         
-         <article class="global" data-name="MagicAMD64">
-            <h2>MagicAMD64</h2>
-            <hr />
-            
-            <pre><code>MagicAMD64</code></pre>
-         </article>
-         
-         <article class="global" data-name="MagicARM">
-            <h2>MagicARM</h2>
-            <hr />
-            
-            <pre><code>MagicARM</code></pre>
-         </article>
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"encoding/binary"
+"errors"
+"fmt"
+"internal/saferio"
+"io"
+"os"
+</code></pre>
+            </article>
+         </section>
           
-         <article class="struct" data-name="FileHeader">
-            <h2>type FileHeader struct</h2>
-            <hr />
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <p>A FileHeader represents a Plan 9 a.out file header.</p>
+            <article class="global" data-name="ErrNoSymbols">
+               <h3>
+                  ErrNoSymbols 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>ErrNoSymbols is returned by [File.Symbols] if there is no such section
+in the File.</p>
+               
+               <pre><code>var ErrNoSymbols = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Magic uint32
+            <article class="global" data-name="Magic386">
+               <h3>
+                  Magic386 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const Magic386 = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="Magic64">
+               <h3>
+                  Magic64 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const Magic64 = 0x8000</code></pre>
+            </article>
+            
+            <article class="global" data-name="MagicAMD64">
+               <h3>
+                  MagicAMD64 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const MagicAMD64 = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="MagicARM">
+               <h3>
+                  MagicARM 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const MagicARM = *ast.BinaryExpr</code></pre>
+            </article>
+            
+         </section>
+            
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="File">
+               <h3>
+                  File
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A File represents an open Plan 9 a.out file.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type File struct {
+FileHeader
+Sections []*Section
+closer io.Closer
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="FileHeader">
+               <h3>
+                  FileHeader
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A FileHeader represents a Plan 9 a.out file header.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type FileHeader struct {
+Magic uint32
 Bss uint32
 Entry uint64
 PtrSize int
 LoadAddress uint64
-HdrSize uint64</code></pre>
-         </article>
-         
-         <article class="struct" data-name="File">
-            <h2>type File struct</h2>
-            <hr />
+HdrSize uint64
+}</code></pre>
+            </article>
             
-            <p>A File represents an open Plan 9 a.out file.</p>
+            <article class="struct" data-name="Section">
+               <h3>
+                  Section
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Section represents a single section in a Plan 9 a.out file.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Section struct {
+SectionHeader
+io.ReaderAt
+sr *io.SectionReader
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">FileHeader
-Sections []*Section
-closer io.Closer</code></pre>
-         </article>
-         
-         <article class="struct" data-name="SectionHeader">
-            <h2>type SectionHeader struct</h2>
-            <hr />
-            
-            <p>A SectionHeader represents a single Plan 9 a.out section header.
+            <article class="struct" data-name="SectionHeader">
+               <h3>
+                  SectionHeader
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A SectionHeader represents a single Plan 9 a.out section header.
 This structure doesn't exist on-disk, but eases navigation
 through the object file.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Name string
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type SectionHeader struct {
+Name string
 Size uint32
-Offset uint32</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Section">
-            <h2>type Section struct</h2>
-            <hr />
+Offset uint32
+}</code></pre>
+            </article>
             
-            <p>A Section represents a single section in a Plan 9 a.out file.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">SectionHeader
-io.ReaderAt
-sr *io.SectionReader</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Sym">
-            <h2>type Sym struct</h2>
-            <hr />
-            
-            <p>A Symbol represents an entry in a Plan 9 a.out symbol table section.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Value uint64
+            <article class="struct" data-name="Sym">
+               <h3>
+                  Sym
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Symbol represents an entry in a Plan 9 a.out symbol table section.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Sym struct {
+Value uint64
 Type rune
-Name string</code></pre>
-         </article>
-         
-         <article class="struct" data-name="formatError">
-            <h2>type formatError struct</h2>
-            <hr />
+Name string
+}</code></pre>
+            </article>
             
-            <p>formatError is returned by some operations if the data does
+            <article class="struct" data-name="formatError">
+               <h3>
+                  formatError
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>formatError is returned by some operations if the data does
 not have the correct format for an object file.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">off int
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type formatError struct {
+off int
 msg string
-val any</code></pre>
-         </article>
-         
-         <article class="struct" data-name="fileTest">
-            <h2>type fileTest struct</h2>
-            <hr />
+val any
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">file string
-hdr FileHeader
-sections []*SectionHeader</code></pre>
-         </article>
-         
-         <article class="struct" data-name="prog">
-            <h2>type prog struct</h2>
-            <hr />
-            
-            <p>Plan 9 Program header.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Magic uint32
+            <article class="struct" data-name="prog">
+               <h3>
+                  prog
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Plan 9 Program header.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type prog struct {
+Magic uint32
 Text uint32
 Data uint32
 Bss uint32
 Syms uint32
 Entry uint32
 Spsz uint32
-Pcsz uint32</code></pre>
-         </article>
-         
-         <article class="struct" data-name="sym">
-            <h2>type sym struct</h2>
-            <hr />
+Pcsz uint32
+}</code></pre>
+            </article>
             
-            <p>Plan 9 symbol table entries.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">value uint64
+            <article class="struct" data-name="sym">
+               <h3>
+                  sym
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Plan 9 symbol table entries.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type sym struct {
+value uint64
 typ byte
-name []byte</code></pre>
-         </article>
+name []byte
+}</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="function" data-name="Data">
-            <h2>Data</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <p>Data reads and returns the contents of the Plan 9 a.out section.</p>
-            
-            <pre><code>func Data() ([]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Open">
-            <h2>Open</h2>
-            <hr />
-            
-            <p>Open returns a new ReadSeeker reading the Plan 9 a.out section.</p>
-            
-            <pre><code>func Open() io.ReadSeeker</code></pre>
-         </article>
-         
-         <article class="function" data-name="Error">
-            <h2>Error</h2>
-            <hr />
-            
-            <pre><code>func Error() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="Open">
-            <h2>Open</h2>
-            <hr />
-            
-            <p>Open opens the named file using [os.Open] and prepares it for use as a Plan 9 a.out binary.</p>
-            
-            <pre><code>func Open(name string) (*File, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Close">
-            <h2>Close</h2>
-            <hr />
-            
-            <p>Close closes the [File].
+            <article class="function" data-name="Close">
+               <h3>
+                  Close 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Close closes the [File].
 If the [File] was created using [NewFile] directly instead of [Open],
 Close has no effect.</p>
+               
+               <pre><code>func (f *File) Close() error</code></pre>
+            </article>
             
-            <pre><code>func Close() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="parseMagic">
-            <h2>parseMagic</h2>
-            <hr />
+            <article class="function" data-name="Data">
+               <h3>
+                  Data 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Data reads and returns the contents of the Plan 9 a.out section.</p>
+               
+               <pre><code>func (s *Section) Data() ([]byte, error)</code></pre>
+            </article>
             
-            <pre><code>func parseMagic(magic []byte) (uint32, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="NewFile">
-            <h2>NewFile</h2>
-            <hr />
+            <article class="function" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *formatError) Error() string</code></pre>
+            </article>
             
-            <p>NewFile creates a new [File] for accessing a Plan 9 binary in an underlying reader.
+            <article class="function" data-name="NewFile">
+               <h3>
+                  NewFile 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewFile creates a new [File] for accessing a Plan 9 binary in an underlying reader.
 The Plan 9 binary is expected to start at position 0 in the ReaderAt.</p>
+               
+               <pre><code>func NewFile(r io.ReaderAt) (*File, error)</code></pre>
+            </article>
             
-            <pre><code>func NewFile(r io.ReaderAt) (*File, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="walksymtab">
-            <h2>walksymtab</h2>
-            <hr />
+            <article class="function" data-name="Open">
+               <h3>
+                  Open 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Open returns a new ReadSeeker reading the Plan 9 a.out section.</p>
+               
+               <pre><code>func (s *Section) Open() io.ReadSeeker</code></pre>
+            </article>
             
-            <pre><code>func walksymtab(data []byte, ptrsz int, fn func) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="newTable">
-            <h2>newTable</h2>
-            <hr />
+            <article class="function" data-name="Open">
+               <h3>
+                  Open 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Open opens the named file using [os.Open] and prepares it for use as a Plan 9 a.out binary.</p>
+               
+               <pre><code>func Open(name string) (*File, error)</code></pre>
+            </article>
             
-            <p>newTable decodes the Go symbol table in data,
-returning an in-memory representation.</p>
-            
-            <pre><code>func newTable(symtab []byte, ptrsz int) ([]Sym, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Symbols">
-            <h2>Symbols</h2>
-            <hr />
-            
-            <p>Symbols returns the symbol table for f.</p>
-            
-            <pre><code>func Symbols() ([]Sym, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Section">
-            <h2>Section</h2>
-            <hr />
-            
-            <p>Section returns a section with the given name, or nil if no such
+            <article class="function" data-name="Section">
+               <h3>
+                  Section 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Section returns a section with the given name, or nil if no such
 section exists.</p>
+               
+               <pre><code>func (f *File) Section(name string) *Section</code></pre>
+            </article>
             
-            <pre><code>func Section(name string) *Section</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestOpen">
-            <h2>TestOpen</h2>
-            <hr />
+            <article class="function" data-name="Symbols">
+               <h3>
+                  Symbols 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Symbols returns the symbol table for f.</p>
+               
+               <pre><code>func (f *File) Symbols() ([]Sym, error)</code></pre>
+            </article>
             
-            <pre><code>func TestOpen(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestOpenFailure">
-            <h2>TestOpenFailure</h2>
-            <hr />
+            <article class="function" data-name="newTable">
+               <h3>
+                  newTable 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>newTable decodes the Go symbol table in data,
+returning an in-memory representation.</p>
+               
+               <pre><code>func newTable(symtab []byte, ptrsz int) ([]Sym, error)</code></pre>
+            </article>
             
-            <pre><code>func TestOpenFailure(t *testing.T)</code></pre>
-         </article>
+            <article class="function" data-name="parseMagic">
+               <h3>
+                  parseMagic 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func parseMagic(magic []byte) (uint32, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="walksymtab">
+               <h3>
+                  walksymtab 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func walksymtab(data []byte, ptrsz int, fn func(sym) error) error</code></pre>
+            </article>
+            
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -436,59 +817,170 @@ section exists.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

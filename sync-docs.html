@@ -6,1619 +6,2398 @@
          name="viewport"
          content="width=device-width, initial-scale=1.0"
       />
-      <title>Docs - sync_test</title>
+      <title>Docs - sync</title>
       <link
          href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
          rel="stylesheet"
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
-          
-         <a href="sync_atomic-docs.html">atomic</a>
-         <br />
-          
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <ul class="subpackage-list">
+               
+               <li><a href="sync_atomic-docs.html">atomic</a></li>
+               
+            </ul>
+            
+         </div>
+
+         
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                
+               <li><a href="#interfaces">Interfaces</a></li>
+                
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
+         
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>sync_test</code>
-         </h1>
-         <hr />
-         
-         <article class="global" data-name="onceFunc">
-            <h2>onceFunc</h2>
-            <hr />
-            
-            <pre><code>onceFunc</code></pre>
-         </article>
-         
-         <article class="global" data-name="onceFuncOnce">
-            <h2>onceFuncOnce</h2>
-            <hr />
-            
-            <pre><code>onceFuncOnce sync.Once</code></pre>
-         </article>
-         
-         <article class="global" data-name="onceValue">
-            <h2>onceValue</h2>
-            <hr />
-            
-            <pre><code>onceValue</code></pre>
-         </article>
-         
-         <article class="global" data-name="onceValueOnce">
-            <h2>onceValueOnce</h2>
-            <hr />
-            
-            <pre><code>onceValueOnce sync.Once</code></pre>
-         </article>
-         
-         <article class="global" data-name="onceValueValue">
-            <h2>onceValueValue</h2>
-            <hr />
-            
-            <pre><code>onceValueValue int</code></pre>
-         </article>
-         
-         <article class="global" data-name="_">
-            <h2>_</h2>
-            <hr />
-            
-            <pre><code>_ mapInterface</code></pre>
-         </article>
-         
-         <article class="global" data-name="_">
-            <h2>_</h2>
-            <hr />
-            
-            <pre><code>_ mapInterface</code></pre>
-         </article>
-         
-         <article class="global" data-name="_">
-            <h2>_</h2>
-            <hr />
-            
-            <pre><code>_ mapInterface</code></pre>
-         </article>
-         
-         <article class="global" data-name="opLoad">
-            <h2>opLoad</h2>
-            <hr />
-            
-            <pre><code>opLoad</code></pre>
-         </article>
-         
-         <article class="global" data-name="opStore">
-            <h2>opStore</h2>
-            <hr />
-            
-            <pre><code>opStore</code></pre>
-         </article>
-         
-         <article class="global" data-name="opLoadOrStore">
-            <h2>opLoadOrStore</h2>
-            <hr />
-            
-            <pre><code>opLoadOrStore</code></pre>
-         </article>
-         
-         <article class="global" data-name="opLoadAndDelete">
-            <h2>opLoadAndDelete</h2>
-            <hr />
-            
-            <pre><code>opLoadAndDelete</code></pre>
-         </article>
-         
-         <article class="global" data-name="opDelete">
-            <h2>opDelete</h2>
-            <hr />
-            
-            <pre><code>opDelete</code></pre>
-         </article>
-         
-         <article class="global" data-name="opSwap">
-            <h2>opSwap</h2>
-            <hr />
-            
-            <pre><code>opSwap</code></pre>
-         </article>
-         
-         <article class="global" data-name="opCompareAndSwap">
-            <h2>opCompareAndSwap</h2>
-            <hr />
-            
-            <pre><code>opCompareAndSwap</code></pre>
-         </article>
-         
-         <article class="global" data-name="opCompareAndDelete">
-            <h2>opCompareAndDelete</h2>
-            <hr />
-            
-            <pre><code>opCompareAndDelete</code></pre>
-         </article>
-         
-         <article class="global" data-name="opClear">
-            <h2>opClear</h2>
-            <hr />
-            
-            <pre><code>opClear</code></pre>
-         </article>
-         
-         <article class="global" data-name="mapOps">
-            <h2>mapOps</h2>
-            <hr />
-            
-            <pre><code>mapOps</code></pre>
-         </article>
-         
-         <article class="global" data-name="misuseTests">
-            <h2>misuseTests</h2>
-            <hr />
-            
-            <pre><code>misuseTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="globalSink">
-            <h2>globalSink</h2>
-            <hr />
-            
-            <pre><code>globalSink any</code></pre>
-         </article>
-         
-         <article class="global" data-name="bufPool">
-            <h2>bufPool</h2>
-            <hr />
-            
-            <pre><code>bufPool</code></pre>
-         </article>
-         
-         <article class="global" data-name="http">
-            <h2>http</h2>
-            <hr />
-            
-            <pre><code>http httpPkg</code></pre>
-         </article>
-          
-         <article class="struct" data-name="RWMutexMap">
-            <h2>type RWMutexMap struct</h2>
-            <hr />
-            
-            <p>RWMutexMap is an implementation of mapInterface using a sync.RWMutex.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">mu sync.RWMutex
-dirty *ast.MapType</code></pre>
-         </article>
-         
-         <article class="struct" data-name="DeepCopyMap">
-            <h2>type DeepCopyMap struct</h2>
-            <hr />
-            
-            <p>DeepCopyMap is an implementation of mapInterface using a Mutex and
-atomic.Value.  It makes deep copies of the map on every write to avoid
-acquiring the Mutex in Load.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">mu sync.Mutex
-clean atomic.Value</code></pre>
-         </article>
-         
-         <article class="struct" data-name="mapCall">
-            <h2>type mapCall struct</h2>
-            <hr />
-            
-            <p>mapCall is a quick.Generator for calls on mapInterface.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">op mapOp
-k any
-v any</code></pre>
-         </article>
-         
-         <article class="struct" data-name="mapResult">
-            <h2>type mapResult struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">value any
-ok bool</code></pre>
-         </article>
-         
-         <article class="struct" data-name="httpPkg">
-            <h2>type httpPkg struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code"></code></pre>
-         </article>
-         
-         <article class="struct" data-name="bench">
-            <h2>type bench struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">setup func
-perG func</code></pre>
-         </article>
-          
-         <article class="function" data-name="TestOnceFunc">
-            <h2>TestOnceFunc</h2>
-            <hr />
-            
-            <pre><code>func TestOnceFunc(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestOnceValue">
-            <h2>TestOnceValue</h2>
-            <hr />
-            
-            <pre><code>func TestOnceValue(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestOnceValues">
-            <h2>TestOnceValues</h2>
-            <hr />
-            
-            <pre><code>func TestOnceValues(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testOncePanicX">
-            <h2>testOncePanicX</h2>
-            <hr />
-            
-            <pre><code>func testOncePanicX(t *testing.T, calls *int, f func)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testOncePanicWith">
-            <h2>testOncePanicWith</h2>
-            <hr />
-            
-            <pre><code>func testOncePanicWith(t *testing.T, calls *int, f func, check func)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestOnceFuncPanic">
-            <h2>TestOnceFuncPanic</h2>
-            <hr />
-            
-            <pre><code>func TestOnceFuncPanic(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestOnceValuePanic">
-            <h2>TestOnceValuePanic</h2>
-            <hr />
-            
-            <pre><code>func TestOnceValuePanic(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestOnceValuesPanic">
-            <h2>TestOnceValuesPanic</h2>
-            <hr />
-            
-            <pre><code>func TestOnceValuesPanic(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestOnceFuncPanicNil">
-            <h2>TestOnceFuncPanicNil</h2>
-            <hr />
-            
-            <pre><code>func TestOnceFuncPanicNil(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestOnceFuncGoexit">
-            <h2>TestOnceFuncGoexit</h2>
-            <hr />
-            
-            <pre><code>func TestOnceFuncGoexit(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestOnceFuncPanicTraceback">
-            <h2>TestOnceFuncPanicTraceback</h2>
-            <hr />
-            
-            <pre><code>func TestOnceFuncPanicTraceback(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="onceFuncPanic">
-            <h2>onceFuncPanic</h2>
-            <hr />
-            
-            <pre><code>func onceFuncPanic()</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestOnceXGC">
-            <h2>TestOnceXGC</h2>
-            <hr />
-            
-            <pre><code>func TestOnceXGC(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="gcwaitfin">
-            <h2>gcwaitfin</h2>
-            <hr />
-            
-            <p>gcwaitfin performs garbage collection and waits for all finalizers to run.</p>
-            
-            <pre><code>func gcwaitfin()</code></pre>
-         </article>
-         
-         <article class="function" data-name="runtime_blockUntilEmptyFinalizerQueue">
-            <h2>runtime_blockUntilEmptyFinalizerQueue</h2>
-            <hr />
-            
-            <pre><code>func runtime_blockUntilEmptyFinalizerQueue(int64) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="doOnceFunc">
-            <h2>doOnceFunc</h2>
-            <hr />
-            
-            <pre><code>func doOnceFunc()</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkOnceFunc">
-            <h2>BenchmarkOnceFunc</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkOnceFunc(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="doOnceValue">
-            <h2>doOnceValue</h2>
-            <hr />
-            
-            <pre><code>func doOnceValue() int</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkOnceValue">
-            <h2>BenchmarkOnceValue</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkOnceValue(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkSemaUncontended">
-            <h2>BenchmarkSemaUncontended</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkSemaUncontended(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="benchmarkSema">
-            <h2>benchmarkSema</h2>
-            <hr />
-            
-            <pre><code>func benchmarkSema(b *testing.B, block bool, work bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkSemaSyntNonblock">
-            <h2>BenchmarkSemaSyntNonblock</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkSemaSyntNonblock(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkSemaSyntBlock">
-            <h2>BenchmarkSemaSyntBlock</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkSemaSyntBlock(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkSemaWorkNonblock">
-            <h2>BenchmarkSemaWorkNonblock</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkSemaWorkNonblock(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkSemaWorkBlock">
-            <h2>BenchmarkSemaWorkBlock</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkSemaWorkBlock(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testWaitGroup">
-            <h2>testWaitGroup</h2>
-            <hr />
-            
-            <pre><code>func testWaitGroup(t *testing.T, wg1 *WaitGroup, wg2 *WaitGroup)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWaitGroup">
-            <h2>TestWaitGroup</h2>
-            <hr />
-            
-            <pre><code>func TestWaitGroup(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWaitGroupMisuse">
-            <h2>TestWaitGroupMisuse</h2>
-            <hr />
-            
-            <pre><code>func TestWaitGroupMisuse(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWaitGroupRace">
-            <h2>TestWaitGroupRace</h2>
-            <hr />
-            
-            <pre><code>func TestWaitGroupRace(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWaitGroupAlign">
-            <h2>TestWaitGroupAlign</h2>
-            <hr />
-            
-            <pre><code>func TestWaitGroupAlign(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkWaitGroupUncontended">
-            <h2>BenchmarkWaitGroupUncontended</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkWaitGroupUncontended(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="benchmarkWaitGroupAddDone">
-            <h2>benchmarkWaitGroupAddDone</h2>
-            <hr />
-            
-            <pre><code>func benchmarkWaitGroupAddDone(b *testing.B, localWork int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkWaitGroupAddDone">
-            <h2>BenchmarkWaitGroupAddDone</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkWaitGroupAddDone(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkWaitGroupAddDoneWork">
-            <h2>BenchmarkWaitGroupAddDoneWork</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkWaitGroupAddDoneWork(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="benchmarkWaitGroupWait">
-            <h2>benchmarkWaitGroupWait</h2>
-            <hr />
-            
-            <pre><code>func benchmarkWaitGroupWait(b *testing.B, localWork int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkWaitGroupWait">
-            <h2>BenchmarkWaitGroupWait</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkWaitGroupWait(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkWaitGroupWaitWork">
-            <h2>BenchmarkWaitGroupWaitWork</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkWaitGroupWaitWork(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkWaitGroupActuallyWait">
-            <h2>BenchmarkWaitGroupActuallyWait</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkWaitGroupActuallyWait(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestCondSignal">
-            <h2>TestCondSignal</h2>
-            <hr />
-            
-            <pre><code>func TestCondSignal(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestCondSignalGenerations">
-            <h2>TestCondSignalGenerations</h2>
-            <hr />
-            
-            <pre><code>func TestCondSignalGenerations(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestCondBroadcast">
-            <h2>TestCondBroadcast</h2>
-            <hr />
-            
-            <pre><code>func TestCondBroadcast(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestRace">
-            <h2>TestRace</h2>
-            <hr />
-            
-            <pre><code>func TestRace(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestCondSignalStealing">
-            <h2>TestCondSignalStealing</h2>
-            <hr />
-            
-            <pre><code>func TestCondSignalStealing(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestCondCopy">
-            <h2>TestCondCopy</h2>
-            <hr />
-            
-            <pre><code>func TestCondCopy(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkCond1">
-            <h2>BenchmarkCond1</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkCond1(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkCond2">
-            <h2>BenchmarkCond2</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkCond2(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkCond4">
-            <h2>BenchmarkCond4</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkCond4(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkCond8">
-            <h2>BenchmarkCond8</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkCond8(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkCond16">
-            <h2>BenchmarkCond16</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkCond16(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkCond32">
-            <h2>BenchmarkCond32</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkCond32(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="benchmarkCond">
-            <h2>benchmarkCond</h2>
-            <hr />
-            
-            <pre><code>func benchmarkCond(b *testing.B, waiters int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Load">
-            <h2>Load</h2>
-            <hr />
-            
-            <pre><code>func Load(key any) (value any, ok bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Store">
-            <h2>Store</h2>
-            <hr />
-            
-            <pre><code>func Store(key any, value any)</code></pre>
-         </article>
-         
-         <article class="function" data-name="LoadOrStore">
-            <h2>LoadOrStore</h2>
-            <hr />
-            
-            <pre><code>func LoadOrStore(key any, value any) (actual any, loaded bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Swap">
-            <h2>Swap</h2>
-            <hr />
-            
-            <pre><code>func Swap(key any, value any) (previous any, loaded bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="LoadAndDelete">
-            <h2>LoadAndDelete</h2>
-            <hr />
-            
-            <pre><code>func LoadAndDelete(key any) (value any, loaded bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Delete">
-            <h2>Delete</h2>
-            <hr />
-            
-            <pre><code>func Delete(key any)</code></pre>
-         </article>
-         
-         <article class="function" data-name="CompareAndSwap">
-            <h2>CompareAndSwap</h2>
-            <hr />
-            
-            <pre><code>func CompareAndSwap(key any, old any, new any) swapped bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="CompareAndDelete">
-            <h2>CompareAndDelete</h2>
-            <hr />
-            
-            <pre><code>func CompareAndDelete(key any, old any) deleted bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="Range">
-            <h2>Range</h2>
-            <hr />
-            
-            <pre><code>func Range(f func)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Clear">
-            <h2>Clear</h2>
-            <hr />
-            
-            <pre><code>func Clear()</code></pre>
-         </article>
-         
-         <article class="function" data-name="Load">
-            <h2>Load</h2>
-            <hr />
-            
-            <pre><code>func Load(key any) (value any, ok bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Store">
-            <h2>Store</h2>
-            <hr />
-            
-            <pre><code>func Store(key any, value any)</code></pre>
-         </article>
-         
-         <article class="function" data-name="LoadOrStore">
-            <h2>LoadOrStore</h2>
-            <hr />
-            
-            <pre><code>func LoadOrStore(key any, value any) (actual any, loaded bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Swap">
-            <h2>Swap</h2>
-            <hr />
-            
-            <pre><code>func Swap(key any, value any) (previous any, loaded bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="LoadAndDelete">
-            <h2>LoadAndDelete</h2>
-            <hr />
-            
-            <pre><code>func LoadAndDelete(key any) (value any, loaded bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Delete">
-            <h2>Delete</h2>
-            <hr />
-            
-            <pre><code>func Delete(key any)</code></pre>
-         </article>
-         
-         <article class="function" data-name="CompareAndSwap">
-            <h2>CompareAndSwap</h2>
-            <hr />
-            
-            <pre><code>func CompareAndSwap(key any, old any, new any) swapped bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="CompareAndDelete">
-            <h2>CompareAndDelete</h2>
-            <hr />
-            
-            <pre><code>func CompareAndDelete(key any, old any) deleted bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="Range">
-            <h2>Range</h2>
-            <hr />
-            
-            <pre><code>func Range(f func)</code></pre>
-         </article>
-         
-         <article class="function" data-name="dirty">
-            <h2>dirty</h2>
-            <hr />
-            
-            <pre><code>func dirty() *ast.MapType</code></pre>
-         </article>
-         
-         <article class="function" data-name="Clear">
-            <h2>Clear</h2>
-            <hr />
-            
-            <pre><code>func Clear()</code></pre>
-         </article>
-         
-         <article class="function" data-name="apply">
-            <h2>apply</h2>
-            <hr />
-            
-            <pre><code>func apply(m mapInterface) (any, bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="randValue">
-            <h2>randValue</h2>
-            <hr />
-            
-            <pre><code>func randValue(r *rand.Rand) any</code></pre>
-         </article>
-         
-         <article class="function" data-name="Generate">
-            <h2>Generate</h2>
-            <hr />
-            
-            <pre><code>func Generate(r *rand.Rand, size int) reflect.Value</code></pre>
-         </article>
-         
-         <article class="function" data-name="applyCalls">
-            <h2>applyCalls</h2>
-            <hr />
-            
-            <pre><code>func applyCalls(m mapInterface, calls []mapCall) (results []mapResult, final *ast.MapType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="applyMap">
-            <h2>applyMap</h2>
-            <hr />
-            
-            <pre><code>func applyMap(calls []mapCall) ([]mapResult, *ast.MapType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="applyRWMutexMap">
-            <h2>applyRWMutexMap</h2>
-            <hr />
-            
-            <pre><code>func applyRWMutexMap(calls []mapCall) ([]mapResult, *ast.MapType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="applyDeepCopyMap">
-            <h2>applyDeepCopyMap</h2>
-            <hr />
-            
-            <pre><code>func applyDeepCopyMap(calls []mapCall) ([]mapResult, *ast.MapType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="applyHashTrieMap">
-            <h2>applyHashTrieMap</h2>
-            <hr />
-            
-            <pre><code>func applyHashTrieMap(calls []mapCall) ([]mapResult, *ast.MapType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestMapMatchesRWMutex">
-            <h2>TestMapMatchesRWMutex</h2>
-            <hr />
-            
-            <pre><code>func TestMapMatchesRWMutex(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestMapMatchesDeepCopy">
-            <h2>TestMapMatchesDeepCopy</h2>
-            <hr />
-            
-            <pre><code>func TestMapMatchesDeepCopy(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestMapMatchesHashTrieMap">
-            <h2>TestMapMatchesHashTrieMap</h2>
-            <hr />
-            
-            <pre><code>func TestMapMatchesHashTrieMap(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestConcurrentRange">
-            <h2>TestConcurrentRange</h2>
-            <hr />
-            
-            <pre><code>func TestConcurrentRange(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestIssue40999">
-            <h2>TestIssue40999</h2>
-            <hr />
-            
-            <pre><code>func TestIssue40999(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestMapRangeNestedCall">
-            <h2>TestMapRangeNestedCall</h2>
-            <hr />
-            
-            <pre><code>func TestMapRangeNestedCall(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestCompareAndSwap_NonExistingKey">
-            <h2>TestCompareAndSwap_NonExistingKey</h2>
-            <hr />
-            
-            <pre><code>func TestCompareAndSwap_NonExistingKey(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestMapRangeNoAllocations">
-            <h2>TestMapRangeNoAllocations</h2>
-            <hr />
-            
-            <pre><code>func TestMapRangeNoAllocations(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestConcurrentClear">
-            <h2>TestConcurrentClear</h2>
-            <hr />
-            
-            <p>TestConcurrentClear tests concurrent behavior of sync.Map properties to ensure no data races.
-Checks for proper synchronization between Clear, Store, Load operations.</p>
-            
-            <pre><code>func TestConcurrentClear(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestMapClearOneAllocation">
-            <h2>TestMapClearOneAllocation</h2>
-            <hr />
-            
-            <pre><code>func TestMapClearOneAllocation(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="HammerSemaphore">
-            <h2>HammerSemaphore</h2>
-            <hr />
-            
-            <pre><code>func HammerSemaphore(s *uint32, loops int, cdone *ast.ChanType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestSemaphore">
-            <h2>TestSemaphore</h2>
-            <hr />
-            
-            <pre><code>func TestSemaphore(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkUncontendedSemaphore">
-            <h2>BenchmarkUncontendedSemaphore</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkUncontendedSemaphore(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkContendedSemaphore">
-            <h2>BenchmarkContendedSemaphore</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkContendedSemaphore(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="HammerMutex">
-            <h2>HammerMutex</h2>
-            <hr />
-            
-            <pre><code>func HammerMutex(m *Mutex, loops int, cdone *ast.ChanType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestMutex">
-            <h2>TestMutex</h2>
-            <hr />
-            
-            <pre><code>func TestMutex(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="init">
-            <h2>init</h2>
-            <hr />
-            
-            <pre><code>func init()</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestMutexMisuse">
-            <h2>TestMutexMisuse</h2>
-            <hr />
-            
-            <pre><code>func TestMutexMisuse(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestMutexFairness">
-            <h2>TestMutexFairness</h2>
-            <hr />
-            
-            <pre><code>func TestMutexFairness(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMutexUncontended">
-            <h2>BenchmarkMutexUncontended</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkMutexUncontended(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="benchmarkMutex">
-            <h2>benchmarkMutex</h2>
-            <hr />
-            
-            <pre><code>func benchmarkMutex(b *testing.B, slack bool, work bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMutex">
-            <h2>BenchmarkMutex</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkMutex(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMutexSlack">
-            <h2>BenchmarkMutexSlack</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkMutexSlack(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMutexWork">
-            <h2>BenchmarkMutexWork</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkMutexWork(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMutexWorkSlack">
-            <h2>BenchmarkMutexWorkSlack</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkMutexWorkSlack(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMutexNoSpin">
-            <h2>BenchmarkMutexNoSpin</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkMutexNoSpin(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMutexSpin">
-            <h2>BenchmarkMutexSpin</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkMutexSpin(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestPool">
-            <h2>TestPool</h2>
-            <hr />
-            
-            <pre><code>func TestPool(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestPoolNew">
-            <h2>TestPoolNew</h2>
-            <hr />
-            
-            <pre><code>func TestPoolNew(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestPoolGC">
-            <h2>TestPoolGC</h2>
-            <hr />
-            
-            <p>Test that Pool does not hold pointers to previously cached resources.</p>
-            
-            <pre><code>func TestPoolGC(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestPoolRelease">
-            <h2>TestPoolRelease</h2>
-            <hr />
-            
-            <p>Test that Pool releases resources on GC.</p>
-            
-            <pre><code>func TestPoolRelease(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testPool">
-            <h2>testPool</h2>
-            <hr />
-            
-            <pre><code>func testPool(t *testing.T, drain bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestPoolStress">
-            <h2>TestPoolStress</h2>
-            <hr />
-            
-            <pre><code>func TestPoolStress(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestPoolDequeue">
-            <h2>TestPoolDequeue</h2>
-            <hr />
-            
-            <pre><code>func TestPoolDequeue(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestPoolChain">
-            <h2>TestPoolChain</h2>
-            <hr />
-            
-            <pre><code>func TestPoolChain(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testPoolDequeue">
-            <h2>testPoolDequeue</h2>
-            <hr />
-            
-            <pre><code>func testPoolDequeue(t *testing.T, d PoolDequeue)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestNilPool">
-            <h2>TestNilPool</h2>
-            <hr />
-            
-            <pre><code>func TestNilPool(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkPool">
-            <h2>BenchmarkPool</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkPool(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkPoolOverflow">
-            <h2>BenchmarkPoolOverflow</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkPoolOverflow(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkPoolStarvation">
-            <h2>BenchmarkPoolStarvation</h2>
-            <hr />
-            
-            <p>Simulate object starvation in order to force Ps to steal objects
-from other Ps.</p>
-            
-            <pre><code>func BenchmarkPoolStarvation(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkPoolSTW">
-            <h2>BenchmarkPoolSTW</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkPoolSTW(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkPoolExpensiveNew">
-            <h2>BenchmarkPoolExpensiveNew</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkPoolExpensiveNew(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="parallelReader">
-            <h2>parallelReader</h2>
-            <hr />
-            
-            <pre><code>func parallelReader(m *RWMutex, clocked *ast.ChanType, cunlock *ast.ChanType, cdone *ast.ChanType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="doTestParallelReaders">
-            <h2>doTestParallelReaders</h2>
-            <hr />
-            
-            <pre><code>func doTestParallelReaders(numReaders int, gomaxprocs int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestParallelReaders">
-            <h2>TestParallelReaders</h2>
-            <hr />
-            
-            <pre><code>func TestParallelReaders(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="reader">
-            <h2>reader</h2>
-            <hr />
-            
-            <pre><code>func reader(rwm *RWMutex, num_iterations int, activity *int32, cdone *ast.ChanType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="writer">
-            <h2>writer</h2>
-            <hr />
-            
-            <pre><code>func writer(rwm *RWMutex, num_iterations int, activity *int32, cdone *ast.ChanType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="HammerRWMutex">
-            <h2>HammerRWMutex</h2>
-            <hr />
-            
-            <pre><code>func HammerRWMutex(gomaxprocs int, numReaders int, num_iterations int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestRWMutex">
-            <h2>TestRWMutex</h2>
-            <hr />
-            
-            <pre><code>func TestRWMutex(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestRLocker">
-            <h2>TestRLocker</h2>
-            <hr />
-            
-            <pre><code>func TestRLocker(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkRWMutexUncontended">
-            <h2>BenchmarkRWMutexUncontended</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkRWMutexUncontended(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="benchmarkRWMutex">
-            <h2>benchmarkRWMutex</h2>
-            <hr />
-            
-            <pre><code>func benchmarkRWMutex(b *testing.B, localWork int, writeRatio int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkRWMutexWrite100">
-            <h2>BenchmarkRWMutexWrite100</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkRWMutexWrite100(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkRWMutexWrite10">
-            <h2>BenchmarkRWMutexWrite10</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkRWMutexWrite10(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkRWMutexWorkWrite100">
-            <h2>BenchmarkRWMutexWorkWrite100</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkRWMutexWorkWrite100(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkRWMutexWorkWrite10">
-            <h2>BenchmarkRWMutexWorkWrite10</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkRWMutexWorkWrite10(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="timeNow">
-            <h2>timeNow</h2>
-            <hr />
-            
-            <p>timeNow is a fake version of time.Now for tests.</p>
-            
-            <pre><code>func timeNow() time.Time</code></pre>
-         </article>
-         
-         <article class="function" data-name="Log">
-            <h2>Log</h2>
-            <hr />
-            
-            <pre><code>func Log(w io.Writer, key string, val string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExamplePool">
-            <h2>ExamplePool</h2>
-            <hr />
-            
-            <pre><code>func ExamplePool()</code></pre>
-         </article>
-         
-         <article class="function" data-name="Get">
-            <h2>Get</h2>
-            <hr />
-            
-            <pre><code>func Get(url string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleWaitGroup">
-            <h2>ExampleWaitGroup</h2>
-            <hr />
-            
-            <p>This example fetches several URLs concurrently,
-using a WaitGroup to block until all the fetches are complete.</p>
-            
-            <pre><code>func ExampleWaitGroup()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleOnce">
-            <h2>ExampleOnce</h2>
-            <hr />
-            
-            <pre><code>func ExampleOnce()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleOnceValue">
-            <h2>ExampleOnceValue</h2>
-            <hr />
-            
-            <p>This example uses OnceValue to perform an "expensive" computation just once,
-even when used concurrently.</p>
-            
-            <pre><code>func ExampleOnceValue()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleOnceValues">
-            <h2>ExampleOnceValues</h2>
-            <hr />
-            
-            <p>This example uses OnceValues to read a file just once.</p>
-            
-            <pre><code>func ExampleOnceValues()</code></pre>
-         </article>
-         
-         <article class="function" data-name="benchMap">
-            <h2>benchMap</h2>
-            <hr />
-            
-            <pre><code>func benchMap(b *testing.B, bench bench)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMapLoadMostlyHits">
-            <h2>BenchmarkMapLoadMostlyHits</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkMapLoadMostlyHits(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMapLoadMostlyMisses">
-            <h2>BenchmarkMapLoadMostlyMisses</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkMapLoadMostlyMisses(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMapLoadOrStoreBalanced">
-            <h2>BenchmarkMapLoadOrStoreBalanced</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkMapLoadOrStoreBalanced(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMapLoadOrStoreUnique">
-            <h2>BenchmarkMapLoadOrStoreUnique</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkMapLoadOrStoreUnique(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMapLoadOrStoreCollision">
-            <h2>BenchmarkMapLoadOrStoreCollision</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkMapLoadOrStoreCollision(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMapLoadAndDeleteBalanced">
-            <h2>BenchmarkMapLoadAndDeleteBalanced</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkMapLoadAndDeleteBalanced(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMapLoadAndDeleteUnique">
-            <h2>BenchmarkMapLoadAndDeleteUnique</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkMapLoadAndDeleteUnique(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMapLoadAndDeleteCollision">
-            <h2>BenchmarkMapLoadAndDeleteCollision</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkMapLoadAndDeleteCollision(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMapRange">
-            <h2>BenchmarkMapRange</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkMapRange(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMapAdversarialAlloc">
-            <h2>BenchmarkMapAdversarialAlloc</h2>
-            <hr />
-            
-            <p>BenchmarkMapAdversarialAlloc tests performance when we store a new value
-immediately whenever the map is promoted to clean and otherwise load a
-unique, missing key.
+         <h1>sync</h1>
+         <div class="section-divider"></div>
 
-This forces the Load calls to always acquire the map's mutex.</p>
-            
-            <pre><code>func BenchmarkMapAdversarialAlloc(b *testing.B)</code></pre>
-         </article>
          
-         <article class="function" data-name="BenchmarkMapAdversarialDelete">
-            <h2>BenchmarkMapAdversarialDelete</h2>
-            <hr />
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>isync "internal/sync"
+"sync/atomic"
+"sync/atomic"
+"unsafe"
+"internal/race"
+"sync/atomic"
+"unsafe"
+isync "internal/sync"
+"internal/race"
+"runtime"
+"sync/atomic"
+"unsafe"
+"sync/atomic"
+"unsafe"
+"unsafe"
+"unsafe"
+"internal/race"
+"sync/atomic"
+"unsafe"
+"sync/atomic"
+"unsafe"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <p>BenchmarkMapAdversarialDelete tests performance when we periodically delete
-one key and add a different one in a large map.
+            <article class="global" data-name="allPools">
+               <h3>
+                  allPools 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>allPools is the set of pools that have non-empty primary
+caches. Protected by either 1) allPoolsMu and pinning or 2)
+STW.</p>
+               
+               <pre><code>var allPools []*Pool</code></pre>
+            </article>
+            
+            <article class="global" data-name="allPoolsMu">
+               <h3>
+                  allPoolsMu 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var allPoolsMu Mutex</code></pre>
+            </article>
+            
+            <article class="global" data-name="dequeueBits">
+               <h3>
+                  dequeueBits 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const dequeueBits = 32</code></pre>
+            </article>
+            
+            <article class="global" data-name="dequeueLimit">
+               <h3>
+                  dequeueLimit 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>dequeueLimit is the maximum size of a poolDequeue.
+This must be at most (1<<dequeueBits)/2 because detecting fullness
+depends on wrapping around the ring buffer without wrapping around
+the index. We divide by 4 so this fits in an int on 32-bit.</p>
+               
+               <pre><code>const dequeueLimit = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="expunged">
+               <h3>
+                  expunged 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>expunged is an arbitrary pointer that marks entries which have been deleted
+from the dirty map.</p>
+               
+               <pre><code>var expunged = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="oldPools">
+               <h3>
+                  oldPools 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>oldPools is the set of pools that may have non-empty victim
+caches. Protected by STW.</p>
+               
+               <pre><code>var oldPools []*Pool</code></pre>
+            </article>
+            
+            <article class="global" data-name="poolRaceHash">
+               <h3>
+                  poolRaceHash 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var poolRaceHash [128]uint64</code></pre>
+            </article>
+            
+            <article class="global" data-name="rwmutexMaxReaders">
+               <h3>
+                  rwmutexMaxReaders 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const rwmutexMaxReaders = *ast.BinaryExpr</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="types">
+            <h2>Type Aliases</h2>
+            
+            <article class="type" data-name="copyChecker">
+               <h3>
+                  copyChecker
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>copyChecker holds back pointer to itself to detect object copying.</p>
+               
+               <pre><code>type copyChecker uintptr</code></pre>
+            </article>
+            
+            <article class="type" data-name="dequeueNil">
+               <h3>
+                  dequeueNil
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>dequeueNil is used in poolDequeue to represent interface{}(nil).
+Since we use nil to represent empty slots, we need a sentinel value
+to represent nil.</p>
+               
+               <pre><code>type dequeueNil *struct{...}</code></pre>
+            </article>
+            
+            <article class="type" data-name="rlocker">
+               <h3>
+                  rlocker
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <pre><code>type rlocker RWMutex</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="interfaces">
+            <h2>Interfaces</h2>
+            
+            <article class="interface" data-name="Locker">
+               <h3>
+                  Locker
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>A Locker represents an object that can be locked and unlocked.</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type Locker interface {
+Lock()
+Unlock()
+}</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="Cond">
+               <h3>
+                  Cond
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Cond implements a condition variable, a rendezvous point
+for goroutines waiting for or announcing the occurrence
+of an event.
+Each Cond has an associated Locker L (often a [*Mutex] or [*RWMutex]),
+which must be held when changing the condition and
+when calling the [Cond.Wait] method.
+A Cond must not be copied after first use.
+In the terminology of [the Go memory model], Cond arranges that
+a call to [Cond.Broadcast] or [Cond.Signal] “synchronizes before” any Wait call
+that it unblocks.
+For many simple use cases, users will be better off using channels than a
+Cond (Broadcast corresponds to closing a channel, and Signal corresponds to
+sending on a channel).
+For more on replacements for [sync.Cond], see [Roberto Clapis's series on
+advanced concurrency patterns], as well as [Bryan Mills's talk on concurrency
+patterns].
+[the Go memory model]: https://go.dev/ref/mem
+[Roberto Clapis's series on advanced concurrency patterns]: https://blogtitle.github.io/categories/concurrency/
+[Bryan Mills's talk on concurrency patterns]: https://drive.google.com/file/d/1nPdvhB0PutEJzdCq5ms6UI58dp50fcAN/view</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Cond struct {
+noCopy noCopy
+L Locker
+notify notifyList
+checker copyChecker
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="Map">
+               <h3>
+                  Map
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Map is like a Go map[any]any but is safe for concurrent use
+by multiple goroutines without additional locking or coordination.
+Loads, stores, and deletes run in amortized constant time.
+The Map type is specialized. Most code should use a plain Go map instead,
+with separate locking or coordination, for better type safety and to make it
+easier to maintain other invariants along with the map content.
+The Map type is optimized for two common use cases: (1) when the entry for a given
+key is only ever written once but read many times, as in caches that only grow,
+or (2) when multiple goroutines read, write, and overwrite entries for disjoint
+sets of keys. In these two cases, use of a Map may significantly reduce lock
+contention compared to a Go map paired with a separate [Mutex] or [RWMutex].
+The zero Map is empty and ready for use. A Map must not be copied after first use.
+In the terminology of [the Go memory model], Map arranges that a write operation
+“synchronizes before” any read operation that observes the effect of the write, where
+read and write operations are defined as follows.
+[Map.Load], [Map.LoadAndDelete], [Map.LoadOrStore], [Map.Swap], [Map.CompareAndSwap],
+and [Map.CompareAndDelete] are read operations;
+[Map.Delete], [Map.LoadAndDelete], [Map.Store], and [Map.Swap] are write operations;
+[Map.LoadOrStore] is a write operation when it returns loaded set to false;
+[Map.CompareAndSwap] is a write operation when it returns swapped set to true;
+and [Map.CompareAndDelete] is a write operation when it returns deleted set to true.
+[the Go memory model]: https://go.dev/ref/mem</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Map struct {
+_ noCopy
+mu Mutex
+read *ast.IndexExpr
+dirty map[any]*entry
+misses int
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="Map">
+               <h3>
+                  Map
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Map is like a Go map[any]any but is safe for concurrent use
+by multiple goroutines without additional locking or coordination.
+Loads, stores, and deletes run in amortized constant time.
+The Map type is specialized. Most code should use a plain Go map instead,
+with separate locking or coordination, for better type safety and to make it
+easier to maintain other invariants along with the map content.
+The Map type is optimized for two common use cases: (1) when the entry for a given
+key is only ever written once but read many times, as in caches that only grow,
+or (2) when multiple goroutines read, write, and overwrite entries for disjoint
+sets of keys. In these two cases, use of a Map may significantly reduce lock
+contention compared to a Go map paired with a separate [Mutex] or [RWMutex].
+The zero Map is empty and ready for use. A Map must not be copied after first use.
+In the terminology of [the Go memory model], Map arranges that a write operation
+“synchronizes before” any read operation that observes the effect of the write, where
+read and write operations are defined as follows.
+[Map.Load], [Map.LoadAndDelete], [Map.LoadOrStore], [Map.Swap], [Map.CompareAndSwap],
+and [Map.CompareAndDelete] are read operations;
+[Map.Delete], [Map.LoadAndDelete], [Map.Store], and [Map.Swap] are write operations;
+[Map.LoadOrStore] is a write operation when it returns loaded set to false;
+[Map.CompareAndSwap] is a write operation when it returns swapped set to true;
+and [Map.CompareAndDelete] is a write operation when it returns deleted set to true.
+[the Go memory model]: https://go.dev/ref/mem</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Map struct {
+_ noCopy
+m *ast.IndexListExpr
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="Mutex">
+               <h3>
+                  Mutex
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Mutex is a mutual exclusion lock.
+The zero value for a Mutex is an unlocked mutex.
+A Mutex must not be copied after first use.
+In the terminology of [the Go memory model],
+the n'th call to [Mutex.Unlock] “synchronizes before” the m'th call to [Mutex.Lock]
+for any n < m.
+A successful call to [Mutex.TryLock] is equivalent to a call to Lock.
+A failed call to TryLock does not establish any “synchronizes before”
+relation at all.
+[the Go memory model]: https://go.dev/ref/mem</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Mutex struct {
+_ noCopy
+mu isync.Mutex
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="Once">
+               <h3>
+                  Once
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Once is an object that will perform exactly one action.
+A Once must not be copied after first use.
+In the terminology of [the Go memory model],
+the return from f “synchronizes before”
+the return from any call of once.Do(f).
+[the Go memory model]: https://go.dev/ref/mem</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Once struct {
+_ noCopy
+done atomic.Uint32
+m Mutex
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="Pool">
+               <h3>
+                  Pool
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Pool is a set of temporary objects that may be individually saved and
+retrieved.
+Any item stored in the Pool may be removed automatically at any time without
+notification. If the Pool holds the only reference when this happens, the
+item might be deallocated.
+A Pool is safe for use by multiple goroutines simultaneously.
+Pool's purpose is to cache allocated but unused items for later reuse,
+relieving pressure on the garbage collector. That is, it makes it easy to
+build efficient, thread-safe free lists. However, it is not suitable for all
+free lists.
+An appropriate use of a Pool is to manage a group of temporary items
+silently shared among and potentially reused by concurrent independent
+clients of a package. Pool provides a way to amortize allocation overhead
+across many clients.
+An example of good use of a Pool is in the fmt package, which maintains a
+dynamically-sized store of temporary output buffers. The store scales under
+load (when many goroutines are actively printing) and shrinks when
+quiescent.
+On the other hand, a free list maintained as part of a short-lived object is
+not a suitable use for a Pool, since the overhead does not amortize well in
+that scenario. It is more efficient to have such objects implement their own
+free list.
+A Pool must not be copied after first use.
+In the terminology of [the Go memory model], a call to Put(x) “synchronizes before”
+a call to [Pool.Get] returning that same value x.
+Similarly, a call to New returning x “synchronizes before”
+a call to Get returning that same value x.
+[the Go memory model]: https://go.dev/ref/mem</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Pool struct {
+noCopy noCopy
+local unsafe.Pointer
+localSize uintptr
+victim unsafe.Pointer
+victimSize uintptr
+New func() any
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="RWMutex">
+               <h3>
+                  RWMutex
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A RWMutex is a reader/writer mutual exclusion lock.
+The lock can be held by an arbitrary number of readers or a single writer.
+The zero value for a RWMutex is an unlocked mutex.
+A RWMutex must not be copied after first use.
+If any goroutine calls [RWMutex.Lock] while the lock is already held by
+one or more readers, concurrent calls to [RWMutex.RLock] will block until
+the writer has acquired (and released) the lock, to ensure that
+the lock eventually becomes available to the writer.
+Note that this prohibits recursive read-locking.
+A [RWMutex.RLock] cannot be upgraded into a [RWMutex.Lock],
+nor can a [RWMutex.Lock] be downgraded into a [RWMutex.RLock].
+In the terminology of [the Go memory model],
+the n'th call to [RWMutex.Unlock] “synchronizes before” the m'th call to Lock
+for any n < m, just as for [Mutex].
+For any call to RLock, there exists an n such that
+the n'th call to Unlock “synchronizes before” that call to RLock,
+and the corresponding call to [RWMutex.RUnlock] “synchronizes before”
+the n+1'th call to Lock.
+[the Go memory model]: https://go.dev/ref/mem</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type RWMutex struct {
+w Mutex
+writerSem uint32
+readerSem uint32
+readerCount atomic.Int32
+readerWait atomic.Int32
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="WaitGroup">
+               <h3>
+                  WaitGroup
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A WaitGroup waits for a collection of goroutines to finish.
+The main goroutine calls [WaitGroup.Add] to set the number of
+goroutines to wait for. Then each of the goroutines
+runs and calls [WaitGroup.Done] when finished. At the same time,
+[WaitGroup.Wait] can be used to block until all goroutines have finished.
+A WaitGroup must not be copied after first use.
+In the terminology of [the Go memory model], a call to [WaitGroup.Done]
+“synchronizes before” the return of any Wait call that it unblocks.
+[the Go memory model]: https://go.dev/ref/mem</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type WaitGroup struct {
+noCopy noCopy
+state atomic.Uint64
+sema uint32
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="eface">
+               <h3>
+                  eface
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type eface struct {
+typ unsafe.Pointer
+val unsafe.Pointer
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="entry">
+               <h3>
+                  entry
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>An entry is a slot in the map corresponding to a particular key.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type entry struct {
+p *ast.IndexExpr
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="noCopy">
+               <h3>
+                  noCopy
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>noCopy may be added to structs which must not be copied
+after the first use.
+See https://golang.org/issues/8005#issuecomment-190753527
+for details.
+Note that it must not be embedded, due to the Lock and Unlock methods.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type noCopy struct {
 
-This forces the Load calls to always acquire the map's mutex and periodically
-makes a full copy of the map despite changing only one entry.</p>
+}</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkMapAdversarialDelete(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMapDeleteCollision">
-            <h2>BenchmarkMapDeleteCollision</h2>
-            <hr />
+            <article class="struct" data-name="notifyList">
+               <h3>
+                  notifyList
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Approximation of notifyList in runtime/sema.go. Size and alignment must
+agree.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type notifyList struct {
+wait uint32
+notify uint32
+lock uintptr
+head unsafe.Pointer
+tail unsafe.Pointer
+}</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkMapDeleteCollision(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMapSwapCollision">
-            <h2>BenchmarkMapSwapCollision</h2>
-            <hr />
+            <article class="struct" data-name="notifyList">
+               <h3>
+                  notifyList
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Approximation of notifyList in runtime/sema.go. Size and alignment must
+agree.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type notifyList struct {
+wait uint32
+notify uint32
+rank int
+pad int
+lock uintptr
+head unsafe.Pointer
+tail unsafe.Pointer
+}</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkMapSwapCollision(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMapSwapMostlyHits">
-            <h2>BenchmarkMapSwapMostlyHits</h2>
-            <hr />
+            <article class="struct" data-name="poolChain">
+               <h3>
+                  poolChain
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>poolChain is a dynamically-sized version of poolDequeue.
+This is implemented as a doubly-linked list queue of poolDequeues
+where each dequeue is double the size of the previous one. Once a
+dequeue fills up, this allocates a new one and only ever pushes to
+the latest dequeue. Pops happen from the other end of the list and
+once a dequeue is exhausted, it gets removed from the list.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type poolChain struct {
+head *poolChainElt
+tail *ast.IndexExpr
+}</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkMapSwapMostlyHits(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMapSwapMostlyMisses">
-            <h2>BenchmarkMapSwapMostlyMisses</h2>
-            <hr />
+            <article class="struct" data-name="poolChainElt">
+               <h3>
+                  poolChainElt
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type poolChainElt struct {
+poolDequeue
+next *ast.IndexExpr
+prev *ast.IndexExpr
+}</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkMapSwapMostlyMisses(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMapCompareAndSwapCollision">
-            <h2>BenchmarkMapCompareAndSwapCollision</h2>
-            <hr />
+            <article class="struct" data-name="poolDequeue">
+               <h3>
+                  poolDequeue
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>poolDequeue is a lock-free fixed-size single-producer,
+multi-consumer queue. The single producer can both push and pop
+from the head, and consumers can pop from the tail.
+It has the added feature that it nils out unused slots to avoid
+unnecessary retention of objects. This is important for sync.Pool,
+but not typically a property considered in the literature.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type poolDequeue struct {
+headTail atomic.Uint64
+vals []eface
+}</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkMapCompareAndSwapCollision(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMapCompareAndSwapNoExistingKey">
-            <h2>BenchmarkMapCompareAndSwapNoExistingKey</h2>
-            <hr />
+            <article class="struct" data-name="poolLocal">
+               <h3>
+                  poolLocal
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type poolLocal struct {
+poolLocalInternal
+pad [*ast.BinaryExpr]byte
+}</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkMapCompareAndSwapNoExistingKey(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMapCompareAndSwapValueNotEqual">
-            <h2>BenchmarkMapCompareAndSwapValueNotEqual</h2>
-            <hr />
+            <article class="struct" data-name="poolLocalInternal">
+               <h3>
+                  poolLocalInternal
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Local per-P Pool appendix.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type poolLocalInternal struct {
+private any
+shared poolChain
+}</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkMapCompareAndSwapValueNotEqual(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMapCompareAndSwapMostlyHits">
-            <h2>BenchmarkMapCompareAndSwapMostlyHits</h2>
-            <hr />
+            <article class="struct" data-name="readOnly">
+               <h3>
+                  readOnly
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>readOnly is an immutable struct stored atomically in the Map.read field.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type readOnly struct {
+m map[any]*entry
+amended bool
+}</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkMapCompareAndSwapMostlyHits(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMapCompareAndSwapMostlyMisses">
-            <h2>BenchmarkMapCompareAndSwapMostlyMisses</h2>
-            <hr />
+         </section>
+          
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <pre><code>func BenchmarkMapCompareAndSwapMostlyMisses(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMapCompareAndDeleteCollision">
-            <h2>BenchmarkMapCompareAndDeleteCollision</h2>
-            <hr />
+            <article class="function" data-name="Add">
+               <h3>
+                  Add 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Add adds delta, which may be negative, to the [WaitGroup] counter.
+If the counter becomes zero, all goroutines blocked on [WaitGroup.Wait] are released.
+If the counter goes negative, Add panics.
+Note that calls with a positive delta that occur when the counter is zero
+must happen before a Wait. Calls with a negative delta, or calls with a
+positive delta that start when the counter is greater than zero, may happen
+at any time.
+Typically this means the calls to Add should execute before the statement
+creating the goroutine or other event to be waited for.
+If a WaitGroup is reused to wait for several independent sets of events,
+new Add calls must happen after all previous Wait calls have returned.
+See the WaitGroup example.</p>
+               
+               <pre><code>func (wg *WaitGroup) Add(delta int)</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkMapCompareAndDeleteCollision(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMapCompareAndDeleteMostlyHits">
-            <h2>BenchmarkMapCompareAndDeleteMostlyHits</h2>
-            <hr />
+            <article class="function" data-name="Broadcast">
+               <h3>
+                  Broadcast 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Broadcast wakes all goroutines waiting on c.
+It is allowed but not required for the caller to hold c.L
+during the call.</p>
+               
+               <pre><code>func (c *Cond) Broadcast()</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkMapCompareAndDeleteMostlyHits(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMapCompareAndDeleteMostlyMisses">
-            <h2>BenchmarkMapCompareAndDeleteMostlyMisses</h2>
-            <hr />
+            <article class="function" data-name="Clear">
+               <h3>
+                  Clear 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Clear deletes all the entries, resulting in an empty Map.</p>
+               
+               <pre><code>func (m *Map) Clear()</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkMapCompareAndDeleteMostlyMisses(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkMapClear">
-            <h2>BenchmarkMapClear</h2>
-            <hr />
+            <article class="function" data-name="Clear">
+               <h3>
+                  Clear 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Clear deletes all the entries, resulting in an empty Map.</p>
+               
+               <pre><code>func (m *Map) Clear()</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkMapClear(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Increment">
-            <h2>Increment</h2>
-            <hr />
+            <article class="function" data-name="CompareAndDelete">
+               <h3>
+                  CompareAndDelete 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>CompareAndDelete deletes the entry for key if its value is equal to old.
+The old value must be of a comparable type.
+If there is no current value for key in the map, CompareAndDelete
+returns false (even if the old value is the nil interface value).</p>
+               
+               <pre><code>func (m *Map) CompareAndDelete(key any, old any) (deleted bool)</code></pre>
+            </article>
             
-            <pre><code>func Increment()</code></pre>
-         </article>
-         
-         <article class="function" data-name="run">
-            <h2>run</h2>
-            <hr />
+            <article class="function" data-name="CompareAndDelete">
+               <h3>
+                  CompareAndDelete 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>CompareAndDelete deletes the entry for key if its value is equal to old.
+The old value must be of a comparable type.
+If there is no current value for key in the map, CompareAndDelete
+returns false (even if the old value is the nil interface value).</p>
+               
+               <pre><code>func (m *Map) CompareAndDelete(key any, old any) (deleted bool)</code></pre>
+            </article>
             
-            <pre><code>func run(t *testing.T, once *Once, o *one, c *ast.ChanType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestOnce">
-            <h2>TestOnce</h2>
-            <hr />
+            <article class="function" data-name="CompareAndSwap">
+               <h3>
+                  CompareAndSwap 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>CompareAndSwap swaps the old and new values for key
+if the value stored in the map is equal to old.
+The old value must be of a comparable type.</p>
+               
+               <pre><code>func (m *Map) CompareAndSwap(key any, old any, new any) (swapped bool)</code></pre>
+            </article>
             
-            <pre><code>func TestOnce(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestOncePanic">
-            <h2>TestOncePanic</h2>
-            <hr />
+            <article class="function" data-name="CompareAndSwap">
+               <h3>
+                  CompareAndSwap 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>CompareAndSwap swaps the old and new values for key
+if the value stored in the map is equal to old.
+The old value must be of a comparable type.</p>
+               
+               <pre><code>func (m *Map) CompareAndSwap(key any, old any, new any) (swapped bool)</code></pre>
+            </article>
             
-            <pre><code>func TestOncePanic(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkOnce">
-            <h2>BenchmarkOnce</h2>
-            <hr />
+            <article class="function" data-name="Delete">
+               <h3>
+                  Delete 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Delete deletes the value for a key.</p>
+               
+               <pre><code>func (m *Map) Delete(key any)</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkOnce(b *testing.B)</code></pre>
-         </article>
+            <article class="function" data-name="Delete">
+               <h3>
+                  Delete 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Delete deletes the value for a key.</p>
+               
+               <pre><code>func (m *Map) Delete(key any)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Do">
+               <h3>
+                  Do 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Do calls the function f if and only if Do is being called for the
+first time for this instance of [Once]. In other words, given
+var once Once
+if once.Do(f) is called multiple times, only the first call will invoke f,
+even if f has a different value in each invocation. A new instance of
+Once is required for each function to execute.
+Do is intended for initialization that must be run exactly once. Since f
+is niladic, it may be necessary to use a function literal to capture the
+arguments to a function to be invoked by Do:
+config.once.Do(func() { config.init(filename) })
+Because no call to Do returns until the one call to f returns, if f causes
+Do to be called, it will deadlock.
+If f panics, Do considers it to have returned; future calls of Do return
+without calling f.</p>
+               
+               <pre><code>func (o *Once) Do(f func())</code></pre>
+            </article>
+            
+            <article class="function" data-name="Done">
+               <h3>
+                  Done 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Done decrements the [WaitGroup] counter by one.</p>
+               
+               <pre><code>func (wg *WaitGroup) Done()</code></pre>
+            </article>
+            
+            <article class="function" data-name="Get">
+               <h3>
+                  Get 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Get selects an arbitrary item from the [Pool], removes it from the
+Pool, and returns it to the caller.
+Get may choose to ignore the pool and treat it as empty.
+Callers should not assume any relation between values passed to [Pool.Put] and
+the values returned by Get.
+If Get would otherwise return nil and p.New is non-nil, Get returns
+the result of calling p.New.</p>
+               
+               <pre><code>func (p *Pool) Get() any</code></pre>
+            </article>
+            
+            <article class="function" data-name="Load">
+               <h3>
+                  Load 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Load returns the value stored in the map for a key, or nil if no
+value is present.
+The ok result indicates whether value was found in the map.</p>
+               
+               <pre><code>func (m *Map) Load(key any) (value any, ok bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Load">
+               <h3>
+                  Load 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Load returns the value stored in the map for a key, or nil if no
+value is present.
+The ok result indicates whether value was found in the map.</p>
+               
+               <pre><code>func (m *Map) Load(key any) (value any, ok bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="LoadAndDelete">
+               <h3>
+                  LoadAndDelete 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>LoadAndDelete deletes the value for a key, returning the previous value if any.
+The loaded result reports whether the key was present.</p>
+               
+               <pre><code>func (m *Map) LoadAndDelete(key any) (value any, loaded bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="LoadAndDelete">
+               <h3>
+                  LoadAndDelete 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>LoadAndDelete deletes the value for a key, returning the previous value if any.
+The loaded result reports whether the key was present.</p>
+               
+               <pre><code>func (m *Map) LoadAndDelete(key any) (value any, loaded bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="LoadOrStore">
+               <h3>
+                  LoadOrStore 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>LoadOrStore returns the existing value for the key if present.
+Otherwise, it stores and returns the given value.
+The loaded result is true if the value was loaded, false if stored.</p>
+               
+               <pre><code>func (m *Map) LoadOrStore(key any, value any) (actual any, loaded bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="LoadOrStore">
+               <h3>
+                  LoadOrStore 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>LoadOrStore returns the existing value for the key if present.
+Otherwise, it stores and returns the given value.
+The loaded result is true if the value was loaded, false if stored.</p>
+               
+               <pre><code>func (m *Map) LoadOrStore(key any, value any) (actual any, loaded bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Lock">
+               <h3>
+                  Lock 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *rlocker) Lock()</code></pre>
+            </article>
+            
+            <article class="function" data-name="Lock">
+               <h3>
+                  Lock 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Lock is a no-op used by -copylocks checker from `go vet`.</p>
+               
+               <pre><code>func (*noCopy) Lock()</code></pre>
+            </article>
+            
+            <article class="function" data-name="Lock">
+               <h3>
+                  Lock 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Lock locks rw for writing.
+If the lock is already locked for reading or writing,
+Lock blocks until the lock is available.</p>
+               
+               <pre><code>func (rw *RWMutex) Lock()</code></pre>
+            </article>
+            
+            <article class="function" data-name="Lock">
+               <h3>
+                  Lock 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Lock locks m.
+If the lock is already in use, the calling goroutine
+blocks until the mutex is available.</p>
+               
+               <pre><code>func (m *Mutex) Lock()</code></pre>
+            </article>
+            
+            <article class="function" data-name="NewCond">
+               <h3>
+                  NewCond 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewCond returns a new Cond with Locker l.</p>
+               
+               <pre><code>func NewCond(l Locker) *Cond</code></pre>
+            </article>
+            
+            <article class="function" data-name="OnceFunc">
+               <h3>
+                  OnceFunc 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>OnceFunc returns a function that invokes f only once. The returned function
+may be called concurrently.
+If f panics, the returned function will panic with the same value on every call.</p>
+               
+               <pre><code>func OnceFunc(f func()) func()</code></pre>
+            </article>
+            
+            <article class="function" data-name="OnceValue">
+               <h3>
+                  OnceValue 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>OnceValue returns a function that invokes f only once and returns the value
+returned by f. The returned function may be called concurrently.
+If f panics, the returned function will panic with the same value on every call.</p>
+               
+               <pre><code>func OnceValue(f func() T) (func() T)</code></pre>
+            </article>
+            
+            <article class="function" data-name="OnceValues">
+               <h3>
+                  OnceValues 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>OnceValues returns a function that invokes f only once and returns the values
+returned by f. The returned function may be called concurrently.
+If f panics, the returned function will panic with the same value on every call.</p>
+               
+               <pre><code>func OnceValues(f func() (T1, T2)) (func() (T1, T2))</code></pre>
+            </article>
+            
+            <article class="function" data-name="Put">
+               <h3>
+                  Put 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Put adds x to the pool.</p>
+               
+               <pre><code>func (p *Pool) Put(x any)</code></pre>
+            </article>
+            
+            <article class="function" data-name="RLock">
+               <h3>
+                  RLock 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>RLock locks rw for reading.
+It should not be used for recursive read locking; a blocked Lock
+call excludes new readers from acquiring the lock. See the
+documentation on the [RWMutex] type.</p>
+               
+               <pre><code>func (rw *RWMutex) RLock()</code></pre>
+            </article>
+            
+            <article class="function" data-name="RLocker">
+               <h3>
+                  RLocker 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>RLocker returns a [Locker] interface that implements
+the [Locker.Lock] and [Locker.Unlock] methods by calling rw.RLock and rw.RUnlock.</p>
+               
+               <pre><code>func (rw *RWMutex) RLocker() Locker</code></pre>
+            </article>
+            
+            <article class="function" data-name="RUnlock">
+               <h3>
+                  RUnlock 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>RUnlock undoes a single [RWMutex.RLock] call;
+it does not affect other simultaneous readers.
+It is a run-time error if rw is not locked for reading
+on entry to RUnlock.</p>
+               
+               <pre><code>func (rw *RWMutex) RUnlock()</code></pre>
+            </article>
+            
+            <article class="function" data-name="Range">
+               <h3>
+                  Range 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Range calls f sequentially for each key and value present in the map.
+If f returns false, range stops the iteration.
+Range does not necessarily correspond to any consistent snapshot of the Map's
+contents: no key will be visited more than once, but if the value for any key
+is stored or deleted concurrently (including by f), Range may reflect any
+mapping for that key from any point during the Range call. Range does not
+block other methods on the receiver; even f itself may call any method on m.
+Range may be O(N) with the number of elements in the map even if f returns
+false after a constant number of calls.</p>
+               
+               <pre><code>func (m *Map) Range(f func(key any, value any) bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Range">
+               <h3>
+                  Range 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Range calls f sequentially for each key and value present in the map.
+If f returns false, range stops the iteration.
+Range does not necessarily correspond to any consistent snapshot of the Map's
+contents: no key will be visited more than once, but if the value for any key
+is stored or deleted concurrently (including by f), Range may reflect any
+mapping for that key from any point during the Range call. Range does not
+block other methods on the receiver; even f itself may call any method on m.
+Range may be O(N) with the number of elements in the map even if f returns
+false after a constant number of calls.</p>
+               
+               <pre><code>func (m *Map) Range(f func(key any, value any) bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Signal">
+               <h3>
+                  Signal 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Signal wakes one goroutine waiting on c, if there is any.
+It is allowed but not required for the caller to hold c.L
+during the call.
+Signal() does not affect goroutine scheduling priority; if other goroutines
+are attempting to lock c.L, they may be awoken before a "waiting" goroutine.</p>
+               
+               <pre><code>func (c *Cond) Signal()</code></pre>
+            </article>
+            
+            <article class="function" data-name="Store">
+               <h3>
+                  Store 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Store sets the value for a key.</p>
+               
+               <pre><code>func (m *Map) Store(key any, value any)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Store">
+               <h3>
+                  Store 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Store sets the value for a key.</p>
+               
+               <pre><code>func (m *Map) Store(key any, value any)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Swap">
+               <h3>
+                  Swap 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Swap swaps the value for a key and returns the previous value if any.
+The loaded result reports whether the key was present.</p>
+               
+               <pre><code>func (m *Map) Swap(key any, value any) (previous any, loaded bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Swap">
+               <h3>
+                  Swap 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Swap swaps the value for a key and returns the previous value if any.
+The loaded result reports whether the key was present.</p>
+               
+               <pre><code>func (m *Map) Swap(key any, value any) (previous any, loaded bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="TryLock">
+               <h3>
+                  TryLock 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>TryLock tries to lock m and reports whether it succeeded.
+Note that while correct uses of TryLock do exist, they are rare,
+and use of TryLock is often a sign of a deeper problem
+in a particular use of mutexes.</p>
+               
+               <pre><code>func (m *Mutex) TryLock() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="TryLock">
+               <h3>
+                  TryLock 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>TryLock tries to lock rw for writing and reports whether it succeeded.
+Note that while correct uses of TryLock do exist, they are rare,
+and use of TryLock is often a sign of a deeper problem
+in a particular use of mutexes.</p>
+               
+               <pre><code>func (rw *RWMutex) TryLock() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="TryRLock">
+               <h3>
+                  TryRLock 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>TryRLock tries to lock rw for reading and reports whether it succeeded.
+Note that while correct uses of TryRLock do exist, they are rare,
+and use of TryRLock is often a sign of a deeper problem
+in a particular use of mutexes.</p>
+               
+               <pre><code>func (rw *RWMutex) TryRLock() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="Unlock">
+               <h3>
+                  Unlock 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*noCopy) Unlock()</code></pre>
+            </article>
+            
+            <article class="function" data-name="Unlock">
+               <h3>
+                  Unlock 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Unlock unlocks m.
+It is a run-time error if m is not locked on entry to Unlock.
+A locked [Mutex] is not associated with a particular goroutine.
+It is allowed for one goroutine to lock a Mutex and then
+arrange for another goroutine to unlock it.</p>
+               
+               <pre><code>func (m *Mutex) Unlock()</code></pre>
+            </article>
+            
+            <article class="function" data-name="Unlock">
+               <h3>
+                  Unlock 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *rlocker) Unlock()</code></pre>
+            </article>
+            
+            <article class="function" data-name="Unlock">
+               <h3>
+                  Unlock 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Unlock unlocks rw for writing. It is a run-time error if rw is
+not locked for writing on entry to Unlock.
+As with Mutexes, a locked [RWMutex] is not associated with a particular
+goroutine. One goroutine may [RWMutex.RLock] ([RWMutex.Lock]) a RWMutex and then
+arrange for another goroutine to [RWMutex.RUnlock] ([RWMutex.Unlock]) it.</p>
+               
+               <pre><code>func (rw *RWMutex) Unlock()</code></pre>
+            </article>
+            
+            <article class="function" data-name="Wait">
+               <h3>
+                  Wait 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Wait atomically unlocks c.L and suspends execution
+of the calling goroutine. After later resuming execution,
+Wait locks c.L before returning. Unlike in other systems,
+Wait cannot return unless awoken by [Cond.Broadcast] or [Cond.Signal].
+Because c.L is not locked while Wait is waiting, the caller
+typically cannot assume that the condition is true when
+Wait returns. Instead, the caller should Wait in a loop:
+c.L.Lock()
+for !condition() {
+c.Wait()
+}
+... make use of condition ...
+c.L.Unlock()</p>
+               
+               <pre><code>func (c *Cond) Wait()</code></pre>
+            </article>
+            
+            <article class="function" data-name="Wait">
+               <h3>
+                  Wait 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Wait blocks until the [WaitGroup] counter is zero.</p>
+               
+               <pre><code>func (wg *WaitGroup) Wait()</code></pre>
+            </article>
+            
+            <article class="function" data-name="check">
+               <h3>
+                  check 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *copyChecker) check()</code></pre>
+            </article>
+            
+            <article class="function" data-name="delete">
+               <h3>
+                  delete 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *entry) delete() (value any, ok bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="dirtyLocked">
+               <h3>
+                  dirtyLocked 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (m *Map) dirtyLocked()</code></pre>
+            </article>
+            
+            <article class="function" data-name="doSlow">
+               <h3>
+                  doSlow 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (o *Once) doSlow(f func())</code></pre>
+            </article>
+            
+            <article class="function" data-name="fatal">
+               <h3>
+                  fatal 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func fatal(string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="getSlow">
+               <h3>
+                  getSlow 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *Pool) getSlow(pid int) any</code></pre>
+            </article>
+            
+            <article class="function" data-name="indexLocal">
+               <h3>
+                  indexLocal 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func indexLocal(l unsafe.Pointer, i int) *poolLocal</code></pre>
+            </article>
+            
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func init()</code></pre>
+            </article>
+            
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func init()</code></pre>
+            </article>
+            
+            <article class="function" data-name="load">
+               <h3>
+                  load 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *entry) load() (value any, ok bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="loadReadOnly">
+               <h3>
+                  loadReadOnly 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (m *Map) loadReadOnly() readOnly</code></pre>
+            </article>
+            
+            <article class="function" data-name="missLocked">
+               <h3>
+                  missLocked 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (m *Map) missLocked()</code></pre>
+            </article>
+            
+            <article class="function" data-name="newEntry">
+               <h3>
+                  newEntry 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func newEntry(i any) *entry</code></pre>
+            </article>
+            
+            <article class="function" data-name="pack">
+               <h3>
+                  pack 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d *poolDequeue) pack(head uint32, tail uint32) uint64</code></pre>
+            </article>
+            
+            <article class="function" data-name="pin">
+               <h3>
+                  pin 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>pin pins the current goroutine to P, disables preemption and
+returns poolLocal pool for the P and the P's id.
+Caller must call runtime_procUnpin() when done with the pool.</p>
+               
+               <pre><code>func (p *Pool) pin() (*poolLocal, int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="pinSlow">
+               <h3>
+                  pinSlow 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *Pool) pinSlow() (*poolLocal, int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="poolCleanup">
+               <h3>
+                  poolCleanup 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>poolCleanup should be an internal detail,
+but widely used packages access it using linkname.
+Notable members of the hall of shame include:
+- github.com/bytedance/gopkg
+- github.com/songzhibin97/gkit
+Do not remove or change the type signature.
+See go.dev/issue/67401.
+go:linkname poolCleanup</p>
+               
+               <pre><code>func poolCleanup()</code></pre>
+            </article>
+            
+            <article class="function" data-name="poolRaceAddr">
+               <h3>
+                  poolRaceAddr 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>poolRaceAddr returns an address to use as the synchronization point
+for race detector logic. We don't use the actual pointer stored in x
+directly, for fear of conflicting with other synchronization on that address.
+Instead, we hash the pointer to get an index into poolRaceHash.
+See discussion on golang.org/cl/31589.</p>
+               
+               <pre><code>func poolRaceAddr(x any) unsafe.Pointer</code></pre>
+            </article>
+            
+            <article class="function" data-name="popHead">
+               <h3>
+                  popHead 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *poolChain) popHead() (any, bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="popHead">
+               <h3>
+                  popHead 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>popHead removes and returns the element at the head of the queue.
+It returns false if the queue is empty. It must only be called by a
+single producer.</p>
+               
+               <pre><code>func (d *poolDequeue) popHead() (any, bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="popTail">
+               <h3>
+                  popTail 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *poolChain) popTail() (any, bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="popTail">
+               <h3>
+                  popTail 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>popTail removes and returns the element at the tail of the queue.
+It returns false if the queue is empty. It may be called by any
+number of consumers.</p>
+               
+               <pre><code>func (d *poolDequeue) popTail() (any, bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="pushHead">
+               <h3>
+                  pushHead 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *poolChain) pushHead(val any)</code></pre>
+            </article>
+            
+            <article class="function" data-name="pushHead">
+               <h3>
+                  pushHead 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>pushHead adds val at the head of the queue. It returns false if the
+queue is full. It must only be called by a single producer.</p>
+               
+               <pre><code>func (d *poolDequeue) pushHead(val any) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="rUnlockSlow">
+               <h3>
+                  rUnlockSlow 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (rw *RWMutex) rUnlockSlow(r int32)</code></pre>
+            </article>
+            
+            <article class="function" data-name="runtime_LoadAcquintptr">
+               <h3>
+                  runtime_LoadAcquintptr 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>go:linkname runtime_LoadAcquintptr internal/runtime/atomic.LoadAcquintptr</p>
+               
+               <pre><code>func runtime_LoadAcquintptr(ptr *uintptr) uintptr</code></pre>
+            </article>
+            
+            <article class="function" data-name="runtime_Semacquire">
+               <h3>
+                  runtime_Semacquire 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Semacquire waits until *s > 0 and then atomically decrements it.
+It is intended as a simple sleep primitive for use by the synchronization
+library and should not be used directly.</p>
+               
+               <pre><code>func runtime_Semacquire(s *uint32)</code></pre>
+            </article>
+            
+            <article class="function" data-name="runtime_SemacquireRWMutex">
+               <h3>
+                  runtime_SemacquireRWMutex 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func runtime_SemacquireRWMutex(s *uint32, lifo bool, skipframes int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="runtime_SemacquireRWMutexR">
+               <h3>
+                  runtime_SemacquireRWMutexR 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Semacquire(RW)Mutex(R) is like Semacquire, but for profiling contended
+Mutexes and RWMutexes.
+If lifo is true, queue waiter at the head of wait queue.
+skipframes is the number of frames to omit during tracing, counting from
+runtime_SemacquireMutex's caller.
+The different forms of this function just tell the runtime how to present
+the reason for waiting in a backtrace, and is used to compute some metrics.
+Otherwise they're functionally identical.</p>
+               
+               <pre><code>func runtime_SemacquireRWMutexR(s *uint32, lifo bool, skipframes int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="runtime_SemacquireWaitGroup">
+               <h3>
+                  runtime_SemacquireWaitGroup 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>SemacquireWaitGroup is like Semacquire, but for WaitGroup.Wait.</p>
+               
+               <pre><code>func runtime_SemacquireWaitGroup(s *uint32)</code></pre>
+            </article>
+            
+            <article class="function" data-name="runtime_Semrelease">
+               <h3>
+                  runtime_Semrelease 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Semrelease atomically increments *s and notifies a waiting goroutine
+if one is blocked in Semacquire.
+It is intended as a simple wakeup primitive for use by the synchronization
+library and should not be used directly.
+If handoff is true, pass count directly to the first waiter.
+skipframes is the number of frames to omit during tracing, counting from
+runtime_Semrelease's caller.</p>
+               
+               <pre><code>func runtime_Semrelease(s *uint32, handoff bool, skipframes int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="runtime_StoreReluintptr">
+               <h3>
+                  runtime_StoreReluintptr 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>go:linkname runtime_StoreReluintptr internal/runtime/atomic.StoreReluintptr</p>
+               
+               <pre><code>func runtime_StoreReluintptr(ptr *uintptr, val uintptr) uintptr</code></pre>
+            </article>
+            
+            <article class="function" data-name="runtime_notifyListAdd">
+               <h3>
+                  runtime_notifyListAdd 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>See runtime/sema.go for documentation.</p>
+               
+               <pre><code>func runtime_notifyListAdd(l *notifyList) uint32</code></pre>
+            </article>
+            
+            <article class="function" data-name="runtime_notifyListCheck">
+               <h3>
+                  runtime_notifyListCheck 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Ensure that sync and runtime agree on size of notifyList.</p>
+               
+               <pre><code>func runtime_notifyListCheck(size uintptr)</code></pre>
+            </article>
+            
+            <article class="function" data-name="runtime_notifyListNotifyAll">
+               <h3>
+                  runtime_notifyListNotifyAll 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>See runtime/sema.go for documentation.</p>
+               
+               <pre><code>func runtime_notifyListNotifyAll(l *notifyList)</code></pre>
+            </article>
+            
+            <article class="function" data-name="runtime_notifyListNotifyOne">
+               <h3>
+                  runtime_notifyListNotifyOne 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>See runtime/sema.go for documentation.</p>
+               
+               <pre><code>func runtime_notifyListNotifyOne(l *notifyList)</code></pre>
+            </article>
+            
+            <article class="function" data-name="runtime_notifyListWait">
+               <h3>
+                  runtime_notifyListWait 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>See runtime/sema.go for documentation.</p>
+               
+               <pre><code>func runtime_notifyListWait(l *notifyList, t uint32)</code></pre>
+            </article>
+            
+            <article class="function" data-name="runtime_procPin">
+               <h3>
+                  runtime_procPin 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func runtime_procPin() int</code></pre>
+            </article>
+            
+            <article class="function" data-name="runtime_procUnpin">
+               <h3>
+                  runtime_procUnpin 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func runtime_procUnpin()</code></pre>
+            </article>
+            
+            <article class="function" data-name="runtime_randn">
+               <h3>
+                  runtime_randn 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>from runtime
+go:linkname runtime_randn runtime.randn</p>
+               
+               <pre><code>func runtime_randn(n uint32) uint32</code></pre>
+            </article>
+            
+            <article class="function" data-name="runtime_registerPoolCleanup">
+               <h3>
+                  runtime_registerPoolCleanup 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Implemented in runtime.</p>
+               
+               <pre><code>func runtime_registerPoolCleanup(cleanup func())</code></pre>
+            </article>
+            
+            <article class="function" data-name="swapLocked">
+               <h3>
+                  swapLocked 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>swapLocked unconditionally swaps a value into the entry.
+The entry must be known not to be expunged.</p>
+               
+               <pre><code>func (e *entry) swapLocked(i *any) *any</code></pre>
+            </article>
+            
+            <article class="function" data-name="syscall_hasWaitingReaders">
+               <h3>
+                  syscall_hasWaitingReaders 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>syscall_hasWaitingReaders reports whether any goroutine is waiting
+to acquire a read lock on rw. This exists because syscall.ForkLock
+is an RWMutex, and we can't change that without breaking compatibility.
+We don't need or want RWMutex semantics for ForkLock, and we use
+this private API to avoid having to change the type of ForkLock.
+For more details see the syscall package.
+go:linkname syscall_hasWaitingReaders syscall.hasWaitingReaders</p>
+               
+               <pre><code>func syscall_hasWaitingReaders(rw *RWMutex) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="throw">
+               <h3>
+                  throw 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func throw(string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="tryCompareAndSwap">
+               <h3>
+                  tryCompareAndSwap 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>tryCompareAndSwap compare the entry with the given old value and swaps
+it with a new value if the entry is equal to the old value, and the entry
+has not been expunged.
+If the entry is expunged, tryCompareAndSwap returns false and leaves
+the entry unchanged.</p>
+               
+               <pre><code>func (e *entry) tryCompareAndSwap(old any, new any) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="tryExpungeLocked">
+               <h3>
+                  tryExpungeLocked 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *entry) tryExpungeLocked() (isExpunged bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="tryLoadOrStore">
+               <h3>
+                  tryLoadOrStore 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>tryLoadOrStore atomically loads or stores a value if the entry is not
+expunged.
+If the entry is expunged, tryLoadOrStore leaves the entry unchanged and
+returns with ok==false.</p>
+               
+               <pre><code>func (e *entry) tryLoadOrStore(i any) (actual any, loaded bool, ok bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="trySwap">
+               <h3>
+                  trySwap 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>trySwap swaps a value if the entry has not been expunged.
+If the entry is expunged, trySwap returns false and leaves the entry
+unchanged.</p>
+               
+               <pre><code>func (e *entry) trySwap(i *any) (*any, bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="unexpungeLocked">
+               <h3>
+                  unexpungeLocked 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>unexpungeLocked ensures that the entry is not marked as expunged.
+If the entry was previously expunged, it must be added to the dirty map
+before m.mu is unlocked.</p>
+               
+               <pre><code>func (e *entry) unexpungeLocked() (wasExpunged bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="unpack">
+               <h3>
+                  unpack 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d *poolDequeue) unpack(ptrs uint64) (head uint32, tail uint32)</code></pre>
+            </article>
+            
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -1626,59 +2405,170 @@ makes a full copy of the map despite changing only one entry.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

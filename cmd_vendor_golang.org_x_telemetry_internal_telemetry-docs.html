@@ -13,384 +13,781 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                  
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
-      <main>
-         <h1>
-            Package
-            <code>telemetry</code>
-         </h1>
-         <hr />
-         
-         <article class="global" data-name="DateOnly">
-            <h2>DateOnly</h2>
-            <hr />
-            
-            <p>TODO(rfindley): replace uses of DateOnly with time.DateOnly once we no
-longer support building gopls with go 1.19.</p>
-            
-            <pre><code>DateOnly</code></pre>
-         </article>
-         
-         <article class="global" data-name="Default">
-            <h2>Default</h2>
-            <hr />
-            
-            <p>Default is the default directory containing Go telemetry configuration and
-data.
 
+      <main>
+         <h1>telemetry</h1>
+         <div class="section-divider"></div>
+
+         
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"fmt"
+"os"
+"path/filepath"
+"runtime"
+"strings"
+"time"
+"os"
+"path/filepath"
+"runtime/debug"
+"strings"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
+            
+            <article class="global" data-name="DateOnly">
+               <h3>
+                  DateOnly 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>TODO(rfindley): replace uses of DateOnly with time.DateOnly once we no
+longer support building gopls with go 1.19.</p>
+               
+               <pre><code>const DateOnly = "2006-01-02"</code></pre>
+            </article>
+            
+            <article class="global" data-name="Default">
+               <h3>
+                  Default 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Default is the default directory containing Go telemetry configuration and
+data.
 If Default is uninitialized, Default.Mode will be "off". As a consequence,
 no data should be written to the directory, and so the path values of
 LocalDir, UploadDir, etc. must not matter.
-
 Default is a global for convenience and testing, but should not be mutated
 outside of tests.
-
 TODO(rfindley): it would be nice to completely eliminate this global state,
 or at least push it in the golang.org/x/telemetry package</p>
+               
+               <pre><code>var Default Dir</code></pre>
+            </article>
             
-            <pre><code>Default Dir</code></pre>
-         </article>
-         
-         <article class="global" data-name="DisabledOnPlatform">
-            <h2>DisabledOnPlatform</h2>
-            <hr />
-            
-            <p>DisabledOnPlatform indicates whether telemetry is disabled
+            <article class="global" data-name="DisabledOnPlatform">
+               <h3>
+                  DisabledOnPlatform 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>DisabledOnPlatform indicates whether telemetry is disabled
 due to bugs in the current platform.
-
 TODO(rfindley): move to a more appropriate file.</p>
+               
+               <pre><code>const DisabledOnPlatform = *ast.BinaryExpr</code></pre>
+            </article>
             
-            <pre><code>DisabledOnPlatform</code></pre>
-         </article>
-          
-         <article class="struct" data-name="UploadConfig">
-            <h2>type UploadConfig struct</h2>
-            <hr />
+         </section>
             
-            <p>An UploadConfig controls what data is uploaded.</p>
+         <section id="structs">
+            <h2>Structs</h2>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">GOOS []string
-GOARCH []string
-GoVersion []string
-SampleRate float64
-Programs []*ProgramConfig</code></pre>
-         </article>
-         
-         <article class="struct" data-name="ProgramConfig">
-            <h2>type ProgramConfig struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Name string
-Versions []string
-Counters []CounterConfig
-Stacks []CounterConfig</code></pre>
-         </article>
-         
-         <article class="struct" data-name="CounterConfig">
-            <h2>type CounterConfig struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Name string
+            <article class="struct" data-name="CounterConfig">
+               <h3>
+                  CounterConfig
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type CounterConfig struct {
+Name string
 Rate float64
-Depth int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Report">
-            <h2>type Report struct</h2>
-            <hr />
+Depth int `json:",omitempty"`
+}</code></pre>
+            </article>
             
-            <p>A Report is the weekly aggregate of counters.</p>
+            <article class="struct" data-name="Dir">
+               <h3>
+                  Dir
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Dir holds paths to telemetry data inside a directory.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Dir struct {
+dir string
+local string
+upload string
+debug string
+modefile string
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Week string
-LastWeek string
-X float64
-Programs []*ProgramReport
-Config string</code></pre>
-         </article>
-         
-         <article class="struct" data-name="ProgramReport">
-            <h2>type ProgramReport struct</h2>
-            <hr />
+            <article class="struct" data-name="ProgramConfig">
+               <h3>
+                  ProgramConfig
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type ProgramConfig struct {
+Name string
+Versions []string
+Counters []CounterConfig `json:",omitempty"`
+Stacks []CounterConfig `json:",omitempty"`
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Program string
+            <article class="struct" data-name="ProgramReport">
+               <h3>
+                  ProgramReport
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type ProgramReport struct {
+Program string
 Version string
 GoVersion string
 GOOS string
 GOARCH string
-Counters *ast.MapType
-Stacks *ast.MapType</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Dir">
-            <h2>type Dir struct</h2>
-            <hr />
+Counters map[string]int64
+Stacks map[string]int64
+}</code></pre>
+            </article>
             
-            <p>A Dir holds paths to telemetry data inside a directory.</p>
+            <article class="struct" data-name="Report">
+               <h3>
+                  Report
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Report is the weekly aggregate of counters.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Report struct {
+Week string
+LastWeek string
+X float64
+Programs []*ProgramReport
+Config string
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">dir string
-local string
-upload string
-debug string
-modefile string</code></pre>
-         </article>
+            <article class="struct" data-name="UploadConfig">
+               <h3>
+                  UploadConfig
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>An UploadConfig controls what data is uploaded.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type UploadConfig struct {
+GOOS []string
+GOARCH []string
+GoVersion []string
+SampleRate float64
+Programs []*ProgramConfig
+}</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="function" data-name="NewDir">
-            <h2>NewDir</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <p>NewDir creates a new Dir encapsulating paths in the given dir.
-
-NewDir does not create any new directories or files--it merely encapsulates
-the telemetry directory layout.</p>
+            <article class="function" data-name="DebugDir">
+               <h3>
+                  DebugDir 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d Dir) DebugDir() string</code></pre>
+            </article>
             
-            <pre><code>func NewDir(dir string) Dir</code></pre>
-         </article>
-         
-         <article class="function" data-name="init">
-            <h2>init</h2>
-            <hr />
+            <article class="function" data-name="Dir">
+               <h3>
+                  Dir 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d Dir) Dir() string</code></pre>
+            </article>
             
-            <pre><code>func init()</code></pre>
-         </article>
-         
-         <article class="function" data-name="Dir">
-            <h2>Dir</h2>
-            <hr />
+            <article class="function" data-name="IsToolchainProgram">
+               <h3>
+                  IsToolchainProgram 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>IsToolchainProgram reports whether a program with the given path is a Go
+toolchain program.</p>
+               
+               <pre><code>func IsToolchainProgram(progPath string) bool</code></pre>
+            </article>
             
-            <pre><code>func Dir() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="LocalDir">
-            <h2>LocalDir</h2>
-            <hr />
+            <article class="function" data-name="LocalDir">
+               <h3>
+                  LocalDir 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d Dir) LocalDir() string</code></pre>
+            </article>
             
-            <pre><code>func LocalDir() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="UploadDir">
-            <h2>UploadDir</h2>
-            <hr />
-            
-            <pre><code>func UploadDir() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="DebugDir">
-            <h2>DebugDir</h2>
-            <hr />
-            
-            <pre><code>func DebugDir() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="ModeFile">
-            <h2>ModeFile</h2>
-            <hr />
-            
-            <pre><code>func ModeFile() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="SetMode">
-            <h2>SetMode</h2>
-            <hr />
-            
-            <p>SetMode updates the telemetry mode with the given mode.
-Acceptable values for mode are "on", "off", or "local".
-
-SetMode always writes the mode file, and explicitly records the date at
-which the modefile was updated. This means that calling SetMode with "on"
-effectively resets the timeout before the next telemetry report is uploaded.</p>
-            
-            <pre><code>func SetMode(mode string) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="SetModeAsOf">
-            <h2>SetModeAsOf</h2>
-            <hr />
-            
-            <p>SetModeAsOf is like SetMode, but accepts an explicit time to use to
-back-date the mode state. This exists only for testing purposes.</p>
-            
-            <pre><code>func SetModeAsOf(mode string, asofTime time.Time) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="Mode">
-            <h2>Mode</h2>
-            <hr />
-            
-            <p>Mode returns the current telemetry mode, as well as the time that the mode
+            <article class="function" data-name="Mode">
+               <h3>
+                  Mode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Mode returns the current telemetry mode, as well as the time that the mode
 was effective.
-
 If there is no effective time, the second result is the zero time.
-
 If Mode is "off", no data should be written to the telemetry directory, and
 the other paths values referenced by Dir should be considered undefined.
 This accounts for the case where initializing [Default] fails, and therefore
 local telemetry paths are unknown.</p>
+               
+               <pre><code>func (d Dir) Mode() (string, time.Time)</code></pre>
+            </article>
             
-            <pre><code>func Mode() (string, time.Time)</code></pre>
-         </article>
-         
-         <article class="function" data-name="IsToolchainProgram">
-            <h2>IsToolchainProgram</h2>
-            <hr />
+            <article class="function" data-name="ModeFile">
+               <h3>
+                  ModeFile 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d Dir) ModeFile() string</code></pre>
+            </article>
             
-            <p>IsToolchainProgram reports whether a program with the given path is a Go
-toolchain program.</p>
+            <article class="function" data-name="NewDir">
+               <h3>
+                  NewDir 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewDir creates a new Dir encapsulating paths in the given dir.
+NewDir does not create any new directories or files--it merely encapsulates
+the telemetry directory layout.</p>
+               
+               <pre><code>func NewDir(dir string) Dir</code></pre>
+            </article>
             
-            <pre><code>func IsToolchainProgram(progPath string) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="ProgramInfo">
-            <h2>ProgramInfo</h2>
-            <hr />
-            
-            <p>ProgramInfo extracts the go version, program package path, and program
+            <article class="function" data-name="ProgramInfo">
+               <h3>
+                  ProgramInfo 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>ProgramInfo extracts the go version, program package path, and program
 version to use for counter files.
-
 For programs in the Go toolchain, the program version will be the same as
 the Go version, and will typically be of the form "go1.2.3", not a semantic
 version of the form "v1.2.3". Go versions may also include spaces and
 special characters.</p>
+               
+               <pre><code>func ProgramInfo(info *debug.BuildInfo) (goVers string, progPath string, progVers string)</code></pre>
+            </article>
             
-            <pre><code>func ProgramInfo(info *debug.BuildInfo) (goVers string, progPath string, progVers string)</code></pre>
-         </article>
+            <article class="function" data-name="SetMode">
+               <h3>
+                  SetMode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>SetMode updates the telemetry mode with the given mode.
+Acceptable values for mode are "on", "off", or "local".
+SetMode always writes the mode file, and explicitly records the date at
+which the modefile was updated. This means that calling SetMode with "on"
+effectively resets the timeout before the next telemetry report is uploaded.</p>
+               
+               <pre><code>func (d Dir) SetMode(mode string) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="SetModeAsOf">
+               <h3>
+                  SetModeAsOf 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>SetModeAsOf is like SetMode, but accepts an explicit time to use to
+back-date the mode state. This exists only for testing purposes.</p>
+               
+               <pre><code>func (d Dir) SetModeAsOf(mode string, asofTime time.Time) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="UploadDir">
+               <h3>
+                  UploadDir 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d Dir) UploadDir() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func init()</code></pre>
+            </article>
+            
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -398,59 +795,170 @@ special characters.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

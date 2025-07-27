@@ -13,415 +13,822 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
-          
-         <a href="crypto_internal_fips140_aes-docs.html">aes</a>
-         <br />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <ul class="subpackage-list">
+               
+               <li><a href="crypto_internal_fips140_aes-docs.html">aes</a></li>
+               
+               <li><a href="crypto_internal_fips140_alias-docs.html">alias</a></li>
+               
+               <li><a href="crypto_internal_fips140_bigmod-docs.html">bigmod</a></li>
+               
+               <li><a href="crypto_internal_fips140_check-docs.html">check</a></li>
+               
+               <li><a href="crypto_internal_fips140_drbg-docs.html">drbg</a></li>
+               
+               <li><a href="crypto_internal_fips140_ecdh-docs.html">ecdh</a></li>
+               
+               <li><a href="crypto_internal_fips140_ecdsa-docs.html">ecdsa</a></li>
+               
+               <li><a href="crypto_internal_fips140_ed25519-docs.html">ed25519</a></li>
+               
+               <li><a href="crypto_internal_fips140_edwards25519-docs.html">edwards25519</a></li>
+               
+               <li><a href="crypto_internal_fips140_hkdf-docs.html">hkdf</a></li>
+               
+               <li><a href="crypto_internal_fips140_hmac-docs.html">hmac</a></li>
+               
+               <li><a href="crypto_internal_fips140_mlkem-docs.html">mlkem</a></li>
+               
+               <li><a href="crypto_internal_fips140_nistec-docs.html">nistec</a></li>
+               
+               <li><a href="crypto_internal_fips140_pbkdf2-docs.html">pbkdf2</a></li>
+               
+               <li><a href="crypto_internal_fips140_rsa-docs.html">rsa</a></li>
+               
+               <li><a href="crypto_internal_fips140_sha256-docs.html">sha256</a></li>
+               
+               <li><a href="crypto_internal_fips140_sha3-docs.html">sha3</a></li>
+               
+               <li><a href="crypto_internal_fips140_sha512-docs.html">sha512</a></li>
+               
+               <li><a href="crypto_internal_fips140_ssh-docs.html">ssh</a></li>
+               
+               <li><a href="crypto_internal_fips140_subtle-docs.html">subtle</a></li>
+               
+               <li><a href="crypto_internal_fips140_tls12-docs.html">tls12</a></li>
+               
+               <li><a href="crypto_internal_fips140_tls13-docs.html">tls13</a></li>
+               
+            </ul>
+            
+         </div>
+
          
-         <a href="crypto_internal_fips140_alias-docs.html">alias</a>
-         <br />
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                 
+               <li><a href="#interfaces">Interfaces</a></li>
+                 
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
-         <a href="crypto_internal_fips140_bigmod-docs.html">bigmod</a>
-         <br />
-         
-         <a href="crypto_internal_fips140_check-docs.html">check</a>
-         <br />
-         
-         <a href="crypto_internal_fips140_drbg-docs.html">drbg</a>
-         <br />
-         
-         <a href="crypto_internal_fips140_ecdh-docs.html">ecdh</a>
-         <br />
-         
-         <a href="crypto_internal_fips140_ecdsa-docs.html">ecdsa</a>
-         <br />
-         
-         <a href="crypto_internal_fips140_ed25519-docs.html">ed25519</a>
-         <br />
-         
-         <a href="crypto_internal_fips140_edwards25519-docs.html">edwards25519</a>
-         <br />
-         
-         <a href="crypto_internal_fips140_hkdf-docs.html">hkdf</a>
-         <br />
-         
-         <a href="crypto_internal_fips140_hmac-docs.html">hmac</a>
-         <br />
-         
-         <a href="crypto_internal_fips140_mlkem-docs.html">mlkem</a>
-         <br />
-         
-         <a href="crypto_internal_fips140_nistec-docs.html">nistec</a>
-         <br />
-         
-         <a href="crypto_internal_fips140_pbkdf2-docs.html">pbkdf2</a>
-         <br />
-         
-         <a href="crypto_internal_fips140_rsa-docs.html">rsa</a>
-         <br />
-         
-         <a href="crypto_internal_fips140_sha256-docs.html">sha256</a>
-         <br />
-         
-         <a href="crypto_internal_fips140_sha3-docs.html">sha3</a>
-         <br />
-         
-         <a href="crypto_internal_fips140_sha512-docs.html">sha512</a>
-         <br />
-         
-         <a href="crypto_internal_fips140_ssh-docs.html">ssh</a>
-         <br />
-         
-         <a href="crypto_internal_fips140_subtle-docs.html">subtle</a>
-         <br />
-         
-         <a href="crypto_internal_fips140_tls12-docs.html">tls12</a>
-         <br />
-         
-         <a href="crypto_internal_fips140_tls13-docs.html">tls13</a>
-         <br />
-          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>fips140</code>
-         </h1>
-         <hr />
+         <h1>fips140</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="indicatorUnset">
-            <h2>indicatorUnset</h2>
-            <hr />
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>_ "unsafe"
+"crypto/internal/fips140deps/godebug"
+"errors"
+"strings"
+_ "unsafe"
+"crypto/internal/fips140deps/godebug"
+"errors"
+"runtime"
+"io"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <pre><code>indicatorUnset uint8</code></pre>
-         </article>
-         
-         <article class="global" data-name="indicatorFalse">
-            <h2>indicatorFalse</h2>
-            <hr />
+            <article class="global" data-name="Enabled">
+               <h3>
+                  Enabled 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var Enabled bool</code></pre>
+            </article>
             
-            <pre><code>indicatorFalse</code></pre>
-         </article>
-         
-         <article class="global" data-name="indicatorTrue">
-            <h2>indicatorTrue</h2>
-            <hr />
+            <article class="global" data-name="asanEnabled">
+               <h3>
+                  asanEnabled 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const asanEnabled = false</code></pre>
+            </article>
             
-            <pre><code>indicatorTrue</code></pre>
-         </article>
-         
-         <article class="global" data-name="asanEnabled">
-            <h2>asanEnabled</h2>
-            <hr />
+            <article class="global" data-name="asanEnabled">
+               <h3>
+                  asanEnabled 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const asanEnabled = true</code></pre>
+            </article>
             
-            <pre><code>asanEnabled</code></pre>
-         </article>
-         
-         <article class="global" data-name="boringEnabled">
-            <h2>boringEnabled</h2>
-            <hr />
+            <article class="global" data-name="boringEnabled">
+               <h3>
+                  boringEnabled 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const boringEnabled = false</code></pre>
+            </article>
             
-            <pre><code>boringEnabled</code></pre>
-         </article>
-         
-         <article class="global" data-name="asanEnabled">
-            <h2>asanEnabled</h2>
-            <hr />
+            <article class="global" data-name="boringEnabled">
+               <h3>
+                  boringEnabled 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const boringEnabled = true</code></pre>
+            </article>
             
-            <pre><code>asanEnabled</code></pre>
-         </article>
-         
-         <article class="global" data-name="boringEnabled">
-            <h2>boringEnabled</h2>
-            <hr />
+            <article class="global" data-name="debug">
+               <h3>
+                  debug 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var debug bool</code></pre>
+            </article>
             
-            <pre><code>boringEnabled</code></pre>
-         </article>
-         
-         <article class="global" data-name="failfipscast">
-            <h2>failfipscast</h2>
-            <hr />
-            
-            <p>failfipscast is a GODEBUG key allowing simulation of a CAST or PCT failure,
+            <article class="global" data-name="failfipscast">
+               <h3>
+                  failfipscast 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>failfipscast is a GODEBUG key allowing simulation of a CAST or PCT failure,
 as required during FIPS 140-3 functional testing. The value is the whole name
 of the target CAST or PCT.</p>
+               
+               <pre><code>var failfipscast = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre><code>failfipscast</code></pre>
-         </article>
-         
-         <article class="global" data-name="Enabled">
-            <h2>Enabled</h2>
-            <hr />
+            <article class="global" data-name="indicatorFalse">
+               <h3>
+                  indicatorFalse 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const indicatorFalse</code></pre>
+            </article>
             
-            <pre><code>Enabled bool</code></pre>
-         </article>
-         
-         <article class="global" data-name="debug">
-            <h2>debug</h2>
-            <hr />
+            <article class="global" data-name="indicatorTrue">
+               <h3>
+                  indicatorTrue 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const indicatorTrue</code></pre>
+            </article>
             
-            <pre><code>debug bool</code></pre>
-         </article>
+            <article class="global" data-name="indicatorUnset">
+               <h3>
+                  indicatorUnset 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const indicatorUnset uint8 = iota</code></pre>
+            </article>
+            
+         </section>
            
-         <article class="function" data-name="getIndicator">
-            <h2>getIndicator</h2>
-            <hr />
+         <section id="interfaces">
+            <h2>Interfaces</h2>
             
-            <pre><code>func getIndicator() uint8</code></pre>
-         </article>
-         
-         <article class="function" data-name="setIndicator">
-            <h2>setIndicator</h2>
-            <hr />
+            <article class="interface" data-name="Hash">
+               <h3>
+                  Hash
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>Hash is the common interface implemented by all hash functions. It is a copy
+of [hash.Hash] from the standard library, to avoid depending on security
+definitions from outside of the module.</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type Hash interface {
+io.Writer
+Sum(b []byte) []byte
+Reset()
+Size() int
+BlockSize() int
+}</code></pre>
+            </article>
             
-            <pre><code>func setIndicator(uint8)</code></pre>
-         </article>
-         
-         <article class="function" data-name="ResetServiceIndicator">
-            <h2>ResetServiceIndicator</h2>
-            <hr />
+         </section>
+           
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <p>ResetServiceIndicator clears the service indicator for the running goroutine.</p>
-            
-            <pre><code>func ResetServiceIndicator()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ServiceIndicator">
-            <h2>ServiceIndicator</h2>
-            <hr />
-            
-            <p>ServiceIndicator returns true if and only if all services invoked by this
-goroutine since the last ResetServiceIndicator call are approved.
-
-If ResetServiceIndicator was not called before by this goroutine, its return
-value is undefined.</p>
-            
-            <pre><code>func ServiceIndicator() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="RecordApproved">
-            <h2>RecordApproved</h2>
-            <hr />
-            
-            <p>RecordApproved is an internal function that records the use of an approved
-service. It does not override RecordNonApproved calls in the same span.
-
-It should be called by exposed functions that perform a whole cryptographic
-alrgorithm (e.g. by Sum, not by New, unless a cryptographic Instantiate
-algorithm is performed) and should be called after any checks that may cause
-the function to error out or panic.</p>
-            
-            <pre><code>func RecordApproved()</code></pre>
-         </article>
-         
-         <article class="function" data-name="RecordNonApproved">
-            <h2>RecordNonApproved</h2>
-            <hr />
-            
-            <p>RecordNonApproved is an internal function that records the use of a
-non-approved service. It overrides any RecordApproved calls in the same span.</p>
-            
-            <pre><code>func RecordNonApproved()</code></pre>
-         </article>
-         
-         <article class="function" data-name="fatal">
-            <h2>fatal</h2>
-            <hr />
-            
-            <p>fatal is [runtime.fatal], pushed via linkname.</p>
-            
-            <pre><code>func fatal(string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="CAST">
-            <h2>CAST</h2>
-            <hr />
-            
-            <p>CAST runs the named Cryptographic Algorithm Self-Test (if operated in FIPS
+            <article class="function" data-name="CAST">
+               <h3>
+                  CAST 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>CAST runs the named Cryptographic Algorithm Self-Test (if operated in FIPS
 mode) and aborts the program (stopping the module input/output and entering
 the "error state") if the self-test fails.
-
 CASTs are mandatory self-checks that must be performed by FIPS 140-3 modules
 before the algorithm is used. See Implementation Guidance 10.3.A.
-
 The name must not contain commas, colons, hashes, or equal signs.
-
 If a package p calls CAST from its init function, an import of p should also
 be added to crypto/internal/fips140test. If a package p calls CAST on the first
 use of the algorithm, an invocation of that algorithm should be added to
 fipstest.TestConditionals.</p>
+               
+               <pre><code>func CAST(name string, f func() error)</code></pre>
+            </article>
             
-            <pre><code>func CAST(name string, f func)</code></pre>
-         </article>
-         
-         <article class="function" data-name="PCT">
-            <h2>PCT</h2>
-            <hr />
+            <article class="function" data-name="Name">
+               <h3>
+                  Name 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func Name() string</code></pre>
+            </article>
             
-            <p>PCT runs the named Pairwise Consistency Test (if operated in FIPS mode) and
+            <article class="function" data-name="PCT">
+               <h3>
+                  PCT 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>PCT runs the named Pairwise Consistency Test (if operated in FIPS mode) and
 returns any errors. If an error is returned, the key must not be used.
-
 PCTs are mandatory for every key pair that is generated/imported, including
 ephemeral keys (which effectively doubles the cost of key establishment). See
 Implementation Guidance 10.3.A Additional Comment 1.
-
 The name must not contain commas, colons, hashes, or equal signs.
-
 If a package p calls PCT during key generation, an invocation of that
 function should be added to fipstest.TestConditionals.</p>
+               
+               <pre><code>func PCT(name string, f func() error) error</code></pre>
+            </article>
             
-            <pre><code>func PCT(name string, f func) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="init">
-            <h2>init</h2>
-            <hr />
+            <article class="function" data-name="RecordApproved">
+               <h3>
+                  RecordApproved 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>RecordApproved is an internal function that records the use of an approved
+service. It does not override RecordNonApproved calls in the same span.
+It should be called by exposed functions that perform a whole cryptographic
+alrgorithm (e.g. by Sum, not by New, unless a cryptographic Instantiate
+algorithm is performed) and should be called after any checks that may cause
+the function to error out or panic.</p>
+               
+               <pre><code>func RecordApproved()</code></pre>
+            </article>
             
-            <pre><code>func init()</code></pre>
-         </article>
-         
-         <article class="function" data-name="Supported">
-            <h2>Supported</h2>
-            <hr />
+            <article class="function" data-name="RecordNonApproved">
+               <h3>
+                  RecordNonApproved 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>RecordNonApproved is an internal function that records the use of a
+non-approved service. It overrides any RecordApproved calls in the same span.</p>
+               
+               <pre><code>func RecordNonApproved()</code></pre>
+            </article>
             
-            <p>Supported returns an error if FIPS 140-3 mode can't be enabled.</p>
+            <article class="function" data-name="ResetServiceIndicator">
+               <h3>
+                  ResetServiceIndicator 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>ResetServiceIndicator clears the service indicator for the running goroutine.</p>
+               
+               <pre><code>func ResetServiceIndicator()</code></pre>
+            </article>
             
-            <pre><code>func Supported() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="Name">
-            <h2>Name</h2>
-            <hr />
+            <article class="function" data-name="ServiceIndicator">
+               <h3>
+                  ServiceIndicator 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>ServiceIndicator returns true if and only if all services invoked by this
+goroutine since the last ResetServiceIndicator call are approved.
+If ResetServiceIndicator was not called before by this goroutine, its return
+value is undefined.</p>
+               
+               <pre><code>func ServiceIndicator() bool</code></pre>
+            </article>
             
-            <pre><code>func Name() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="Version">
-            <h2>Version</h2>
-            <hr />
+            <article class="function" data-name="Supported">
+               <h3>
+                  Supported 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Supported returns an error if FIPS 140-3 mode can't be enabled.</p>
+               
+               <pre><code>func Supported() error</code></pre>
+            </article>
             
-            <pre><code>func Version() string</code></pre>
-         </article>
+            <article class="function" data-name="Version">
+               <h3>
+                  Version 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func Version() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="fatal">
+               <h3>
+                  fatal 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>fatal is [runtime.fatal], pushed via linkname.
+go:linkname fatal crypto/internal/fips140.fatal</p>
+               
+               <pre><code>func fatal(string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="getIndicator">
+               <h3>
+                  getIndicator 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>go:linkname getIndicator crypto/internal/fips140.getIndicator</p>
+               
+               <pre><code>func getIndicator() uint8</code></pre>
+            </article>
+            
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func init()</code></pre>
+            </article>
+            
+            <article class="function" data-name="setIndicator">
+               <h3>
+                  setIndicator 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>go:linkname setIndicator crypto/internal/fips140.setIndicator</p>
+               
+               <pre><code>func setIndicator(uint8)</code></pre>
+            </article>
+            
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -429,59 +836,170 @@ function should be added to fipstest.TestConditionals.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

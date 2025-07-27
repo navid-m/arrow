@@ -13,703 +13,1026 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
-          
-         <a href="cmd_compile_internal_importer_testdata-docs.html">testdata</a>
-         <br />
-          
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
+         
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                  
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
+         
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>importer</code>
-         </h1>
-         <hr />
+         <h1>importer</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="importedObjectTests">
-            <h2>importedObjectTests</h2>
-            <hr />
-            
-            <pre><code>importedObjectTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="deltaNewFile">
-            <h2>deltaNewFile</h2>
-            <hr />
-            
-            <pre><code>deltaNewFile</code></pre>
-         </article>
-         
-         <article class="global" data-name="fakeLines">
-            <h2>fakeLines</h2>
-            <hr />
-            
-            <pre><code>fakeLines []int</code></pre>
-         </article>
-         
-         <article class="global" data-name="fakeLinesOnce">
-            <h2>fakeLinesOnce</h2>
-            <hr />
-            
-            <pre><code>fakeLinesOnce sync.Once</code></pre>
-         </article>
-         
-         <article class="global" data-name="predeclared">
-            <h2>predeclared</h2>
-            <hr />
-            
-            <pre><code>predeclared</code></pre>
-         </article>
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"bufio"
+"fmt"
+"internal/exportdata"
+"internal/pkgbits"
+"io"
+"os"
+"cmd/compile/internal/types2"
+"cmd/compile/internal/base"
+"cmd/compile/internal/types2"
+"fmt"
+"go/token"
+"internal/pkgbits"
+"sync"
+"cmd/compile/internal/base"
+"cmd/compile/internal/syntax"
+"cmd/compile/internal/types2"
+"cmd/internal/src"
+"internal/pkgbits"
+</code></pre>
+            </article>
+         </section>
           
-         <article class="struct" data-name="fakeFileSet">
-            <h2>type fakeFileSet struct</h2>
-            <hr />
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <p>Synthesize a token.Pos</p>
+            <article class="global" data-name="deltaNewFile">
+               <h3>
+                  deltaNewFile 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const deltaNewFile = *ast.UnaryExpr</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">fset *token.FileSet
-files *ast.MapType</code></pre>
-         </article>
-         
-         <article class="struct" data-name="anyType">
-            <h2>type anyType struct</h2>
-            <hr />
+            <article class="global" data-name="fakeLines">
+               <h3>
+                  fakeLines 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var fakeLines []int</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code"></code></pre>
-         </article>
-         
-         <article class="struct" data-name="derivedInfo">
-            <h2>type derivedInfo struct</h2>
-            <hr />
+            <article class="global" data-name="fakeLinesOnce">
+               <h3>
+                  fakeLinesOnce 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var fakeLinesOnce sync.Once</code></pre>
+            </article>
             
-            <p>See cmd/compile/internal/noder.derivedInfo.</p>
+            <article class="global" data-name="predeclared">
+               <h3>
+                  predeclared 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var predeclared = []types2.Type{...}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">idx pkgbits.Index
-needed bool</code></pre>
-         </article>
-         
-         <article class="struct" data-name="typeInfo">
-            <h2>type typeInfo struct</h2>
-            <hr />
+         </section>
             
-            <p>See cmd/compile/internal/noder.typeInfo.</p>
+         <section id="structs">
+            <h2>Structs</h2>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">idx pkgbits.Index
-derived bool</code></pre>
-         </article>
-         
-         <article class="struct" data-name="pkgReader">
-            <h2>type pkgReader struct</h2>
-            <hr />
+            <article class="struct" data-name="anyType">
+               <h3>
+                  anyType
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type anyType struct {
+
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">pkgbits.PkgDecoder
+            <article class="struct" data-name="derivedInfo">
+               <h3>
+                  derivedInfo
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>See cmd/compile/internal/noder.derivedInfo.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type derivedInfo struct {
+idx pkgbits.Index
+needed bool
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="fakeFileSet">
+               <h3>
+                  fakeFileSet
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Synthesize a token.Pos</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type fakeFileSet struct {
+fset *token.FileSet
+files map[string]*token.File
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="pkgReader">
+               <h3>
+                  pkgReader
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type pkgReader struct {
+pkgbits.PkgDecoder
 ctxt *types2.Context
-imports *ast.MapType
+imports map[string]*types2.Package
 enableAlias bool
 posBases []*syntax.PosBase
 pkgs []*types2.Package
-typs []types2.Type</code></pre>
-         </article>
-         
-         <article class="struct" data-name="reader">
-            <h2>type reader struct</h2>
-            <hr />
+typs []types2.Type
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">pkgbits.Decoder
+            <article class="struct" data-name="reader">
+               <h3>
+                  reader
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type reader struct {
+pkgbits.Decoder
 p *pkgReader
-dict *readerDict</code></pre>
-         </article>
-         
-         <article class="struct" data-name="readerDict">
-            <h2>type readerDict struct</h2>
-            <hr />
+dict *readerDict
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">bounds []typeInfo
+            <article class="struct" data-name="readerDict">
+               <h3>
+                  readerDict
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type readerDict struct {
+bounds []typeInfo
 tparams []*types2.TypeParam
 derived []derivedInfo
-derivedTypes []types2.Type</code></pre>
-         </article>
-         
-         <article class="struct" data-name="readerTypeBound">
-            <h2>type readerTypeBound struct</h2>
-            <hr />
+derivedTypes []types2.Type
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">derived bool
-boundIdx int</code></pre>
-         </article>
+            <article class="struct" data-name="readerTypeBound">
+               <h3>
+                  readerTypeBound
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type readerTypeBound struct {
+derived bool
+boundIdx int
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="typeInfo">
+               <h3>
+                  typeInfo
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>See cmd/compile/internal/noder.typeInfo.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type typeInfo struct {
+idx pkgbits.Index
+derived bool
+}</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="function" data-name="Import">
-            <h2>Import</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <p>Import imports a gc-generated package given its import path and srcDir, adds
+            <article class="function" data-name="Import">
+               <h3>
+                  Import 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Import imports a gc-generated package given its import path and srcDir, adds
 the corresponding package object to the packages map, and returns the object.
 The packages map must contain all packages already imported.
-
 This function should only be used in tests.</p>
-            
-            <pre><code>func Import(packages *ast.MapType, path string, srcDir string, lookup func) (pkg *types2.Package, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestMain">
-            <h2>TestMain</h2>
-            <hr />
-            
-            <pre><code>func TestMain(m *testing.M)</code></pre>
-         </article>
-         
-         <article class="function" data-name="compile">
-            <h2>compile</h2>
-            <hr />
-            
-            <p>compile runs the compiler on filename, with dirname as the working directory,
-and writes the output file to outdirname.
-compile gives the resulting package a packagepath of testdata/<filebasename>.</p>
-            
-            <pre><code>func compile(t *testing.T, dirname string, filename string, outdirname string, packagefiles *ast.MapType) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="testPath">
-            <h2>testPath</h2>
-            <hr />
-            
-            <pre><code>func testPath(t *testing.T, path string, srcDir string) *types2.Package</code></pre>
-         </article>
-         
-         <article class="function" data-name="mktmpdir">
-            <h2>mktmpdir</h2>
-            <hr />
-            
-            <pre><code>func mktmpdir(t *testing.T) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestImportTestdata">
-            <h2>TestImportTestdata</h2>
-            <hr />
-            
-            <pre><code>func TestImportTestdata(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestVersionHandling">
-            <h2>TestVersionHandling</h2>
-            <hr />
-            
-            <pre><code>func TestVersionHandling(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestImportStdLib">
-            <h2>TestImportStdLib</h2>
-            <hr />
-            
-            <pre><code>func TestImportStdLib(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestImportedTypes">
-            <h2>TestImportedTypes</h2>
-            <hr />
-            
-            <pre><code>func TestImportedTypes(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="verifyInterfaceMethodRecvs">
-            <h2>verifyInterfaceMethodRecvs</h2>
-            <hr />
-            
-            <p>verifyInterfaceMethodRecvs verifies that method receiver types
-are named if the methods belong to a named interface type.</p>
-            
-            <pre><code>func verifyInterfaceMethodRecvs(t *testing.T, named *types2.Named, level int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestIssue5815">
-            <h2>TestIssue5815</h2>
-            <hr />
-            
-            <pre><code>func TestIssue5815(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestCorrectMethodPackage">
-            <h2>TestCorrectMethodPackage</h2>
-            <hr />
-            
-            <p>Smoke test to ensure that imported methods get the correct package.</p>
-            
-            <pre><code>func TestCorrectMethodPackage(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestIssue13566">
-            <h2>TestIssue13566</h2>
-            <hr />
-            
-            <pre><code>func TestIssue13566(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestIssue13898">
-            <h2>TestIssue13898</h2>
-            <hr />
-            
-            <pre><code>func TestIssue13898(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestIssue15517">
-            <h2>TestIssue15517</h2>
-            <hr />
-            
-            <pre><code>func TestIssue15517(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestIssue15920">
-            <h2>TestIssue15920</h2>
-            <hr />
-            
-            <pre><code>func TestIssue15920(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestIssue20046">
-            <h2>TestIssue20046</h2>
-            <hr />
-            
-            <pre><code>func TestIssue20046(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestIssue25301">
-            <h2>TestIssue25301</h2>
-            <hr />
-            
-            <pre><code>func TestIssue25301(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestIssue25596">
-            <h2>TestIssue25596</h2>
-            <hr />
-            
-            <pre><code>func TestIssue25596(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="importPkg">
-            <h2>importPkg</h2>
-            <hr />
-            
-            <pre><code>func importPkg(t *testing.T, path string, srcDir string) *types2.Package</code></pre>
-         </article>
-         
-         <article class="function" data-name="compileAndImportPkg">
-            <h2>compileAndImportPkg</h2>
-            <hr />
-            
-            <pre><code>func compileAndImportPkg(t *testing.T, name string) *types2.Package</code></pre>
-         </article>
-         
-         <article class="function" data-name="lookupObj">
-            <h2>lookupObj</h2>
-            <hr />
-            
-            <pre><code>func lookupObj(t *testing.T, scope *types2.Scope, name string) types2.Object</code></pre>
-         </article>
-         
-         <article class="function" data-name="Import">
-            <h2>Import</h2>
-            <hr />
-            
-            <pre><code>func Import(path string) (*types2.Package, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestIssue69912">
-            <h2>TestIssue69912</h2>
-            <hr />
-            
-            <pre><code>func TestIssue69912(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="assert">
-            <h2>assert</h2>
-            <hr />
-            
-            <pre><code>func assert(p bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="errorf">
-            <h2>errorf</h2>
-            <hr />
-            
-            <pre><code>func errorf(format string, args ...*ast.InterfaceType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="pos">
-            <h2>pos</h2>
-            <hr />
-            
-            <pre><code>func pos(file string, line int, column int) token.Pos</code></pre>
-         </article>
-         
-         <article class="function" data-name="chanDir">
-            <h2>chanDir</h2>
-            <hr />
-            
-            <pre><code>func chanDir(d int) types2.ChanDir</code></pre>
-         </article>
-         
-         <article class="function" data-name="Underlying">
-            <h2>Underlying</h2>
-            <hr />
-            
-            <pre><code>func Underlying() types2.Type</code></pre>
-         </article>
-         
-         <article class="function" data-name="String">
-            <h2>String</h2>
-            <hr />
-            
-            <pre><code>func String() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="ReadPackage">
-            <h2>ReadPackage</h2>
-            <hr />
-            
-            <pre><code>func ReadPackage(ctxt *types2.Context, imports *ast.MapType, input pkgbits.PkgDecoder) *types2.Package</code></pre>
-         </article>
-         
-         <article class="function" data-name="newReader">
-            <h2>newReader</h2>
-            <hr />
-            
-            <pre><code>func newReader(k pkgbits.RelocKind, idx pkgbits.Index, marker pkgbits.SyncMarker) *reader</code></pre>
-         </article>
-         
-         <article class="function" data-name="tempReader">
-            <h2>tempReader</h2>
-            <hr />
-            
-            <pre><code>func tempReader(k pkgbits.RelocKind, idx pkgbits.Index, marker pkgbits.SyncMarker) *reader</code></pre>
-         </article>
-         
-         <article class="function" data-name="retireReader">
-            <h2>retireReader</h2>
-            <hr />
-            
-            <pre><code>func retireReader(r *reader)</code></pre>
-         </article>
-         
-         <article class="function" data-name="pos">
-            <h2>pos</h2>
-            <hr />
-            
-            <pre><code>func pos() syntax.Pos</code></pre>
-         </article>
-         
-         <article class="function" data-name="posBase">
-            <h2>posBase</h2>
-            <hr />
-            
-            <pre><code>func posBase() *syntax.PosBase</code></pre>
-         </article>
-         
-         <article class="function" data-name="posBaseIdx">
-            <h2>posBaseIdx</h2>
-            <hr />
-            
-            <pre><code>func posBaseIdx(idx pkgbits.Index) *syntax.PosBase</code></pre>
-         </article>
-         
-         <article class="function" data-name="pkg">
-            <h2>pkg</h2>
-            <hr />
-            
-            <pre><code>func pkg() *types2.Package</code></pre>
-         </article>
-         
-         <article class="function" data-name="pkgIdx">
-            <h2>pkgIdx</h2>
-            <hr />
-            
-            <pre><code>func pkgIdx(idx pkgbits.Index) *types2.Package</code></pre>
-         </article>
-         
-         <article class="function" data-name="doPkg">
-            <h2>doPkg</h2>
-            <hr />
-            
-            <pre><code>func doPkg() *types2.Package</code></pre>
-         </article>
-         
-         <article class="function" data-name="typ">
-            <h2>typ</h2>
-            <hr />
-            
-            <pre><code>func typ() types2.Type</code></pre>
-         </article>
-         
-         <article class="function" data-name="typInfo">
-            <h2>typInfo</h2>
-            <hr />
-            
-            <pre><code>func typInfo() typeInfo</code></pre>
-         </article>
-         
-         <article class="function" data-name="typIdx">
-            <h2>typIdx</h2>
-            <hr />
-            
-            <pre><code>func typIdx(info typeInfo, dict *readerDict) types2.Type</code></pre>
-         </article>
-         
-         <article class="function" data-name="doTyp">
-            <h2>doTyp</h2>
-            <hr />
-            
-            <pre><code>func doTyp() res types2.Type</code></pre>
-         </article>
-         
-         <article class="function" data-name="structType">
-            <h2>structType</h2>
-            <hr />
-            
-            <pre><code>func structType() *types2.Struct</code></pre>
-         </article>
-         
-         <article class="function" data-name="unionType">
-            <h2>unionType</h2>
-            <hr />
-            
-            <pre><code>func unionType() *types2.Union</code></pre>
-         </article>
-         
-         <article class="function" data-name="interfaceType">
-            <h2>interfaceType</h2>
-            <hr />
-            
-            <pre><code>func interfaceType() *types2.Interface</code></pre>
-         </article>
-         
-         <article class="function" data-name="signature">
-            <h2>signature</h2>
-            <hr />
-            
-            <pre><code>func signature(recv *types2.Var, rtparams []*types2.TypeParam, tparams []*types2.TypeParam) *types2.Signature</code></pre>
-         </article>
-         
-         <article class="function" data-name="params">
-            <h2>params</h2>
-            <hr />
-            
-            <pre><code>func params() *types2.Tuple</code></pre>
-         </article>
-         
-         <article class="function" data-name="param">
-            <h2>param</h2>
-            <hr />
-            
-            <pre><code>func param() *types2.Var</code></pre>
-         </article>
-         
-         <article class="function" data-name="obj">
-            <h2>obj</h2>
-            <hr />
-            
-            <pre><code>func obj() (types2.Object, []types2.Type)</code></pre>
-         </article>
-         
-         <article class="function" data-name="objIdx">
-            <h2>objIdx</h2>
-            <hr />
-            
-            <pre><code>func objIdx(idx pkgbits.Index) (*types2.Package, string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="objDictIdx">
-            <h2>objDictIdx</h2>
-            <hr />
-            
-            <pre><code>func objDictIdx(idx pkgbits.Index) *readerDict</code></pre>
-         </article>
-         
-         <article class="function" data-name="typeParamNames">
-            <h2>typeParamNames</h2>
-            <hr />
-            
-            <pre><code>func typeParamNames() []*types2.TypeParam</code></pre>
-         </article>
-         
-         <article class="function" data-name="method">
-            <h2>method</h2>
-            <hr />
-            
-            <pre><code>func method() *types2.Func</code></pre>
-         </article>
-         
-         <article class="function" data-name="qualifiedIdent">
-            <h2>qualifiedIdent</h2>
-            <hr />
-            
-            <pre><code>func qualifiedIdent() (*types2.Package, string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="localIdent">
-            <h2>localIdent</h2>
-            <hr />
-            
-            <pre><code>func localIdent() (*types2.Package, string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="selector">
-            <h2>selector</h2>
-            <hr />
-            
-            <pre><code>func selector() (*types2.Package, string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="ident">
-            <h2>ident</h2>
-            <hr />
-            
-            <pre><code>func ident(marker pkgbits.SyncMarker) (*types2.Package, string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="newAliasTypeName">
-            <h2>newAliasTypeName</h2>
-            <hr />
-            
-            <p>newAliasTypeName returns a new TypeName, with a materialized *types2.Alias if supported.</p>
-            
-            <pre><code>func newAliasTypeName(aliases bool, pos syntax.Pos, pkg *types2.Package, name string, rhs types2.Type, tparams []*types2.TypeParam) *types2.TypeName</code></pre>
-         </article>
+               
+               <pre><code>func Import(packages map[string]*types2.Package, path string, srcDir string, lookup func(path string) (io.ReadCloser, error)) (pkg *types2.Package, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="ReadPackage">
+               <h3>
+                  ReadPackage 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func ReadPackage(ctxt *types2.Context, imports map[string]*types2.Package, input pkgbits.PkgDecoder) *types2.Package</code></pre>
+            </article>
+            
+            <article class="function" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (t anyType) String() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="Underlying">
+               <h3>
+                  Underlying 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (t anyType) Underlying() types2.Type</code></pre>
+            </article>
+            
+            <article class="function" data-name="assert">
+               <h3>
+                  assert 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func assert(p bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="chanDir">
+               <h3>
+                  chanDir 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func chanDir(d int) types2.ChanDir</code></pre>
+            </article>
+            
+            <article class="function" data-name="doPkg">
+               <h3>
+                  doPkg 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *reader) doPkg() *types2.Package</code></pre>
+            </article>
+            
+            <article class="function" data-name="doTyp">
+               <h3>
+                  doTyp 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *reader) doTyp() (res types2.Type)</code></pre>
+            </article>
+            
+            <article class="function" data-name="errorf">
+               <h3>
+                  errorf 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func errorf(format string, args ...interface{})</code></pre>
+            </article>
+            
+            <article class="function" data-name="ident">
+               <h3>
+                  ident 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *reader) ident(marker pkgbits.SyncMarker) (*types2.Package, string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="interfaceType">
+               <h3>
+                  interfaceType 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *reader) interfaceType() *types2.Interface</code></pre>
+            </article>
+            
+            <article class="function" data-name="localIdent">
+               <h3>
+                  localIdent 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *reader) localIdent() (*types2.Package, string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="method">
+               <h3>
+                  method 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *reader) method() *types2.Func</code></pre>
+            </article>
+            
+            <article class="function" data-name="newAliasTypeName">
+               <h3>
+                  newAliasTypeName 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>newAliasTypeName returns a new TypeName, with a materialized *types2.Alias if supported.</p>
+               
+               <pre><code>func newAliasTypeName(aliases bool, pos syntax.Pos, pkg *types2.Package, name string, rhs types2.Type, tparams []*types2.TypeParam) *types2.TypeName</code></pre>
+            </article>
+            
+            <article class="function" data-name="newReader">
+               <h3>
+                  newReader 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (pr *pkgReader) newReader(k pkgbits.RelocKind, idx pkgbits.Index, marker pkgbits.SyncMarker) *reader</code></pre>
+            </article>
+            
+            <article class="function" data-name="obj">
+               <h3>
+                  obj 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *reader) obj() (types2.Object, []types2.Type)</code></pre>
+            </article>
+            
+            <article class="function" data-name="objDictIdx">
+               <h3>
+                  objDictIdx 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (pr *pkgReader) objDictIdx(idx pkgbits.Index) *readerDict</code></pre>
+            </article>
+            
+            <article class="function" data-name="objIdx">
+               <h3>
+                  objIdx 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (pr *pkgReader) objIdx(idx pkgbits.Index) (*types2.Package, string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="param">
+               <h3>
+                  param 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *reader) param() *types2.Var</code></pre>
+            </article>
+            
+            <article class="function" data-name="params">
+               <h3>
+                  params 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *reader) params() *types2.Tuple</code></pre>
+            </article>
+            
+            <article class="function" data-name="pkg">
+               <h3>
+                  pkg 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *reader) pkg() *types2.Package</code></pre>
+            </article>
+            
+            <article class="function" data-name="pkgIdx">
+               <h3>
+                  pkgIdx 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (pr *pkgReader) pkgIdx(idx pkgbits.Index) *types2.Package</code></pre>
+            </article>
+            
+            <article class="function" data-name="pos">
+               <h3>
+                  pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *reader) pos() syntax.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="pos">
+               <h3>
+                  pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *fakeFileSet) pos(file string, line int, column int) token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="posBase">
+               <h3>
+                  posBase 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *reader) posBase() *syntax.PosBase</code></pre>
+            </article>
+            
+            <article class="function" data-name="posBaseIdx">
+               <h3>
+                  posBaseIdx 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (pr *pkgReader) posBaseIdx(idx pkgbits.Index) *syntax.PosBase</code></pre>
+            </article>
+            
+            <article class="function" data-name="qualifiedIdent">
+               <h3>
+                  qualifiedIdent 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *reader) qualifiedIdent() (*types2.Package, string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="retireReader">
+               <h3>
+                  retireReader 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (pr *pkgReader) retireReader(r *reader)</code></pre>
+            </article>
+            
+            <article class="function" data-name="selector">
+               <h3>
+                  selector 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *reader) selector() (*types2.Package, string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="signature">
+               <h3>
+                  signature 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *reader) signature(recv *types2.Var, rtparams []*types2.TypeParam, tparams []*types2.TypeParam) *types2.Signature</code></pre>
+            </article>
+            
+            <article class="function" data-name="structType">
+               <h3>
+                  structType 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *reader) structType() *types2.Struct</code></pre>
+            </article>
+            
+            <article class="function" data-name="tempReader">
+               <h3>
+                  tempReader 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (pr *pkgReader) tempReader(k pkgbits.RelocKind, idx pkgbits.Index, marker pkgbits.SyncMarker) *reader</code></pre>
+            </article>
+            
+            <article class="function" data-name="typ">
+               <h3>
+                  typ 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *reader) typ() types2.Type</code></pre>
+            </article>
+            
+            <article class="function" data-name="typIdx">
+               <h3>
+                  typIdx 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (pr *pkgReader) typIdx(info typeInfo, dict *readerDict) types2.Type</code></pre>
+            </article>
+            
+            <article class="function" data-name="typInfo">
+               <h3>
+                  typInfo 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *reader) typInfo() typeInfo</code></pre>
+            </article>
+            
+            <article class="function" data-name="typeParamNames">
+               <h3>
+                  typeParamNames 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *reader) typeParamNames() []*types2.TypeParam</code></pre>
+            </article>
+            
+            <article class="function" data-name="unionType">
+               <h3>
+                  unionType 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *reader) unionType() *types2.Union</code></pre>
+            </article>
+            
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -717,59 +1040,170 @@ are named if the methods belong to a named interface type.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

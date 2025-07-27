@@ -13,266 +13,632 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                  
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
-      <main>
-         <h1>
-            Package
-            <code>chacha20</code>
-         </h1>
-         <hr />
-         
-         <article class="global" data-name="KeySize">
-            <h2>KeySize</h2>
-            <hr />
-            
-            <p>KeySize is the size of the key used by this cipher, in bytes.</p>
-            
-            <pre><code>KeySize</code></pre>
-         </article>
-         
-         <article class="global" data-name="NonceSize">
-            <h2>NonceSize</h2>
-            <hr />
-            
-            <p>NonceSize is the size of the nonce used with the standard variant of this
-cipher, in bytes.
 
+      <main>
+         <h1>chacha20</h1>
+         <div class="section-divider"></div>
+
+         
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"crypto/cipher"
+"encoding/binary"
+"errors"
+"math/bits"
+"golang.org/x/crypto/internal/alias"
+"golang.org/x/sys/cpu"
+"runtime"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
+            
+            <article class="global" data-name="KeySize">
+               <h3>
+                  KeySize 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>KeySize is the size of the key used by this cipher, in bytes.</p>
+               
+               <pre><code>const KeySize = 32</code></pre>
+            </article>
+            
+            <article class="global" data-name="NonceSize">
+               <h3>
+                  NonceSize 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>NonceSize is the size of the nonce used with the standard variant of this
+cipher, in bytes.
 Note that this is too short to be safely generated at random if the same
 key is reused more than 2³² times.</p>
+               
+               <pre><code>const NonceSize = 12</code></pre>
+            </article>
             
-            <pre><code>NonceSize</code></pre>
-         </article>
-         
-         <article class="global" data-name="NonceSizeX">
-            <h2>NonceSizeX</h2>
-            <hr />
-            
-            <p>NonceSizeX is the size of the nonce used with the XChaCha20 variant of
+            <article class="global" data-name="NonceSizeX">
+               <h3>
+                  NonceSizeX 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>NonceSizeX is the size of the nonce used with the XChaCha20 variant of
 this cipher, in bytes.</p>
+               
+               <pre><code>const NonceSizeX = 24</code></pre>
+            </article>
             
-            <pre><code>NonceSizeX</code></pre>
-         </article>
-         
-         <article class="global" data-name="_">
-            <h2>_</h2>
-            <hr />
+            <article class="global" data-name="_">
+               <h3>
+                  _ 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var _ cipher.Stream = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre><code>_ cipher.Stream</code></pre>
-         </article>
-         
-         <article class="global" data-name="j0">
-            <h2>j0</h2>
-            <hr />
+            <article class="global" data-name="blockSize">
+               <h3>
+                  blockSize 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const blockSize = 64</code></pre>
+            </article>
             
-            <p>The constant first 4 words of the ChaCha20 state.</p>
+            <article class="global" data-name="bufSize">
+               <h3>
+                  bufSize 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const bufSize = 256</code></pre>
+            </article>
             
-            <pre><code>j0 uint32</code></pre>
-         </article>
-         
-         <article class="global" data-name="j1">
-            <h2>j1</h2>
-            <hr />
+            <article class="global" data-name="bufSize">
+               <h3>
+                  bufSize 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const bufSize = blockSize</code></pre>
+            </article>
             
-            <p>The constant first 4 words of the ChaCha20 state.</p>
+            <article class="global" data-name="bufSize">
+               <h3>
+                  bufSize 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const bufSize = 256</code></pre>
+            </article>
             
-            <pre><code>j1 uint32</code></pre>
-         </article>
-         
-         <article class="global" data-name="j2">
-            <h2>j2</h2>
-            <hr />
+            <article class="global" data-name="bufSize">
+               <h3>
+                  bufSize 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const bufSize = 256</code></pre>
+            </article>
             
-            <p>The constant first 4 words of the ChaCha20 state.</p>
+            <article class="global" data-name="haveAsm">
+               <h3>
+                  haveAsm 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var haveAsm = cpu.S390X.HasVX</code></pre>
+            </article>
             
-            <pre><code>j2 uint32</code></pre>
-         </article>
-         
-         <article class="global" data-name="j3">
-            <h2>j3</h2>
-            <hr />
+            <article class="global" data-name="j0">
+               <h3>
+                  j0 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>The constant first 4 words of the ChaCha20 state.</p>
+               
+               <pre><code>const j0 uint32 = 0x61707865</code></pre>
+            </article>
             
-            <p>The constant first 4 words of the ChaCha20 state.</p>
+            <article class="global" data-name="j1">
+               <h3>
+                  j1 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>The constant first 4 words of the ChaCha20 state.</p>
+               
+               <pre><code>const j1 uint32 = 0x3320646e</code></pre>
+            </article>
             
-            <pre><code>j3 uint32</code></pre>
-         </article>
-         
-         <article class="global" data-name="blockSize">
-            <h2>blockSize</h2>
-            <hr />
+            <article class="global" data-name="j2">
+               <h3>
+                  j2 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>The constant first 4 words of the ChaCha20 state.</p>
+               
+               <pre><code>const j2 uint32 = 0x79622d32</code></pre>
+            </article>
             
-            <pre><code>blockSize</code></pre>
-         </article>
-         
-         <article class="global" data-name="bufSize">
-            <h2>bufSize</h2>
-            <hr />
+            <article class="global" data-name="j3">
+               <h3>
+                  j3 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>The constant first 4 words of the ChaCha20 state.</p>
+               
+               <pre><code>const j3 uint32 = 0x6b206574</code></pre>
+            </article>
             
-            <pre><code>bufSize</code></pre>
-         </article>
-         
-         <article class="global" data-name="bufSize">
-            <h2>bufSize</h2>
-            <hr />
+            <article class="global" data-name="unaligned">
+               <h3>
+                  unaligned 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>Platforms that have fast unaligned 32-bit little endian accesses.</p>
+               
+               <pre><code>const unaligned = *ast.BinaryExpr</code></pre>
+            </article>
             
-            <pre><code>bufSize</code></pre>
-         </article>
-         
-         <article class="global" data-name="haveAsm">
-            <h2>haveAsm</h2>
-            <hr />
+         </section>
             
-            <pre><code>haveAsm</code></pre>
-         </article>
-         
-         <article class="global" data-name="bufSize">
-            <h2>bufSize</h2>
-            <hr />
+         <section id="structs">
+            <h2>Structs</h2>
             
-            <pre><code>bufSize</code></pre>
-         </article>
-         
-         <article class="global" data-name="unaligned">
-            <h2>unaligned</h2>
-            <hr />
-            
-            <p>Platforms that have fast unaligned 32-bit little endian accesses.</p>
-            
-            <pre><code>unaligned</code></pre>
-         </article>
-         
-         <article class="global" data-name="bufSize">
-            <h2>bufSize</h2>
-            <hr />
-            
-            <pre><code>bufSize</code></pre>
-         </article>
-          
-         <article class="struct" data-name="Cipher">
-            <h2>type Cipher struct</h2>
-            <hr />
-            
-            <p>Cipher is a stateful instance of ChaCha20 or XChaCha20 using a particular key
+            <article class="struct" data-name="Cipher">
+               <h3>
+                  Cipher
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Cipher is a stateful instance of ChaCha20 or XChaCha20 using a particular key
 and nonce. A *Cipher implements the cipher.Stream interface.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">key []uint32
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Cipher struct {
+key [8]uint32
 counter uint32
-nonce []uint32
-buf []byte
+nonce [3]uint32
+buf [bufSize]byte
 len int
 overflow bool
 precompDone bool
@@ -287,177 +653,241 @@ p14 uint32
 p3 uint32
 p7 uint32
 p11 uint32
-p15 uint32</code></pre>
-         </article>
-          
-         <article class="function" data-name="NewUnauthenticatedCipher">
-            <h2>NewUnauthenticatedCipher</h2>
-            <hr />
+p15 uint32
+}</code></pre>
+            </article>
             
-            <p>NewUnauthenticatedCipher creates a new ChaCha20 stream cipher with the given
+         </section>
+          
+         <section id="functions">
+            <h2>Functions</h2>
+            
+            <article class="function" data-name="HChaCha20">
+               <h3>
+                  HChaCha20 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>HChaCha20 uses the ChaCha20 core to generate a derived key from a 32 bytes
+key and a 16 bytes nonce. It returns an error if key or nonce have any other
+length. It is used as part of the XChaCha20 construction.</p>
+               
+               <pre><code>func HChaCha20(key []byte, nonce []byte) ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="NewUnauthenticatedCipher">
+               <h3>
+                  NewUnauthenticatedCipher 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewUnauthenticatedCipher creates a new ChaCha20 stream cipher with the given
 32 bytes key and a 12 or 24 bytes nonce. If a nonce of 24 bytes is provided,
 the XChaCha20 construction will be used. It returns an error if key or nonce
 have any other length.
-
 Note that ChaCha20, like all stream ciphers, is not authenticated and allows
 attackers to silently tamper with the plaintext. For this reason, it is more
 appropriate as a building block than as a standalone encryption mechanism.
 Instead, consider using package golang.org/x/crypto/chacha20poly1305.</p>
+               
+               <pre><code>func NewUnauthenticatedCipher(key []byte, nonce []byte) (*Cipher, error)</code></pre>
+            </article>
             
-            <pre><code>func NewUnauthenticatedCipher(key []byte, nonce []byte) (*Cipher, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="newUnauthenticatedCipher">
-            <h2>newUnauthenticatedCipher</h2>
-            <hr />
-            
-            <pre><code>func newUnauthenticatedCipher(c *Cipher, key []byte, nonce []byte) (*Cipher, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="quarterRound">
-            <h2>quarterRound</h2>
-            <hr />
-            
-            <p>quarterRound is the core of ChaCha20. It shuffles the bits of 4 state words.
-It's executed 4 times for each of the 20 ChaCha20 rounds, operating on all 16
-words each round, in columnar or diagonal groups of 4 at a time.</p>
-            
-            <pre><code>func quarterRound(a uint32, b uint32, c uint32, d uint32) (uint32, uint32, uint32, uint32)</code></pre>
-         </article>
-         
-         <article class="function" data-name="SetCounter">
-            <h2>SetCounter</h2>
-            <hr />
-            
-            <p>SetCounter sets the Cipher counter. The next invocation of XORKeyStream will
+            <article class="function" data-name="SetCounter">
+               <h3>
+                  SetCounter 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>SetCounter sets the Cipher counter. The next invocation of XORKeyStream will
 behave as if (64 * counter) bytes had been encrypted so far.
-
 To prevent accidental counter reuse, SetCounter panics if counter is less
 than the current value.
-
 Note that the execution time of XORKeyStream is not independent of the
 counter value.</p>
+               
+               <pre><code>func (s *Cipher) SetCounter(counter uint32)</code></pre>
+            </article>
             
-            <pre><code>func SetCounter(counter uint32)</code></pre>
-         </article>
-         
-         <article class="function" data-name="XORKeyStream">
-            <h2>XORKeyStream</h2>
-            <hr />
-            
-            <p>XORKeyStream XORs each byte in the given slice with a byte from the
+            <article class="function" data-name="XORKeyStream">
+               <h3>
+                  XORKeyStream 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>XORKeyStream XORs each byte in the given slice with a byte from the
 cipher's key stream. Dst and src must overlap entirely or not at all.
-
 If len(dst) < len(src), XORKeyStream will panic. It is acceptable
 to pass a dst bigger than src, and in that case, XORKeyStream will
 only update dst[:len(src)] and will not touch the rest of dst.
-
 Multiple calls to XORKeyStream behave as if the concatenation of
 the src buffers was passed in a single run. That is, Cipher
 maintains state and does not reset at each XORKeyStream call.</p>
+               
+               <pre><code>func (s *Cipher) XORKeyStream(dst []byte, src []byte)</code></pre>
+            </article>
             
-            <pre><code>func XORKeyStream(dst []byte, src []byte)</code></pre>
-         </article>
-         
-         <article class="function" data-name="xorKeyStreamBlocksGeneric">
-            <h2>xorKeyStreamBlocksGeneric</h2>
-            <hr />
-            
-            <pre><code>func xorKeyStreamBlocksGeneric(dst []byte, src []byte)</code></pre>
-         </article>
-         
-         <article class="function" data-name="HChaCha20">
-            <h2>HChaCha20</h2>
-            <hr />
-            
-            <p>HChaCha20 uses the ChaCha20 core to generate a derived key from a 32 bytes
-key and a 16 bytes nonce. It returns an error if key or nonce have any other
-length. It is used as part of the XChaCha20 construction.</p>
-            
-            <pre><code>func HChaCha20(key []byte, nonce []byte) ([]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="hChaCha20">
-            <h2>hChaCha20</h2>
-            <hr />
-            
-            <pre><code>func hChaCha20(out []byte, key []byte, nonce []byte) ([]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="xorKeyStreamBlocks">
-            <h2>xorKeyStreamBlocks</h2>
-            <hr />
-            
-            <pre><code>func xorKeyStreamBlocks(dst []byte, src []byte)</code></pre>
-         </article>
-         
-         <article class="function" data-name="chaCha20_ctr32_vsx">
-            <h2>chaCha20_ctr32_vsx</h2>
-            <hr />
-            
-            <pre><code>func chaCha20_ctr32_vsx(out *byte, inp *byte, len int, key *[]uint32, counter *uint32)</code></pre>
-         </article>
-         
-         <article class="function" data-name="xorKeyStreamBlocks">
-            <h2>xorKeyStreamBlocks</h2>
-            <hr />
-            
-            <pre><code>func xorKeyStreamBlocks(dst []byte, src []byte)</code></pre>
-         </article>
-         
-         <article class="function" data-name="xorKeyStreamVX">
-            <h2>xorKeyStreamVX</h2>
-            <hr />
-            
-            <p>xorKeyStreamVX is an assembly implementation of XORKeyStream. It must only
-be called when the vector facility is available. Implementation in asm_s390x.s.</p>
-            
-            <pre><code>func xorKeyStreamVX(dst []byte, src []byte, key *[]uint32, nonce *[]uint32, counter *uint32)</code></pre>
-         </article>
-         
-         <article class="function" data-name="xorKeyStreamBlocks">
-            <h2>xorKeyStreamBlocks</h2>
-            <hr />
-            
-            <pre><code>func xorKeyStreamBlocks(dst []byte, src []byte)</code></pre>
-         </article>
-         
-         <article class="function" data-name="addXor">
-            <h2>addXor</h2>
-            <hr />
-            
-            <p>addXor reads a little endian uint32 from src, XORs it with (a + b) and
+            <article class="function" data-name="addXor">
+               <h3>
+                  addXor 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>addXor reads a little endian uint32 from src, XORs it with (a + b) and
 places the result in little endian byte order in dst.</p>
+               
+               <pre><code>func addXor(dst []byte, src []byte, a uint32, b uint32)</code></pre>
+            </article>
             
-            <pre><code>func addXor(dst []byte, src []byte, a uint32, b uint32)</code></pre>
-         </article>
-         
-         <article class="function" data-name="xorKeyStreamVX">
-            <h2>xorKeyStreamVX</h2>
-            <hr />
+            <article class="function" data-name="chaCha20_ctr32_vsx">
+               <h3>
+                  chaCha20_ctr32_vsx 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>go:noescape</p>
+               
+               <pre><code>func chaCha20_ctr32_vsx(out *byte, inp *byte, len int, key *[8]uint32, counter *uint32)</code></pre>
+            </article>
             
-            <pre><code>func xorKeyStreamVX(dst []byte, src []byte, key *[]uint32, nonce *[]uint32, counter *uint32)</code></pre>
-         </article>
-         
-         <article class="function" data-name="xorKeyStreamBlocks">
-            <h2>xorKeyStreamBlocks</h2>
-            <hr />
+            <article class="function" data-name="hChaCha20">
+               <h3>
+                  hChaCha20 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func hChaCha20(out []byte, key []byte, nonce []byte) ([]byte, error)</code></pre>
+            </article>
             
-            <pre><code>func xorKeyStreamBlocks(dst []byte, src []byte)</code></pre>
-         </article>
+            <article class="function" data-name="newUnauthenticatedCipher">
+               <h3>
+                  newUnauthenticatedCipher 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func newUnauthenticatedCipher(c *Cipher, key []byte, nonce []byte) (*Cipher, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="quarterRound">
+               <h3>
+                  quarterRound 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>quarterRound is the core of ChaCha20. It shuffles the bits of 4 state words.
+It's executed 4 times for each of the 20 ChaCha20 rounds, operating on all 16
+words each round, in columnar or diagonal groups of 4 at a time.</p>
+               
+               <pre><code>func quarterRound(a uint32, b uint32, c uint32, d uint32) (uint32, uint32, uint32, uint32)</code></pre>
+            </article>
+            
+            <article class="function" data-name="xorKeyStreamBlocks">
+               <h3>
+                  xorKeyStreamBlocks 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *Cipher) xorKeyStreamBlocks(dst []byte, src []byte)</code></pre>
+            </article>
+            
+            <article class="function" data-name="xorKeyStreamBlocks">
+               <h3>
+                  xorKeyStreamBlocks 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *Cipher) xorKeyStreamBlocks(dst []byte, src []byte)</code></pre>
+            </article>
+            
+            <article class="function" data-name="xorKeyStreamBlocks">
+               <h3>
+                  xorKeyStreamBlocks 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *Cipher) xorKeyStreamBlocks(dst []byte, src []byte)</code></pre>
+            </article>
+            
+            <article class="function" data-name="xorKeyStreamBlocks">
+               <h3>
+                  xorKeyStreamBlocks 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *Cipher) xorKeyStreamBlocks(dst []byte, src []byte)</code></pre>
+            </article>
+            
+            <article class="function" data-name="xorKeyStreamBlocksGeneric">
+               <h3>
+                  xorKeyStreamBlocksGeneric 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *Cipher) xorKeyStreamBlocksGeneric(dst []byte, src []byte)</code></pre>
+            </article>
+            
+            <article class="function" data-name="xorKeyStreamVX">
+               <h3>
+                  xorKeyStreamVX 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>go:noescape</p>
+               
+               <pre><code>func xorKeyStreamVX(dst []byte, src []byte, key *[8]uint32, nonce *[3]uint32, counter *uint32)</code></pre>
+            </article>
+            
+            <article class="function" data-name="xorKeyStreamVX">
+               <h3>
+                  xorKeyStreamVX 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>xorKeyStreamVX is an assembly implementation of XORKeyStream. It must only
+be called when the vector facility is available. Implementation in asm_s390x.s.
+go:noescape</p>
+               
+               <pre><code>func xorKeyStreamVX(dst []byte, src []byte, key *[8]uint32, nonce *[3]uint32, counter *uint32)</code></pre>
+            </article>
+            
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -465,59 +895,170 @@ places the result in little endian byte order in dst.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

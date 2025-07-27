@@ -13,305 +13,633 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                  
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>buildid</code>
-         </h1>
-         <hr />
+         <h1>buildid</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="errBuildIDMalformed">
-            <h2>errBuildIDMalformed</h2>
-            <hr />
-            
-            <pre><code>errBuildIDMalformed</code></pre>
-         </article>
-         
-         <article class="global" data-name="bangArch">
-            <h2>bangArch</h2>
-            <hr />
-            
-            <pre><code>bangArch</code></pre>
-         </article>
-         
-         <article class="global" data-name="pkgdef">
-            <h2>pkgdef</h2>
-            <hr />
-            
-            <pre><code>pkgdef</code></pre>
-         </article>
-         
-         <article class="global" data-name="goobject">
-            <h2>goobject</h2>
-            <hr />
-            
-            <pre><code>goobject</code></pre>
-         </article>
-         
-         <article class="global" data-name="buildid">
-            <h2>buildid</h2>
-            <hr />
-            
-            <pre><code>buildid</code></pre>
-         </article>
-         
-         <article class="global" data-name="goBuildPrefix">
-            <h2>goBuildPrefix</h2>
-            <hr />
-            
-            <pre><code>goBuildPrefix</code></pre>
-         </article>
-         
-         <article class="global" data-name="goBuildEnd">
-            <h2>goBuildEnd</h2>
-            <hr />
-            
-            <pre><code>goBuildEnd</code></pre>
-         </article>
-         
-         <article class="global" data-name="elfPrefix">
-            <h2>elfPrefix</h2>
-            <hr />
-            
-            <pre><code>elfPrefix</code></pre>
-         </article>
-         
-         <article class="global" data-name="machoPrefixes">
-            <h2>machoPrefixes</h2>
-            <hr />
-            
-            <pre><code>machoPrefixes</code></pre>
-         </article>
-         
-         <article class="global" data-name="readSize">
-            <h2>readSize</h2>
-            <hr />
-            
-            <pre><code>readSize</code></pre>
-         </article>
-         
-         <article class="global" data-name="expectedID">
-            <h2>expectedID</h2>
-            <hr />
-            
-            <pre><code>expectedID</code></pre>
-         </article>
-         
-         <article class="global" data-name="newID">
-            <h2>newID</h2>
-            <hr />
-            
-            <pre><code>newID</code></pre>
-         </article>
-         
-         <article class="global" data-name="elfGoNote">
-            <h2>elfGoNote</h2>
-            <hr />
-            
-            <pre><code>elfGoNote</code></pre>
-         </article>
-         
-         <article class="global" data-name="elfGNUNote">
-            <h2>elfGNUNote</h2>
-            <hr />
-            
-            <pre><code>elfGNUNote</code></pre>
-         </article>
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"bytes"
+"debug/elf"
+"fmt"
+"internal/xcoff"
+"io"
+"io/fs"
+"os"
+"strconv"
+"strings"
+"bytes"
+"debug/elf"
+"debug/macho"
+"encoding/binary"
+"fmt"
+"io"
+"io/fs"
+"os"
+"bytes"
+"cmd/internal/codesign"
+imacho "cmd/internal/macho"
+"crypto/sha256"
+"debug/elf"
+"debug/macho"
+"fmt"
+"io"
+</code></pre>
+            </article>
+         </section>
           
-         <article class="struct" data-name="excludedReader">
-            <h2>type excludedReader struct</h2>
-            <hr />
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <p>excludedReader wraps an io.Reader. Reading from it returns the bytes from
+            <article class="global" data-name="bangArch">
+               <h3>
+                  bangArch 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var bangArch = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="buildid">
+               <h3>
+                  buildid 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var buildid = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="elfGNUNote">
+               <h3>
+                  elfGNUNote 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var elfGNUNote = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="elfGoNote">
+               <h3>
+                  elfGoNote 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var elfGoNote = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="elfPrefix">
+               <h3>
+                  elfPrefix 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var elfPrefix = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="errBuildIDMalformed">
+               <h3>
+                  errBuildIDMalformed 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var errBuildIDMalformed = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="goBuildEnd">
+               <h3>
+                  goBuildEnd 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var goBuildEnd = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="goBuildPrefix">
+               <h3>
+                  goBuildPrefix 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var goBuildPrefix = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="goobject">
+               <h3>
+                  goobject 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var goobject = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="machoPrefixes">
+               <h3>
+                  machoPrefixes 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var machoPrefixes = [][]byte{...}</code></pre>
+            </article>
+            
+            <article class="global" data-name="pkgdef">
+               <h3>
+                  pkgdef 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var pkgdef = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="readSize">
+               <h3>
+                  readSize 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var readSize = *ast.BinaryExpr</code></pre>
+            </article>
+            
+         </section>
+            
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="excludedReader">
+               <h3>
+                  excludedReader
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>excludedReader wraps an io.Reader. Reading from it returns the bytes from
 the underlying reader, except that when the byte offset is within the
 range between start and end, it returns zero bytes.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">r io.Reader
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type excludedReader struct {
+r io.Reader
 off int64
 start int64
-end int64</code></pre>
-         </article>
+end int64
+}</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="function" data-name="ReadFile">
-            <h2>ReadFile</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <p>ReadFile reads the build ID from an archive or executable file.</p>
+            <article class="function" data-name="FindAndHash">
+               <h3>
+                  FindAndHash 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>FindAndHash reads all of r and returns the offsets of occurrences of id.
+While reading, findAndHash also computes and returns
+a hash of the content of r, but with occurrences of id replaced by zeros.
+FindAndHash reads bufSize bytes from r at a time.
+If bufSize == 0, FindAndHash uses a reasonable default.</p>
+               
+               <pre><code>func FindAndHash(r io.Reader, id string, bufSize int) (matches []int64, hash [32]byte, err error)</code></pre>
+            </article>
             
-            <pre><code>func ReadFile(name string) (id string, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="readGccgoArchive">
-            <h2>readGccgoArchive</h2>
-            <hr />
-            
-            <p>readGccgoArchive tries to parse the archive as a standard Unix
-archive file, and fetch the build ID from the _buildid.o entry.
-The _buildid.o entry is written by (*Builder).gccgoBuildIDELFFile
-in cmd/go/internal/work/exec.go.</p>
-            
-            <pre><code>func readGccgoArchive(name string, f *os.File) (string, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="readGccgoBigArchive">
-            <h2>readGccgoBigArchive</h2>
-            <hr />
-            
-            <p>readGccgoBigArchive tries to parse the archive as an AIX big
-archive file, and fetch the build ID from the _buildid.o entry.
-The _buildid.o entry is written by (*Builder).gccgoBuildIDXCOFFFile
-in cmd/go/internal/work/exec.go.</p>
-            
-            <pre><code>func readGccgoBigArchive(name string, f *os.File) (string, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="readBinary">
-            <h2>readBinary</h2>
-            <hr />
-            
-            <p>readBinary reads the build ID from a binary.
-
-ELF binaries store the build ID in a proper PT_NOTE section.
-
-Other binary formats are not so flexible. For those, the linker
-stores the build ID as non-instruction bytes at the very beginning
-of the text segment, which should appear near the beginning
-of the file. This is clumsy but fairly portable. Custom locations
-can be added for other binary types as needed, like we did for ELF.</p>
-            
-            <pre><code>func readBinary(name string, f *os.File) (id string, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="readRaw">
-            <h2>readRaw</h2>
-            <hr />
-            
-            <p>readRaw finds the raw build ID stored in text segment data.</p>
-            
-            <pre><code>func readRaw(name string, data []byte) (id string, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="HashToString">
-            <h2>HashToString</h2>
-            <hr />
-            
-            <p>HashToString converts the hash h to a string to be recorded
+            <article class="function" data-name="HashToString">
+               <h3>
+                  HashToString 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>HashToString converts the hash h to a string to be recorded
 in package archives and binaries as part of the build ID.
 We use the first 120 bits of the hash (5 chunks of 24 bits each) and encode
 it in base64, resulting in a 20-byte string. Because this is only used for
@@ -322,142 +650,213 @@ We embed two different hashes in archives and four in binaries,
 so cutting to 20 bytes is a significant savings when build IDs are displayed.
 (20*4+3 = 83 bytes compared to 64*4+3 = 259 bytes for the
 more straightforward option of printing the entire h in base64).</p>
+               
+               <pre><code>func HashToString(h [32]byte) string</code></pre>
+            </article>
             
-            <pre><code>func HashToString(h []byte) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestReadFile">
-            <h2>TestReadFile</h2>
-            <hr />
+            <article class="function" data-name="Read">
+               <h3>
+                  Read 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *excludedReader) Read(p []byte) (int, error)</code></pre>
+            </article>
             
-            <pre><code>func TestReadFile(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestFindAndHash">
-            <h2>TestFindAndHash</h2>
-            <hr />
+            <article class="function" data-name="ReadELFNote">
+               <h3>
+                  ReadELFNote 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func ReadELFNote(filename string, name string, typ int32) ([]byte, error)</code></pre>
+            </article>
             
-            <pre><code>func TestFindAndHash(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestExcludedReader">
-            <h2>TestExcludedReader</h2>
-            <hr />
+            <article class="function" data-name="ReadFile">
+               <h3>
+                  ReadFile 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>ReadFile reads the build ID from an archive or executable file.</p>
+               
+               <pre><code>func ReadFile(name string) (id string, err error)</code></pre>
+            </article>
             
-            <pre><code>func TestExcludedReader(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestEmptyID">
-            <h2>TestEmptyID</h2>
-            <hr />
+            <article class="function" data-name="Rewrite">
+               <h3>
+                  Rewrite 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func Rewrite(w io.WriterAt, pos []int64, id string) error</code></pre>
+            </article>
             
-            <pre><code>func TestEmptyID(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="readAligned4">
-            <h2>readAligned4</h2>
-            <hr />
+            <article class="function" data-name="excludeHostBuildID">
+               <h3>
+                  excludeHostBuildID 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func excludeHostBuildID(r io.Reader, r0 io.Reader) io.Reader</code></pre>
+            </article>
             
-            <pre><code>func readAligned4(r io.Reader, sz int32) ([]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="ReadELFNote">
-            <h2>ReadELFNote</h2>
-            <hr />
+            <article class="function" data-name="excludeMachoCodeSignature">
+               <h3>
+                  excludeMachoCodeSignature 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func excludeMachoCodeSignature(r io.Reader) io.Reader</code></pre>
+            </article>
             
-            <pre><code>func ReadELFNote(filename string, name string, typ int32) ([]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="readELF">
-            <h2>readELF</h2>
-            <hr />
+            <article class="function" data-name="findHostBuildID">
+               <h3>
+                  findHostBuildID 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func findHostBuildID(r io.Reader) (offset int64, size int64, ok bool)</code></pre>
+            </article>
             
-            <p>The Go build ID is stored in a note described by an ELF PT_NOTE prog
+            <article class="function" data-name="findMachoCodeSignature">
+               <h3>
+                  findMachoCodeSignature 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func findMachoCodeSignature(r any) (*macho.File, codesign.CodeSigCmd, bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="readAligned4">
+               <h3>
+                  readAligned4 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func readAligned4(r io.Reader, sz int32) ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="readBinary">
+               <h3>
+                  readBinary 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>readBinary reads the build ID from a binary.
+ELF binaries store the build ID in a proper PT_NOTE section.
+Other binary formats are not so flexible. For those, the linker
+stores the build ID as non-instruction bytes at the very beginning
+of the text segment, which should appear near the beginning
+of the file. This is clumsy but fairly portable. Custom locations
+can be added for other binary types as needed, like we did for ELF.</p>
+               
+               <pre><code>func readBinary(name string, f *os.File) (id string, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="readELF">
+               <h3>
+                  readELF 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>The Go build ID is stored in a note described by an ELF PT_NOTE prog
 header. The caller has already opened filename, to get f, and read
 at least 4 kB out, in data.</p>
+               
+               <pre><code>func readELF(name string, f *os.File, data []byte) (buildid string, err error)</code></pre>
+            </article>
             
-            <pre><code>func readELF(name string, f *os.File, data []byte) (buildid string, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="readMacho">
-            <h2>readMacho</h2>
-            <hr />
+            <article class="function" data-name="readGccgoArchive">
+               <h3>
+                  readGccgoArchive 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>readGccgoArchive tries to parse the archive as a standard Unix
+archive file, and fetch the build ID from the _buildid.o entry.
+The _buildid.o entry is written by (*Builder).gccgoBuildIDELFFile
+in cmd/go/internal/work/exec.go.</p>
+               
+               <pre><code>func readGccgoArchive(name string, f *os.File) (string, error)</code></pre>
+            </article>
             
-            <p>The Go build ID is stored at the beginning of the Mach-O __text segment.
+            <article class="function" data-name="readGccgoBigArchive">
+               <h3>
+                  readGccgoBigArchive 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>readGccgoBigArchive tries to parse the archive as an AIX big
+archive file, and fetch the build ID from the _buildid.o entry.
+The _buildid.o entry is written by (*Builder).gccgoBuildIDXCOFFFile
+in cmd/go/internal/work/exec.go.</p>
+               
+               <pre><code>func readGccgoBigArchive(name string, f *os.File) (string, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="readMacho">
+               <h3>
+                  readMacho 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>The Go build ID is stored at the beginning of the Mach-O __text segment.
 The caller has already opened filename, to get f, and read a few kB out, in data.
 Sadly, that's not guaranteed to hold the note, because there is an arbitrary amount
 of other junk placed in the file ahead of the main text.</p>
+               
+               <pre><code>func readMacho(name string, f *os.File, data []byte) (buildid string, err error)</code></pre>
+            </article>
             
-            <pre><code>func readMacho(name string, f *os.File, data []byte) (buildid string, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="FindAndHash">
-            <h2>FindAndHash</h2>
-            <hr />
+            <article class="function" data-name="readRaw">
+               <h3>
+                  readRaw 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>readRaw finds the raw build ID stored in text segment data.</p>
+               
+               <pre><code>func readRaw(name string, data []byte) (id string, err error)</code></pre>
+            </article>
             
-            <p>FindAndHash reads all of r and returns the offsets of occurrences of id.
-While reading, findAndHash also computes and returns
-a hash of the content of r, but with occurrences of id replaced by zeros.
-FindAndHash reads bufSize bytes from r at a time.
-If bufSize == 0, FindAndHash uses a reasonable default.</p>
-            
-            <pre><code>func FindAndHash(r io.Reader, id string, bufSize int) (matches []int64, hash []byte, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Rewrite">
-            <h2>Rewrite</h2>
-            <hr />
-            
-            <pre><code>func Rewrite(w io.WriterAt, pos []int64, id string) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="excludeMachoCodeSignature">
-            <h2>excludeMachoCodeSignature</h2>
-            <hr />
-            
-            <pre><code>func excludeMachoCodeSignature(r io.Reader) io.Reader</code></pre>
-         </article>
-         
-         <article class="function" data-name="excludeHostBuildID">
-            <h2>excludeHostBuildID</h2>
-            <hr />
-            
-            <pre><code>func excludeHostBuildID(r io.Reader, r0 io.Reader) io.Reader</code></pre>
-         </article>
-         
-         <article class="function" data-name="Read">
-            <h2>Read</h2>
-            <hr />
-            
-            <pre><code>func Read(p []byte) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="findMachoCodeSignature">
-            <h2>findMachoCodeSignature</h2>
-            <hr />
-            
-            <pre><code>func findMachoCodeSignature(r any) (*macho.File, codesign.CodeSigCmd, bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="findHostBuildID">
-            <h2>findHostBuildID</h2>
-            <hr />
-            
-            <pre><code>func findHostBuildID(r io.Reader) (offset int64, size int64, ok bool)</code></pre>
-         </article>
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -465,59 +864,170 @@ If bufSize == 0, FindAndHash uses a reasonable default.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

@@ -6,270 +6,4675 @@
          name="viewport"
          content="width=device-width, initial-scale=1.0"
       />
-      <title>Docs - ast_test</title>
+      <title>Docs - ast</title>
       <link
          href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
          rel="stylesheet"
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                
+               <li><a href="#interfaces">Interfaces</a></li>
+                
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>ast_test</code>
-         </h1>
-         <hr />
+         <h1>ast</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="input">
-            <h2>input</h2>
-            <hr />
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"cmp"
+"go/token"
+"slices"
+"strconv"
+"fmt"
+"go/token"
+"io"
+"os"
+"reflect"
+"fmt"
+"go/scanner"
+"go/token"
+"strconv"
+"fmt"
+"go/token"
+"strings"
+"fmt"
+"iter"
+"go/token"
+"strings"
+"bytes"
+"cmp"
+"fmt"
+"go/token"
+"slices"
+"strings"
+"go/token"
+"slices"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <pre><code>input</code></pre>
-         </article>
-         
-         <article class="global" data-name="golden">
-            <h2>golden</h2>
-            <hr />
+            <article class="global" data-name="Bad">
+               <h3>
+                  Bad 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>The list of possible [Object] kinds.</p>
+               
+               <pre><code>const Bad ObjKind = iota</code></pre>
+            </article>
             
-            <p>Calling ast.MergePackageFiles with ast.FilterFuncDuplicates
-keeps a duplicate entry with attached documentation in favor
-of one without, and it favors duplicate entries appearing
-later in the source over ones appearing earlier. This is why
-(*t2).f2 is kept and t2.f2 is eliminated in this test case.</p>
+            <article class="global" data-name="Con">
+               <h3>
+                  Con 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>The list of possible [Object] kinds.</p>
+               
+               <pre><code>const Con</code></pre>
+            </article>
             
-            <pre><code>golden</code></pre>
-         </article>
-         
-         <article class="global" data-name="src">
-            <h2>src</h2>
-            <hr />
+            <article class="global" data-name="FilterFuncDuplicates">
+               <h3>
+                  FilterFuncDuplicates 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>If set, duplicate function declarations are excluded.</p>
+               
+               <pre><code>const FilterFuncDuplicates MergeMode = *ast.BinaryExpr</code></pre>
+            </article>
             
-            <pre><code>src</code></pre>
-         </article>
-         
-         <article class="global" data-name="res">
-            <h2>res</h2>
-            <hr />
+            <article class="global" data-name="FilterImportDuplicates">
+               <h3>
+                  FilterImportDuplicates 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>If set, duplicate import declarations are excluded.</p>
+               
+               <pre><code>const FilterImportDuplicates</code></pre>
+            </article>
             
-            <p>res maps a key of the form "line number: node type"
-to the associated comments' text.</p>
+            <article class="global" data-name="FilterUnassociatedComments">
+               <h3>
+                  FilterUnassociatedComments 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>If set, comments that are not associated with a specific
+AST node (as Doc or Comment) are excluded.</p>
+               
+               <pre><code>const FilterUnassociatedComments</code></pre>
+            </article>
             
-            <pre><code>res</code></pre>
-         </article>
-           
-         <article class="function" data-name="ExampleInspect">
-            <h2>ExampleInspect</h2>
-            <hr />
+            <article class="global" data-name="Fun">
+               <h3>
+                  Fun 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>The list of possible [Object] kinds.</p>
+               
+               <pre><code>const Fun</code></pre>
+            </article>
             
-            <p>This example demonstrates how to inspect the AST of a Go program.</p>
+            <article class="global" data-name="Lbl">
+               <h3>
+                  Lbl 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>The list of possible [Object] kinds.</p>
+               
+               <pre><code>const Lbl</code></pre>
+            </article>
             
-            <pre><code>func ExampleInspect()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExamplePrint">
-            <h2>ExamplePrint</h2>
-            <hr />
+            <article class="global" data-name="Pkg">
+               <h3>
+                  Pkg 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>The list of possible [Object] kinds.</p>
+               
+               <pre><code>const Pkg</code></pre>
+            </article>
             
-            <p>This example shows what an AST looks like when printed for debugging.</p>
+            <article class="global" data-name="RECV">
+               <h3>
+                  RECV 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const RECV</code></pre>
+            </article>
             
-            <pre><code>func ExamplePrint()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExamplePreorder">
-            <h2>ExamplePreorder</h2>
-            <hr />
+            <article class="global" data-name="SEND">
+               <h3>
+                  SEND 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const SEND ChanDir = *ast.BinaryExpr</code></pre>
+            </article>
             
-            <pre><code>func ExamplePreorder()</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExampleCommentMap">
-            <h2>ExampleCommentMap</h2>
-            <hr />
+            <article class="global" data-name="Typ">
+               <h3>
+                  Typ 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>The list of possible [Object] kinds.</p>
+               
+               <pre><code>const Typ</code></pre>
+            </article>
             
-            <p>This example illustrates how to remove a variable declaration
-in a Go program while maintaining correct comment association
-using an ast.CommentMap.</p>
+            <article class="global" data-name="Var">
+               <h3>
+                  Var 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>The list of possible [Object] kinds.</p>
+               
+               <pre><code>const Var</code></pre>
+            </article>
             
-            <pre><code>func ExampleCommentMap()</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestFilterDuplicates">
-            <h2>TestFilterDuplicates</h2>
-            <hr />
+            <article class="global" data-name="indent">
+               <h3>
+                  indent 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var indent = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre><code>func TestFilterDuplicates(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestIssue33649">
-            <h2>TestIssue33649</h2>
-            <hr />
+            <article class="global" data-name="objKindStrings">
+               <h3>
+                  objKindStrings 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var objKindStrings = [...]string{...}</code></pre>
+            </article>
             
-            <pre><code>func TestIssue33649(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestIssue28089">
-            <h2>TestIssue28089</h2>
-            <hr />
+            <article class="global" data-name="separator">
+               <h3>
+                  separator 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>separator is an empty //-style comment that is interspersed between
+different comment groups when they are concatenated into a single group</p>
+               
+               <pre><code>var separator = *ast.UnaryExpr</code></pre>
+            </article>
             
-            <p>TestIssue28089 exercises the IsGenerated function.</p>
+         </section>
+          
+         <section id="types">
+            <h2>Type Aliases</h2>
             
-            <pre><code>func TestIssue28089(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestPreorderBreak">
-            <h2>TestPreorderBreak</h2>
-            <hr />
+            <article class="type" data-name="ChanDir">
+               <h3>
+                  ChanDir
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>The direction of a channel type is indicated by a bit
+mask including one or both of the following constants.</p>
+               
+               <pre><code>type ChanDir int</code></pre>
+            </article>
             
-            <pre><code>func TestPreorderBreak(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="ctext">
-            <h2>ctext</h2>
-            <hr />
+            <article class="type" data-name="CommentMap">
+               <h3>
+                  CommentMap
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>A CommentMap maps an AST node to a list of comment groups
+associated with it. See [NewCommentMap] for a description of
+the association.</p>
+               
+               <pre><code>type CommentMap map[Node][]*CommentGroup</code></pre>
+            </article>
             
-            <pre><code>func ctext(list []*CommentGroup) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestCommentMap">
-            <h2>TestCommentMap</h2>
-            <hr />
+            <article class="type" data-name="FieldFilter">
+               <h3>
+                  FieldFilter
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>A FieldFilter may be provided to [Fprint] to control the output.</p>
+               
+               <pre><code>type FieldFilter func(name string, value reflect.Value) bool</code></pre>
+            </article>
             
-            <pre><code>func TestCommentMap(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestFilter">
-            <h2>TestFilter</h2>
-            <hr />
+            <article class="type" data-name="Filter">
+               <h3>
+                  Filter
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <pre><code>type Filter func(string) bool</code></pre>
+            </article>
             
-            <pre><code>func TestFilter(t *testing.T)</code></pre>
-         </article>
+            <article class="type" data-name="Importer">
+               <h3>
+                  Importer
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>An Importer resolves import paths to package Objects.
+The imports map records the packages already imported,
+indexed by package id (canonical import path).
+An Importer must determine the canonical import path and
+check the map to see if it is already present in the imports map.
+If so, the Importer can return the map entry. Otherwise, the
+Importer should load the package data for the given path into
+a new *[Object] (pkg), record pkg in the imports map, and then
+return pkg.
+Deprecated: use the type checker [go/types] instead; see [Object].</p>
+               
+               <pre><code>type Importer func(imports map[string]*Object, path string) (pkg *Object, err error)</code></pre>
+            </article>
+            
+            <article class="type" data-name="MergeMode">
+               <h3>
+                  MergeMode
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>The MergeMode flags control the behavior of [MergePackageFiles].</p>
+               
+               <pre><code>type MergeMode uint</code></pre>
+            </article>
+            
+            <article class="type" data-name="ObjKind">
+               <h3>
+                  ObjKind
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>ObjKind describes what an [Object] represents.</p>
+               
+               <pre><code>type ObjKind int</code></pre>
+            </article>
+            
+            <article class="type" data-name="inspector">
+               <h3>
+                  inspector
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <pre><code>type inspector func(Node) bool</code></pre>
+            </article>
+            
+            <article class="type" data-name="nodeStack">
+               <h3>
+                  nodeStack
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>A nodeStack keeps track of nested nodes.
+A node lower on the stack lexically contains the nodes higher on the stack.</p>
+               
+               <pre><code>type nodeStack []Node</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="interfaces">
+            <h2>Interfaces</h2>
+            
+            <article class="interface" data-name="Decl">
+               <h3>
+                  Decl
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>All declaration nodes implement the Decl interface.</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type Decl interface {
+Node
+declNode()
+}</code></pre>
+            </article>
+            
+            <article class="interface" data-name="Expr">
+               <h3>
+                  Expr
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>All expression nodes implement the Expr interface.</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type Expr interface {
+Node
+exprNode()
+}</code></pre>
+            </article>
+            
+            <article class="interface" data-name="Node">
+               <h3>
+                  Node
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>All node types implement the Node interface.</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type Node interface {
+Pos() token.Pos
+End() token.Pos
+}</code></pre>
+            </article>
+            
+            <article class="interface" data-name="Spec">
+               <h3>
+                  Spec
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>The Spec type stands for any of *ImportSpec, *ValueSpec, and *TypeSpec.</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type Spec interface {
+Node
+specNode()
+}</code></pre>
+            </article>
+            
+            <article class="interface" data-name="Stmt">
+               <h3>
+                  Stmt
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>All statement nodes implement the Stmt interface.</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type Stmt interface {
+Node
+stmtNode()
+}</code></pre>
+            </article>
+            
+            <article class="interface" data-name="Visitor">
+               <h3>
+                  Visitor
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>A Visitor's Visit method is invoked for each node encountered by [Walk].
+If the result visitor w is not nil, [Walk] visits each of the children
+of node with the visitor w, followed by a call of w.Visit(nil).</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type Visitor interface {
+Visit(node Node) w Visitor
+}</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="ArrayType">
+               <h3>
+                  ArrayType
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>An ArrayType node represents an array or slice type.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type ArrayType struct {
+Lbrack token.Pos
+Len Expr
+Elt Expr
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="AssignStmt">
+               <h3>
+                  AssignStmt
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>An AssignStmt node represents an assignment or
+a short variable declaration.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type AssignStmt struct {
+Lhs []Expr
+TokPos token.Pos
+Tok token.Token
+Rhs []Expr
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="BadDecl">
+               <h3>
+                  BadDecl
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A BadDecl node is a placeholder for a declaration containing
+syntax errors for which a correct declaration node cannot be
+created.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type BadDecl struct {
+From token.Pos
+To token.Pos
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="BadExpr">
+               <h3>
+                  BadExpr
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A BadExpr node is a placeholder for an expression containing
+syntax errors for which a correct expression node cannot be
+created.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type BadExpr struct {
+From token.Pos
+To token.Pos
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="BadStmt">
+               <h3>
+                  BadStmt
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A BadStmt node is a placeholder for statements containing
+syntax errors for which no correct statement nodes can be
+created.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type BadStmt struct {
+From token.Pos
+To token.Pos
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="BasicLit">
+               <h3>
+                  BasicLit
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A BasicLit node represents a literal of basic type.
+Note that for the CHAR and STRING kinds, the literal is stored
+with its quotes. For example, for a double-quoted STRING, the
+first and the last rune in the Value field will be ". The
+[strconv.Unquote] and [strconv.UnquoteChar] functions can be
+used to unquote STRING and CHAR values, respectively.
+For raw string literals (Kind == token.STRING && Value[0] == '`'),
+the Value field contains the string text without carriage returns (\r) that
+may have been present in the source. Because the end position is
+computed using len(Value), the position reported by [BasicLit.End] does not match the
+true source end position for raw string literals containing carriage returns.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type BasicLit struct {
+ValuePos token.Pos
+Kind token.Token
+Value string
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="BinaryExpr">
+               <h3>
+                  BinaryExpr
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A BinaryExpr node represents a binary expression.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type BinaryExpr struct {
+X Expr
+OpPos token.Pos
+Op token.Token
+Y Expr
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="BlockStmt">
+               <h3>
+                  BlockStmt
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A BlockStmt node represents a braced statement list.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type BlockStmt struct {
+Lbrace token.Pos
+List []Stmt
+Rbrace token.Pos
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="BranchStmt">
+               <h3>
+                  BranchStmt
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A BranchStmt node represents a break, continue, goto,
+or fallthrough statement.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type BranchStmt struct {
+TokPos token.Pos
+Tok token.Token
+Label *Ident
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="CallExpr">
+               <h3>
+                  CallExpr
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A CallExpr node represents an expression followed by an argument list.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type CallExpr struct {
+Fun Expr
+Lparen token.Pos
+Args []Expr
+Ellipsis token.Pos
+Rparen token.Pos
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="CaseClause">
+               <h3>
+                  CaseClause
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A CaseClause represents a case of an expression or type switch statement.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type CaseClause struct {
+Case token.Pos
+List []Expr
+Colon token.Pos
+Body []Stmt
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="ChanType">
+               <h3>
+                  ChanType
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A ChanType node represents a channel type.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type ChanType struct {
+Begin token.Pos
+Arrow token.Pos
+Dir ChanDir
+Value Expr
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="CommClause">
+               <h3>
+                  CommClause
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A CommClause node represents a case of a select statement.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type CommClause struct {
+Case token.Pos
+Comm Stmt
+Colon token.Pos
+Body []Stmt
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="Comment">
+               <h3>
+                  Comment
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Comment node represents a single //-style or /*-style comment.
+The Text field contains the comment text without carriage returns (\r) that
+may have been present in the source. Because a comment's end position is
+computed using len(Text), the position reported by [Comment.End] does not match the
+true source end position for comments containing carriage returns.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Comment struct {
+Slash token.Pos
+Text string
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="CommentGroup">
+               <h3>
+                  CommentGroup
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A CommentGroup represents a sequence of comments
+with no other tokens and no empty lines between.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type CommentGroup struct {
+List []*Comment
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="CompositeLit">
+               <h3>
+                  CompositeLit
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A CompositeLit node represents a composite literal.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type CompositeLit struct {
+Type Expr
+Lbrace token.Pos
+Elts []Expr
+Rbrace token.Pos
+Incomplete bool
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="DeclStmt">
+               <h3>
+                  DeclStmt
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A DeclStmt node represents a declaration in a statement list.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type DeclStmt struct {
+Decl Decl
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="DeferStmt">
+               <h3>
+                  DeferStmt
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A DeferStmt node represents a defer statement.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type DeferStmt struct {
+Defer token.Pos
+Call *CallExpr
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="Ellipsis">
+               <h3>
+                  Ellipsis
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>An Ellipsis node stands for the "..." type in a
+parameter list or the "..." length in an array type.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Ellipsis struct {
+Ellipsis token.Pos
+Elt Expr
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="EmptyStmt">
+               <h3>
+                  EmptyStmt
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>An EmptyStmt node represents an empty statement.
+The "position" of the empty statement is the position
+of the immediately following (explicit or implicit) semicolon.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type EmptyStmt struct {
+Semicolon token.Pos
+Implicit bool
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="ExprStmt">
+               <h3>
+                  ExprStmt
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>An ExprStmt node represents a (stand-alone) expression
+in a statement list.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type ExprStmt struct {
+X Expr
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="Field">
+               <h3>
+                  Field
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Field represents a Field declaration list in a struct type,
+a method list in an interface type, or a parameter/result declaration
+in a signature.
+[Field.Names] is nil for unnamed parameters (parameter lists which only contain types)
+and embedded struct fields. In the latter case, the field name is the type name.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Field struct {
+Doc *CommentGroup
+Names []*Ident
+Type Expr
+Tag *BasicLit
+Comment *CommentGroup
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="FieldList">
+               <h3>
+                  FieldList
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A FieldList represents a list of Fields, enclosed by parentheses,
+curly braces, or square brackets.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type FieldList struct {
+Opening token.Pos
+List []*Field
+Closing token.Pos
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="File">
+               <h3>
+                  File
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A File node represents a Go source file.
+The Comments list contains all comments in the source file in order of
+appearance, including the comments that are pointed to from other nodes
+via Doc and Comment fields.
+For correct printing of source code containing comments (using packages
+go/format and go/printer), special care must be taken to update comments
+when a File's syntax tree is modified: For printing, comments are interspersed
+between tokens based on their position. If syntax tree nodes are
+removed or moved, relevant comments in their vicinity must also be removed
+(from the [File.Comments] list) or moved accordingly (by updating their
+positions). A [CommentMap] may be used to facilitate some of these operations.
+Whether and how a comment is associated with a node depends on the
+interpretation of the syntax tree by the manipulating program: except for Doc
+and [Comment] comments directly associated with nodes, the remaining comments
+are "free-floating" (see also issues [#18593], [#20744]).
+[#18593]: https://go.dev/issue/18593
+[#20744]: https://go.dev/issue/20744</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type File struct {
+Doc *CommentGroup
+Package token.Pos
+Name *Ident
+Decls []Decl
+FileStart token.Pos
+FileEnd token.Pos
+Scope *Scope
+Imports []*ImportSpec
+Unresolved []*Ident
+Comments []*CommentGroup
+GoVersion string
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="ForStmt">
+               <h3>
+                  ForStmt
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A ForStmt represents a for statement.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type ForStmt struct {
+For token.Pos
+Init Stmt
+Cond Expr
+Post Stmt
+Body *BlockStmt
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="FuncDecl">
+               <h3>
+                  FuncDecl
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A FuncDecl node represents a function declaration.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type FuncDecl struct {
+Doc *CommentGroup
+Recv *FieldList
+Name *Ident
+Type *FuncType
+Body *BlockStmt
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="FuncLit">
+               <h3>
+                  FuncLit
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A FuncLit node represents a function literal.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type FuncLit struct {
+Type *FuncType
+Body *BlockStmt
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="FuncType">
+               <h3>
+                  FuncType
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A FuncType node represents a function type.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type FuncType struct {
+Func token.Pos
+TypeParams *FieldList
+Params *FieldList
+Results *FieldList
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="GenDecl">
+               <h3>
+                  GenDecl
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A GenDecl node (generic declaration node) represents an import,
+constant, type or variable declaration. A valid Lparen position
+(Lparen.IsValid()) indicates a parenthesized declaration.
+Relationship between Tok value and Specs element type:
+token.IMPORT  *ImportSpec
+token.CONST   *ValueSpec
+token.TYPE    *TypeSpec
+token.VAR     *ValueSpec</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type GenDecl struct {
+Doc *CommentGroup
+TokPos token.Pos
+Tok token.Token
+Lparen token.Pos
+Specs []Spec
+Rparen token.Pos
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="GoStmt">
+               <h3>
+                  GoStmt
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A GoStmt node represents a go statement.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type GoStmt struct {
+Go token.Pos
+Call *CallExpr
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="Ident">
+               <h3>
+                  Ident
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>An Ident node represents an identifier.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Ident struct {
+NamePos token.Pos
+Name string
+Obj *Object
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="IfStmt">
+               <h3>
+                  IfStmt
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>An IfStmt node represents an if statement.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type IfStmt struct {
+If token.Pos
+Init Stmt
+Cond Expr
+Body *BlockStmt
+Else Stmt
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="ImportSpec">
+               <h3>
+                  ImportSpec
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>An ImportSpec node represents a single package import.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type ImportSpec struct {
+Doc *CommentGroup
+Name *Ident
+Path *BasicLit
+Comment *CommentGroup
+EndPos token.Pos
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="IncDecStmt">
+               <h3>
+                  IncDecStmt
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>An IncDecStmt node represents an increment or decrement statement.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type IncDecStmt struct {
+X Expr
+TokPos token.Pos
+Tok token.Token
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="IndexExpr">
+               <h3>
+                  IndexExpr
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>An IndexExpr node represents an expression followed by an index.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type IndexExpr struct {
+X Expr
+Lbrack token.Pos
+Index Expr
+Rbrack token.Pos
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="IndexListExpr">
+               <h3>
+                  IndexListExpr
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>An IndexListExpr node represents an expression followed by multiple
+indices.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type IndexListExpr struct {
+X Expr
+Lbrack token.Pos
+Indices []Expr
+Rbrack token.Pos
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="InterfaceType">
+               <h3>
+                  InterfaceType
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>An InterfaceType node represents an interface type.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type InterfaceType struct {
+Interface token.Pos
+Methods *FieldList
+Incomplete bool
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="KeyValueExpr">
+               <h3>
+                  KeyValueExpr
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A KeyValueExpr node represents (key : value) pairs
+in composite literals.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type KeyValueExpr struct {
+Key Expr
+Colon token.Pos
+Value Expr
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="LabeledStmt">
+               <h3>
+                  LabeledStmt
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A LabeledStmt node represents a labeled statement.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type LabeledStmt struct {
+Label *Ident
+Colon token.Pos
+Stmt Stmt
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="MapType">
+               <h3>
+                  MapType
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A MapType node represents a map type.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type MapType struct {
+Map token.Pos
+Key Expr
+Value Expr
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="Object">
+               <h3>
+                  Object
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>An Object describes a named language entity such as a package,
+constant, type, variable, function (incl. methods), or label.
+The Data fields contains object-specific data:
+Kind    Data type         Data value
+Pkg     *Scope            package scope
+Con     int               iota for the respective declaration
+Deprecated: The relationship between Idents and Objects cannot be
+correctly computed without type information. For example, the
+expression T{K: 0} may denote a struct, map, slice, or array
+literal, depending on the type of T. If T is a struct, then K
+refers to a field of T, whereas for the other types it refers to a
+value in the environment.
+New programs should set the [parser.SkipObjectResolution] parser
+flag to disable syntactic object resolution (which also saves CPU
+and memory), and instead use the type checker [go/types] if object
+resolution is desired. See the Defs, Uses, and Implicits fields of
+the [types.Info] struct for details.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Object struct {
+Kind ObjKind
+Name string
+Decl any
+Data any
+Type any
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="Package">
+               <h3>
+                  Package
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Package node represents a set of source files
+collectively building a Go package.
+Deprecated: use the type checker [go/types] instead; see [Object].</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Package struct {
+Name string
+Scope *Scope
+Imports map[string]*Object
+Files map[string]*File
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="ParenExpr">
+               <h3>
+                  ParenExpr
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A ParenExpr node represents a parenthesized expression.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type ParenExpr struct {
+Lparen token.Pos
+X Expr
+Rparen token.Pos
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="RangeStmt">
+               <h3>
+                  RangeStmt
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A RangeStmt represents a for statement with a range clause.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type RangeStmt struct {
+For token.Pos
+Key Expr
+Value Expr
+TokPos token.Pos
+Tok token.Token
+Range token.Pos
+X Expr
+Body *BlockStmt
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="ReturnStmt">
+               <h3>
+                  ReturnStmt
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A ReturnStmt node represents a return statement.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type ReturnStmt struct {
+Return token.Pos
+Results []Expr
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="Scope">
+               <h3>
+                  Scope
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Scope maintains the set of named language entities declared
+in the scope and a link to the immediately surrounding (outer)
+scope.
+Deprecated: use the type checker [go/types] instead; see [Object].</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Scope struct {
+Outer *Scope
+Objects map[string]*Object
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="SelectStmt">
+               <h3>
+                  SelectStmt
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A SelectStmt node represents a select statement.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type SelectStmt struct {
+Select token.Pos
+Body *BlockStmt
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="SelectorExpr">
+               <h3>
+                  SelectorExpr
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A SelectorExpr node represents an expression followed by a selector.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type SelectorExpr struct {
+X Expr
+Sel *Ident
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="SendStmt">
+               <h3>
+                  SendStmt
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A SendStmt node represents a send statement.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type SendStmt struct {
+Chan Expr
+Arrow token.Pos
+Value Expr
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="SliceExpr">
+               <h3>
+                  SliceExpr
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A SliceExpr node represents an expression followed by slice indices.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type SliceExpr struct {
+X Expr
+Lbrack token.Pos
+Low Expr
+High Expr
+Max Expr
+Slice3 bool
+Rbrack token.Pos
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="StarExpr">
+               <h3>
+                  StarExpr
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A StarExpr node represents an expression of the form "*" Expression.
+Semantically it could be a unary "*" expression, or a pointer type.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type StarExpr struct {
+Star token.Pos
+X Expr
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="StructType">
+               <h3>
+                  StructType
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A StructType node represents a struct type.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type StructType struct {
+Struct token.Pos
+Fields *FieldList
+Incomplete bool
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="SwitchStmt">
+               <h3>
+                  SwitchStmt
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A SwitchStmt node represents an expression switch statement.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type SwitchStmt struct {
+Switch token.Pos
+Init Stmt
+Tag Expr
+Body *BlockStmt
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="TypeAssertExpr">
+               <h3>
+                  TypeAssertExpr
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A TypeAssertExpr node represents an expression followed by a
+type assertion.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type TypeAssertExpr struct {
+X Expr
+Lparen token.Pos
+Type Expr
+Rparen token.Pos
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="TypeSpec">
+               <h3>
+                  TypeSpec
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A TypeSpec node represents a type declaration (TypeSpec production).</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type TypeSpec struct {
+Doc *CommentGroup
+Name *Ident
+TypeParams *FieldList
+Assign token.Pos
+Type Expr
+Comment *CommentGroup
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="TypeSwitchStmt">
+               <h3>
+                  TypeSwitchStmt
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A TypeSwitchStmt node represents a type switch statement.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type TypeSwitchStmt struct {
+Switch token.Pos
+Init Stmt
+Assign Stmt
+Body *BlockStmt
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="UnaryExpr">
+               <h3>
+                  UnaryExpr
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A UnaryExpr node represents a unary expression.
+Unary "*" expressions are represented via StarExpr nodes.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type UnaryExpr struct {
+OpPos token.Pos
+Op token.Token
+X Expr
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="ValueSpec">
+               <h3>
+                  ValueSpec
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A ValueSpec node represents a constant or variable declaration
+(ConstSpec or VarSpec production).</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type ValueSpec struct {
+Doc *CommentGroup
+Names []*Ident
+Type Expr
+Values []Expr
+Comment *CommentGroup
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="cgPos">
+               <h3>
+                  cgPos
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type cgPos struct {
+left bool
+cg *CommentGroup
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="commentListReader">
+               <h3>
+                  commentListReader
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A commentListReader helps iterating through a list of comment groups.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type commentListReader struct {
+fset *token.FileSet
+list []*CommentGroup
+index int
+comment *CommentGroup
+pos token.Position
+end token.Position
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="localError">
+               <h3>
+                  localError
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>localError wraps locally caught errors so we can distinguish
+them from genuine panics which we don't want to return as errors.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type localError struct {
+err error
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="pkgBuilder">
+               <h3>
+                  pkgBuilder
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type pkgBuilder struct {
+fset *token.FileSet
+errors scanner.ErrorList
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="posSpan">
+               <h3>
+                  posSpan
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type posSpan struct {
+Start token.Pos
+End token.Pos
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="printer">
+               <h3>
+                  printer
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type printer struct {
+output io.Writer
+fset *token.FileSet
+filter FieldFilter
+ptrmap map[any]int
+indent int
+last byte
+line int
+}</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="functions">
+            <h2>Functions</h2>
+            
+            <article class="function" data-name="Comments">
+               <h3>
+                  Comments 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Comments returns the list of comment groups in the comment map.
+The result is sorted in source order.</p>
+               
+               <pre><code>func (cmap CommentMap) Comments() []*CommentGroup</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *MapType) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *FuncType) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *SliceExpr) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *IndexListExpr) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *IndexExpr) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *SelectorExpr) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *ParenExpr) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *CompositeLit) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *FuncLit) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *BasicLit) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *Ellipsis) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *Package) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>End returns the end of the last declaration in the file.
+It may be invalid, for example in an empty file.
+(Use FileEnd for the end of the entire file. It is always valid.)</p>
+               
+               <pre><code>func (f *File) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d *FuncDecl) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d *GenDecl) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d *BadDecl) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *Ident) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *BadExpr) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *CallExpr) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *StarExpr) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *TypeSpec) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *UnaryExpr) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *ValueSpec) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *ImportSpec) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *RangeStmt) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *ForStmt) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *SelectStmt) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *CommClause) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *BinaryExpr) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *TypeSwitchStmt) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *SwitchStmt) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (f *Field) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *CaseClause) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (g *CommentGroup) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *IfStmt) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *BlockStmt) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *BranchStmt) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *ReturnStmt) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *KeyValueExpr) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *Comment) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *SendStmt) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (f *FieldList) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *ArrayType) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *AssignStmt) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *IncDecStmt) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *GoStmt) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *ExprStmt) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *LabeledStmt) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *EmptyStmt) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *DeclStmt) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *BadStmt) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *StructType) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *DeferStmt) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *InterfaceType) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *TypeAssertExpr) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="End">
+               <h3>
+                  End 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *ChanType) End() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="FileExports">
+               <h3>
+                  FileExports 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>FileExports trims the AST for a Go source file in place such that
+only exported nodes remain: all top-level identifiers which are not exported
+and their associated information (such as type, initial value, or function
+body) are removed. Non-exported fields and methods of exported types are
+stripped. The [File.Comments] list is not changed.
+FileExports reports whether there are exported declarations.</p>
+               
+               <pre><code>func FileExports(src *File) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="Filter">
+               <h3>
+                  Filter 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Filter returns a new comment map consisting of only those
+entries of cmap for which a corresponding node exists in
+the AST specified by node.</p>
+               
+               <pre><code>func (cmap CommentMap) Filter(node Node) CommentMap</code></pre>
+            </article>
+            
+            <article class="function" data-name="FilterDecl">
+               <h3>
+                  FilterDecl 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>FilterDecl trims the AST for a Go declaration in place by removing
+all names (including struct field and interface method names, but
+not from parameter lists) that don't pass through the filter f.
+FilterDecl reports whether there are any declared names left after
+filtering.</p>
+               
+               <pre><code>func FilterDecl(decl Decl, f Filter) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="FilterFile">
+               <h3>
+                  FilterFile 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>FilterFile trims the AST for a Go file in place by removing all
+names from top-level declarations (including struct field and
+interface method names, but not from parameter lists) that don't
+pass through the filter f. If the declaration is empty afterwards,
+the declaration is removed from the AST. Import declarations are
+always removed. The [File.Comments] list is not changed.
+FilterFile reports whether there are any top-level declarations
+left after filtering.</p>
+               
+               <pre><code>func FilterFile(src *File, f Filter) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="FilterPackage">
+               <h3>
+                  FilterPackage 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>FilterPackage trims the AST for a Go package in place by removing
+all names from top-level declarations (including struct field and
+interface method names, but not from parameter lists) that don't
+pass through the filter f. If the declaration is empty afterwards,
+the declaration is removed from the AST. The pkg.Files list is not
+changed, so that file names and top-level package comments don't get
+lost.
+FilterPackage reports whether there are any top-level declarations
+left after filtering.</p>
+               
+               <pre><code>func FilterPackage(pkg *Package, f Filter) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="Fprint">
+               <h3>
+                  Fprint 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Fprint prints the (sub-)tree starting at AST node x to w.
+If fset != nil, position information is interpreted relative
+to that file set. Otherwise positions are printed as integer
+values (file set specific offsets).
+A non-nil [FieldFilter] f may be provided to control the output:
+struct fields for which f(fieldname, fieldvalue) is true are
+printed; all others are filtered from the output. Unexported
+struct fields are never printed.</p>
+               
+               <pre><code>func Fprint(w io.Writer, fset *token.FileSet, x any, f FieldFilter) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="Insert">
+               <h3>
+                  Insert 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Insert attempts to insert a named object obj into the scope s.
+If the scope already contains an object alt with the same name,
+Insert leaves the scope unchanged and returns alt. Otherwise
+it inserts obj and returns nil.</p>
+               
+               <pre><code>func (s *Scope) Insert(obj *Object) (alt *Object)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Inspect">
+               <h3>
+                  Inspect 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Inspect traverses an AST in depth-first order: It starts by calling
+f(node); node must not be nil. If f returns true, Inspect invokes f
+recursively for each of the non-nil children of node, followed by a
+call of f(nil).</p>
+               
+               <pre><code>func Inspect(node Node, f func(Node) bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="IsExported">
+               <h3>
+                  IsExported 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>IsExported reports whether name starts with an upper-case letter.</p>
+               
+               <pre><code>func IsExported(name string) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="IsExported">
+               <h3>
+                  IsExported 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>IsExported reports whether id starts with an upper-case letter.</p>
+               
+               <pre><code>func (id *Ident) IsExported() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="IsGenerated">
+               <h3>
+                  IsGenerated 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>IsGenerated reports whether the file was generated by a program,
+not handwritten, by detecting the special comment described
+at https://go.dev/s/generatedcode.
+The syntax tree must have been parsed with the [parser.ParseComments] flag.
+Example:
+f, err := parser.ParseFile(fset, filename, src, parser.ParseComments|parser.PackageClauseOnly)
+if err != nil { ... }
+gen := ast.IsGenerated(f)</p>
+               
+               <pre><code>func IsGenerated(file *File) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="Lookup">
+               <h3>
+                  Lookup 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Lookup returns the object with the given name if it is
+found in scope s, otherwise it returns nil. Outer scopes
+are ignored.</p>
+               
+               <pre><code>func (s *Scope) Lookup(name string) *Object</code></pre>
+            </article>
+            
+            <article class="function" data-name="MergePackageFiles">
+               <h3>
+                  MergePackageFiles 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>MergePackageFiles creates a file AST by merging the ASTs of the
+files belonging to a package. The mode flags control merging behavior.</p>
+               
+               <pre><code>func MergePackageFiles(pkg *Package, mode MergeMode) *File</code></pre>
+            </article>
+            
+            <article class="function" data-name="NewCommentMap">
+               <h3>
+                  NewCommentMap 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewCommentMap creates a new comment map by associating comment groups
+of the comments list with the nodes of the AST specified by node.
+A comment group g is associated with a node n if:
+- g starts on the same line as n ends
+- g starts on the line immediately following n, and there is
+at least one empty line after g and before the next node
+- g starts before n and is not associated to the node before n
+via the previous rules
+NewCommentMap tries to associate a comment group to the "largest"
+node possible: For instance, if the comment is a line comment
+trailing an assignment, the comment is associated with the entire
+assignment rather than just the last operand in the assignment.</p>
+               
+               <pre><code>func NewCommentMap(fset *token.FileSet, node Node, comments []*CommentGroup) CommentMap</code></pre>
+            </article>
+            
+            <article class="function" data-name="NewIdent">
+               <h3>
+                  NewIdent 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewIdent creates a new [Ident] without position.
+Useful for ASTs generated by code other than the Go parser.</p>
+               
+               <pre><code>func NewIdent(name string) *Ident</code></pre>
+            </article>
+            
+            <article class="function" data-name="NewObj">
+               <h3>
+                  NewObj 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewObj creates a new object of a given kind and name.</p>
+               
+               <pre><code>func NewObj(kind ObjKind, name string) *Object</code></pre>
+            </article>
+            
+            <article class="function" data-name="NewPackage">
+               <h3>
+                  NewPackage 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewPackage creates a new [Package] node from a set of [File] nodes. It resolves
+unresolved identifiers across files and updates each file's Unresolved list
+accordingly. If a non-nil importer and universe scope are provided, they are
+used to resolve identifiers not declared in any of the package files. Any
+remaining unresolved identifiers are reported as undeclared. If the files
+belong to different packages, one package name is selected and files with
+different package names are reported and then ignored.
+The result is a package node and a [scanner.ErrorList] if there were errors.
+Deprecated: use the type checker [go/types] instead; see [Object].</p>
+               
+               <pre><code>func NewPackage(fset *token.FileSet, files map[string]*File, importer Importer, universe *Scope) (*Package, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="NewScope">
+               <h3>
+                  NewScope 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewScope creates a new scope nested in the outer scope.</p>
+               
+               <pre><code>func NewScope(outer *Scope) *Scope</code></pre>
+            </article>
+            
+            <article class="function" data-name="NotNilFilter">
+               <h3>
+                  NotNilFilter 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NotNilFilter is a [FieldFilter] that returns true for field values
+that are not nil; it returns false otherwise.</p>
+               
+               <pre><code>func NotNilFilter(_ string, v reflect.Value) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="NumFields">
+               <h3>
+                  NumFields 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>NumFields returns the number of parameters or struct fields represented by a [FieldList].</p>
+               
+               <pre><code>func (f *FieldList) NumFields() int</code></pre>
+            </article>
+            
+            <article class="function" data-name="PackageExports">
+               <h3>
+                  PackageExports 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>PackageExports trims the AST for a Go package in place such that
+only exported nodes remain. The pkg.Files list is not changed, so that
+file names and top-level package comments don't get lost.
+PackageExports reports whether there are exported declarations;
+it returns false otherwise.</p>
+               
+               <pre><code>func PackageExports(pkg *Package) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *DeclStmt) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *IfStmt) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *MapType) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *InterfaceType) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *FuncType) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *StructType) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *ArrayType) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *KeyValueExpr) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *BinaryExpr) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *UnaryExpr) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *StarExpr) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *CallExpr) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (c *Comment) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (f *Field) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (f *FieldList) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *BadExpr) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *Ident) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *Ellipsis) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *BasicLit) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *FuncLit) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *Package) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Pos returns the position of the package declaration.
+It may be invalid, for example in an empty file.
+(Use FileStart for the start of the entire file. It is always valid.)</p>
+               
+               <pre><code>func (f *File) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *ChanType) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d *FuncDecl) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d *GenDecl) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (d *BadDecl) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *CompositeLit) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Pos computes the source position of the declaration of an object name.
+The result may be an invalid position if it cannot be computed
+(obj.Decl may be nil or not correct).</p>
+               
+               <pre><code>func (obj *Object) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *ParenExpr) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *TypeSpec) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *ValueSpec) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *ImportSpec) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *SelectorExpr) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *RangeStmt) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *ForStmt) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *TypeAssertExpr) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *SliceExpr) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *IndexListExpr) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *SelectStmt) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *BadStmt) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (x *IndexExpr) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *EmptyStmt) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *LabeledStmt) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *ExprStmt) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *SendStmt) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *IncDecStmt) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *AssignStmt) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *GoStmt) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *DeferStmt) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *ReturnStmt) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *BranchStmt) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *BlockStmt) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (g *CommentGroup) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *CaseClause) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *SwitchStmt) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *TypeSwitchStmt) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Pos">
+               <h3>
+                  Pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *CommClause) Pos() token.Pos</code></pre>
+            </article>
+            
+            <article class="function" data-name="Preorder">
+               <h3>
+                  Preorder 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Preorder returns an iterator over all the nodes of the syntax tree
+beneath (and including) the specified root, in depth-first
+preorder.
+For greater control over the traversal of each subtree, use [Inspect].</p>
+               
+               <pre><code>func Preorder(root Node) *ast.IndexExpr</code></pre>
+            </article>
+            
+            <article class="function" data-name="Print">
+               <h3>
+                  Print 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Print prints x to standard output, skipping nil fields.
+Print(fset, x) is the same as Fprint(os.Stdout, fset, x, NotNilFilter).</p>
+               
+               <pre><code>func Print(fset *token.FileSet, x any) error</code></pre>
+            </article>
+            
+            <article class="function" data-name="SortImports">
+               <h3>
+                  SortImports 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>SortImports sorts runs of consecutive import lines in import blocks in f.
+It also removes duplicate imports when it is possible to do so without data loss.</p>
+               
+               <pre><code>func SortImports(fset *token.FileSet, f *File)</code></pre>
+            </article>
+            
+            <article class="function" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (id *Ident) String() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (kind ObjKind) String() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Debugging support</p>
+               
+               <pre><code>func (s *Scope) String() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (cmap CommentMap) String() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="Text">
+               <h3>
+                  Text 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Text returns the text of the comment.
+Comment markers (//, /*, and */), the first space of a line comment, and
+leading and trailing empty lines are removed.
+Comment directives like "//line" and "//go:noinline" are also removed.
+Multiple empty lines are reduced to one, and trailing space on lines is trimmed.
+Unless the result is empty, it is newline-terminated.</p>
+               
+               <pre><code>func (g *CommentGroup) Text() string</code></pre>
+            </article>
+            
+            <article class="function" data-name="Unparen">
+               <h3>
+                  Unparen 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Unparen returns the expression with any enclosing parentheses removed.</p>
+               
+               <pre><code>func Unparen(e Expr) Expr</code></pre>
+            </article>
+            
+            <article class="function" data-name="Update">
+               <h3>
+                  Update 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Update replaces an old node in the comment map with the new node
+and returns the new node. Comments that were associated with the
+old node are associated with the new node.</p>
+               
+               <pre><code>func (cmap CommentMap) Update(old Node, new Node) Node</code></pre>
+            </article>
+            
+            <article class="function" data-name="Visit">
+               <h3>
+                  Visit 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (f inspector) Visit(node Node) Visitor</code></pre>
+            </article>
+            
+            <article class="function" data-name="Walk">
+               <h3>
+                  Walk 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Walk traverses an AST in depth-first order: It starts by calling
+v.Visit(node); node must not be nil. If the visitor w returned by
+v.Visit(node) is not nil, Walk is invoked recursively with visitor
+w for each of the non-nil children of node, followed by a call of
+w.Visit(nil).</p>
+               
+               <pre><code>func Walk(v Visitor, node Node)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Write">
+               <h3>
+                  Write 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *printer) Write(data []byte) (n int, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="addComment">
+               <h3>
+                  addComment 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (cmap CommentMap) addComment(n Node, c *CommentGroup)</code></pre>
+            </article>
+            
+            <article class="function" data-name="collapse">
+               <h3>
+                  collapse 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>collapse indicates whether prev may be removed, leaving only next.</p>
+               
+               <pre><code>func collapse(prev Spec, next Spec) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="declNode">
+               <h3>
+                  declNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*GenDecl) declNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="declNode">
+               <h3>
+                  declNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*FuncDecl) declNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="declNode">
+               <h3>
+                  declNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>declNode() ensures that only declaration nodes can be
+assigned to a Decl.</p>
+               
+               <pre><code>func (*BadDecl) declNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="declare">
+               <h3>
+                  declare 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *pkgBuilder) declare(scope *Scope, altScope *Scope, obj *Object)</code></pre>
+            </article>
+            
+            <article class="function" data-name="eol">
+               <h3>
+                  eol 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *commentListReader) eol() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="error">
+               <h3>
+                  error 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *pkgBuilder) error(pos token.Pos, msg string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="errorf">
+               <h3>
+                  errorf 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *pkgBuilder) errorf(pos token.Pos, format string, args ...any)</code></pre>
+            </article>
+            
+            <article class="function" data-name="exportFilter">
+               <h3>
+                  exportFilter 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>exportFilter is a special filter function to extract exported nodes.</p>
+               
+               <pre><code>func exportFilter(name string) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="exprNode">
+               <h3>
+                  exprNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*BasicLit) exprNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="exprNode">
+               <h3>
+                  exprNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*KeyValueExpr) exprNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="exprNode">
+               <h3>
+                  exprNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>exprNode() ensures that only expression/type nodes can be
+assigned to an Expr.</p>
+               
+               <pre><code>func (*BadExpr) exprNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="exprNode">
+               <h3>
+                  exprNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*ChanType) exprNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="exprNode">
+               <h3>
+                  exprNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*Ident) exprNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="exprNode">
+               <h3>
+                  exprNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*TypeAssertExpr) exprNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="exprNode">
+               <h3>
+                  exprNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*CallExpr) exprNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="exprNode">
+               <h3>
+                  exprNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*StarExpr) exprNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="exprNode">
+               <h3>
+                  exprNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*ArrayType) exprNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="exprNode">
+               <h3>
+                  exprNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*MapType) exprNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="exprNode">
+               <h3>
+                  exprNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*IndexExpr) exprNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="exprNode">
+               <h3>
+                  exprNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*UnaryExpr) exprNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="exprNode">
+               <h3>
+                  exprNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*BinaryExpr) exprNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="exprNode">
+               <h3>
+                  exprNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*InterfaceType) exprNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="exprNode">
+               <h3>
+                  exprNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*IndexListExpr) exprNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="exprNode">
+               <h3>
+                  exprNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*StructType) exprNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="exprNode">
+               <h3>
+                  exprNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*SliceExpr) exprNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="exprNode">
+               <h3>
+                  exprNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*Ellipsis) exprNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="exprNode">
+               <h3>
+                  exprNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*FuncLit) exprNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="exprNode">
+               <h3>
+                  exprNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*CompositeLit) exprNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="exprNode">
+               <h3>
+                  exprNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*ParenExpr) exprNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="exprNode">
+               <h3>
+                  exprNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*SelectorExpr) exprNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="exprNode">
+               <h3>
+                  exprNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*FuncType) exprNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="fieldName">
+               <h3>
+                  fieldName 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>fieldName assumes that x is the type of an anonymous field and
+returns the corresponding field name. If x is not an acceptable
+anonymous field, the result is nil.</p>
+               
+               <pre><code>func fieldName(x Expr) *Ident</code></pre>
+            </article>
+            
+            <article class="function" data-name="filterCompositeLit">
+               <h3>
+                  filterCompositeLit 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func filterCompositeLit(lit *CompositeLit, filter Filter, export bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="filterDecl">
+               <h3>
+                  filterDecl 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func filterDecl(decl Decl, f Filter, export bool) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="filterExprList">
+               <h3>
+                  filterExprList 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func filterExprList(list []Expr, filter Filter, export bool) []Expr</code></pre>
+            </article>
+            
+            <article class="function" data-name="filterFieldList">
+               <h3>
+                  filterFieldList 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func filterFieldList(fields *FieldList, filter Filter, export bool) (removedFields bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="filterFile">
+               <h3>
+                  filterFile 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func filterFile(src *File, f Filter, export bool) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="filterIdentList">
+               <h3>
+                  filterIdentList 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func filterIdentList(list []*Ident, f Filter) []*Ident</code></pre>
+            </article>
+            
+            <article class="function" data-name="filterPackage">
+               <h3>
+                  filterPackage 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func filterPackage(pkg *Package, f Filter, export bool) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="filterParamList">
+               <h3>
+                  filterParamList 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func filterParamList(fields *FieldList, filter Filter, export bool) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="filterSpec">
+               <h3>
+                  filterSpec 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func filterSpec(spec Spec, f Filter, export bool) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="filterSpecList">
+               <h3>
+                  filterSpecList 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func filterSpecList(list []Spec, f Filter, export bool) []Spec</code></pre>
+            </article>
+            
+            <article class="function" data-name="filterType">
+               <h3>
+                  filterType 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func filterType(typ Expr, f Filter, export bool) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="fprint">
+               <h3>
+                  fprint 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func fprint(w io.Writer, fset *token.FileSet, x any, f FieldFilter) (err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="generator">
+               <h3>
+                  generator 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func generator(file *File) (string, bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="importComment">
+               <h3>
+                  importComment 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func importComment(s Spec) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="importName">
+               <h3>
+                  importName 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func importName(s Spec) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="importPath">
+               <h3>
+                  importPath 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func importPath(s Spec) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="isDirective">
+               <h3>
+                  isDirective 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>isDirective reports whether c is a comment directive.
+This code is also in go/printer.</p>
+               
+               <pre><code>func isDirective(c string) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="isWhitespace">
+               <h3>
+                  isWhitespace 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func isWhitespace(ch byte) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="lineAt">
+               <h3>
+                  lineAt 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func lineAt(fset *token.FileSet, pos token.Pos) int</code></pre>
+            </article>
+            
+            <article class="function" data-name="nameOf">
+               <h3>
+                  nameOf 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>nameOf returns the function (foo) or method name (foo.bar) for
+the given function declaration. If the AST is incorrect for the
+receiver, it assumes a function instead.</p>
+               
+               <pre><code>func nameOf(f *FuncDecl) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="next">
+               <h3>
+                  next 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *commentListReader) next()</code></pre>
+            </article>
+            
+            <article class="function" data-name="nodeList">
+               <h3>
+                  nodeList 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>nodeList returns the list of nodes of the AST n in source order.</p>
+               
+               <pre><code>func nodeList(n Node) []Node</code></pre>
+            </article>
+            
+            <article class="function" data-name="pop">
+               <h3>
+                  pop 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>pop pops all nodes that appear lexically before pos
+(i.e., whose lexical extent has ended before or at pos).
+It returns the last node popped.</p>
+               
+               <pre><code>func (s *nodeStack) pop(pos token.Pos) (top Node)</code></pre>
+            </article>
+            
+            <article class="function" data-name="print">
+               <h3>
+                  print 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *printer) print(x reflect.Value)</code></pre>
+            </article>
+            
+            <article class="function" data-name="printf">
+               <h3>
+                  printf 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>printf is a convenience wrapper that takes care of print errors.</p>
+               
+               <pre><code>func (p *printer) printf(format string, args ...any)</code></pre>
+            </article>
+            
+            <article class="function" data-name="push">
+               <h3>
+                  push 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>push pops all nodes that appear lexically before n
+and then pushes n on the stack.</p>
+               
+               <pre><code>func (s *nodeStack) push(n Node)</code></pre>
+            </article>
+            
+            <article class="function" data-name="resolve">
+               <h3>
+                  resolve 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func resolve(scope *Scope, ident *Ident) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="sortComments">
+               <h3>
+                  sortComments 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>sortComments sorts the list of comment groups in source order.</p>
+               
+               <pre><code>func sortComments(list []*CommentGroup)</code></pre>
+            </article>
+            
+            <article class="function" data-name="sortSpecs">
+               <h3>
+                  sortSpecs 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func sortSpecs(fset *token.FileSet, f *File, specs []Spec) []Spec</code></pre>
+            </article>
+            
+            <article class="function" data-name="specNode">
+               <h3>
+                  specNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>specNode() ensures that only spec nodes can be
+assigned to a Spec.</p>
+               
+               <pre><code>func (*ImportSpec) specNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="specNode">
+               <h3>
+                  specNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*ValueSpec) specNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="specNode">
+               <h3>
+                  specNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*TypeSpec) specNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="stmtNode">
+               <h3>
+                  stmtNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*GoStmt) stmtNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="stmtNode">
+               <h3>
+                  stmtNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*ReturnStmt) stmtNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="stmtNode">
+               <h3>
+                  stmtNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*DeclStmt) stmtNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="stmtNode">
+               <h3>
+                  stmtNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*TypeSwitchStmt) stmtNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="stmtNode">
+               <h3>
+                  stmtNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*SwitchStmt) stmtNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="stmtNode">
+               <h3>
+                  stmtNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*CommClause) stmtNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="stmtNode">
+               <h3>
+                  stmtNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*SelectStmt) stmtNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="stmtNode">
+               <h3>
+                  stmtNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*CaseClause) stmtNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="stmtNode">
+               <h3>
+                  stmtNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*IfStmt) stmtNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="stmtNode">
+               <h3>
+                  stmtNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*BlockStmt) stmtNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="stmtNode">
+               <h3>
+                  stmtNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*BranchStmt) stmtNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="stmtNode">
+               <h3>
+                  stmtNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>stmtNode() ensures that only statement nodes can be
+assigned to a Stmt.</p>
+               
+               <pre><code>func (*BadStmt) stmtNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="stmtNode">
+               <h3>
+                  stmtNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*DeferStmt) stmtNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="stmtNode">
+               <h3>
+                  stmtNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*EmptyStmt) stmtNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="stmtNode">
+               <h3>
+                  stmtNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*AssignStmt) stmtNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="stmtNode">
+               <h3>
+                  stmtNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*IncDecStmt) stmtNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="stmtNode">
+               <h3>
+                  stmtNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*ForStmt) stmtNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="stmtNode">
+               <h3>
+                  stmtNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*SendStmt) stmtNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="stmtNode">
+               <h3>
+                  stmtNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*RangeStmt) stmtNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="stmtNode">
+               <h3>
+                  stmtNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*ExprStmt) stmtNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="stmtNode">
+               <h3>
+                  stmtNode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (*LabeledStmt) stmtNode()</code></pre>
+            </article>
+            
+            <article class="function" data-name="stripTrailingWhitespace">
+               <h3>
+                  stripTrailingWhitespace 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func stripTrailingWhitespace(s string) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="summary">
+               <h3>
+                  summary 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func summary(list []*CommentGroup) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="walkList">
+               <h3>
+                  walkList 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func walkList(v Visitor, list []N)</code></pre>
+            </article>
+            
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -277,59 +4682,170 @@ using an ast.CommentMap.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

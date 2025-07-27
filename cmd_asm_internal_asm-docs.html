@@ -13,346 +13,524 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                  
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>asm</code>
-         </h1>
-         <hr />
+         <h1>asm</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="testOut">
-            <h2>testOut</h2>
-            <hr />
-            
-            <pre><code>testOut *strings.Builder</code></pre>
-         </article>
-         
-         <article class="global" data-name="emptyProg">
-            <h2>emptyProg</h2>
-            <hr />
-            
-            <pre><code>emptyProg obj.Prog</code></pre>
-         </article>
-         
-         <article class="global" data-name="fileLineRE">
-            <h2>fileLineRE</h2>
-            <hr />
-            
-            <p>It would be nice if the error messages always began with
-the standard file:line: prefix,
-but that's not where we are today.
-It might be at the beginning but it might be in the middle of the printed instruction.</p>
-            
-            <pre><code>fileLineRE</code></pre>
-         </article>
-         
-         <article class="global" data-name="errRE">
-            <h2>errRE</h2>
-            <hr />
-            
-            <p>Same as in test/run.go</p>
-            
-            <pre><code>errRE</code></pre>
-         </article>
-         
-         <article class="global" data-name="errQuotesRE">
-            <h2>errQuotesRE</h2>
-            <hr />
-            
-            <p>Same as in test/run.go</p>
-            
-            <pre><code>errQuotesRE</code></pre>
-         </article>
-         
-         <article class="global" data-name="exprTests">
-            <h2>exprTests</h2>
-            <hr />
-            
-            <pre><code>exprTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="badExprTests">
-            <h2>badExprTests</h2>
-            <hr />
-            
-            <pre><code>badExprTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="amd64OperandTests">
-            <h2>amd64OperandTests</h2>
-            <hr />
-            
-            <pre><code>amd64OperandTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="amd64RuntimeOperandTests">
-            <h2>amd64RuntimeOperandTests</h2>
-            <hr />
-            
-            <pre><code>amd64RuntimeOperandTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="amd64BadOperandTests">
-            <h2>amd64BadOperandTests</h2>
-            <hr />
-            
-            <pre><code>amd64BadOperandTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="amd64BadOperandRuntimeTests">
-            <h2>amd64BadOperandRuntimeTests</h2>
-            <hr />
-            
-            <pre><code>amd64BadOperandRuntimeTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="x86OperandTests">
-            <h2>x86OperandTests</h2>
-            <hr />
-            
-            <pre><code>x86OperandTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="armOperandTests">
-            <h2>armOperandTests</h2>
-            <hr />
-            
-            <pre><code>armOperandTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="ppc64OperandTests">
-            <h2>ppc64OperandTests</h2>
-            <hr />
-            
-            <pre><code>ppc64OperandTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="arm64OperandTests">
-            <h2>arm64OperandTests</h2>
-            <hr />
-            
-            <pre><code>arm64OperandTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="mips64OperandTests">
-            <h2>mips64OperandTests</h2>
-            <hr />
-            
-            <pre><code>mips64OperandTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="mipsOperandTests">
-            <h2>mipsOperandTests</h2>
-            <hr />
-            
-            <pre><code>mipsOperandTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="loong64OperandTests">
-            <h2>loong64OperandTests</h2>
-            <hr />
-            
-            <pre><code>loong64OperandTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="s390xOperandTests">
-            <h2>s390xOperandTests</h2>
-            <hr />
-            
-            <pre><code>s390xOperandTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="panicOnError">
-            <h2>panicOnError</h2>
-            <hr />
-            
-            <p>panicOnError is enabled when testing to abort execution on the first error
-and turn it into a recoverable panic.</p>
-            
-            <pre><code>panicOnError bool</code></pre>
-         </article>
-         
-         <article class="global" data-name="EOF">
-            <h2>EOF</h2>
-            <hr />
-            
-            <p>EOF represents the end of input.</p>
-            
-            <pre><code>EOF</code></pre>
-         </article>
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"fmt"
+"io"
+"log"
+"os"
+"strconv"
+"strings"
+"text/scanner"
+"unicode/utf8"
+"cmd/asm/internal/arch"
+"cmd/asm/internal/flags"
+"cmd/asm/internal/lex"
+"cmd/internal/obj"
+"cmd/internal/obj/arm64"
+"cmd/internal/obj/x86"
+"cmd/internal/objabi"
+"cmd/internal/src"
+"cmd/internal/sys"
+"fmt"
+"internal/abi"
+"strconv"
+"strings"
+"text/scanner"
+"cmd/asm/internal/arch"
+"cmd/asm/internal/flags"
+"cmd/asm/internal/lex"
+"cmd/internal/obj"
+"cmd/internal/obj/ppc64"
+"cmd/internal/obj/riscv"
+"cmd/internal/obj/x86"
+"cmd/internal/sys"
+</code></pre>
+            </article>
+         </section>
           
-         <article class="struct" data-name="exprTest">
-            <h2>type exprTest struct</h2>
-            <hr />
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">input string
-output int64
-atEOF bool</code></pre>
-         </article>
-         
-         <article class="struct" data-name="badExprTest">
-            <h2>type badExprTest struct</h2>
-            <hr />
+            <article class="global" data-name="EOF">
+               <h3>
+                  EOF 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>EOF represents the end of input.</p>
+               
+               <pre><code>var EOF = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">input string
-error string</code></pre>
-         </article>
-         
-         <article class="struct" data-name="badInstTest">
-            <h2>type badInstTest struct</h2>
-            <hr />
+            <article class="global" data-name="emptyProg">
+               <h3>
+                  emptyProg 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var emptyProg obj.Prog</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">input string
-error string</code></pre>
-         </article>
-         
-         <article class="struct" data-name="operandTest">
-            <h2>type operandTest struct</h2>
-            <hr />
+            <article class="global" data-name="panicOnError">
+               <h3>
+                  panicOnError 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>panicOnError is enabled when testing to abort execution on the first error
+and turn it into a recoverable panic.</p>
+               
+               <pre><code>var panicOnError bool</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">input string
-output string</code></pre>
-         </article>
-         
-         <article class="struct" data-name="badOperandTest">
-            <h2>type badOperandTest struct</h2>
-            <hr />
+            <article class="global" data-name="testOut">
+               <h3>
+                  testOut 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var testOut *strings.Builder</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">input string
-error string</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Parser">
-            <h2>type Parser struct</h2>
-            <hr />
+         </section>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">lex lex.TokenReader
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="Parser">
+               <h3>
+                  Parser
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Parser struct {
+lex lex.TokenReader
 lineNum int
 errorLine int
 errorCount int
@@ -361,989 +539,879 @@ pc int64
 input []lex.Token
 inputPos int
 pendingLabels []string
-labels *ast.MapType
+labels map[string]*obj.Prog
 toPatch []Patch
 addr []obj.Addr
 arch *arch.Arch
 ctxt *obj.Link
 firstProg *obj.Prog
 lastProg *obj.Prog
-dataAddr *ast.MapType
+dataAddr map[string]int64
 isJump bool
 allowABI bool
 pkgPrefix string
-errorWriter io.Writer</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Patch">
-            <h2>type Patch struct</h2>
-            <hr />
+errorWriter io.Writer
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">addr *obj.Addr
-label string</code></pre>
-         </article>
+            <article class="struct" data-name="Patch">
+               <h3>
+                  Patch
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Patch struct {
+addr *obj.Addr
+label string
+}</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="function" data-name="append">
-            <h2>append</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <p>append adds the Prog to the end of the program-thus-far.
+            <article class="function" data-name="NewParser">
+               <h3>
+                  NewParser 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func NewParser(ctxt *obj.Link, ar *arch.Arch, lexer lex.TokenReader) *Parser</code></pre>
+            </article>
+            
+            <article class="function" data-name="Parse">
+               <h3>
+                  Parse 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *Parser) Parse() (*obj.Prog, bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="ParseSymABIs">
+               <h3>
+                  ParseSymABIs 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ParseSymABIs parses p's assembly code to find text symbol
+definitions and references and writes a symabis file to w.</p>
+               
+               <pre><code>func (p *Parser) ParseSymABIs(w io.Writer) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="address">
+               <h3>
+                  address 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>address parses the operand into a link address structure.</p>
+               
+               <pre><code>func (p *Parser) address(operand []lex.Token) obj.Addr</code></pre>
+            </article>
+            
+            <article class="function" data-name="append">
+               <h3>
+                  append 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>append adds the Prog to the end of the program-thus-far.
 If doLabel is set, it also defines the labels collect for this Prog.</p>
+               
+               <pre><code>func (p *Parser) append(prog *obj.Prog, cond string, doLabel bool)</code></pre>
+            </article>
             
-            <pre><code>func append(prog *obj.Prog, cond string, doLabel bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="validSymbol">
-            <h2>validSymbol</h2>
-            <hr />
-            
-            <p>validSymbol checks that addr represents a valid name for a pseudo-op.</p>
-            
-            <pre><code>func validSymbol(pseudo string, addr *obj.Addr, offsetOk bool) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="evalInteger">
-            <h2>evalInteger</h2>
-            <hr />
-            
-            <p>evalInteger evaluates an integer constant for a pseudo-op.</p>
-            
-            <pre><code>func evalInteger(pseudo string, operands []lex.Token) int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="validImmediate">
-            <h2>validImmediate</h2>
-            <hr />
-            
-            <p>validImmediate checks that addr represents an immediate constant.</p>
-            
-            <pre><code>func validImmediate(pseudo string, addr *obj.Addr) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="asmText">
-            <h2>asmText</h2>
-            <hr />
-            
-            <p>asmText assembles a TEXT pseudo-op.
-TEXT runtime·sigtramp(SB),4,$0-0</p>
-            
-            <pre><code>func asmText(operands [][]lex.Token)</code></pre>
-         </article>
-         
-         <article class="function" data-name="asmData">
-            <h2>asmData</h2>
-            <hr />
-            
-            <p>asmData assembles a DATA pseudo-op.
+            <article class="function" data-name="asmData">
+               <h3>
+                  asmData 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>asmData assembles a DATA pseudo-op.
 DATA masks<>+0x00(SB)/4, $0x00000000</p>
+               
+               <pre><code>func (p *Parser) asmData(operands [][]lex.Token)</code></pre>
+            </article>
             
-            <pre><code>func asmData(operands [][]lex.Token)</code></pre>
-         </article>
-         
-         <article class="function" data-name="asmGlobl">
-            <h2>asmGlobl</h2>
-            <hr />
+            <article class="function" data-name="asmFuncData">
+               <h3>
+                  asmFuncData 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>asmFuncData assembles a FUNCDATA pseudo-op.
+FUNCDATA $1, funcdata<>+4(SB)</p>
+               
+               <pre><code>func (p *Parser) asmFuncData(operands [][]lex.Token)</code></pre>
+            </article>
             
-            <p>asmGlobl assembles a GLOBL pseudo-op.
+            <article class="function" data-name="asmGlobl">
+               <h3>
+                  asmGlobl 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>asmGlobl assembles a GLOBL pseudo-op.
 GLOBL shifts<>(SB),8,$256
 GLOBL shifts<>(SB),$256</p>
+               
+               <pre><code>func (p *Parser) asmGlobl(operands [][]lex.Token)</code></pre>
+            </article>
             
-            <pre><code>func asmGlobl(operands [][]lex.Token)</code></pre>
-         </article>
-         
-         <article class="function" data-name="asmPCData">
-            <h2>asmPCData</h2>
-            <hr />
+            <article class="function" data-name="asmInstruction">
+               <h3>
+                  asmInstruction 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>asmInstruction assembles an instruction.
+MOVW R9, (R10)</p>
+               
+               <pre><code>func (p *Parser) asmInstruction(op obj.As, cond string, a []obj.Addr)</code></pre>
+            </article>
             
-            <p>asmPCData assembles a PCDATA pseudo-op.
-PCDATA $2, $705</p>
-            
-            <pre><code>func asmPCData(operands [][]lex.Token)</code></pre>
-         </article>
-         
-         <article class="function" data-name="asmPCAlign">
-            <h2>asmPCAlign</h2>
-            <hr />
-            
-            <p>asmPCAlign assembles a PCALIGN pseudo-op.
-PCALIGN $16</p>
-            
-            <pre><code>func asmPCAlign(operands [][]lex.Token)</code></pre>
-         </article>
-         
-         <article class="function" data-name="asmFuncData">
-            <h2>asmFuncData</h2>
-            <hr />
-            
-            <p>asmFuncData assembles a FUNCDATA pseudo-op.
-FUNCDATA $1, funcdata<>+4(SB)</p>
-            
-            <pre><code>func asmFuncData(operands [][]lex.Token)</code></pre>
-         </article>
-         
-         <article class="function" data-name="asmJump">
-            <h2>asmJump</h2>
-            <hr />
-            
-            <p>asmJump assembles a jump instruction.
+            <article class="function" data-name="asmJump">
+               <h3>
+                  asmJump 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>asmJump assembles a jump instruction.
 JMP	R1
 JMP	exit
 JMP	3(PC)</p>
-            
-            <pre><code>func asmJump(op obj.As, cond string, a []obj.Addr)</code></pre>
-         </article>
-         
-         <article class="function" data-name="patch">
-            <h2>patch</h2>
-            <hr />
-            
-            <pre><code>func patch()</code></pre>
-         </article>
-         
-         <article class="function" data-name="branch">
-            <h2>branch</h2>
-            <hr />
-            
-            <pre><code>func branch(addr *obj.Addr, target *obj.Prog)</code></pre>
-         </article>
-         
-         <article class="function" data-name="asmInstruction">
-            <h2>asmInstruction</h2>
-            <hr />
-            
-            <p>asmInstruction assembles an instruction.
-MOVW R9, (R10)</p>
-            
-            <pre><code>func asmInstruction(op obj.As, cond string, a []obj.Addr)</code></pre>
-         </article>
-         
-         <article class="function" data-name="symbolName">
-            <h2>symbolName</h2>
-            <hr />
-            
-            <p>symbolName returns the symbol name, or an error string if none is available.</p>
-            
-            <pre><code>func symbolName(addr *obj.Addr) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="getConstantPseudo">
-            <h2>getConstantPseudo</h2>
-            <hr />
-            
-            <p>getConstantPseudo checks that addr represents a plain constant and returns its value.</p>
-            
-            <pre><code>func getConstantPseudo(pseudo string, addr *obj.Addr) int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="getConstant">
-            <h2>getConstant</h2>
-            <hr />
-            
-            <p>getConstant checks that addr represents a plain constant and returns its value.</p>
-            
-            <pre><code>func getConstant(prog *obj.Prog, op obj.As, addr *obj.Addr) int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="getImmediate">
-            <h2>getImmediate</h2>
-            <hr />
-            
-            <p>getImmediate checks that addr represents an immediate constant and returns its value.</p>
-            
-            <pre><code>func getImmediate(prog *obj.Prog, op obj.As, addr *obj.Addr) int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="getRegister">
-            <h2>getRegister</h2>
-            <hr />
-            
-            <p>getRegister checks that addr represents a register and returns its value.</p>
-            
-            <pre><code>func getRegister(prog *obj.Prog, op obj.As, addr *obj.Addr) int16</code></pre>
-         </article>
-         
-         <article class="function" data-name="testEndToEnd">
-            <h2>testEndToEnd</h2>
-            <hr />
-            
-            <pre><code>func testEndToEnd(t *testing.T, goarch string, file string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="isHexes">
-            <h2>isHexes</h2>
-            <hr />
-            
-            <pre><code>func isHexes(s string) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="testErrors">
-            <h2>testErrors</h2>
-            <hr />
-            
-            <pre><code>func testErrors(t *testing.T, goarch string, file string, flags ...string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Test386EndToEnd">
-            <h2>Test386EndToEnd</h2>
-            <hr />
-            
-            <pre><code>func Test386EndToEnd(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestARMEndToEnd">
-            <h2>TestARMEndToEnd</h2>
-            <hr />
-            
-            <pre><code>func TestARMEndToEnd(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestGoBuildErrors">
-            <h2>TestGoBuildErrors</h2>
-            <hr />
-            
-            <pre><code>func TestGoBuildErrors(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestGenericErrors">
-            <h2>TestGenericErrors</h2>
-            <hr />
-            
-            <pre><code>func TestGenericErrors(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestARMErrors">
-            <h2>TestARMErrors</h2>
-            <hr />
-            
-            <pre><code>func TestARMErrors(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestARM64EndToEnd">
-            <h2>TestARM64EndToEnd</h2>
-            <hr />
-            
-            <pre><code>func TestARM64EndToEnd(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestARM64Encoder">
-            <h2>TestARM64Encoder</h2>
-            <hr />
-            
-            <pre><code>func TestARM64Encoder(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestARM64Errors">
-            <h2>TestARM64Errors</h2>
-            <hr />
-            
-            <pre><code>func TestARM64Errors(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestAMD64EndToEnd">
-            <h2>TestAMD64EndToEnd</h2>
-            <hr />
-            
-            <pre><code>func TestAMD64EndToEnd(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Test386Encoder">
-            <h2>Test386Encoder</h2>
-            <hr />
-            
-            <pre><code>func Test386Encoder(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestAMD64Encoder">
-            <h2>TestAMD64Encoder</h2>
-            <hr />
-            
-            <pre><code>func TestAMD64Encoder(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestAMD64Errors">
-            <h2>TestAMD64Errors</h2>
-            <hr />
-            
-            <pre><code>func TestAMD64Errors(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestAMD64DynLinkErrors">
-            <h2>TestAMD64DynLinkErrors</h2>
-            <hr />
-            
-            <pre><code>func TestAMD64DynLinkErrors(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestMIPSEndToEnd">
-            <h2>TestMIPSEndToEnd</h2>
-            <hr />
-            
-            <pre><code>func TestMIPSEndToEnd(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestLOONG64Encoder">
-            <h2>TestLOONG64Encoder</h2>
-            <hr />
-            
-            <pre><code>func TestLOONG64Encoder(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestPPC64EndToEnd">
-            <h2>TestPPC64EndToEnd</h2>
-            <hr />
-            
-            <pre><code>func TestPPC64EndToEnd(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestRISCVEndToEnd">
-            <h2>TestRISCVEndToEnd</h2>
-            <hr />
-            
-            <pre><code>func TestRISCVEndToEnd(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestRISCVErrors">
-            <h2>TestRISCVErrors</h2>
-            <hr />
-            
-            <pre><code>func TestRISCVErrors(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestS390XEndToEnd">
-            <h2>TestS390XEndToEnd</h2>
-            <hr />
-            
-            <pre><code>func TestS390XEndToEnd(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestExpr">
-            <h2>TestExpr</h2>
-            <hr />
-            
-            <pre><code>func TestExpr(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestBadExpr">
-            <h2>TestBadExpr</h2>
-            <hr />
-            
-            <pre><code>func TestBadExpr(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="runBadTest">
-            <h2>runBadTest</h2>
-            <hr />
-            
-            <pre><code>func runBadTest(i int, test badExprTest, t *testing.T) err error</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestAMD64BadInstParser">
-            <h2>TestAMD64BadInstParser</h2>
-            <hr />
-            
-            <pre><code>func TestAMD64BadInstParser(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testBadInstParser">
-            <h2>testBadInstParser</h2>
-            <hr />
-            
-            <pre><code>func testBadInstParser(t *testing.T, goarch string, tests []badInstTest)</code></pre>
-         </article>
-         
-         <article class="function" data-name="setArch">
-            <h2>setArch</h2>
-            <hr />
-            
-            <pre><code>func setArch(goarch string) (*arch.Arch, *obj.Link)</code></pre>
-         </article>
-         
-         <article class="function" data-name="newParser">
-            <h2>newParser</h2>
-            <hr />
-            
-            <pre><code>func newParser(goarch string) *Parser</code></pre>
-         </article>
-         
-         <article class="function" data-name="tryParse">
-            <h2>tryParse</h2>
-            <hr />
-            
-            <p>tryParse executes parse func in panicOnError=true context.
-parse is expected to call any parsing methods that may panic.
-Returns error gathered from recover; nil if no parse errors occurred.
-
-For unexpected panics, calls t.Fatal.</p>
-            
-            <pre><code>func tryParse(t *testing.T, parse func) err error</code></pre>
-         </article>
-         
-         <article class="function" data-name="testBadOperandParser">
-            <h2>testBadOperandParser</h2>
-            <hr />
-            
-            <pre><code>func testBadOperandParser(t *testing.T, parser *Parser, tests []badOperandTest)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testOperandParser">
-            <h2>testOperandParser</h2>
-            <hr />
-            
-            <pre><code>func testOperandParser(t *testing.T, parser *Parser, tests []operandTest)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestAMD64OperandParser">
-            <h2>TestAMD64OperandParser</h2>
-            <hr />
-            
-            <pre><code>func TestAMD64OperandParser(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Test386OperandParser">
-            <h2>Test386OperandParser</h2>
-            <hr />
-            
-            <pre><code>func Test386OperandParser(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestARMOperandParser">
-            <h2>TestARMOperandParser</h2>
-            <hr />
-            
-            <pre><code>func TestARMOperandParser(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestARM64OperandParser">
-            <h2>TestARM64OperandParser</h2>
-            <hr />
-            
-            <pre><code>func TestARM64OperandParser(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestPPC64OperandParser">
-            <h2>TestPPC64OperandParser</h2>
-            <hr />
-            
-            <pre><code>func TestPPC64OperandParser(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestMIPSOperandParser">
-            <h2>TestMIPSOperandParser</h2>
-            <hr />
-            
-            <pre><code>func TestMIPSOperandParser(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestMIPS64OperandParser">
-            <h2>TestMIPS64OperandParser</h2>
-            <hr />
-            
-            <pre><code>func TestMIPS64OperandParser(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestLOONG64OperandParser">
-            <h2>TestLOONG64OperandParser</h2>
-            <hr />
-            
-            <pre><code>func TestLOONG64OperandParser(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestS390XOperandParser">
-            <h2>TestS390XOperandParser</h2>
-            <hr />
-            
-            <pre><code>func TestS390XOperandParser(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestFuncAddress">
-            <h2>TestFuncAddress</h2>
-            <hr />
-            
-            <pre><code>func TestFuncAddress(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="NewParser">
-            <h2>NewParser</h2>
-            <hr />
-            
-            <pre><code>func NewParser(ctxt *obj.Link, ar *arch.Arch, lexer lex.TokenReader) *Parser</code></pre>
-         </article>
-         
-         <article class="function" data-name="errorf">
-            <h2>errorf</h2>
-            <hr />
-            
-            <pre><code>func errorf(format string, args ...*ast.InterfaceType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="pos">
-            <h2>pos</h2>
-            <hr />
-            
-            <pre><code>func pos() src.XPos</code></pre>
-         </article>
-         
-         <article class="function" data-name="Parse">
-            <h2>Parse</h2>
-            <hr />
-            
-            <pre><code>func Parse() (*obj.Prog, bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="ParseSymABIs">
-            <h2>ParseSymABIs</h2>
-            <hr />
-            
-            <p>ParseSymABIs parses p's assembly code to find text symbol
-definitions and references and writes a symabis file to w.</p>
-            
-            <pre><code>func ParseSymABIs(w io.Writer) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="nextToken">
-            <h2>nextToken</h2>
-            <hr />
-            
-            <p>nextToken returns the next non-build-comment token from the lexer.
-It reports misplaced //go:build comments but otherwise discards them.</p>
-            
-            <pre><code>func nextToken() lex.ScanToken</code></pre>
-         </article>
-         
-         <article class="function" data-name="line">
-            <h2>line</h2>
-            <hr />
-            
-            <p>line consumes a single assembly line from p.lex of the form
-
-	{label:} WORD[.cond] [ arg {, arg} ] (';' | '\n')
-
+               
+               <pre><code>func (p *Parser) asmJump(op obj.As, cond string, a []obj.Addr)</code></pre>
+            </article>
+            
+            <article class="function" data-name="asmPCAlign">
+               <h3>
+                  asmPCAlign 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>asmPCAlign assembles a PCALIGN pseudo-op.
+PCALIGN $16</p>
+               
+               <pre><code>func (p *Parser) asmPCAlign(operands [][]lex.Token)</code></pre>
+            </article>
+            
+            <article class="function" data-name="asmPCData">
+               <h3>
+                  asmPCData 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>asmPCData assembles a PCDATA pseudo-op.
+PCDATA $2, $705</p>
+               
+               <pre><code>func (p *Parser) asmPCData(operands [][]lex.Token)</code></pre>
+            </article>
+            
+            <article class="function" data-name="asmText">
+               <h3>
+                  asmText 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>asmText assembles a TEXT pseudo-op.
+TEXT runtime·sigtramp(SB),4,$0-0</p>
+               
+               <pre><code>func (p *Parser) asmText(operands [][]lex.Token)</code></pre>
+            </article>
+            
+            <article class="function" data-name="at">
+               <h3>
+                  at 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>at reports whether the next tokens are as requested.</p>
+               
+               <pre><code>func (p *Parser) at(next ...lex.ScanToken) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="atRegisterExtension">
+               <h3>
+                  atRegisterExtension 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>atRegisterExtension reports whether we are at the start of an ARM64 extended register.
+We have consumed the register or R prefix.</p>
+               
+               <pre><code>func (p *Parser) atRegisterExtension() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="atRegisterShift">
+               <h3>
+                  atRegisterShift 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>atRegisterShift reports whether we are at the start of an ARM shifted register.
+We have consumed the register or R prefix.</p>
+               
+               <pre><code>func (p *Parser) atRegisterShift() bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="atStartOfRegister">
+               <h3>
+                  atStartOfRegister 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>atStartOfRegister reports whether the parser is at the start of a register definition.</p>
+               
+               <pre><code>func (p *Parser) atStartOfRegister(name string) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="atof">
+               <h3>
+                  atof 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *Parser) atof(str string) float64</code></pre>
+            </article>
+            
+            <article class="function" data-name="atoi">
+               <h3>
+                  atoi 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *Parser) atoi(str string) uint64</code></pre>
+            </article>
+            
+            <article class="function" data-name="back">
+               <h3>
+                  back 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *Parser) back()</code></pre>
+            </article>
+            
+            <article class="function" data-name="branch">
+               <h3>
+                  branch 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *Parser) branch(addr *obj.Addr, target *obj.Prog)</code></pre>
+            </article>
+            
+            <article class="function" data-name="errorf">
+               <h3>
+                  errorf 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *Parser) errorf(format string, args ...interface{})</code></pre>
+            </article>
+            
+            <article class="function" data-name="evalInteger">
+               <h3>
+                  evalInteger 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>evalInteger evaluates an integer constant for a pseudo-op.</p>
+               
+               <pre><code>func (p *Parser) evalInteger(pseudo string, operands []lex.Token) int64</code></pre>
+            </article>
+            
+            <article class="function" data-name="expect">
+               <h3>
+                  expect 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>expect verifies that the next item has the expected type. It does not consume it.</p>
+               
+               <pre><code>func (p *Parser) expect(expectedToken lex.ScanToken, expectedMessage string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="expectOperandEnd">
+               <h3>
+                  expectOperandEnd 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>expectOperandEnd verifies that the parsing state is properly at the end of an operand.</p>
+               
+               <pre><code>func (p *Parser) expectOperandEnd()</code></pre>
+            </article>
+            
+            <article class="function" data-name="expr">
+               <h3>
+                  expr 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>expr = term | term ('+' | '-' | '|' | '^') term.</p>
+               
+               <pre><code>func (p *Parser) expr() uint64</code></pre>
+            </article>
+            
+            <article class="function" data-name="factor">
+               <h3>
+                  factor 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>factor = const | '+' factor | '-' factor | '~' factor | '(' expr ')'</p>
+               
+               <pre><code>func (p *Parser) factor() uint64</code></pre>
+            </article>
+            
+            <article class="function" data-name="floatExpr">
+               <h3>
+                  floatExpr 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>floatExpr = fconst | '-' floatExpr | '+' floatExpr | '(' floatExpr ')'</p>
+               
+               <pre><code>func (p *Parser) floatExpr() float64</code></pre>
+            </article>
+            
+            <article class="function" data-name="funcAddress">
+               <h3>
+                  funcAddress 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>funcAddress parses an external function address. This is a
+constrained form of the operand syntax that's always SB-based,
+non-static, and has at most a simple integer offset:
+[$|*]sym[<abi>][+Int](SB)</p>
+               
+               <pre><code>func (p *Parser) funcAddress() (string, obj.ABI, bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="get">
+               <h3>
+                  get 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>get verifies that the next item has the expected type and returns it.</p>
+               
+               <pre><code>func (p *Parser) get(expected lex.ScanToken) lex.Token</code></pre>
+            </article>
+            
+            <article class="function" data-name="getConstant">
+               <h3>
+                  getConstant 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>getConstant checks that addr represents a plain constant and returns its value.</p>
+               
+               <pre><code>func (p *Parser) getConstant(prog *obj.Prog, op obj.As, addr *obj.Addr) int64</code></pre>
+            </article>
+            
+            <article class="function" data-name="getConstantPseudo">
+               <h3>
+                  getConstantPseudo 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>getConstantPseudo checks that addr represents a plain constant and returns its value.</p>
+               
+               <pre><code>func (p *Parser) getConstantPseudo(pseudo string, addr *obj.Addr) int64</code></pre>
+            </article>
+            
+            <article class="function" data-name="getImmediate">
+               <h3>
+                  getImmediate 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>getImmediate checks that addr represents an immediate constant and returns its value.</p>
+               
+               <pre><code>func (p *Parser) getImmediate(prog *obj.Prog, op obj.As, addr *obj.Addr) int64</code></pre>
+            </article>
+            
+            <article class="function" data-name="getRegister">
+               <h3>
+                  getRegister 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>getRegister checks that addr represents a register and returns its value.</p>
+               
+               <pre><code>func (p *Parser) getRegister(prog *obj.Prog, op obj.As, addr *obj.Addr) int16</code></pre>
+            </article>
+            
+            <article class="function" data-name="have">
+               <h3>
+                  have 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>have reports whether the remaining tokens (including the current one) contain the specified token.</p>
+               
+               <pre><code>func (p *Parser) have(token lex.ScanToken) bool</code></pre>
+            </article>
+            
+            <article class="function" data-name="instruction">
+               <h3>
+                  instruction 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *Parser) instruction(op obj.As, word string, cond string, operands [][]lex.Token)</code></pre>
+            </article>
+            
+            <article class="function" data-name="line">
+               <h3>
+                  line 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>line consumes a single assembly line from p.lex of the form
+{label:} WORD[.cond] [ arg {, arg} ] (';' | '\n')
 It adds any labels to p.pendingLabels and returns the word, cond,
 operand list, and true. If there is an error or EOF, it returns
 ok=false.
-
 line may reuse the memory from scratch.</p>
+               
+               <pre><code>func (p *Parser) line(scratch [][]lex.Token) (word string, cond string, operands [][]lex.Token, ok bool)</code></pre>
+            </article>
             
-            <pre><code>func line(scratch [][]lex.Token) (word string, cond string, operands [][]lex.Token, ok bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="instruction">
-            <h2>instruction</h2>
-            <hr />
+            <article class="function" data-name="more">
+               <h3>
+                  more 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *Parser) more() bool</code></pre>
+            </article>
             
-            <pre><code>func instruction(op obj.As, word string, cond string, operands [][]lex.Token)</code></pre>
-         </article>
-         
-         <article class="function" data-name="pseudo">
-            <h2>pseudo</h2>
-            <hr />
+            <article class="function" data-name="next">
+               <h3>
+                  next 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *Parser) next() lex.Token</code></pre>
+            </article>
             
-            <pre><code>func pseudo(word string, operands [][]lex.Token) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="symDefRef">
-            <h2>symDefRef</h2>
-            <hr />
+            <article class="function" data-name="nextToken">
+               <h3>
+                  nextToken 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>nextToken returns the next non-build-comment token from the lexer.
+It reports misplaced //go:build comments but otherwise discards them.</p>
+               
+               <pre><code>func (p *Parser) nextToken() lex.ScanToken</code></pre>
+            </article>
             
-            <p>symDefRef scans a line for potential text symbol definitions and
-references and writes symabis information to w.
-
-The symabis format is documented at
-cmd/compile/internal/ssagen.ReadSymABIs.</p>
+            <article class="function" data-name="operand">
+               <h3>
+                  operand 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>operand parses a general operand and stores the result in *a.</p>
+               
+               <pre><code>func (p *Parser) operand(a *obj.Addr)</code></pre>
+            </article>
             
-            <pre><code>func symDefRef(w io.Writer, word string, operands [][]lex.Token)</code></pre>
-         </article>
-         
-         <article class="function" data-name="start">
-            <h2>start</h2>
-            <hr />
+            <article class="function" data-name="parseScale">
+               <h3>
+                  parseScale 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>parseScale converts a decimal string into a valid scale factor.</p>
+               
+               <pre><code>func (p *Parser) parseScale(s string) int8</code></pre>
+            </article>
             
-            <pre><code>func start(operand []lex.Token)</code></pre>
-         </article>
-         
-         <article class="function" data-name="address">
-            <h2>address</h2>
-            <hr />
+            <article class="function" data-name="patch">
+               <h3>
+                  patch 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *Parser) patch()</code></pre>
+            </article>
             
-            <p>address parses the operand into a link address structure.</p>
+            <article class="function" data-name="peek">
+               <h3>
+                  peek 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *Parser) peek() lex.ScanToken</code></pre>
+            </article>
             
-            <pre><code>func address(operand []lex.Token) obj.Addr</code></pre>
-         </article>
-         
-         <article class="function" data-name="parseScale">
-            <h2>parseScale</h2>
-            <hr />
+            <article class="function" data-name="pos">
+               <h3>
+                  pos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *Parser) pos() src.XPos</code></pre>
+            </article>
             
-            <p>parseScale converts a decimal string into a valid scale factor.</p>
+            <article class="function" data-name="positiveAtoi">
+               <h3>
+                  positiveAtoi 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>positiveAtoi returns an int64 that must be >= 0.</p>
+               
+               <pre><code>func (p *Parser) positiveAtoi(str string) int64</code></pre>
+            </article>
             
-            <pre><code>func parseScale(s string) int8</code></pre>
-         </article>
-         
-         <article class="function" data-name="operand">
-            <h2>operand</h2>
-            <hr />
+            <article class="function" data-name="pseudo">
+               <h3>
+                  pseudo 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *Parser) pseudo(word string, operands [][]lex.Token) bool</code></pre>
+            </article>
             
-            <p>operand parses a general operand and stores the result in *a.</p>
-            
-            <pre><code>func operand(a *obj.Addr)</code></pre>
-         </article>
-         
-         <article class="function" data-name="atStartOfRegister">
-            <h2>atStartOfRegister</h2>
-            <hr />
-            
-            <p>atStartOfRegister reports whether the parser is at the start of a register definition.</p>
-            
-            <pre><code>func atStartOfRegister(name string) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="atRegisterShift">
-            <h2>atRegisterShift</h2>
-            <hr />
-            
-            <p>atRegisterShift reports whether we are at the start of an ARM shifted register.
-We have consumed the register or R prefix.</p>
-            
-            <pre><code>func atRegisterShift() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="atRegisterExtension">
-            <h2>atRegisterExtension</h2>
-            <hr />
-            
-            <p>atRegisterExtension reports whether we are at the start of an ARM64 extended register.
-We have consumed the register or R prefix.</p>
-            
-            <pre><code>func atRegisterExtension() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="registerReference">
-            <h2>registerReference</h2>
-            <hr />
-            
-            <p>registerReference parses a register given either the name, R10, or a parenthesized form, SPR(10).</p>
-            
-            <pre><code>func registerReference(name string) (int16, bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="register">
-            <h2>register</h2>
-            <hr />
-            
-            <p>register parses a full register reference where there is no symbol present (as in 4(R0) or R(10) but not sym(SB))
-including forms involving multiple registers such as R1:R2.</p>
-            
-            <pre><code>func register(name string, prefix rune) (r1 int16, r2 int16, scale int8, ok bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="registerShift">
-            <h2>registerShift</h2>
-            <hr />
-            
-            <p>registerShift parses an ARM/ARM64 shifted register reference and returns the encoded representation.
-There is known to be a register (current token) and a shift operator (peeked token).</p>
-            
-            <pre><code>func registerShift(name string, prefix rune) int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="registerExtension">
-            <h2>registerExtension</h2>
-            <hr />
-            
-            <p>registerExtension parses a register with extension or arrangement.
-There is known to be a register (current token) and an extension operator (peeked token).</p>
-            
-            <pre><code>func registerExtension(a *obj.Addr, name string, prefix rune)</code></pre>
-         </article>
-         
-         <article class="function" data-name="qualifySymbol">
-            <h2>qualifySymbol</h2>
-            <hr />
-            
-            <p>qualifySymbol returns name as a package-qualified symbol name. If
+            <article class="function" data-name="qualifySymbol">
+               <h3>
+                  qualifySymbol 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>qualifySymbol returns name as a package-qualified symbol name. If
 name starts with a period, qualifySymbol prepends the package
 prefix. Otherwise it returns name unchanged.</p>
+               
+               <pre><code>func (p *Parser) qualifySymbol(name string) string</code></pre>
+            </article>
             
-            <pre><code>func qualifySymbol(name string) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="symbolReference">
-            <h2>symbolReference</h2>
-            <hr />
+            <article class="function" data-name="register">
+               <h3>
+                  register 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>register parses a full register reference where there is no symbol present (as in 4(R0) or R(10) but not sym(SB))
+including forms involving multiple registers such as R1:R2.</p>
+               
+               <pre><code>func (p *Parser) register(name string, prefix rune) (r1 int16, r2 int16, scale int8, ok bool)</code></pre>
+            </article>
             
-            <p>symbolReference parses a symbol that is known not to be a register.</p>
+            <article class="function" data-name="registerExtension">
+               <h3>
+                  registerExtension 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>registerExtension parses a register with extension or arrangement.
+There is known to be a register (current token) and an extension operator (peeked token).</p>
+               
+               <pre><code>func (p *Parser) registerExtension(a *obj.Addr, name string, prefix rune)</code></pre>
+            </article>
             
-            <pre><code>func symbolReference(a *obj.Addr, name string, prefix rune)</code></pre>
-         </article>
-         
-         <article class="function" data-name="setPseudoRegister">
-            <h2>setPseudoRegister</h2>
-            <hr />
-            
-            <p>setPseudoRegister sets the NAME field of addr for a pseudo-register reference such as (SB).</p>
-            
-            <pre><code>func setPseudoRegister(addr *obj.Addr, reg string, isStatic bool, prefix rune)</code></pre>
-         </article>
-         
-         <article class="function" data-name="symRefAttrs">
-            <h2>symRefAttrs</h2>
-            <hr />
-            
-            <p>symRefAttrs parses an optional function symbol attribute clause for
-the function symbol 'name', logging an error for a malformed
-attribute clause if 'issueError' is true. The return value is a
-(boolean, ABI) pair indicating that the named symbol is either
-static or a particular ABI specification.
-
-The expected form of the attribute clause is:
-
-empty,           yielding (false, obj.ABI0)
-"<>",            yielding (true,  obj.ABI0)
-"<ABI0>"         yielding (false, obj.ABI0)
-"<ABIInternal>"  yielding (false, obj.ABIInternal)
-
-Anything else beginning with "<" logs an error if issueError is
-true, otherwise returns (false, obj.ABI0).</p>
-            
-            <pre><code>func symRefAttrs(name string, issueError bool) (bool, obj.ABI)</code></pre>
-         </article>
-         
-         <article class="function" data-name="funcAddress">
-            <h2>funcAddress</h2>
-            <hr />
-            
-            <p>funcAddress parses an external function address. This is a
-constrained form of the operand syntax that's always SB-based,
-non-static, and has at most a simple integer offset:
-
-	[$|*]sym[<abi>][+Int](SB)</p>
-            
-            <pre><code>func funcAddress() (string, obj.ABI, bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="registerIndirect">
-            <h2>registerIndirect</h2>
-            <hr />
-            
-            <p>registerIndirect parses the general form of a register indirection.
+            <article class="function" data-name="registerIndirect">
+               <h3>
+                  registerIndirect 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>registerIndirect parses the general form of a register indirection.
 It can be (R1), (R2*scale), (R1)(R2*scale), (R1)(R2.SXTX<<3) or (R1)(R2<<3)
 where R1 may be a simple register or register pair R:R or (R, R) or (R+R).
 Or it might be a pseudo-indirection like (FP).
 We are sitting on the opening parenthesis.</p>
+               
+               <pre><code>func (p *Parser) registerIndirect(a *obj.Addr, prefix rune)</code></pre>
+            </article>
             
-            <pre><code>func registerIndirect(a *obj.Addr, prefix rune)</code></pre>
-         </article>
-         
-         <article class="function" data-name="registerList">
-            <h2>registerList</h2>
-            <hr />
-            
-            <p>registerList parses an ARM or ARM64 register list expression, a list of
+            <article class="function" data-name="registerList">
+               <h3>
+                  registerList 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>registerList parses an ARM or ARM64 register list expression, a list of
 registers in []. There may be comma-separated ranges or individual
 registers, as in [R1,R3-R5] or [V1.S4, V2.S4, V3.S4, V4.S4].
 For ARM, only R0 through R15 may appear.
 For ARM64, V0 through V31 with arrangement may appear.
-
 For 386/AMD64 register list specifies 4VNNIW-style multi-source operand.
 For range of 4 elements, Intel manual uses "+3" notation, for example:
-
-	VP4DPWSSDS zmm1{k1}{z}, zmm2+3, m128
-
+VP4DPWSSDS zmm1{k1}{z}, zmm2+3, m128
 Given asm line:
-
-	VP4DPWSSDS Z5, [Z10-Z13], (AX)
-
+VP4DPWSSDS Z5, [Z10-Z13], (AX)
 zmm2 is Z10, and Z13 is the only valid value for it (Z10+3).
 Only simple ranges are accepted, like [Z0-Z3].
-
 The opening bracket has been consumed.</p>
+               
+               <pre><code>func (p *Parser) registerList(a *obj.Addr)</code></pre>
+            </article>
             
-            <pre><code>func registerList(a *obj.Addr)</code></pre>
-         </article>
-         
-         <article class="function" data-name="registerListARM">
-            <h2>registerListARM</h2>
-            <hr />
+            <article class="function" data-name="registerListARM">
+               <h3>
+                  registerListARM 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *Parser) registerListARM(a *obj.Addr)</code></pre>
+            </article>
             
-            <pre><code>func registerListARM(a *obj.Addr)</code></pre>
-         </article>
-         
-         <article class="function" data-name="registerListX86">
-            <h2>registerListX86</h2>
-            <hr />
+            <article class="function" data-name="registerListX86">
+               <h3>
+                  registerListX86 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *Parser) registerListX86(a *obj.Addr)</code></pre>
+            </article>
             
-            <pre><code>func registerListX86(a *obj.Addr)</code></pre>
-         </article>
-         
-         <article class="function" data-name="registerNumber">
-            <h2>registerNumber</h2>
-            <hr />
+            <article class="function" data-name="registerNumber">
+               <h3>
+                  registerNumber 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>registerNumber is ARM-specific. It returns the number of the specified register.</p>
+               
+               <pre><code>func (p *Parser) registerNumber(name string) uint16</code></pre>
+            </article>
             
-            <p>registerNumber is ARM-specific. It returns the number of the specified register.</p>
+            <article class="function" data-name="registerReference">
+               <h3>
+                  registerReference 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>registerReference parses a register given either the name, R10, or a parenthesized form, SPR(10).</p>
+               
+               <pre><code>func (p *Parser) registerReference(name string) (int16, bool)</code></pre>
+            </article>
             
-            <pre><code>func registerNumber(name string) uint16</code></pre>
-         </article>
-         
-         <article class="function" data-name="expr">
-            <h2>expr</h2>
-            <hr />
+            <article class="function" data-name="registerShift">
+               <h3>
+                  registerShift 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>registerShift parses an ARM/ARM64 shifted register reference and returns the encoded representation.
+There is known to be a register (current token) and a shift operator (peeked token).</p>
+               
+               <pre><code>func (p *Parser) registerShift(name string, prefix rune) int64</code></pre>
+            </article>
             
-            <p>expr = term | term ('+' | '-' | '|' | '^') term.</p>
+            <article class="function" data-name="setPseudoRegister">
+               <h3>
+                  setPseudoRegister 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>setPseudoRegister sets the NAME field of addr for a pseudo-register reference such as (SB).</p>
+               
+               <pre><code>func (p *Parser) setPseudoRegister(addr *obj.Addr, reg string, isStatic bool, prefix rune)</code></pre>
+            </article>
             
-            <pre><code>func expr() uint64</code></pre>
-         </article>
-         
-         <article class="function" data-name="floatExpr">
-            <h2>floatExpr</h2>
-            <hr />
+            <article class="function" data-name="start">
+               <h3>
+                  start 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (p *Parser) start(operand []lex.Token)</code></pre>
+            </article>
             
-            <p>floatExpr = fconst | '-' floatExpr | '+' floatExpr | '(' floatExpr ')'</p>
+            <article class="function" data-name="symDefRef">
+               <h3>
+                  symDefRef 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>symDefRef scans a line for potential text symbol definitions and
+references and writes symabis information to w.
+The symabis format is documented at
+cmd/compile/internal/ssagen.ReadSymABIs.</p>
+               
+               <pre><code>func (p *Parser) symDefRef(w io.Writer, word string, operands [][]lex.Token)</code></pre>
+            </article>
             
-            <pre><code>func floatExpr() float64</code></pre>
-         </article>
-         
-         <article class="function" data-name="term">
-            <h2>term</h2>
-            <hr />
+            <article class="function" data-name="symRefAttrs">
+               <h3>
+                  symRefAttrs 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>symRefAttrs parses an optional function symbol attribute clause for
+the function symbol 'name', logging an error for a malformed
+attribute clause if 'issueError' is true. The return value is a
+(boolean, ABI) pair indicating that the named symbol is either
+static or a particular ABI specification.
+The expected form of the attribute clause is:
+empty,           yielding (false, obj.ABI0)
+"<>",            yielding (true,  obj.ABI0)
+"<ABI0>"         yielding (false, obj.ABI0)
+"<ABIInternal>"  yielding (false, obj.ABIInternal)
+Anything else beginning with "<" logs an error if issueError is
+true, otherwise returns (false, obj.ABI0).</p>
+               
+               <pre><code>func (p *Parser) symRefAttrs(name string, issueError bool) (bool, obj.ABI)</code></pre>
+            </article>
             
-            <p>term = factor | factor ('*' | '/' | '%' | '>>' | '<<' | '&') factor</p>
+            <article class="function" data-name="symbolName">
+               <h3>
+                  symbolName 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>symbolName returns the symbol name, or an error string if none is available.</p>
+               
+               <pre><code>func symbolName(addr *obj.Addr) string</code></pre>
+            </article>
             
-            <pre><code>func term() uint64</code></pre>
-         </article>
-         
-         <article class="function" data-name="factor">
-            <h2>factor</h2>
-            <hr />
+            <article class="function" data-name="symbolReference">
+               <h3>
+                  symbolReference 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>symbolReference parses a symbol that is known not to be a register.</p>
+               
+               <pre><code>func (p *Parser) symbolReference(a *obj.Addr, name string, prefix rune)</code></pre>
+            </article>
             
-            <p>factor = const | '+' factor | '-' factor | '~' factor | '(' expr ')'</p>
+            <article class="function" data-name="term">
+               <h3>
+                  term 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>term = factor | factor ('*' | '/' | '%' | '>>' | '<<' | '&') factor</p>
+               
+               <pre><code>func (p *Parser) term() uint64</code></pre>
+            </article>
             
-            <pre><code>func factor() uint64</code></pre>
-         </article>
-         
-         <article class="function" data-name="positiveAtoi">
-            <h2>positiveAtoi</h2>
-            <hr />
+            <article class="function" data-name="validImmediate">
+               <h3>
+                  validImmediate 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>validImmediate checks that addr represents an immediate constant.</p>
+               
+               <pre><code>func (p *Parser) validImmediate(pseudo string, addr *obj.Addr) bool</code></pre>
+            </article>
             
-            <p>positiveAtoi returns an int64 that must be >= 0.</p>
+            <article class="function" data-name="validSymbol">
+               <h3>
+                  validSymbol 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>validSymbol checks that addr represents a valid name for a pseudo-op.</p>
+               
+               <pre><code>func (p *Parser) validSymbol(pseudo string, addr *obj.Addr, offsetOk bool) bool</code></pre>
+            </article>
             
-            <pre><code>func positiveAtoi(str string) int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="atoi">
-            <h2>atoi</h2>
-            <hr />
-            
-            <pre><code>func atoi(str string) uint64</code></pre>
-         </article>
-         
-         <article class="function" data-name="atof">
-            <h2>atof</h2>
-            <hr />
-            
-            <pre><code>func atof(str string) float64</code></pre>
-         </article>
-         
-         <article class="function" data-name="next">
-            <h2>next</h2>
-            <hr />
-            
-            <pre><code>func next() lex.Token</code></pre>
-         </article>
-         
-         <article class="function" data-name="back">
-            <h2>back</h2>
-            <hr />
-            
-            <pre><code>func back()</code></pre>
-         </article>
-         
-         <article class="function" data-name="peek">
-            <h2>peek</h2>
-            <hr />
-            
-            <pre><code>func peek() lex.ScanToken</code></pre>
-         </article>
-         
-         <article class="function" data-name="more">
-            <h2>more</h2>
-            <hr />
-            
-            <pre><code>func more() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="get">
-            <h2>get</h2>
-            <hr />
-            
-            <p>get verifies that the next item has the expected type and returns it.</p>
-            
-            <pre><code>func get(expected lex.ScanToken) lex.Token</code></pre>
-         </article>
-         
-         <article class="function" data-name="expectOperandEnd">
-            <h2>expectOperandEnd</h2>
-            <hr />
-            
-            <p>expectOperandEnd verifies that the parsing state is properly at the end of an operand.</p>
-            
-            <pre><code>func expectOperandEnd()</code></pre>
-         </article>
-         
-         <article class="function" data-name="expect">
-            <h2>expect</h2>
-            <hr />
-            
-            <p>expect verifies that the next item has the expected type. It does not consume it.</p>
-            
-            <pre><code>func expect(expectedToken lex.ScanToken, expectedMessage string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="have">
-            <h2>have</h2>
-            <hr />
-            
-            <p>have reports whether the remaining tokens (including the current one) contain the specified token.</p>
-            
-            <pre><code>func have(token lex.ScanToken) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="at">
-            <h2>at</h2>
-            <hr />
-            
-            <p>at reports whether the next tokens are as requested.</p>
-            
-            <pre><code>func at(next ...lex.ScanToken) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="tokenize">
-            <h2>tokenize</h2>
-            <hr />
-            
-            <pre><code>func tokenize(s string) [][]lex.Token</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestErroneous">
-            <h2>TestErroneous</h2>
-            <hr />
-            
-            <pre><code>func TestErroneous(t *testing.T)</code></pre>
-         </article>
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -1351,59 +1419,170 @@ The opening bracket has been consumed.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

@@ -13,556 +13,1017 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                  
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>nettest</code>
-         </h1>
-         <hr />
+         <h1>nettest</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="stackOnce">
-            <h2>stackOnce</h2>
-            <hr />
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"syscall"
+"syscall"
+"bytes"
+"encoding/binary"
+"io"
+"math/rand"
+"net"
+"runtime"
+"sync"
+"testing"
+"time"
+"errors"
+"fmt"
+"net"
+"os"
+"os/exec"
+"runtime"
+"strconv"
+"strings"
+"sync"
+"time"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <pre><code>stackOnce sync.Once</code></pre>
-         </article>
-         
-         <article class="global" data-name="ipv4Enabled">
-            <h2>ipv4Enabled</h2>
-            <hr />
+            <article class="global" data-name="aLongTimeAgo">
+               <h3>
+                  aLongTimeAgo 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var aLongTimeAgo = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre><code>ipv4Enabled bool</code></pre>
-         </article>
-         
-         <article class="global" data-name="canListenTCP4OnLoopback">
-            <h2>canListenTCP4OnLoopback</h2>
-            <hr />
+            <article class="global" data-name="canListenTCP4OnLoopback">
+               <h3>
+                  canListenTCP4OnLoopback 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var canListenTCP4OnLoopback bool</code></pre>
+            </article>
             
-            <pre><code>canListenTCP4OnLoopback bool</code></pre>
-         </article>
-         
-         <article class="global" data-name="ipv6Enabled">
-            <h2>ipv6Enabled</h2>
-            <hr />
+            <article class="global" data-name="canListenTCP6OnLoopback">
+               <h3>
+                  canListenTCP6OnLoopback 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var canListenTCP6OnLoopback bool</code></pre>
+            </article>
             
-            <pre><code>ipv6Enabled bool</code></pre>
-         </article>
-         
-         <article class="global" data-name="canListenTCP6OnLoopback">
-            <h2>canListenTCP6OnLoopback</h2>
-            <hr />
+            <article class="global" data-name="errNoAvailableAddress">
+               <h3>
+                  errNoAvailableAddress 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var errNoAvailableAddress = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre><code>canListenTCP6OnLoopback bool</code></pre>
-         </article>
-         
-         <article class="global" data-name="unStrmDgramEnabled">
-            <h2>unStrmDgramEnabled</h2>
-            <hr />
+            <article class="global" data-name="errNoAvailableInterface">
+               <h3>
+                  errNoAvailableInterface 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var errNoAvailableInterface = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre><code>unStrmDgramEnabled bool</code></pre>
-         </article>
-         
-         <article class="global" data-name="rawSocketSess">
-            <h2>rawSocketSess</h2>
-            <hr />
+            <article class="global" data-name="ipv4Enabled">
+               <h3>
+                  ipv4Enabled 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var ipv4Enabled bool</code></pre>
+            </article>
             
-            <pre><code>rawSocketSess bool</code></pre>
-         </article>
-         
-         <article class="global" data-name="aLongTimeAgo">
-            <h2>aLongTimeAgo</h2>
-            <hr />
+            <article class="global" data-name="ipv6Enabled">
+               <h3>
+                  ipv6Enabled 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var ipv6Enabled bool</code></pre>
+            </article>
             
-            <pre><code>aLongTimeAgo</code></pre>
-         </article>
-         
-         <article class="global" data-name="neverTimeout">
-            <h2>neverTimeout</h2>
-            <hr />
+            <article class="global" data-name="neverTimeout">
+               <h3>
+                  neverTimeout 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var neverTimeout = time.Time{...}</code></pre>
+            </article>
             
-            <pre><code>neverTimeout</code></pre>
-         </article>
-         
-         <article class="global" data-name="errNoAvailableInterface">
-            <h2>errNoAvailableInterface</h2>
-            <hr />
+            <article class="global" data-name="rawSocketSess">
+               <h3>
+                  rawSocketSess 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var rawSocketSess bool</code></pre>
+            </article>
             
-            <pre><code>errNoAvailableInterface</code></pre>
-         </article>
-         
-         <article class="global" data-name="errNoAvailableAddress">
-            <h2>errNoAvailableAddress</h2>
-            <hr />
+            <article class="global" data-name="stackOnce">
+               <h3>
+                  stackOnce 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var stackOnce sync.Once</code></pre>
+            </article>
             
-            <pre><code>errNoAvailableAddress</code></pre>
-         </article>
-           
-         <article class="function" data-name="TestConn">
-            <h2>TestConn</h2>
-            <hr />
+            <article class="global" data-name="unStrmDgramEnabled">
+               <h3>
+                  unStrmDgramEnabled 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var unStrmDgramEnabled bool</code></pre>
+            </article>
             
-            <p>TestConn tests that a net.Conn implementation properly satisfies the interface.
-The tests should not produce any false positives, but may experience
-false negatives. Thus, some issues may only be detected when the test is
-run multiple times. For maximal effectiveness, run the tests under the
-race detector.</p>
+         </section>
+          
+         <section id="types">
+            <h2>Type Aliases</h2>
             
-            <pre><code>func TestConn(t *testing.T, mp MakePipe)</code></pre>
-         </article>
-         
-         <article class="function" data-name="timeoutWrapper">
-            <h2>timeoutWrapper</h2>
-            <hr />
+            <article class="type" data-name="MakePipe">
+               <h3>
+                  MakePipe
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>MakePipe creates a connection between two endpoints and returns the pair
+as c1 and c2, such that anything written to c1 is read by c2 and vice-versa.
+The stop function closes all resources, including c1, c2, and the underlying
+net.Listener (if there is one), and should not be nil.</p>
+               
+               <pre><code>type MakePipe func() (c1 net.Conn, c2 net.Conn, stop func(), err error)</code></pre>
+            </article>
             
-            <pre><code>func timeoutWrapper(t *testing.T, mp MakePipe, f connTester)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testBasicIO">
-            <h2>testBasicIO</h2>
-            <hr />
+            <article class="type" data-name="connTester">
+               <h3>
+                  connTester
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <pre><code>type connTester func(t *testing.T, c1 net.Conn, c2 net.Conn)</code></pre>
+            </article>
             
-            <p>testBasicIO tests that the data sent on c1 is properly received on c2.</p>
+         </section>
             
-            <pre><code>func testBasicIO(t *testing.T, c1 net.Conn, c2 net.Conn)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testPingPong">
-            <h2>testPingPong</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <p>testPingPong tests that the two endpoints can synchronously send data to
-each other in a typical request-response pattern.</p>
+            <article class="function" data-name="LocalPath">
+               <h3>
+                  LocalPath 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>LocalPath returns a local path that can be used for Unix-domain
+protocol testing.</p>
+               
+               <pre><code>func LocalPath() (string, error)</code></pre>
+            </article>
             
-            <pre><code>func testPingPong(t *testing.T, c1 net.Conn, c2 net.Conn)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testRacyRead">
-            <h2>testRacyRead</h2>
-            <hr />
+            <article class="function" data-name="LoopbackInterface">
+               <h3>
+                  LoopbackInterface 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>LoopbackInterface returns an available logical network interface
+for loopback test.</p>
+               
+               <pre><code>func LoopbackInterface() (*net.Interface, error)</code></pre>
+            </article>
             
-            <p>testRacyRead tests that it is safe to mutate the input Read buffer
-immediately after cancelation has occurred.</p>
+            <article class="function" data-name="MulticastSource">
+               <h3>
+                  MulticastSource 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>MulticastSource returns a unicast IP address on ifi when ifi is an
+IP multicast-capable network interface.
+The provided network must be "ip", "ip4" or "ip6".</p>
+               
+               <pre><code>func MulticastSource(network string, ifi *net.Interface) (net.IP, error)</code></pre>
+            </article>
             
-            <pre><code>func testRacyRead(t *testing.T, c1 net.Conn, c2 net.Conn)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testRacyWrite">
-            <h2>testRacyWrite</h2>
-            <hr />
+            <article class="function" data-name="NewLocalListener">
+               <h3>
+                  NewLocalListener 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewLocalListener returns a listener which listens to a loopback IP
+address or local file system path.
+The provided network must be "tcp", "tcp4", "tcp6", "unix" or
+"unixpacket".</p>
+               
+               <pre><code>func NewLocalListener(network string) (net.Listener, error)</code></pre>
+            </article>
             
-            <p>testRacyWrite tests that it is safe to mutate the input Write buffer
-immediately after cancelation has occurred.</p>
+            <article class="function" data-name="NewLocalPacketListener">
+               <h3>
+                  NewLocalPacketListener 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewLocalPacketListener returns a packet listener which listens to a
+loopback IP address or local file system path.
+The provided network must be "udp", "udp4", "udp6" or "unixgram".</p>
+               
+               <pre><code>func NewLocalPacketListener(network string) (net.PacketConn, error)</code></pre>
+            </article>
             
-            <pre><code>func testRacyWrite(t *testing.T, c1 net.Conn, c2 net.Conn)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testReadTimeout">
-            <h2>testReadTimeout</h2>
-            <hr />
+            <article class="function" data-name="RoutedInterface">
+               <h3>
+                  RoutedInterface 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>RoutedInterface returns a network interface that can route IP
+traffic and satisfies flags.
+The provided network must be "ip", "ip4" or "ip6".</p>
+               
+               <pre><code>func RoutedInterface(network string, flags net.Flags) (*net.Interface, error)</code></pre>
+            </article>
             
-            <p>testReadTimeout tests that Read timeouts do not affect Write.</p>
+            <article class="function" data-name="SupportsIPv4">
+               <h3>
+                  SupportsIPv4 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>SupportsIPv4 reports whether the platform supports IPv4 networking
+functionality.</p>
+               
+               <pre><code>func SupportsIPv4() bool</code></pre>
+            </article>
             
-            <pre><code>func testReadTimeout(t *testing.T, c1 net.Conn, c2 net.Conn)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testWriteTimeout">
-            <h2>testWriteTimeout</h2>
-            <hr />
+            <article class="function" data-name="SupportsIPv6">
+               <h3>
+                  SupportsIPv6 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>SupportsIPv6 reports whether the platform supports IPv6 networking
+functionality.</p>
+               
+               <pre><code>func SupportsIPv6() bool</code></pre>
+            </article>
             
-            <p>testWriteTimeout tests that Write timeouts do not affect Read.</p>
+            <article class="function" data-name="SupportsRawSocket">
+               <h3>
+                  SupportsRawSocket 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>SupportsRawSocket reports whether the current session is available
+to use raw sockets.</p>
+               
+               <pre><code>func SupportsRawSocket() bool</code></pre>
+            </article>
             
-            <pre><code>func testWriteTimeout(t *testing.T, c1 net.Conn, c2 net.Conn)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testPastTimeout">
-            <h2>testPastTimeout</h2>
-            <hr />
-            
-            <p>testPastTimeout tests that a deadline set in the past immediately times out
-Read and Write requests.</p>
-            
-            <pre><code>func testPastTimeout(t *testing.T, c1 net.Conn, c2 net.Conn)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testPresentTimeout">
-            <h2>testPresentTimeout</h2>
-            <hr />
-            
-            <p>testPresentTimeout tests that a past deadline set while there are pending
-Read and Write operations immediately times out those operations.</p>
-            
-            <pre><code>func testPresentTimeout(t *testing.T, c1 net.Conn, c2 net.Conn)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testFutureTimeout">
-            <h2>testFutureTimeout</h2>
-            <hr />
-            
-            <p>testFutureTimeout tests that a future deadline will eventually time out
-Read and Write operations.</p>
-            
-            <pre><code>func testFutureTimeout(t *testing.T, c1 net.Conn, c2 net.Conn)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testCloseTimeout">
-            <h2>testCloseTimeout</h2>
-            <hr />
-            
-            <p>testCloseTimeout tests that calling Close immediately times out pending
-Read and Write operations.</p>
-            
-            <pre><code>func testCloseTimeout(t *testing.T, c1 net.Conn, c2 net.Conn)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testConcurrentMethods">
-            <h2>testConcurrentMethods</h2>
-            <hr />
-            
-            <p>testConcurrentMethods tests that the methods of net.Conn can safely
-be called concurrently.</p>
-            
-            <pre><code>func testConcurrentMethods(t *testing.T, c1 net.Conn, c2 net.Conn)</code></pre>
-         </article>
-         
-         <article class="function" data-name="checkForTimeoutError">
-            <h2>checkForTimeoutError</h2>
-            <hr />
-            
-            <p>checkForTimeoutError checks that the error satisfies the Error interface
+            <article class="function" data-name="checkForTimeoutError">
+               <h3>
+                  checkForTimeoutError 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>checkForTimeoutError checks that the error satisfies the Error interface
 and that Timeout returns true.</p>
+               
+               <pre><code>func checkForTimeoutError(t *testing.T, err error)</code></pre>
+            </article>
             
-            <pre><code>func checkForTimeoutError(t *testing.T, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testRoundtrip">
-            <h2>testRoundtrip</h2>
-            <hr />
-            
-            <p>testRoundtrip writes something into c and reads it back.
-It assumes that everything written into c is echoed back to itself.</p>
-            
-            <pre><code>func testRoundtrip(t *testing.T, c net.Conn)</code></pre>
-         </article>
-         
-         <article class="function" data-name="resyncConn">
-            <h2>resyncConn</h2>
-            <hr />
-            
-            <p>resyncConn resynchronizes the connection into a sane state.
-It assumes that everything written into c is echoed back to itself.
-It assumes that 0xff is not currently on the wire or in the read buffer.</p>
-            
-            <pre><code>func resyncConn(t *testing.T, c net.Conn)</code></pre>
-         </article>
-         
-         <article class="function" data-name="chunkedCopy">
-            <h2>chunkedCopy</h2>
-            <hr />
-            
-            <p>chunkedCopy copies from r to w in fixed-width chunks to avoid
+            <article class="function" data-name="chunkedCopy">
+               <h3>
+                  chunkedCopy 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>chunkedCopy copies from r to w in fixed-width chunks to avoid
 causing a Write that exceeds the maximum packet size for packet-based
 connections like "unixpacket".
 We assume that the maximum packet size is at least 1024.</p>
+               
+               <pre><code>func chunkedCopy(w io.Writer, r io.Reader) error</code></pre>
+            </article>
             
-            <pre><code>func chunkedCopy(w io.Writer, r io.Reader) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="probeStack">
-            <h2>probeStack</h2>
-            <hr />
+            <article class="function" data-name="hasRoutableIP">
+               <h3>
+                  hasRoutableIP 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func hasRoutableIP(network string, ifi *net.Interface) (net.IP, bool)</code></pre>
+            </article>
             
-            <pre><code>func probeStack()</code></pre>
-         </article>
-         
-         <article class="function" data-name="unixStrmDgramEnabled">
-            <h2>unixStrmDgramEnabled</h2>
-            <hr />
+            <article class="function" data-name="probeStack">
+               <h3>
+                  probeStack 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func probeStack()</code></pre>
+            </article>
             
-            <pre><code>func unixStrmDgramEnabled() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="SupportsIPv4">
-            <h2>SupportsIPv4</h2>
-            <hr />
+            <article class="function" data-name="resyncConn">
+               <h3>
+                  resyncConn 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>resyncConn resynchronizes the connection into a sane state.
+It assumes that everything written into c is echoed back to itself.
+It assumes that 0xff is not currently on the wire or in the read buffer.</p>
+               
+               <pre><code>func resyncConn(t *testing.T, c net.Conn)</code></pre>
+            </article>
             
-            <p>SupportsIPv4 reports whether the platform supports IPv4 networking
-functionality.</p>
+            <article class="function" data-name="routableIP">
+               <h3>
+                  routableIP 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func routableIP(network string, ip net.IP) (net.IP, bool)</code></pre>
+            </article>
             
-            <pre><code>func SupportsIPv4() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="SupportsIPv6">
-            <h2>SupportsIPv6</h2>
-            <hr />
+            <article class="function" data-name="supportsRawSocket">
+               <h3>
+                  supportsRawSocket 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func supportsRawSocket() bool</code></pre>
+            </article>
             
-            <p>SupportsIPv6 reports whether the platform supports IPv6 networking
-functionality.</p>
+            <article class="function" data-name="supportsRawSocket">
+               <h3>
+                  supportsRawSocket 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func supportsRawSocket() bool</code></pre>
+            </article>
             
-            <pre><code>func SupportsIPv6() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="SupportsRawSocket">
-            <h2>SupportsRawSocket</h2>
-            <hr />
+            <article class="function" data-name="supportsRawSocket">
+               <h3>
+                  supportsRawSocket 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func supportsRawSocket() bool</code></pre>
+            </article>
             
-            <p>SupportsRawSocket reports whether the current session is available
-to use raw sockets.</p>
+            <article class="function" data-name="testBasicIO">
+               <h3>
+                  testBasicIO 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>testBasicIO tests that the data sent on c1 is properly received on c2.</p>
+               
+               <pre><code>func testBasicIO(t *testing.T, c1 net.Conn, c2 net.Conn)</code></pre>
+            </article>
             
-            <pre><code>func SupportsRawSocket() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestableNetwork">
-            <h2>TestableNetwork</h2>
-            <hr />
+            <article class="function" data-name="testCloseTimeout">
+               <h3>
+                  testCloseTimeout 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>testCloseTimeout tests that calling Close immediately times out pending
+Read and Write operations.</p>
+               
+               <pre><code>func testCloseTimeout(t *testing.T, c1 net.Conn, c2 net.Conn)</code></pre>
+            </article>
             
-            <p>TestableNetwork reports whether network is testable on the current
-platform configuration.
-
-See func Dial of the standard library for the supported networks.</p>
+            <article class="function" data-name="testConcurrentMethods">
+               <h3>
+                  testConcurrentMethods 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>testConcurrentMethods tests that the methods of net.Conn can safely
+be called concurrently.</p>
+               
+               <pre><code>func testConcurrentMethods(t *testing.T, c1 net.Conn, c2 net.Conn)</code></pre>
+            </article>
             
-            <pre><code>func TestableNetwork(network string) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestableAddress">
-            <h2>TestableAddress</h2>
-            <hr />
+            <article class="function" data-name="testFutureTimeout">
+               <h3>
+                  testFutureTimeout 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>testFutureTimeout tests that a future deadline will eventually time out
+Read and Write operations.</p>
+               
+               <pre><code>func testFutureTimeout(t *testing.T, c1 net.Conn, c2 net.Conn)</code></pre>
+            </article>
             
-            <p>TestableAddress reports whether address of network is testable on
-the current platform configuration.</p>
+            <article class="function" data-name="testPastTimeout">
+               <h3>
+                  testPastTimeout 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>testPastTimeout tests that a deadline set in the past immediately times out
+Read and Write requests.</p>
+               
+               <pre><code>func testPastTimeout(t *testing.T, c1 net.Conn, c2 net.Conn)</code></pre>
+            </article>
             
-            <pre><code>func TestableAddress(network string, address string) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="NewLocalListener">
-            <h2>NewLocalListener</h2>
-            <hr />
+            <article class="function" data-name="testPingPong">
+               <h3>
+                  testPingPong 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>testPingPong tests that the two endpoints can synchronously send data to
+each other in a typical request-response pattern.</p>
+               
+               <pre><code>func testPingPong(t *testing.T, c1 net.Conn, c2 net.Conn)</code></pre>
+            </article>
             
-            <p>NewLocalListener returns a listener which listens to a loopback IP
-address or local file system path.
-
-The provided network must be "tcp", "tcp4", "tcp6", "unix" or
-"unixpacket".</p>
+            <article class="function" data-name="testPresentTimeout">
+               <h3>
+                  testPresentTimeout 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>testPresentTimeout tests that a past deadline set while there are pending
+Read and Write operations immediately times out those operations.</p>
+               
+               <pre><code>func testPresentTimeout(t *testing.T, c1 net.Conn, c2 net.Conn)</code></pre>
+            </article>
             
-            <pre><code>func NewLocalListener(network string) (net.Listener, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="NewLocalPacketListener">
-            <h2>NewLocalPacketListener</h2>
-            <hr />
+            <article class="function" data-name="testRacyRead">
+               <h3>
+                  testRacyRead 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>testRacyRead tests that it is safe to mutate the input Read buffer
+immediately after cancelation has occurred.</p>
+               
+               <pre><code>func testRacyRead(t *testing.T, c1 net.Conn, c2 net.Conn)</code></pre>
+            </article>
             
-            <p>NewLocalPacketListener returns a packet listener which listens to a
-loopback IP address or local file system path.
-
-The provided network must be "udp", "udp4", "udp6" or "unixgram".</p>
+            <article class="function" data-name="testRacyWrite">
+               <h3>
+                  testRacyWrite 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>testRacyWrite tests that it is safe to mutate the input Write buffer
+immediately after cancelation has occurred.</p>
+               
+               <pre><code>func testRacyWrite(t *testing.T, c1 net.Conn, c2 net.Conn)</code></pre>
+            </article>
             
-            <pre><code>func NewLocalPacketListener(network string) (net.PacketConn, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="LocalPath">
-            <h2>LocalPath</h2>
-            <hr />
+            <article class="function" data-name="testReadTimeout">
+               <h3>
+                  testReadTimeout 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>testReadTimeout tests that Read timeouts do not affect Write.</p>
+               
+               <pre><code>func testReadTimeout(t *testing.T, c1 net.Conn, c2 net.Conn)</code></pre>
+            </article>
             
-            <p>LocalPath returns a local path that can be used for Unix-domain
-protocol testing.</p>
+            <article class="function" data-name="testRoundtrip">
+               <h3>
+                  testRoundtrip 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>testRoundtrip writes something into c and reads it back.
+It assumes that everything written into c is echoed back to itself.</p>
+               
+               <pre><code>func testRoundtrip(t *testing.T, c net.Conn)</code></pre>
+            </article>
             
-            <pre><code>func LocalPath() (string, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="MulticastSource">
-            <h2>MulticastSource</h2>
-            <hr />
+            <article class="function" data-name="testWriteTimeout">
+               <h3>
+                  testWriteTimeout 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>testWriteTimeout tests that Write timeouts do not affect Read.</p>
+               
+               <pre><code>func testWriteTimeout(t *testing.T, c1 net.Conn, c2 net.Conn)</code></pre>
+            </article>
             
-            <p>MulticastSource returns a unicast IP address on ifi when ifi is an
-IP multicast-capable network interface.
-
-The provided network must be "ip", "ip4" or "ip6".</p>
+            <article class="function" data-name="timeoutWrapper">
+               <h3>
+                  timeoutWrapper 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func timeoutWrapper(t *testing.T, mp MakePipe, f connTester)</code></pre>
+            </article>
             
-            <pre><code>func MulticastSource(network string, ifi *net.Interface) (net.IP, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="LoopbackInterface">
-            <h2>LoopbackInterface</h2>
-            <hr />
+            <article class="function" data-name="unixStrmDgramEnabled">
+               <h3>
+                  unixStrmDgramEnabled 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func unixStrmDgramEnabled() bool</code></pre>
+            </article>
             
-            <p>LoopbackInterface returns an available logical network interface
-for loopback test.</p>
-            
-            <pre><code>func LoopbackInterface() (*net.Interface, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="RoutedInterface">
-            <h2>RoutedInterface</h2>
-            <hr />
-            
-            <p>RoutedInterface returns a network interface that can route IP
-traffic and satisfies flags.
-
-The provided network must be "ip", "ip4" or "ip6".</p>
-            
-            <pre><code>func RoutedInterface(network string, flags net.Flags) (*net.Interface, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="hasRoutableIP">
-            <h2>hasRoutableIP</h2>
-            <hr />
-            
-            <pre><code>func hasRoutableIP(network string, ifi *net.Interface) (net.IP, bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="routableIP">
-            <h2>routableIP</h2>
-            <hr />
-            
-            <pre><code>func routableIP(network string, ip net.IP) (net.IP, bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="supportsRawSocket">
-            <h2>supportsRawSocket</h2>
-            <hr />
-            
-            <pre><code>func supportsRawSocket() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="supportsRawSocket">
-            <h2>supportsRawSocket</h2>
-            <hr />
-            
-            <pre><code>func supportsRawSocket() bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="supportsRawSocket">
-            <h2>supportsRawSocket</h2>
-            <hr />
-            
-            <pre><code>func supportsRawSocket() bool</code></pre>
-         </article>
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -570,59 +1031,170 @@ The provided network must be "ip", "ip4" or "ip6".</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

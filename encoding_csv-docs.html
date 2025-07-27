@@ -13,230 +13,546 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                  
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>csv</code>
-         </h1>
-         <hr />
+         <h1>csv</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="ErrBareQuote">
-            <h2>ErrBareQuote</h2>
-            <hr />
-            
-            <p>These are the errors that can be returned in [ParseError.Err].</p>
-            
-            <pre><code>ErrBareQuote</code></pre>
-         </article>
-         
-         <article class="global" data-name="ErrQuote">
-            <h2>ErrQuote</h2>
-            <hr />
-            
-            <p>These are the errors that can be returned in [ParseError.Err].</p>
-            
-            <pre><code>ErrQuote</code></pre>
-         </article>
-         
-         <article class="global" data-name="ErrFieldCount">
-            <h2>ErrFieldCount</h2>
-            <hr />
-            
-            <p>These are the errors that can be returned in [ParseError.Err].</p>
-            
-            <pre><code>ErrFieldCount</code></pre>
-         </article>
-         
-         <article class="global" data-name="ErrTrailingComma">
-            <h2>ErrTrailingComma</h2>
-            <hr />
-            
-            <p>Deprecated: ErrTrailingComma is no longer used.</p>
-            
-            <pre><code>ErrTrailingComma</code></pre>
-         </article>
-         
-         <article class="global" data-name="errInvalidDelim">
-            <h2>errInvalidDelim</h2>
-            <hr />
-            
-            <pre><code>errInvalidDelim</code></pre>
-         </article>
-         
-         <article class="global" data-name="readTests">
-            <h2>readTests</h2>
-            <hr />
-            
-            <pre><code>readTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="benchmarkCSVData">
-            <h2>benchmarkCSVData</h2>
-            <hr />
-            
-            <pre><code>benchmarkCSVData</code></pre>
-         </article>
-         
-         <article class="global" data-name="writeTests">
-            <h2>writeTests</h2>
-            <hr />
-            
-            <pre><code>writeTests</code></pre>
-         </article>
-         
-         <article class="global" data-name="benchmarkWriteData">
-            <h2>benchmarkWriteData</h2>
-            <hr />
-            
-            <pre><code>benchmarkWriteData</code></pre>
-         </article>
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"bufio"
+"bytes"
+"errors"
+"fmt"
+"io"
+"unicode"
+"unicode/utf8"
+"bufio"
+"io"
+"strings"
+"unicode"
+"unicode/utf8"
+</code></pre>
+            </article>
+         </section>
           
-         <article class="struct" data-name="ParseError">
-            <h2>type ParseError struct</h2>
-            <hr />
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <p>A ParseError is returned for parsing errors.
+            <article class="global" data-name="ErrBareQuote">
+               <h3>
+                  ErrBareQuote 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>These are the errors that can be returned in [ParseError.Err].</p>
+               
+               <pre><code>var ErrBareQuote = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="ErrFieldCount">
+               <h3>
+                  ErrFieldCount 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>These are the errors that can be returned in [ParseError.Err].</p>
+               
+               <pre><code>var ErrFieldCount = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="ErrQuote">
+               <h3>
+                  ErrQuote 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>These are the errors that can be returned in [ParseError.Err].</p>
+               
+               <pre><code>var ErrQuote = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="ErrTrailingComma">
+               <h3>
+                  ErrTrailingComma 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>Deprecated: ErrTrailingComma is no longer used.</p>
+               
+               <pre><code>var ErrTrailingComma = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="errInvalidDelim">
+               <h3>
+                  errInvalidDelim 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var errInvalidDelim = *ast.CallExpr</code></pre>
+            </article>
+            
+         </section>
+            
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct" data-name="ParseError">
+               <h3>
+                  ParseError
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A ParseError is returned for parsing errors.
 Line and column numbers are 1-indexed.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">StartLine int
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type ParseError struct {
+StartLine int
 Line int
 Column int
-Err error</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Reader">
-            <h2>type Reader struct</h2>
-            <hr />
+Err error
+}</code></pre>
+            </article>
             
-            <p>A Reader reads records from a CSV-encoded file.
-
+            <article class="struct" data-name="Reader">
+               <h3>
+                  Reader
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Reader reads records from a CSV-encoded file.
 As returned by [NewReader], a Reader expects input conforming to RFC 4180.
 The exported fields can be changed to customize the details before the
 first call to [Reader.Read] or [Reader.ReadAll].
-
 The Reader converts all \r\n sequences in its input to plain \n,
 including in multiline field values, so that the returned data does
 not depend on which line-ending convention an input file uses.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Comma rune
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Reader struct {
+Comma rune
 Comment rune
 FieldsPerRecord int
 LazyQuotes bool
@@ -250,134 +566,158 @@ rawBuffer []byte
 recordBuffer []byte
 fieldIndexes []int
 fieldPositions []position
-lastRecord []string</code></pre>
-         </article>
-         
-         <article class="struct" data-name="position">
-            <h2>type position struct</h2>
-            <hr />
+lastRecord []string
+}</code></pre>
+            </article>
             
-            <p>pos holds the position of a field in the current line.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">line int
-col int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="readTest">
-            <h2>type readTest struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Name string
-Input string
-Output [][]string
-Positions [][][]int
-Errors []error
-Comma rune
-Comment rune
-UseFieldsPerRecord bool
-FieldsPerRecord int
-LazyQuotes bool
-TrimLeadingSpace bool
-ReuseRecord bool</code></pre>
-         </article>
-         
-         <article class="struct" data-name="nTimes">
-            <h2>type nTimes struct</h2>
-            <hr />
-            
-            <p>nTimes is an io.Reader which yields the string s n times.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">s string
-n int
-off int</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Writer">
-            <h2>type Writer struct</h2>
-            <hr />
-            
-            <p>A Writer writes records using CSV encoding.
-
+            <article class="struct" data-name="Writer">
+               <h3>
+                  Writer
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Writer writes records using CSV encoding.
 As returned by [NewWriter], a Writer writes records terminated by a
 newline and uses ',' as the field delimiter. The exported fields can be
 changed to customize the details before
 the first call to [Writer.Write] or [Writer.WriteAll].
-
 [Writer.Comma] is the field delimiter.
-
 If [Writer.UseCRLF] is true,
 the Writer ends each output line with \r\n instead of \n.
-
 The writes of individual records are buffered.
 After all data has been written, the client should call the
 [Writer.Flush] method to guarantee all data has been forwarded to
 the underlying [io.Writer].  Any errors that occurred should
 be checked by calling the [Writer.Error] method.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Comma rune
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Writer struct {
+Comma rune
 UseCRLF bool
-w *bufio.Writer</code></pre>
-         </article>
-         
-         <article class="struct" data-name="errorWriter">
-            <h2>type errorWriter struct</h2>
-            <hr />
+w *bufio.Writer
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code"></code></pre>
-         </article>
+            <article class="struct" data-name="position">
+               <h3>
+                  position
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>pos holds the position of a field in the current line.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type position struct {
+line int
+col int
+}</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="function" data-name="FuzzRoundtrip">
-            <h2>FuzzRoundtrip</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <pre><code>func FuzzRoundtrip(f *testing.F)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Error">
-            <h2>Error</h2>
-            <hr />
+            <article class="function" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Error reports any error that has occurred during
+a previous [Writer.Write] or [Writer.Flush].</p>
+               
+               <pre><code>func (w *Writer) Error() error</code></pre>
+            </article>
             
-            <pre><code>func Error() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="Unwrap">
-            <h2>Unwrap</h2>
-            <hr />
+            <article class="function" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *ParseError) Error() string</code></pre>
+            </article>
             
-            <pre><code>func Unwrap() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="validDelim">
-            <h2>validDelim</h2>
-            <hr />
+            <article class="function" data-name="FieldPos">
+               <h3>
+                  FieldPos 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>FieldPos returns the line and column corresponding to
+the start of the field with the given index in the slice most recently
+returned by [Reader.Read]. Numbering of lines and columns starts at 1;
+columns are counted in bytes, not runes.
+If this is called with an out-of-bounds index, it panics.</p>
+               
+               <pre><code>func (r *Reader) FieldPos(field int) (line int, column int)</code></pre>
+            </article>
             
-            <pre><code>func validDelim(r rune) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="NewReader">
-            <h2>NewReader</h2>
-            <hr />
+            <article class="function" data-name="Flush">
+               <h3>
+                  Flush 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Flush writes any buffered data to the underlying [io.Writer].
+To check if an error occurred during Flush, call [Writer.Error].</p>
+               
+               <pre><code>func (w *Writer) Flush()</code></pre>
+            </article>
             
-            <p>NewReader returns a new Reader that reads from r.</p>
+            <article class="function" data-name="InputOffset">
+               <h3>
+                  InputOffset 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>InputOffset returns the input stream byte offset of the current reader
+position. The offset gives the location of the end of the most recently
+read row and the beginning of the next row.</p>
+               
+               <pre><code>func (r *Reader) InputOffset() int64</code></pre>
+            </article>
             
-            <pre><code>func NewReader(r io.Reader) *Reader</code></pre>
-         </article>
-         
-         <article class="function" data-name="Read">
-            <h2>Read</h2>
-            <hr />
+            <article class="function" data-name="NewReader">
+               <h3>
+                  NewReader 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewReader returns a new Reader that reads from r.</p>
+               
+               <pre><code>func NewReader(r io.Reader) *Reader</code></pre>
+            </article>
             
-            <p>Read reads one record (a slice of fields) from r.
+            <article class="function" data-name="NewWriter">
+               <h3>
+                  NewWriter 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewWriter returns a new Writer that writes to w.</p>
+               
+               <pre><code>func NewWriter(w io.Writer) *Writer</code></pre>
+            </article>
+            
+            <article class="function" data-name="Read">
+               <h3>
+                  Read 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Read reads one record (a slice of fields) from r.
 If the record has an unexpected number of fields,
 Read returns the record along with the error [ErrFieldCount].
 If the record contains a field that cannot be parsed,
@@ -386,254 +726,72 @@ The partial record contains all fields read before the error.
 If there is no data left to be read, Read returns nil, [io.EOF].
 If [Reader.ReuseRecord] is true, the returned slice may be shared
 between multiple calls to Read.</p>
+               
+               <pre><code>func (r *Reader) Read() (record []string, err error)</code></pre>
+            </article>
             
-            <pre><code>func Read() (record []string, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="FieldPos">
-            <h2>FieldPos</h2>
-            <hr />
-            
-            <p>FieldPos returns the line and column corresponding to
-the start of the field with the given index in the slice most recently
-returned by [Reader.Read]. Numbering of lines and columns starts at 1;
-columns are counted in bytes, not runes.
-
-If this is called with an out-of-bounds index, it panics.</p>
-            
-            <pre><code>func FieldPos(field int) (line int, column int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="InputOffset">
-            <h2>InputOffset</h2>
-            <hr />
-            
-            <p>InputOffset returns the input stream byte offset of the current reader
-position. The offset gives the location of the end of the most recently
-read row and the beginning of the next row.</p>
-            
-            <pre><code>func InputOffset() int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="ReadAll">
-            <h2>ReadAll</h2>
-            <hr />
-            
-            <p>ReadAll reads all the remaining records from r.
+            <article class="function" data-name="ReadAll">
+               <h3>
+                  ReadAll 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ReadAll reads all the remaining records from r.
 Each record is a slice of fields.
 A successful call returns err == nil, not err == [io.EOF]. Because ReadAll is
 defined to read until EOF, it does not treat end of file as an error to be
 reported.</p>
+               
+               <pre><code>func (r *Reader) ReadAll() (records [][]string, err error)</code></pre>
+            </article>
             
-            <pre><code>func ReadAll() (records [][]string, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="readLine">
-            <h2>readLine</h2>
-            <hr />
+            <article class="function" data-name="Unwrap">
+               <h3>
+                  Unwrap 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *ParseError) Unwrap() error</code></pre>
+            </article>
             
-            <p>readLine reads the next line (with the trailing endline).
-If EOF is hit without a trailing endline, it will be omitted.
-If some bytes were read, then the error is never [io.EOF].
-The result is only valid until the next call to readLine.</p>
-            
-            <pre><code>func readLine() ([]byte, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="lengthNL">
-            <h2>lengthNL</h2>
-            <hr />
-            
-            <p>lengthNL reports the number of bytes for the trailing \n.</p>
-            
-            <pre><code>func lengthNL(b []byte) int</code></pre>
-         </article>
-         
-         <article class="function" data-name="nextRune">
-            <h2>nextRune</h2>
-            <hr />
-            
-            <p>nextRune returns the next rune in b or utf8.RuneError.</p>
-            
-            <pre><code>func nextRune(b []byte) rune</code></pre>
-         </article>
-         
-         <article class="function" data-name="readRecord">
-            <h2>readRecord</h2>
-            <hr />
-            
-            <pre><code>func readRecord(dst []string) ([]string, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestRead">
-            <h2>TestRead</h2>
-            <hr />
-            
-            <pre><code>func TestRead(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="firstError">
-            <h2>firstError</h2>
-            <hr />
-            
-            <p>firstError returns the first non-nil error in errs,
-with the position adjusted according to the error's
-index inside positions.</p>
-            
-            <pre><code>func firstError(errs []error, positions [][][]int, errPositions *ast.MapType) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="errorWithPosition">
-            <h2>errorWithPosition</h2>
-            <hr />
-            
-            <pre><code>func errorWithPosition(err error, recNum int, positions [][][]int, errPositions *ast.MapType) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="makePositions">
-            <h2>makePositions</h2>
-            <hr />
-            
-            <p>makePositions returns the expected field positions of all
-the fields in text, the positions of any errors, and the text with the position markers
-removed.
-
-The start of each field is marked with a § symbol;
-CSV lines are separated by ¶ symbols;
-Error positions are marked with ∑ symbols.</p>
-            
-            <pre><code>func makePositions(text string) ([][][]int, *ast.MapType, string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Read">
-            <h2>Read</h2>
-            <hr />
-            
-            <pre><code>func Read(p []byte) (n int, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="benchmarkRead">
-            <h2>benchmarkRead</h2>
-            <hr />
-            
-            <p>benchmarkRead measures reading the provided CSV rows data.
-initReader, if non-nil, modifies the Reader before it's used.</p>
-            
-            <pre><code>func benchmarkRead(b *testing.B, initReader func, rows string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkRead">
-            <h2>BenchmarkRead</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkRead(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkReadWithFieldsPerRecord">
-            <h2>BenchmarkReadWithFieldsPerRecord</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkReadWithFieldsPerRecord(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkReadWithoutFieldsPerRecord">
-            <h2>BenchmarkReadWithoutFieldsPerRecord</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkReadWithoutFieldsPerRecord(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkReadLargeFields">
-            <h2>BenchmarkReadLargeFields</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkReadLargeFields(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkReadReuseRecord">
-            <h2>BenchmarkReadReuseRecord</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkReadReuseRecord(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkReadReuseRecordWithFieldsPerRecord">
-            <h2>BenchmarkReadReuseRecordWithFieldsPerRecord</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkReadReuseRecordWithFieldsPerRecord(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkReadReuseRecordWithoutFieldsPerRecord">
-            <h2>BenchmarkReadReuseRecordWithoutFieldsPerRecord</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkReadReuseRecordWithoutFieldsPerRecord(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkReadReuseRecordLargeFields">
-            <h2>BenchmarkReadReuseRecordLargeFields</h2>
-            <hr />
-            
-            <pre><code>func BenchmarkReadReuseRecordLargeFields(b *testing.B)</code></pre>
-         </article>
-         
-         <article class="function" data-name="NewWriter">
-            <h2>NewWriter</h2>
-            <hr />
-            
-            <p>NewWriter returns a new Writer that writes to w.</p>
-            
-            <pre><code>func NewWriter(w io.Writer) *Writer</code></pre>
-         </article>
-         
-         <article class="function" data-name="Write">
-            <h2>Write</h2>
-            <hr />
-            
-            <p>Write writes a single CSV record to w along with any necessary quoting.
+            <article class="function" data-name="Write">
+               <h3>
+                  Write 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Write writes a single CSV record to w along with any necessary quoting.
 A record is a slice of strings with each string being one field.
 Writes are buffered, so [Writer.Flush] must eventually be called to ensure
 that the record is written to the underlying [io.Writer].</p>
+               
+               <pre><code>func (w *Writer) Write(record []string) error</code></pre>
+            </article>
             
-            <pre><code>func Write(record []string) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="Flush">
-            <h2>Flush</h2>
-            <hr />
-            
-            <p>Flush writes any buffered data to the underlying [io.Writer].
-To check if an error occurred during Flush, call [Writer.Error].</p>
-            
-            <pre><code>func Flush()</code></pre>
-         </article>
-         
-         <article class="function" data-name="Error">
-            <h2>Error</h2>
-            <hr />
-            
-            <p>Error reports any error that has occurred during
-a previous [Writer.Write] or [Writer.Flush].</p>
-            
-            <pre><code>func Error() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="WriteAll">
-            <h2>WriteAll</h2>
-            <hr />
-            
-            <p>WriteAll writes multiple CSV records to w using [Writer.Write] and
+            <article class="function" data-name="WriteAll">
+               <h3>
+                  WriteAll 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>WriteAll writes multiple CSV records to w using [Writer.Write] and
 then calls [Writer.Flush], returning any error from the Flush.</p>
+               
+               <pre><code>func (w *Writer) WriteAll(records [][]string) error</code></pre>
+            </article>
             
-            <pre><code>func WriteAll(records [][]string) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="fieldNeedsQuotes">
-            <h2>fieldNeedsQuotes</h2>
-            <hr />
-            
-            <p>fieldNeedsQuotes reports whether our field must be enclosed in quotes.
+            <article class="function" data-name="fieldNeedsQuotes">
+               <h3>
+                  fieldNeedsQuotes 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>fieldNeedsQuotes reports whether our field must be enclosed in quotes.
 Fields with a Comma, fields with a quote or newline, and
 fields which start with a space must be enclosed in quotes.
 We used to quote empty strings, but we do not anymore (as of Go 1.4).
@@ -645,50 +803,91 @@ CSV with quoted empty strings strictly less useful.
 Not quoting the empty string also makes this package match the behavior
 of Microsoft Excel and Google Drive.
 For Postgres, quote the data terminating string `\.`.</p>
+               
+               <pre><code>func (w *Writer) fieldNeedsQuotes(field string) bool</code></pre>
+            </article>
             
-            <pre><code>func fieldNeedsQuotes(field string) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestWrite">
-            <h2>TestWrite</h2>
-            <hr />
+            <article class="function" data-name="lengthNL">
+               <h3>
+                  lengthNL 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>lengthNL reports the number of bytes for the trailing \n.</p>
+               
+               <pre><code>func lengthNL(b []byte) int</code></pre>
+            </article>
             
-            <pre><code>func TestWrite(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Write">
-            <h2>Write</h2>
-            <hr />
+            <article class="function" data-name="nextRune">
+               <h3>
+                  nextRune 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>nextRune returns the next rune in b or utf8.RuneError.</p>
+               
+               <pre><code>func nextRune(b []byte) rune</code></pre>
+            </article>
             
-            <pre><code>func Write(b []byte) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestError">
-            <h2>TestError</h2>
-            <hr />
+            <article class="function" data-name="readLine">
+               <h3>
+                  readLine 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>readLine reads the next line (with the trailing endline).
+If EOF is hit without a trailing endline, it will be omitted.
+If some bytes were read, then the error is never [io.EOF].
+The result is only valid until the next call to readLine.</p>
+               
+               <pre><code>func (r *Reader) readLine() ([]byte, error)</code></pre>
+            </article>
             
-            <pre><code>func TestError(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="BenchmarkWrite">
-            <h2>BenchmarkWrite</h2>
-            <hr />
+            <article class="function" data-name="readRecord">
+               <h3>
+                  readRecord 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *Reader) readRecord(dst []string) ([]string, error)</code></pre>
+            </article>
             
-            <pre><code>func BenchmarkWrite(b *testing.B)</code></pre>
-         </article>
+            <article class="function" data-name="validDelim">
+               <h3>
+                  validDelim 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func validDelim(r rune) bool</code></pre>
+            </article>
+            
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -696,59 +895,170 @@ For Postgres, quote the data terminating string `\.`.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

@@ -13,445 +13,856 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+                 
+               <li><a href="#interfaces">Interfaces</a></li>
+                
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>mvs</code>
-         </h1>
-         <hr />
+         <h1>mvs</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="tests">
-            <h2>tests</h2>
-            <hr />
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"fmt"
+"strings"
+"golang.org/x/mod/module"
+"fmt"
+"slices"
+"cmd/go/internal/gover"
+"golang.org/x/mod/module"
+"fmt"
+"slices"
+"sort"
+"sync"
+"cmd/internal/par"
+"golang.org/x/mod/module"
+</code></pre>
+            </article>
+         </section>
             
-            <pre><code>tests</code></pre>
-         </article>
+         <section id="interfaces">
+            <h2>Interfaces</h2>
+            
+            <article class="interface" data-name="DowngradeReqs">
+               <h3>
+                  DowngradeReqs
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>A DowngradeReqs is a Reqs that can also identify available downgrades.</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type DowngradeReqs interface {
+Reqs
+Previous(m module.Version) (module.Version, error)
+}</code></pre>
+            </article>
+            
+            <article class="interface" data-name="Reqs">
+               <h3>
+                  Reqs
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>A Reqs is the requirement graph on which Minimal Version Selection (MVS) operates.
+The version strings are opaque except for the special version "none"
+(see the documentation for module.Version). In particular, MVS does not
+assume that the version strings are semantic versions; instead, the Max method
+gives access to the comparison operation.
+It must be safe to call methods on a Reqs from multiple goroutines simultaneously.
+Because a Reqs may read the underlying graph from the network on demand,
+the MVS algorithms parallelize the traversal to overlap network delays.</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type Reqs interface {
+Required(m module.Version) ([]module.Version, error)
+Max(p string, v1 string, v2 string) string
+}</code></pre>
+            </article>
+            
+            <article class="interface" data-name="UpgradeReqs">
+               <h3>
+                  UpgradeReqs
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <p>An UpgradeReqs is a Reqs that can also identify available upgrades.</p>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type UpgradeReqs interface {
+Reqs
+Upgrade(m module.Version) (module.Version, error)
+}</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="struct" data-name="BuildListError">
-            <h2>type BuildListError struct</h2>
-            <hr />
+         <section id="structs">
+            <h2>Structs</h2>
             
-            <p>BuildListError decorates an error that occurred gathering requirements
+            <article class="struct" data-name="BuildListError">
+               <h3>
+                  BuildListError
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>BuildListError decorates an error that occurred gathering requirements
 while constructing a build list. BuildListError prints the chain
 of requirements to the module where the error occurred.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type BuildListError struct {
+Err error
+stack []buildListErrorElem
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Err error
-stack []buildListErrorElem</code></pre>
-         </article>
-         
-         <article class="struct" data-name="buildListErrorElem">
-            <h2>type buildListErrorElem struct</h2>
-            <hr />
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">m module.Version
-nextReason string</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Graph">
-            <h2>type Graph struct</h2>
-            <hr />
-            
-            <p>Graph implements an incremental version of the MVS algorithm, with the
+            <article class="struct" data-name="Graph">
+               <h3>
+                  Graph
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>Graph implements an incremental version of the MVS algorithm, with the
 requirements pushed by the caller instead of pulled by the MVS traversal.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">cmp func
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Graph struct {
+cmp func(p string, v1 string, v2 string) int
 roots []module.Version
-required *ast.MapType
-isRoot *ast.MapType
-selected *ast.MapType</code></pre>
-         </article>
-         
-         <article class="struct" data-name="override">
-            <h2>type override struct</h2>
-            <hr />
+required map[module.Version][]module.Version
+isRoot map[module.Version]bool
+selected map[string]string
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">target module.Version
+            <article class="struct" data-name="buildListErrorElem">
+               <h3>
+                  buildListErrorElem
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type buildListErrorElem struct {
+m module.Version
+nextReason string
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="override">
+               <h3>
+                  override
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type override struct {
+target module.Version
 list []module.Version
-Reqs</code></pre>
-         </article>
+Reqs
+}</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="function" data-name="NewBuildListError">
-            <h2>NewBuildListError</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <p>NewBuildListError returns a new BuildListError wrapping an error that
-occurred at a module found along the given path of requirements and/or
-upgrades, which must be non-empty.
-
-The isVersionChange function reports whether a path step is due to an
-explicit upgrade or downgrade (as opposed to an existing requirement in a
-go.mod file). A nil isVersionChange function indicates that none of the path
-steps are due to explicit version changes.</p>
-            
-            <pre><code>func NewBuildListError(err error, path []module.Version, isVersionChange func) *BuildListError</code></pre>
-         </article>
-         
-         <article class="function" data-name="Module">
-            <h2>Module</h2>
-            <hr />
-            
-            <p>Module returns the module where the error occurred. If the module stack
-is empty, this returns a zero value.</p>
-            
-            <pre><code>func Module() module.Version</code></pre>
-         </article>
-         
-         <article class="function" data-name="Error">
-            <h2>Error</h2>
-            <hr />
-            
-            <pre><code>func Error() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="Unwrap">
-            <h2>Unwrap</h2>
-            <hr />
-            
-            <pre><code>func Unwrap() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="NewGraph">
-            <h2>NewGraph</h2>
-            <hr />
-            
-            <p>NewGraph returns an incremental MVS graph containing only a set of root
-dependencies and using the given max function for version strings.
-
-The caller must ensure that the root slice is not modified while the Graph
-may be in use.</p>
-            
-            <pre><code>func NewGraph(cmp func, roots []module.Version) *Graph</code></pre>
-         </article>
-         
-         <article class="function" data-name="Require">
-            <h2>Require</h2>
-            <hr />
-            
-            <p>Require adds the information that module m requires all modules in reqs.
-The reqs slice must not be modified after it is passed to Require.
-
-m must be reachable by some existing chain of requirements from g's target,
-and Require must not have been called for it already.
-
-If any of the modules in reqs has the same path as g's target,
-the target must have higher precedence than the version in req.</p>
-            
-            <pre><code>func Require(m module.Version, reqs []module.Version)</code></pre>
-         </article>
-         
-         <article class="function" data-name="RequiredBy">
-            <h2>RequiredBy</h2>
-            <hr />
-            
-            <p>RequiredBy returns the slice of requirements passed to Require for m, if any,
-with its capacity reduced to its length.
-If Require has not been called for m, RequiredBy(m) returns ok=false.
-
-The caller must not modify the returned slice, but may safely append to it
-and may rely on it not to be modified.</p>
-            
-            <pre><code>func RequiredBy(m module.Version) (reqs []module.Version, ok bool)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Selected">
-            <h2>Selected</h2>
-            <hr />
-            
-            <p>Selected returns the selected version of the given module path.
-
-If no version is selected, Selected returns version "none".</p>
-            
-            <pre><code>func Selected(path string) version string</code></pre>
-         </article>
-         
-         <article class="function" data-name="BuildList">
-            <h2>BuildList</h2>
-            <hr />
-            
-            <p>BuildList returns the selected versions of all modules present in the Graph,
+            <article class="function" data-name="BuildList">
+               <h3>
+                  BuildList 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>BuildList returns the selected versions of all modules present in the Graph,
 beginning with the selected versions of each module path in the roots of g.
-
 The order of the remaining elements in the list is deterministic
 but arbitrary.</p>
+               
+               <pre><code>func (g *Graph) BuildList() []module.Version</code></pre>
+            </article>
             
-            <pre><code>func BuildList() []module.Version</code></pre>
-         </article>
-         
-         <article class="function" data-name="WalkBreadthFirst">
-            <h2>WalkBreadthFirst</h2>
-            <hr />
-            
-            <p>WalkBreadthFirst invokes f once, in breadth-first order, for each module
-version other than "none" that appears in the graph, regardless of whether
-that version is selected.</p>
-            
-            <pre><code>func WalkBreadthFirst(f func)</code></pre>
-         </article>
-         
-         <article class="function" data-name="FindPath">
-            <h2>FindPath</h2>
-            <hr />
-            
-            <p>FindPath reports a shortest requirement path starting at one of the roots of
-the graph and ending at a module version m for which f(m) returns true, or
-nil if no such path exists.</p>
-            
-            <pre><code>func FindPath(f func) []module.Version</code></pre>
-         </article>
-         
-         <article class="function" data-name="BuildList">
-            <h2>BuildList</h2>
-            <hr />
-            
-            <p>BuildList returns the build list for the target module.
-
+            <article class="function" data-name="BuildList">
+               <h3>
+                  BuildList 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>BuildList returns the build list for the target module.
 target is the root vertex of a module requirement graph. For cmd/go, this is
 typically the main module, but note that this algorithm is not intended to
 be Go-specific: module paths and versions are treated as opaque values.
-
 reqs describes the module requirement graph and provides an opaque method
 for comparing versions.
-
 BuildList traverses the graph and returns a list containing the highest
 version for each visited module. The first element of the returned list is
 target itself; reqs.Max requires target.Version to compare higher than all
 other versions, so no other version can be selected. The remaining elements
 of the list are sorted by path.
-
 See https://research.swtch.com/vgo-mvs for details.</p>
+               
+               <pre><code>func BuildList(targets []module.Version, reqs Reqs) ([]module.Version, error)</code></pre>
+            </article>
             
-            <pre><code>func BuildList(targets []module.Version, reqs Reqs) ([]module.Version, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="buildList">
-            <h2>buildList</h2>
-            <hr />
-            
-            <pre><code>func buildList(targets []module.Version, reqs Reqs, upgrade func) ([]module.Version, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Req">
-            <h2>Req</h2>
-            <hr />
-            
-            <p>Req returns the minimal requirement list for the target module,
-with the constraint that all module paths listed in base must
-appear in the returned list.</p>
-            
-            <pre><code>func Req(mainModule module.Version, base []string, reqs Reqs) ([]module.Version, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="UpgradeAll">
-            <h2>UpgradeAll</h2>
-            <hr />
-            
-            <p>UpgradeAll returns a build list for the target module
-in which every module is upgraded to its latest version.</p>
-            
-            <pre><code>func UpgradeAll(target module.Version, reqs UpgradeReqs) ([]module.Version, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Upgrade">
-            <h2>Upgrade</h2>
-            <hr />
-            
-            <p>Upgrade returns a build list for the target module
-in which the given additional modules are upgraded.</p>
-            
-            <pre><code>func Upgrade(target module.Version, reqs UpgradeReqs, upgrade ...module.Version) ([]module.Version, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Downgrade">
-            <h2>Downgrade</h2>
-            <hr />
-            
-            <p>Downgrade returns a build list for the target module
+            <article class="function" data-name="Downgrade">
+               <h3>
+                  Downgrade 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Downgrade returns a build list for the target module
 in which the given additional modules are downgraded,
 potentially overriding the requirements of the target.
-
 The versions to be downgraded may be unreachable from reqs.Latest and
 reqs.Previous, but the methods of reqs must otherwise handle such versions
 correctly.</p>
+               
+               <pre><code>func Downgrade(target module.Version, reqs DowngradeReqs, downgrade ...module.Version) ([]module.Version, error)</code></pre>
+            </article>
             
-            <pre><code>func Downgrade(target module.Version, reqs DowngradeReqs, downgrade ...module.Version) ([]module.Version, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Required">
-            <h2>Required</h2>
-            <hr />
+            <article class="function" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *BuildListError) Error() string</code></pre>
+            </article>
             
-            <pre><code>func Required(m module.Version) ([]module.Version, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Test">
-            <h2>Test</h2>
-            <hr />
+            <article class="function" data-name="FindPath">
+               <h3>
+                  FindPath 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>FindPath reports a shortest requirement path starting at one of the roots of
+the graph and ending at a module version m for which f(m) returns true, or
+nil if no such path exists.</p>
+               
+               <pre><code>func (g *Graph) FindPath(f func(module.Version) bool) []module.Version</code></pre>
+            </article>
             
-            <pre><code>func Test(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Max">
-            <h2>Max</h2>
-            <hr />
+            <article class="function" data-name="Module">
+               <h3>
+                  Module 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Module returns the module where the error occurred. If the module stack
+is empty, this returns a zero value.</p>
+               
+               <pre><code>func (e *BuildListError) Module() module.Version</code></pre>
+            </article>
             
-            <pre><code>func Max(_ string, v1 string, v2 string) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="Upgrade">
-            <h2>Upgrade</h2>
-            <hr />
+            <article class="function" data-name="NewBuildListError">
+               <h3>
+                  NewBuildListError 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewBuildListError returns a new BuildListError wrapping an error that
+occurred at a module found along the given path of requirements and/or
+upgrades, which must be non-empty.
+The isVersionChange function reports whether a path step is due to an
+explicit upgrade or downgrade (as opposed to an existing requirement in a
+go.mod file). A nil isVersionChange function indicates that none of the path
+steps are due to explicit version changes.</p>
+               
+               <pre><code>func NewBuildListError(err error, path []module.Version, isVersionChange func(from module.Version, to module.Version) bool) *BuildListError</code></pre>
+            </article>
             
-            <pre><code>func Upgrade(m module.Version) (module.Version, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Previous">
-            <h2>Previous</h2>
-            <hr />
+            <article class="function" data-name="NewGraph">
+               <h3>
+                  NewGraph 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewGraph returns an incremental MVS graph containing only a set of root
+dependencies and using the given max function for version strings.
+The caller must ensure that the root slice is not modified while the Graph
+may be in use.</p>
+               
+               <pre><code>func NewGraph(cmp func(p string, v1 string, v2 string) int, roots []module.Version) *Graph</code></pre>
+            </article>
             
-            <pre><code>func Previous(m module.Version) (module.Version, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Required">
-            <h2>Required</h2>
-            <hr />
+            <article class="function" data-name="Req">
+               <h3>
+                  Req 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Req returns the minimal requirement list for the target module,
+with the constraint that all module paths listed in base must
+appear in the returned list.</p>
+               
+               <pre><code>func Req(mainModule module.Version, base []string, reqs Reqs) ([]module.Version, error)</code></pre>
+            </article>
             
-            <pre><code>func Required(m module.Version) ([]module.Version, error)</code></pre>
-         </article>
+            <article class="function" data-name="Require">
+               <h3>
+                  Require 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Require adds the information that module m requires all modules in reqs.
+The reqs slice must not be modified after it is passed to Require.
+m must be reachable by some existing chain of requirements from g's target,
+and Require must not have been called for it already.
+If any of the modules in reqs has the same path as g's target,
+the target must have higher precedence than the version in req.</p>
+               
+               <pre><code>func (g *Graph) Require(m module.Version, reqs []module.Version)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Required">
+               <h3>
+                  Required 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (r *override) Required(m module.Version) ([]module.Version, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="RequiredBy">
+               <h3>
+                  RequiredBy 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>RequiredBy returns the slice of requirements passed to Require for m, if any,
+with its capacity reduced to its length.
+If Require has not been called for m, RequiredBy(m) returns ok=false.
+The caller must not modify the returned slice, but may safely append to it
+and may rely on it not to be modified.</p>
+               
+               <pre><code>func (g *Graph) RequiredBy(m module.Version) (reqs []module.Version, ok bool)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Selected">
+               <h3>
+                  Selected 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Selected returns the selected version of the given module path.
+If no version is selected, Selected returns version "none".</p>
+               
+               <pre><code>func (g *Graph) Selected(path string) (version string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="Unwrap">
+               <h3>
+                  Unwrap 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (e *BuildListError) Unwrap() error</code></pre>
+            </article>
+            
+            <article class="function" data-name="Upgrade">
+               <h3>
+                  Upgrade 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>Upgrade returns a build list for the target module
+in which the given additional modules are upgraded.</p>
+               
+               <pre><code>func Upgrade(target module.Version, reqs UpgradeReqs, upgrade ...module.Version) ([]module.Version, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="UpgradeAll">
+               <h3>
+                  UpgradeAll 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>UpgradeAll returns a build list for the target module
+in which every module is upgraded to its latest version.</p>
+               
+               <pre><code>func UpgradeAll(target module.Version, reqs UpgradeReqs) ([]module.Version, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="WalkBreadthFirst">
+               <h3>
+                  WalkBreadthFirst 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>WalkBreadthFirst invokes f once, in breadth-first order, for each module
+version other than "none" that appears in the graph, regardless of whether
+that version is selected.</p>
+               
+               <pre><code>func (g *Graph) WalkBreadthFirst(f func(m module.Version))</code></pre>
+            </article>
+            
+            <article class="function" data-name="buildList">
+               <h3>
+                  buildList 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func buildList(targets []module.Version, reqs Reqs, upgrade func(module.Version) (module.Version, error)) ([]module.Version, error)</code></pre>
+            </article>
+            
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -459,59 +870,170 @@ correctly.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

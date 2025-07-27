@@ -13,189 +13,552 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                 
+               <li><a href="#interfaces">Interfaces</a></li>
+                
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>httptest</code>
-         </h1>
-         <hr />
+         <h1>httptest</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="DefaultRemoteAddr">
-            <h2>DefaultRemoteAddr</h2>
-            <hr />
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"bufio"
+"bytes"
+"context"
+"crypto/tls"
+"io"
+"net/http"
+"strings"
+"bytes"
+"fmt"
+"io"
+"net/http"
+"net/textproto"
+"strconv"
+"strings"
+"golang.org/x/net/http/httpguts"
+"crypto/tls"
+"crypto/x509"
+"flag"
+"fmt"
+"log"
+"net"
+"net/http"
+"net/http/internal/testcert"
+"os"
+"strings"
+"sync"
+"time"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <p>DefaultRemoteAddr is the default remote address to return in RemoteAddr if
+            <article class="global" data-name="DefaultRemoteAddr">
+               <h3>
+                  DefaultRemoteAddr 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <p>DefaultRemoteAddr is the default remote address to return in RemoteAddr if
 an explicit DefaultRemoteAddr isn't set on [ResponseRecorder].</p>
+               
+               <pre><code>const DefaultRemoteAddr = "1.2.3.4"</code></pre>
+            </article>
             
-            <pre><code>DefaultRemoteAddr</code></pre>
-         </article>
-         
-         <article class="global" data-name="serveFlag">
-            <h2>serveFlag</h2>
-            <hr />
-            
-            <p>When debugging a particular http server-based test,
+            <article class="global" data-name="serveFlag">
+               <h3>
+                  serveFlag 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>When debugging a particular http server-based test,
 this flag lets you run
-
-	go test -run='^BrokenTest$' -httptest.serve=127.0.0.1:8000
-
+go test -run='^BrokenTest$' -httptest.serve=127.0.0.1:8000
 to start the broken server so you can interact with it manually.
 We only register this flag if it looks like the caller knows about it
 and is trying to use it as we don't want to pollute flags and this
 isn't really part of our API. Don't depend on this.</p>
+               
+               <pre><code>var serveFlag string</code></pre>
+            </article>
             
-            <pre><code>serveFlag string</code></pre>
-         </article>
-         
-         <article class="global" data-name="newServers">
-            <h2>newServers</h2>
-            <hr />
+         </section>
+           
+         <section id="interfaces">
+            <h2>Interfaces</h2>
             
-            <pre><code>newServers</code></pre>
-         </article>
+            <article class="interface" data-name="closeIdleTransport">
+               <h3>
+                  closeIdleTransport
+                  <span class="badge interface-badge">interface</span>
+               </h3>
+               
+               <pre
+                  class="methods-block"
+               ><code class="methods-code">type closeIdleTransport interface {
+CloseIdleConnections()
+}</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="struct" data-name="ResponseRecorder">
-            <h2>type ResponseRecorder struct</h2>
-            <hr />
+         <section id="structs">
+            <h2>Structs</h2>
             
-            <p>ResponseRecorder is an implementation of [http.ResponseWriter] that
+            <article class="struct" data-name="ResponseRecorder">
+               <h3>
+                  ResponseRecorder
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>ResponseRecorder is an implementation of [http.ResponseWriter] that
 records its mutations for later inspection in tests.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Code int
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type ResponseRecorder struct {
+Code int
 HeaderMap http.Header
 Body *bytes.Buffer
 Flushed bool
 result *http.Response
 snapHeader http.Header
-wroteHeader bool</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Server">
-            <h2>type Server struct</h2>
-            <hr />
+wroteHeader bool
+}</code></pre>
+            </article>
             
-            <p>A Server is an HTTP server listening on a system-chosen port on the
+            <article class="struct" data-name="Server">
+               <h3>
+                  Server
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Server is an HTTP server listening on a system-chosen port on the
 local loopback interface, for use in end-to-end HTTP tests.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">URL string
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Server struct {
+URL string
 Listener net.Listener
 EnableHTTP2 bool
 TLS *tls.Config
@@ -204,490 +567,426 @@ certificate *x509.Certificate
 wg sync.WaitGroup
 mu sync.Mutex
 closed bool
-conns *ast.MapType
-client *http.Client</code></pre>
-         </article>
-         
-         <article class="struct" data-name="onlyCloseListener">
-            <h2>type onlyCloseListener struct</h2>
-            <hr />
+conns map[net.Conn]http.ConnState
+client *http.Client
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">net.Listener</code></pre>
-         </article>
+         </section>
           
-         <article class="function" data-name="NewRecorder">
-            <h2>NewRecorder</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <p>NewRecorder returns an initialized [ResponseRecorder].</p>
+            <article class="function" data-name="Certificate">
+               <h3>
+                  Certificate 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Certificate returns the certificate used by the server, or nil if
+the server doesn't use TLS.</p>
+               
+               <pre><code>func (s *Server) Certificate() *x509.Certificate</code></pre>
+            </article>
             
-            <pre><code>func NewRecorder() *ResponseRecorder</code></pre>
-         </article>
-         
-         <article class="function" data-name="Header">
-            <h2>Header</h2>
-            <hr />
+            <article class="function" data-name="Client">
+               <h3>
+                  Client 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Client returns an HTTP client configured for making requests to the server.
+It is configured to trust the server's TLS test certificate and will
+close its idle connections on [Server.Close].
+Use Server.URL as the base URL to send requests to the server.</p>
+               
+               <pre><code>func (s *Server) Client() *http.Client</code></pre>
+            </article>
             
-            <p>Header implements [http.ResponseWriter]. It returns the response
+            <article class="function" data-name="Close">
+               <h3>
+                  Close 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Close shuts down the server and blocks until all outstanding
+requests on this server have completed.</p>
+               
+               <pre><code>func (s *Server) Close()</code></pre>
+            </article>
+            
+            <article class="function" data-name="CloseClientConnections">
+               <h3>
+                  CloseClientConnections 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>CloseClientConnections closes any open HTTP connections to the test Server.</p>
+               
+               <pre><code>func (s *Server) CloseClientConnections()</code></pre>
+            </article>
+            
+            <article class="function" data-name="Flush">
+               <h3>
+                  Flush 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Flush implements [http.Flusher]. To test whether Flush was
+called, see rw.Flushed.</p>
+               
+               <pre><code>func (rw *ResponseRecorder) Flush()</code></pre>
+            </article>
+            
+            <article class="function" data-name="Header">
+               <h3>
+                  Header 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Header implements [http.ResponseWriter]. It returns the response
 headers to mutate within a handler. To test the headers that were
 written after a handler completes, use the [ResponseRecorder.Result] method and see
 the returned Response value's Header.</p>
+               
+               <pre><code>func (rw *ResponseRecorder) Header() http.Header</code></pre>
+            </article>
             
-            <pre><code>func Header() http.Header</code></pre>
-         </article>
-         
-         <article class="function" data-name="writeHeader">
-            <h2>writeHeader</h2>
-            <hr />
+            <article class="function" data-name="NewRecorder">
+               <h3>
+                  NewRecorder 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewRecorder returns an initialized [ResponseRecorder].</p>
+               
+               <pre><code>func NewRecorder() *ResponseRecorder</code></pre>
+            </article>
             
-            <p>writeHeader writes a header if it was not written yet and
-detects Content-Type if needed.
-
-bytes or str are the beginning of the response body.
-We pass both to avoid unnecessarily generate garbage
-in rw.WriteString which was created for performance reasons.
-Non-nil bytes win.</p>
+            <article class="function" data-name="NewRequest">
+               <h3>
+                  NewRequest 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewRequest wraps NewRequestWithContext using context.Background.</p>
+               
+               <pre><code>func NewRequest(method string, target string, body io.Reader) *http.Request</code></pre>
+            </article>
             
-            <pre><code>func writeHeader(b []byte, str string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Write">
-            <h2>Write</h2>
-            <hr />
+            <article class="function" data-name="NewRequestWithContext">
+               <h3>
+                  NewRequestWithContext 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewRequestWithContext returns a new incoming server Request, suitable
+for passing to an [http.Handler] for testing.
+The target is the RFC 7230 "request-target": it may be either a
+path or an absolute URL. If target is an absolute URL, the host name
+from the URL is used. Otherwise, "example.com" is used.
+The TLS field is set to a non-nil dummy value if target has scheme
+"https".
+The Request.Proto is always HTTP/1.1.
+An empty method means "GET".
+The provided body may be nil. If the body is of type *bytes.Reader,
+*strings.Reader, or *bytes.Buffer, the Request.ContentLength is
+set.
+NewRequest panics on error for ease of use in testing, where a
+panic is acceptable.
+To generate a client HTTP request instead of a server request, see
+the NewRequest function in the net/http package.</p>
+               
+               <pre><code>func NewRequestWithContext(ctx context.Context, method string, target string, body io.Reader) *http.Request</code></pre>
+            </article>
             
-            <p>Write implements http.ResponseWriter. The data in buf is written to
-rw.Body, if not nil.</p>
+            <article class="function" data-name="NewServer">
+               <h3>
+                  NewServer 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewServer starts and returns a new [Server].
+The caller should call Close when finished, to shut it down.</p>
+               
+               <pre><code>func NewServer(handler http.Handler) *Server</code></pre>
+            </article>
             
-            <pre><code>func Write(buf []byte) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="WriteString">
-            <h2>WriteString</h2>
-            <hr />
+            <article class="function" data-name="NewTLSServer">
+               <h3>
+                  NewTLSServer 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewTLSServer starts and returns a new [Server] using TLS.
+The caller should call Close when finished, to shut it down.</p>
+               
+               <pre><code>func NewTLSServer(handler http.Handler) *Server</code></pre>
+            </article>
             
-            <p>WriteString implements [io.StringWriter]. The data in str is written
-to rw.Body, if not nil.</p>
+            <article class="function" data-name="NewUnstartedServer">
+               <h3>
+                  NewUnstartedServer 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewUnstartedServer returns a new [Server] but doesn't start it.
+After changing its configuration, the caller should call Start or
+StartTLS.
+The caller should call Close when finished, to shut it down.</p>
+               
+               <pre><code>func NewUnstartedServer(handler http.Handler) *Server</code></pre>
+            </article>
             
-            <pre><code>func WriteString(str string) (int, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="checkWriteHeaderCode">
-            <h2>checkWriteHeaderCode</h2>
-            <hr />
-            
-            <pre><code>func checkWriteHeaderCode(code int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="WriteHeader">
-            <h2>WriteHeader</h2>
-            <hr />
-            
-            <p>WriteHeader implements [http.ResponseWriter].</p>
-            
-            <pre><code>func WriteHeader(code int)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Flush">
-            <h2>Flush</h2>
-            <hr />
-            
-            <p>Flush implements [http.Flusher]. To test whether Flush was
-called, see rw.Flushed.</p>
-            
-            <pre><code>func Flush()</code></pre>
-         </article>
-         
-         <article class="function" data-name="Result">
-            <h2>Result</h2>
-            <hr />
-            
-            <p>Result returns the response generated by the handler.
-
+            <article class="function" data-name="Result">
+               <h3>
+                  Result 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Result returns the response generated by the handler.
 The returned Response will have at least its StatusCode,
 Header, Body, and optionally Trailer populated.
 More fields may be populated in the future, so callers should
 not DeepEqual the result in tests.
-
 The Response.Header is a snapshot of the headers at the time of the
 first write call, or at the time of this call, if the handler never
 did a write.
-
 The Response.Body is guaranteed to be non-nil and Body.Read call is
 guaranteed to not return any error other than [io.EOF].
-
 Result must only be called after the handler has finished running.</p>
+               
+               <pre><code>func (rw *ResponseRecorder) Result() *http.Response</code></pre>
+            </article>
             
-            <pre><code>func Result() *http.Response</code></pre>
-         </article>
-         
-         <article class="function" data-name="parseContentLength">
-            <h2>parseContentLength</h2>
-            <hr />
+            <article class="function" data-name="Start">
+               <h3>
+                  Start 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Start starts a server from NewUnstartedServer.</p>
+               
+               <pre><code>func (s *Server) Start()</code></pre>
+            </article>
             
-            <p>parseContentLength trims whitespace from s and returns -1 if no value
+            <article class="function" data-name="StartTLS">
+               <h3>
+                  StartTLS 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>StartTLS starts TLS on a server from NewUnstartedServer.</p>
+               
+               <pre><code>func (s *Server) StartTLS()</code></pre>
+            </article>
+            
+            <article class="function" data-name="Write">
+               <h3>
+                  Write 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Write implements http.ResponseWriter. The data in buf is written to
+rw.Body, if not nil.</p>
+               
+               <pre><code>func (rw *ResponseRecorder) Write(buf []byte) (int, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="WriteHeader">
+               <h3>
+                  WriteHeader 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>WriteHeader implements [http.ResponseWriter].</p>
+               
+               <pre><code>func (rw *ResponseRecorder) WriteHeader(code int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="WriteString">
+               <h3>
+                  WriteString 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>WriteString implements [io.StringWriter]. The data in str is written
+to rw.Body, if not nil.</p>
+               
+               <pre><code>func (rw *ResponseRecorder) WriteString(str string) (int, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="checkWriteHeaderCode">
+               <h3>
+                  checkWriteHeaderCode 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func checkWriteHeaderCode(code int)</code></pre>
+            </article>
+            
+            <article class="function" data-name="closeConn">
+               <h3>
+                  closeConn 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>closeConn closes c.
+s.mu must be held.</p>
+               
+               <pre><code>func (s *Server) closeConn(c net.Conn)</code></pre>
+            </article>
+            
+            <article class="function" data-name="closeConnChan">
+               <h3>
+                  closeConnChan 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>closeConnChan is like closeConn, but takes an optional channel to receive a value
+when the goroutine closing c is done.</p>
+               
+               <pre><code>func (s *Server) closeConnChan(c net.Conn, done chan<- struct{...})</code></pre>
+            </article>
+            
+            <article class="function" data-name="goServe">
+               <h3>
+                  goServe 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *Server) goServe()</code></pre>
+            </article>
+            
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func init()</code></pre>
+            </article>
+            
+            <article class="function" data-name="logCloseHangDebugInfo">
+               <h3>
+                  logCloseHangDebugInfo 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *Server) logCloseHangDebugInfo()</code></pre>
+            </article>
+            
+            <article class="function" data-name="newLocalListener">
+               <h3>
+                  newLocalListener 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func newLocalListener() net.Listener</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseContentLength">
+               <h3>
+                  parseContentLength 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>parseContentLength trims whitespace from s and returns -1 if no value
 is set, or the value if it's >= 0.
-
 This a modified version of same function found in net/http/transfer.go. This
 one just ignores an invalid header.</p>
+               
+               <pre><code>func parseContentLength(cl string) int64</code></pre>
+            </article>
             
-            <pre><code>func parseContentLength(cl string) int64</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestRecorder">
-            <h2>TestRecorder</h2>
-            <hr />
+            <article class="function" data-name="strSliceContainsPrefix">
+               <h3>
+                  strSliceContainsPrefix 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func strSliceContainsPrefix(v []string, pre string) bool</code></pre>
+            </article>
             
-            <pre><code>func TestRecorder(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestParseContentLength">
-            <h2>TestParseContentLength</h2>
-            <hr />
-            
-            <p>issue 39017 - disallow Content-Length values such as "+3"</p>
-            
-            <pre><code>func TestParseContentLength(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestRecorderPanicsOnNonXXXStatusCode">
-            <h2>TestRecorderPanicsOnNonXXXStatusCode</h2>
-            <hr />
-            
-            <p>Ensure that httptest.Recorder panics when given a non-3 digit (XXX)
-status HTTP code. See https://golang.org/issues/45353</p>
-            
-            <pre><code>func TestRecorderPanicsOnNonXXXStatusCode(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="newLocalListener">
-            <h2>newLocalListener</h2>
-            <hr />
-            
-            <pre><code>func newLocalListener() net.Listener</code></pre>
-         </article>
-         
-         <article class="function" data-name="init">
-            <h2>init</h2>
-            <hr />
-            
-            <pre><code>func init()</code></pre>
-         </article>
-         
-         <article class="function" data-name="strSliceContainsPrefix">
-            <h2>strSliceContainsPrefix</h2>
-            <hr />
-            
-            <pre><code>func strSliceContainsPrefix(v []string, pre string) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="NewServer">
-            <h2>NewServer</h2>
-            <hr />
-            
-            <p>NewServer starts and returns a new [Server].
-The caller should call Close when finished, to shut it down.</p>
-            
-            <pre><code>func NewServer(handler http.Handler) *Server</code></pre>
-         </article>
-         
-         <article class="function" data-name="NewUnstartedServer">
-            <h2>NewUnstartedServer</h2>
-            <hr />
-            
-            <p>NewUnstartedServer returns a new [Server] but doesn't start it.
-
-After changing its configuration, the caller should call Start or
-StartTLS.
-
-The caller should call Close when finished, to shut it down.</p>
-            
-            <pre><code>func NewUnstartedServer(handler http.Handler) *Server</code></pre>
-         </article>
-         
-         <article class="function" data-name="Start">
-            <h2>Start</h2>
-            <hr />
-            
-            <p>Start starts a server from NewUnstartedServer.</p>
-            
-            <pre><code>func Start()</code></pre>
-         </article>
-         
-         <article class="function" data-name="StartTLS">
-            <h2>StartTLS</h2>
-            <hr />
-            
-            <p>StartTLS starts TLS on a server from NewUnstartedServer.</p>
-            
-            <pre><code>func StartTLS()</code></pre>
-         </article>
-         
-         <article class="function" data-name="NewTLSServer">
-            <h2>NewTLSServer</h2>
-            <hr />
-            
-            <p>NewTLSServer starts and returns a new [Server] using TLS.
-The caller should call Close when finished, to shut it down.</p>
-            
-            <pre><code>func NewTLSServer(handler http.Handler) *Server</code></pre>
-         </article>
-         
-         <article class="function" data-name="Close">
-            <h2>Close</h2>
-            <hr />
-            
-            <p>Close shuts down the server and blocks until all outstanding
-requests on this server have completed.</p>
-            
-            <pre><code>func Close()</code></pre>
-         </article>
-         
-         <article class="function" data-name="logCloseHangDebugInfo">
-            <h2>logCloseHangDebugInfo</h2>
-            <hr />
-            
-            <pre><code>func logCloseHangDebugInfo()</code></pre>
-         </article>
-         
-         <article class="function" data-name="CloseClientConnections">
-            <h2>CloseClientConnections</h2>
-            <hr />
-            
-            <p>CloseClientConnections closes any open HTTP connections to the test Server.</p>
-            
-            <pre><code>func CloseClientConnections()</code></pre>
-         </article>
-         
-         <article class="function" data-name="Certificate">
-            <h2>Certificate</h2>
-            <hr />
-            
-            <p>Certificate returns the certificate used by the server, or nil if
-the server doesn't use TLS.</p>
-            
-            <pre><code>func Certificate() *x509.Certificate</code></pre>
-         </article>
-         
-         <article class="function" data-name="Client">
-            <h2>Client</h2>
-            <hr />
-            
-            <p>Client returns an HTTP client configured for making requests to the server.
-It is configured to trust the server's TLS test certificate and will
-close its idle connections on [Server.Close].
-Use Server.URL as the base URL to send requests to the server.</p>
-            
-            <pre><code>func Client() *http.Client</code></pre>
-         </article>
-         
-         <article class="function" data-name="goServe">
-            <h2>goServe</h2>
-            <hr />
-            
-            <pre><code>func goServe()</code></pre>
-         </article>
-         
-         <article class="function" data-name="wrap">
-            <h2>wrap</h2>
-            <hr />
-            
-            <p>wrap installs the connection state-tracking hook to know which
+            <article class="function" data-name="wrap">
+               <h3>
+                  wrap 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>wrap installs the connection state-tracking hook to know which
 connections are idle.</p>
+               
+               <pre><code>func (s *Server) wrap()</code></pre>
+            </article>
             
-            <pre><code>func wrap()</code></pre>
-         </article>
-         
-         <article class="function" data-name="closeConn">
-            <h2>closeConn</h2>
-            <hr />
+            <article class="function" data-name="writeHeader">
+               <h3>
+                  writeHeader 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>writeHeader writes a header if it was not written yet and
+detects Content-Type if needed.
+bytes or str are the beginning of the response body.
+We pass both to avoid unnecessarily generate garbage
+in rw.WriteString which was created for performance reasons.
+Non-nil bytes win.</p>
+               
+               <pre><code>func (rw *ResponseRecorder) writeHeader(b []byte, str string)</code></pre>
+            </article>
             
-            <p>closeConn closes c.
-s.mu must be held.</p>
-            
-            <pre><code>func closeConn(c net.Conn)</code></pre>
-         </article>
-         
-         <article class="function" data-name="closeConnChan">
-            <h2>closeConnChan</h2>
-            <hr />
-            
-            <p>closeConnChan is like closeConn, but takes an optional channel to receive a value
-when the goroutine closing c is done.</p>
-            
-            <pre><code>func closeConnChan(c net.Conn, done *ast.ChanType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestServer">
-            <h2>TestServer</h2>
-            <hr />
-            
-            <pre><code>func TestServer(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testServer">
-            <h2>testServer</h2>
-            <hr />
-            
-            <pre><code>func testServer(t *testing.T, newServer newServerFunc)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testGetAfterClose">
-            <h2>testGetAfterClose</h2>
-            <hr />
-            
-            <p>Issue 12781</p>
-            
-            <pre><code>func testGetAfterClose(t *testing.T, newServer newServerFunc)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testServerCloseBlocking">
-            <h2>testServerCloseBlocking</h2>
-            <hr />
-            
-            <pre><code>func testServerCloseBlocking(t *testing.T, newServer newServerFunc)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testServerCloseClientConnections">
-            <h2>testServerCloseClientConnections</h2>
-            <hr />
-            
-            <p>Issue 14290</p>
-            
-            <pre><code>func testServerCloseClientConnections(t *testing.T, newServer newServerFunc)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testServerClient">
-            <h2>testServerClient</h2>
-            <hr />
-            
-            <p>Tests that the Server.Client method works and returns an http.Client that can hit
-NewTLSServer without cert warnings.</p>
-            
-            <pre><code>func testServerClient(t *testing.T, newTLSServer newServerFunc)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testServerClientTransportType">
-            <h2>testServerClientTransportType</h2>
-            <hr />
-            
-            <p>Tests that the Server.Client.Transport interface is implemented
-by a *http.Transport.</p>
-            
-            <pre><code>func testServerClientTransportType(t *testing.T, newServer newServerFunc)</code></pre>
-         </article>
-         
-         <article class="function" data-name="testTLSServerClientTransportType">
-            <h2>testTLSServerClientTransportType</h2>
-            <hr />
-            
-            <p>Tests that the TLS Server.Client.Transport interface is implemented
-by a *http.Transport.</p>
-            
-            <pre><code>func testTLSServerClientTransportType(t *testing.T, newTLSServer newServerFunc)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Close">
-            <h2>Close</h2>
-            <hr />
-            
-            <pre><code>func Close() error</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestServerZeroValueClose">
-            <h2>TestServerZeroValueClose</h2>
-            <hr />
-            
-            <p>Issue 19729: panic in Server.Close for values created directly
-without a constructor (so the unexported client field is nil).</p>
-            
-            <pre><code>func TestServerZeroValueClose(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestCloseHijackedConnection">
-            <h2>TestCloseHijackedConnection</h2>
-            <hr />
-            
-            <p>Issue 51799: test hijacking a connection and then closing it
-concurrently with closing the server.</p>
-            
-            <pre><code>func TestCloseHijackedConnection(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestTLSServerWithHTTP2">
-            <h2>TestTLSServerWithHTTP2</h2>
-            <hr />
-            
-            <pre><code>func TestTLSServerWithHTTP2(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="NewRequest">
-            <h2>NewRequest</h2>
-            <hr />
-            
-            <p>NewRequest wraps NewRequestWithContext using context.Background.</p>
-            
-            <pre><code>func NewRequest(method string, target string, body io.Reader) *http.Request</code></pre>
-         </article>
-         
-         <article class="function" data-name="NewRequestWithContext">
-            <h2>NewRequestWithContext</h2>
-            <hr />
-            
-            <p>NewRequestWithContext returns a new incoming server Request, suitable
-for passing to an [http.Handler] for testing.
-
-The target is the RFC 7230 "request-target": it may be either a
-path or an absolute URL. If target is an absolute URL, the host name
-from the URL is used. Otherwise, "example.com" is used.
-
-The TLS field is set to a non-nil dummy value if target has scheme
-"https".
-
-The Request.Proto is always HTTP/1.1.
-
-An empty method means "GET".
-
-The provided body may be nil. If the body is of type *bytes.Reader,
-*strings.Reader, or *bytes.Buffer, the Request.ContentLength is
-set.
-
-NewRequest panics on error for ease of use in testing, where a
-panic is acceptable.
-
-To generate a client HTTP request instead of a server request, see
-the NewRequest function in the net/http package.</p>
-            
-            <pre><code>func NewRequestWithContext(ctx context.Context, method string, target string, body io.Reader) *http.Request</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestNewRequest">
-            <h2>TestNewRequest</h2>
-            <hr />
-            
-            <pre><code>func TestNewRequest(t *testing.T)</code></pre>
-         </article>
-         
-         <article class="function" data-name="TestNewRequestWithContext">
-            <h2>TestNewRequestWithContext</h2>
-            <hr />
-            
-            <pre><code>func TestNewRequestWithContext(t *testing.T)</code></pre>
-         </article>
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -695,59 +994,170 @@ the NewRequest function in the net/http package.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

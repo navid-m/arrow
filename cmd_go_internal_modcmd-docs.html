@@ -13,869 +13,1571 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                 
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>modcmd</code>
-         </h1>
-         <hr />
+         <h1>modcmd</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="CmdMod">
-            <h2>CmdMod</h2>
-            <hr />
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"context"
+"fmt"
+"strings"
+"cmd/go/internal/base"
+"cmd/go/internal/imports"
+"cmd/go/internal/modload"
+"context"
+"encoding/json"
+"errors"
+"os"
+"runtime"
+"sync"
+"cmd/go/internal/base"
+"cmd/go/internal/cfg"
+"cmd/go/internal/gover"
+"cmd/go/internal/modfetch"
+"cmd/go/internal/modfetch/codehost"
+"cmd/go/internal/modload"
+"cmd/go/internal/toolchain"
+"golang.org/x/mod/module"
+"bytes"
+"context"
+"encoding/json"
+"errors"
+"fmt"
+"os"
+"strings"
+"cmd/go/internal/base"
+"cmd/go/internal/gover"
+"cmd/go/internal/lockedfile"
+"cmd/go/internal/modfetch"
+"cmd/go/internal/modload"
+"golang.org/x/mod/modfile"
+"golang.org/x/mod/module"
+"cmd/go/internal/base"
+"cmd/go/internal/modload"
+"context"
+"cmd/go/internal/base"
+"bufio"
+"context"
+"os"
+"cmd/go/internal/base"
+"cmd/go/internal/cfg"
+"cmd/go/internal/gover"
+"cmd/go/internal/modload"
+"cmd/go/internal/toolchain"
+"golang.org/x/mod/module"
+"cmd/go/internal/base"
+"cmd/go/internal/cfg"
+"cmd/go/internal/gover"
+"cmd/go/internal/imports"
+"cmd/go/internal/modload"
+"cmd/go/internal/toolchain"
+"context"
+"fmt"
+"golang.org/x/mod/modfile"
+"bytes"
+"context"
+"errors"
+"fmt"
+"go/build"
+"io"
+"io/fs"
+"os"
+"path"
+"path/filepath"
+"sort"
+"strings"
+"cmd/go/internal/base"
+"cmd/go/internal/cfg"
+"cmd/go/internal/fsys"
+"cmd/go/internal/gover"
+"cmd/go/internal/imports"
+"cmd/go/internal/load"
+"cmd/go/internal/modload"
+"cmd/go/internal/str"
+"golang.org/x/mod/module"
+"bytes"
+"context"
+"errors"
+"fmt"
+"io/fs"
+"os"
+"runtime"
+"cmd/go/internal/base"
+"cmd/go/internal/gover"
+"cmd/go/internal/modfetch"
+"cmd/go/internal/modload"
+"golang.org/x/mod/module"
+"golang.org/x/mod/sumdb/dirhash"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <pre><code>CmdMod</code></pre>
-         </article>
-         
-         <article class="global" data-name="cmdVendor">
-            <h2>cmdVendor</h2>
-            <hr />
+            <article class="global" data-name="CmdMod">
+               <h3>
+                  CmdMod 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var CmdMod = *ast.UnaryExpr</code></pre>
+            </article>
             
-            <pre><code>cmdVendor</code></pre>
-         </article>
-         
-         <article class="global" data-name="vendorE">
-            <h2>vendorE</h2>
-            <hr />
+            <article class="global" data-name="cmdDownload">
+               <h3>
+                  cmdDownload 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var cmdDownload = *ast.UnaryExpr</code></pre>
+            </article>
             
-            <pre><code>vendorE bool</code></pre>
-         </article>
-         
-         <article class="global" data-name="vendorO">
-            <h2>vendorO</h2>
-            <hr />
+            <article class="global" data-name="cmdEdit">
+               <h3>
+                  cmdEdit 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var cmdEdit = *ast.UnaryExpr</code></pre>
+            </article>
             
-            <pre><code>vendorO string</code></pre>
-         </article>
-         
-         <article class="global" data-name="copiedMetadata">
-            <h2>copiedMetadata</h2>
-            <hr />
+            <article class="global" data-name="cmdGraph">
+               <h3>
+                  cmdGraph 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var cmdGraph = *ast.UnaryExpr</code></pre>
+            </article>
             
-            <pre><code>copiedMetadata</code></pre>
-         </article>
-         
-         <article class="global" data-name="metaPrefixes">
-            <h2>metaPrefixes</h2>
-            <hr />
+            <article class="global" data-name="cmdInit">
+               <h3>
+                  cmdInit 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var cmdInit = *ast.UnaryExpr</code></pre>
+            </article>
             
-            <p>metaPrefixes is the list of metadata file prefixes.
+            <article class="global" data-name="cmdTidy">
+               <h3>
+                  cmdTidy 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var cmdTidy = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="cmdVendor">
+               <h3>
+                  cmdVendor 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var cmdVendor = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="cmdVerify">
+               <h3>
+                  cmdVerify 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var cmdVerify = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="cmdWhy">
+               <h3>
+                  cmdWhy 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var cmdWhy = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="copiedMetadata">
+               <h3>
+                  copiedMetadata 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var copiedMetadata = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="downloadJSON">
+               <h3>
+                  downloadJSON 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var downloadJSON = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="downloadReuse">
+               <h3>
+                  downloadReuse 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var downloadReuse = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="editFmt">
+               <h3>
+                  editFmt 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var editFmt = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="editGo">
+               <h3>
+                  editGo 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var editGo = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="editJSON">
+               <h3>
+                  editJSON 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var editJSON = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="editModule">
+               <h3>
+                  editModule 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var editModule = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="editPrint">
+               <h3>
+                  editPrint 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var editPrint = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="editToolchain">
+               <h3>
+                  editToolchain 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var editToolchain = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global" data-name="edits">
+               <h3>
+                  edits 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var edits []func(*modfile.File)</code></pre>
+            </article>
+            
+            <article class="global" data-name="graphGo">
+               <h3>
+                  graphGo 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var graphGo goVersionFlag</code></pre>
+            </article>
+            
+            <article class="global" data-name="metaPrefixes">
+               <h3>
+                  metaPrefixes 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <p>metaPrefixes is the list of metadata file prefixes.
 Vendoring copies metadata files from parents of copied directories.
 Note that this list could be arbitrarily extended, and it is longer
 in other tools (such as godep or dep). By using this limited set of
 prefixes and also insisting on capitalized file names, we are trying
 to nudge people toward more agreement on the naming
 and also trying to avoid false positives.</p>
+               
+               <pre><code>var metaPrefixes = []string{...}</code></pre>
+            </article>
             
-            <pre><code>metaPrefixes</code></pre>
-         </article>
-         
-         <article class="global" data-name="cmdVerify">
-            <h2>cmdVerify</h2>
-            <hr />
+            <article class="global" data-name="tidyCompat">
+               <h3>
+                  tidyCompat 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var tidyCompat goVersionFlag</code></pre>
+            </article>
             
-            <pre><code>cmdVerify</code></pre>
-         </article>
-         
-         <article class="global" data-name="cmdGraph">
-            <h2>cmdGraph</h2>
-            <hr />
+            <article class="global" data-name="tidyDiff">
+               <h3>
+                  tidyDiff 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var tidyDiff bool</code></pre>
+            </article>
             
-            <pre><code>cmdGraph</code></pre>
-         </article>
-         
-         <article class="global" data-name="graphGo">
-            <h2>graphGo</h2>
-            <hr />
+            <article class="global" data-name="tidyE">
+               <h3>
+                  tidyE 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var tidyE bool</code></pre>
+            </article>
             
-            <pre><code>graphGo goVersionFlag</code></pre>
-         </article>
-         
-         <article class="global" data-name="cmdInit">
-            <h2>cmdInit</h2>
-            <hr />
+            <article class="global" data-name="tidyGo">
+               <h3>
+                  tidyGo 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var tidyGo goVersionFlag</code></pre>
+            </article>
             
-            <pre><code>cmdInit</code></pre>
-         </article>
-         
-         <article class="global" data-name="cmdTidy">
-            <h2>cmdTidy</h2>
-            <hr />
+            <article class="global" data-name="vendorE">
+               <h3>
+                  vendorE 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var vendorE bool</code></pre>
+            </article>
             
-            <pre><code>cmdTidy</code></pre>
-         </article>
-         
-         <article class="global" data-name="tidyE">
-            <h2>tidyE</h2>
-            <hr />
+            <article class="global" data-name="vendorO">
+               <h3>
+                  vendorO 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var vendorO string</code></pre>
+            </article>
             
-            <pre><code>tidyE bool</code></pre>
-         </article>
-         
-         <article class="global" data-name="tidyDiff">
-            <h2>tidyDiff</h2>
-            <hr />
+            <article class="global" data-name="whyM">
+               <h3>
+                  whyM 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var whyM = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre><code>tidyDiff bool</code></pre>
-         </article>
-         
-         <article class="global" data-name="tidyGo">
-            <h2>tidyGo</h2>
-            <hr />
+            <article class="global" data-name="whyVendor">
+               <h3>
+                  whyVendor 
+                  <span class="badge var-badge">var</span>
+                  
+               </h3>
+               
+               <pre><code>var whyVendor = *ast.CallExpr</code></pre>
+            </article>
             
-            <pre><code>tidyGo goVersionFlag</code></pre>
-         </article>
-         
-         <article class="global" data-name="tidyCompat">
-            <h2>tidyCompat</h2>
-            <hr />
-            
-            <pre><code>tidyCompat goVersionFlag</code></pre>
-         </article>
-         
-         <article class="global" data-name="cmdWhy">
-            <h2>cmdWhy</h2>
-            <hr />
-            
-            <pre><code>cmdWhy</code></pre>
-         </article>
-         
-         <article class="global" data-name="whyM">
-            <h2>whyM</h2>
-            <hr />
-            
-            <pre><code>whyM</code></pre>
-         </article>
-         
-         <article class="global" data-name="whyVendor">
-            <h2>whyVendor</h2>
-            <hr />
-            
-            <pre><code>whyVendor</code></pre>
-         </article>
-         
-         <article class="global" data-name="cmdDownload">
-            <h2>cmdDownload</h2>
-            <hr />
-            
-            <pre><code>cmdDownload</code></pre>
-         </article>
-         
-         <article class="global" data-name="downloadJSON">
-            <h2>downloadJSON</h2>
-            <hr />
-            
-            <pre><code>downloadJSON</code></pre>
-         </article>
-         
-         <article class="global" data-name="downloadReuse">
-            <h2>downloadReuse</h2>
-            <hr />
-            
-            <pre><code>downloadReuse</code></pre>
-         </article>
-         
-         <article class="global" data-name="cmdEdit">
-            <h2>cmdEdit</h2>
-            <hr />
-            
-            <pre><code>cmdEdit</code></pre>
-         </article>
-         
-         <article class="global" data-name="editFmt">
-            <h2>editFmt</h2>
-            <hr />
-            
-            <pre><code>editFmt</code></pre>
-         </article>
-         
-         <article class="global" data-name="editGo">
-            <h2>editGo</h2>
-            <hr />
-            
-            <pre><code>editGo</code></pre>
-         </article>
-         
-         <article class="global" data-name="editToolchain">
-            <h2>editToolchain</h2>
-            <hr />
-            
-            <pre><code>editToolchain</code></pre>
-         </article>
-         
-         <article class="global" data-name="editJSON">
-            <h2>editJSON</h2>
-            <hr />
-            
-            <pre><code>editJSON</code></pre>
-         </article>
-         
-         <article class="global" data-name="editPrint">
-            <h2>editPrint</h2>
-            <hr />
-            
-            <pre><code>editPrint</code></pre>
-         </article>
-         
-         <article class="global" data-name="editModule">
-            <h2>editModule</h2>
-            <hr />
-            
-            <pre><code>editModule</code></pre>
-         </article>
-         
-         <article class="global" data-name="edits">
-            <h2>edits</h2>
-            <hr />
-            
-            <pre><code>edits []func</code></pre>
-         </article>
+         </section>
           
-         <article class="struct" data-name="metakey">
-            <h2>type metakey struct</h2>
-            <hr />
+         <section id="types">
+            <h2>Type Aliases</h2>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">modPath string
-dst string</code></pre>
-         </article>
-         
-         <article class="struct" data-name="goVersionFlag">
-            <h2>type goVersionFlag struct</h2>
-            <hr />
+            <article class="type" data-name="flagFunc">
+               <h3>
+                  flagFunc
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <pre><code>type flagFunc func(string)</code></pre>
+            </article>
             
-            <p>A goVersionFlag is a flag.Value representing a supported Go version.
-
-(Note that the -go argument to 'go mod edit' is *not* a goVersionFlag.
-It intentionally allows newer-than-supported versions as arguments.)</p>
+         </section>
+           
+         <section id="structs">
+            <h2>Structs</h2>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">v string</code></pre>
-         </article>
-         
-         <article class="struct" data-name="ModuleJSON">
-            <h2>type ModuleJSON struct</h2>
-            <hr />
+            <article class="struct" data-name="ModuleJSON">
+               <h3>
+                  ModuleJSON
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A ModuleJSON describes the result of go mod download.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type ModuleJSON struct {
+Path string `json:",omitempty"`
+Version string `json:",omitempty"`
+Query string `json:",omitempty"`
+Error string `json:",omitempty"`
+Info string `json:",omitempty"`
+GoMod string `json:",omitempty"`
+Zip string `json:",omitempty"`
+Dir string `json:",omitempty"`
+Sum string `json:",omitempty"`
+GoModSum string `json:",omitempty"`
+Origin *codehost.Origin `json:",omitempty"`
+Reuse bool `json:",omitempty"`
+}</code></pre>
+            </article>
             
-            <p>A ModuleJSON describes the result of go mod download.</p>
+            <article class="struct" data-name="editModuleJSON">
+               <h3>
+                  editModuleJSON
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type editModuleJSON struct {
+Path string
+Deprecated string `json:",omitempty"`
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Path string
-Version string
-Query string
-Error string
-Info string
-GoMod string
-Zip string
-Dir string
-Sum string
-GoModSum string
-Origin *codehost.Origin
-Reuse bool</code></pre>
-         </article>
-         
-         <article class="struct" data-name="fileJSON">
-            <h2>type fileJSON struct</h2>
-            <hr />
-            
-            <p>fileJSON is the -json output data structure.</p>
-            
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Module editModuleJSON
-Go string
-Toolchain string
+            <article class="struct" data-name="fileJSON">
+               <h3>
+                  fileJSON
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>fileJSON is the -json output data structure.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type fileJSON struct {
+Module editModuleJSON
+Go string `json:",omitempty"`
+Toolchain string `json:",omitempty"`
 Require []requireJSON
 Exclude []module.Version
 Replace []replaceJSON
 Retract []retractJSON
-Tool []toolJSON</code></pre>
-         </article>
-         
-         <article class="struct" data-name="editModuleJSON">
-            <h2>type editModuleJSON struct</h2>
-            <hr />
+Tool []toolJSON
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Path string
-Deprecated string</code></pre>
-         </article>
-         
-         <article class="struct" data-name="requireJSON">
-            <h2>type requireJSON struct</h2>
-            <hr />
+            <article class="struct" data-name="goVersionFlag">
+               <h3>
+                  goVersionFlag
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A goVersionFlag is a flag.Value representing a supported Go version.
+(Note that the -go argument to 'go mod edit' is *not* a goVersionFlag.
+It intentionally allows newer-than-supported versions as arguments.)</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type goVersionFlag struct {
+v string
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Path string
-Version string
-Indirect bool</code></pre>
-         </article>
-         
-         <article class="struct" data-name="replaceJSON">
-            <h2>type replaceJSON struct</h2>
-            <hr />
+            <article class="struct" data-name="metakey">
+               <h3>
+                  metakey
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type metakey struct {
+modPath string
+dst string
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Old module.Version
-New module.Version</code></pre>
-         </article>
-         
-         <article class="struct" data-name="retractJSON">
-            <h2>type retractJSON struct</h2>
-            <hr />
+            <article class="struct" data-name="replaceJSON">
+               <h3>
+                  replaceJSON
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type replaceJSON struct {
+Old module.Version
+New module.Version
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Low string
-High string
-Rationale string</code></pre>
-         </article>
-         
-         <article class="struct" data-name="toolJSON">
-            <h2>type toolJSON struct</h2>
-            <hr />
+            <article class="struct" data-name="requireJSON">
+               <h3>
+                  requireJSON
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type requireJSON struct {
+Path string
+Version string `json:",omitempty"`
+Indirect bool `json:",omitempty"`
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">Path string</code></pre>
-         </article>
+            <article class="struct" data-name="retractJSON">
+               <h3>
+                  retractJSON
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type retractJSON struct {
+Low string `json:",omitempty"`
+High string `json:",omitempty"`
+Rationale string `json:",omitempty"`
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="toolJSON">
+               <h3>
+                  toolJSON
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type toolJSON struct {
+Path string
+}</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="function" data-name="init">
-            <h2>init</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <pre><code>func init()</code></pre>
-         </article>
-         
-         <article class="function" data-name="runVendor">
-            <h2>runVendor</h2>
-            <hr />
-            
-            <pre><code>func runVendor(ctx context.Context, cmd *base.Command, args []string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="RunVendor">
-            <h2>RunVendor</h2>
-            <hr />
-            
-            <pre><code>func RunVendor(ctx context.Context, vendorE bool, vendorO string, args []string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="moduleLine">
-            <h2>moduleLine</h2>
-            <hr />
-            
-            <pre><code>func moduleLine(m module.Version, r module.Version) string</code></pre>
-         </article>
-         
-         <article class="function" data-name="vendorPkg">
-            <h2>vendorPkg</h2>
-            <hr />
-            
-            <pre><code>func vendorPkg(vdir string, pkg string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="copyMetadata">
-            <h2>copyMetadata</h2>
-            <hr />
-            
-            <p>copyMetadata copies metadata files from parents of src to parents of dst,
-stopping after processing the src parent for modPath.</p>
-            
-            <pre><code>func copyMetadata(modPath string, pkg string, dst string, src string, copiedFiles *ast.MapType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="matchMetadata">
-            <h2>matchMetadata</h2>
-            <hr />
-            
-            <p>matchMetadata reports whether info is a metadata file.</p>
-            
-            <pre><code>func matchMetadata(dir string, info fs.DirEntry) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="matchPotentialSourceFile">
-            <h2>matchPotentialSourceFile</h2>
-            <hr />
-            
-            <p>matchPotentialSourceFile reports whether info may be relevant to a build operation.</p>
-            
-            <pre><code>func matchPotentialSourceFile(dir string, info fs.DirEntry) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="copyDir">
-            <h2>copyDir</h2>
-            <hr />
-            
-            <p>copyDir copies all regular files satisfying match(info) from src to dst.</p>
-            
-            <pre><code>func copyDir(dst string, src string, match func, copiedFiles *ast.MapType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="checkPathCollisions">
-            <h2>checkPathCollisions</h2>
-            <hr />
-            
-            <p>checkPathCollisions will fail if case-insensitive collisions are present.
-The reason why we do this check in go mod vendor is to keep consistency
-with go build. If modifying, consider changing load() in
-src/cmd/go/internal/load/pkg.go</p>
-            
-            <pre><code>func checkPathCollisions(modpkgs *ast.MapType)</code></pre>
-         </article>
-         
-         <article class="function" data-name="init">
-            <h2>init</h2>
-            <hr />
-            
-            <pre><code>func init()</code></pre>
-         </article>
-         
-         <article class="function" data-name="runVerify">
-            <h2>runVerify</h2>
-            <hr />
-            
-            <pre><code>func runVerify(ctx context.Context, cmd *base.Command, args []string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="verifyMod">
-            <h2>verifyMod</h2>
-            <hr />
-            
-            <pre><code>func verifyMod(ctx context.Context, mod module.Version) []error</code></pre>
-         </article>
-         
-         <article class="function" data-name="init">
-            <h2>init</h2>
-            <hr />
-            
-            <pre><code>func init()</code></pre>
-         </article>
-         
-         <article class="function" data-name="runGraph">
-            <h2>runGraph</h2>
-            <hr />
-            
-            <pre><code>func runGraph(ctx context.Context, cmd *base.Command, args []string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="init">
-            <h2>init</h2>
-            <hr />
-            
-            <pre><code>func init()</code></pre>
-         </article>
-         
-         <article class="function" data-name="runInit">
-            <h2>runInit</h2>
-            <hr />
-            
-            <pre><code>func runInit(ctx context.Context, cmd *base.Command, args []string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="init">
-            <h2>init</h2>
-            <hr />
-            
-            <pre><code>func init()</code></pre>
-         </article>
-         
-         <article class="function" data-name="String">
-            <h2>String</h2>
-            <hr />
-            
-            <pre><code>func String() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="Get">
-            <h2>Get</h2>
-            <hr />
-            
-            <pre><code>func Get() any</code></pre>
-         </article>
-         
-         <article class="function" data-name="Set">
-            <h2>Set</h2>
-            <hr />
-            
-            <pre><code>func Set(s string) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="runTidy">
-            <h2>runTidy</h2>
-            <hr />
-            
-            <pre><code>func runTidy(ctx context.Context, cmd *base.Command, args []string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="init">
-            <h2>init</h2>
-            <hr />
-            
-            <pre><code>func init()</code></pre>
-         </article>
-         
-         <article class="function" data-name="runWhy">
-            <h2>runWhy</h2>
-            <hr />
-            
-            <pre><code>func runWhy(ctx context.Context, cmd *base.Command, args []string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="init">
-            <h2>init</h2>
-            <hr />
-            
-            <pre><code>func init()</code></pre>
-         </article>
-         
-         <article class="function" data-name="runDownload">
-            <h2>runDownload</h2>
-            <hr />
-            
-            <pre><code>func runDownload(ctx context.Context, cmd *base.Command, args []string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="DownloadModule">
-            <h2>DownloadModule</h2>
-            <hr />
-            
-            <p>DownloadModule runs 'go mod download' for m.Path@m.Version,
+            <article class="function" data-name="DownloadModule">
+               <h3>
+                  DownloadModule 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>DownloadModule runs 'go mod download' for m.Path@m.Version,
 leaving the results (including any error) in m itself.</p>
+               
+               <pre><code>func DownloadModule(ctx context.Context, m *ModuleJSON) error</code></pre>
+            </article>
             
-            <pre><code>func DownloadModule(ctx context.Context, m *ModuleJSON) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="String">
-            <h2>String</h2>
-            <hr />
+            <article class="function" data-name="Get">
+               <h3>
+                  Get 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (f *goVersionFlag) Get() any</code></pre>
+            </article>
             
-            <pre><code>func String() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="Set">
-            <h2>Set</h2>
-            <hr />
+            <article class="function" data-name="RunVendor">
+               <h3>
+                  RunVendor 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func RunVendor(ctx context.Context, vendorE bool, vendorO string, args []string)</code></pre>
+            </article>
             
-            <pre><code>func Set(s string) error</code></pre>
-         </article>
-         
-         <article class="function" data-name="init">
-            <h2>init</h2>
-            <hr />
+            <article class="function" data-name="Set">
+               <h3>
+                  Set 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (f *goVersionFlag) Set(s string) error</code></pre>
+            </article>
             
-            <pre><code>func init()</code></pre>
-         </article>
-         
-         <article class="function" data-name="runEdit">
-            <h2>runEdit</h2>
-            <hr />
+            <article class="function" data-name="Set">
+               <h3>
+                  Set 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (f flagFunc) Set(s string) error</code></pre>
+            </article>
             
-            <pre><code>func runEdit(ctx context.Context, cmd *base.Command, args []string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="parsePathVersion">
-            <h2>parsePathVersion</h2>
-            <hr />
+            <article class="function" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (f *goVersionFlag) String() string</code></pre>
+            </article>
             
-            <p>parsePathVersion parses -flag=arg expecting arg to be path@version.</p>
+            <article class="function" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (f flagFunc) String() string</code></pre>
+            </article>
             
-            <pre><code>func parsePathVersion(flag string, arg string) (path string, version string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="parsePath">
-            <h2>parsePath</h2>
-            <hr />
-            
-            <p>parsePath parses -flag=arg expecting arg to be path (not path@version).</p>
-            
-            <pre><code>func parsePath(flag string, arg string) path string</code></pre>
-         </article>
-         
-         <article class="function" data-name="parsePathVersionOptional">
-            <h2>parsePathVersionOptional</h2>
-            <hr />
-            
-            <p>parsePathVersionOptional parses path[@version], using adj to
-describe any errors.</p>
-            
-            <pre><code>func parsePathVersionOptional(adj string, arg string, allowDirPath bool) (path string, version string, err error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="parseVersionInterval">
-            <h2>parseVersionInterval</h2>
-            <hr />
-            
-            <p>parseVersionInterval parses a single version like "v1.2.3" or a closed
-interval like "[v1.2.3,v1.4.5]". Note that a single version has the same
-representation as an interval with equal upper and lower bounds: both
-Low and High are set.</p>
-            
-            <pre><code>func parseVersionInterval(arg string) (modfile.VersionInterval, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="allowedVersionArg">
-            <h2>allowedVersionArg</h2>
-            <hr />
-            
-            <p>allowedVersionArg returns whether a token may be used as a version in go.mod.
+            <article class="function" data-name="allowedVersionArg">
+               <h3>
+                  allowedVersionArg 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>allowedVersionArg returns whether a token may be used as a version in go.mod.
 We don't call modfile.CheckPathVersion, because that insists on versions
 being in semver form, but here we want to allow versions like "master" or
 "1234abcdef", which the go command will resolve the next time it runs (or
 during -fix).  Even so, we need to make sure the version is a valid token.</p>
+               
+               <pre><code>func allowedVersionArg(arg string) bool</code></pre>
+            </article>
             
-            <pre><code>func allowedVersionArg(arg string) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="flagGodebug">
-            <h2>flagGodebug</h2>
-            <hr />
+            <article class="function" data-name="checkPathCollisions">
+               <h3>
+                  checkPathCollisions 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>checkPathCollisions will fail if case-insensitive collisions are present.
+The reason why we do this check in go mod vendor is to keep consistency
+with go build. If modifying, consider changing load() in
+src/cmd/go/internal/load/pkg.go</p>
+               
+               <pre><code>func checkPathCollisions(modpkgs map[module.Version][]string)</code></pre>
+            </article>
             
-            <p>flagGodebug implements the -godebug flag.</p>
+            <article class="function" data-name="copyDir">
+               <h3>
+                  copyDir 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>copyDir copies all regular files satisfying match(info) from src to dst.</p>
+               
+               <pre><code>func copyDir(dst string, src string, match func(dir string, info fs.DirEntry) bool, copiedFiles map[string]bool)</code></pre>
+            </article>
             
-            <pre><code>func flagGodebug(arg string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="flagDropGodebug">
-            <h2>flagDropGodebug</h2>
-            <hr />
+            <article class="function" data-name="copyMetadata">
+               <h3>
+                  copyMetadata 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>copyMetadata copies metadata files from parents of src to parents of dst,
+stopping after processing the src parent for modPath.</p>
+               
+               <pre><code>func copyMetadata(modPath string, pkg string, dst string, src string, copiedFiles map[string]bool)</code></pre>
+            </article>
             
-            <p>flagDropGodebug implements the -dropgodebug flag.</p>
+            <article class="function" data-name="editPrintJSON">
+               <h3>
+                  editPrintJSON 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>editPrintJSON prints the -json output.</p>
+               
+               <pre><code>func editPrintJSON(modFile *modfile.File)</code></pre>
+            </article>
             
-            <pre><code>func flagDropGodebug(arg string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="flagRequire">
-            <h2>flagRequire</h2>
-            <hr />
+            <article class="function" data-name="flagDropExclude">
+               <h3>
+                  flagDropExclude 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>flagDropExclude implements the -dropexclude flag.</p>
+               
+               <pre><code>func flagDropExclude(arg string)</code></pre>
+            </article>
             
-            <p>flagRequire implements the -require flag.</p>
+            <article class="function" data-name="flagDropGodebug">
+               <h3>
+                  flagDropGodebug 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>flagDropGodebug implements the -dropgodebug flag.</p>
+               
+               <pre><code>func flagDropGodebug(arg string)</code></pre>
+            </article>
             
-            <pre><code>func flagRequire(arg string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="flagDropRequire">
-            <h2>flagDropRequire</h2>
-            <hr />
+            <article class="function" data-name="flagDropReplace">
+               <h3>
+                  flagDropReplace 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>flagDropReplace implements the -dropreplace flag.</p>
+               
+               <pre><code>func flagDropReplace(arg string)</code></pre>
+            </article>
             
-            <p>flagDropRequire implements the -droprequire flag.</p>
+            <article class="function" data-name="flagDropRequire">
+               <h3>
+                  flagDropRequire 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>flagDropRequire implements the -droprequire flag.</p>
+               
+               <pre><code>func flagDropRequire(arg string)</code></pre>
+            </article>
             
-            <pre><code>func flagDropRequire(arg string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="flagExclude">
-            <h2>flagExclude</h2>
-            <hr />
+            <article class="function" data-name="flagDropRetract">
+               <h3>
+                  flagDropRetract 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>flagDropRetract implements the -dropretract flag.</p>
+               
+               <pre><code>func flagDropRetract(arg string)</code></pre>
+            </article>
             
-            <p>flagExclude implements the -exclude flag.</p>
+            <article class="function" data-name="flagDropTool">
+               <h3>
+                  flagDropTool 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>flagDropTool implements the -droptool flag.</p>
+               
+               <pre><code>func flagDropTool(arg string)</code></pre>
+            </article>
             
-            <pre><code>func flagExclude(arg string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="flagDropExclude">
-            <h2>flagDropExclude</h2>
-            <hr />
+            <article class="function" data-name="flagExclude">
+               <h3>
+                  flagExclude 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>flagExclude implements the -exclude flag.</p>
+               
+               <pre><code>func flagExclude(arg string)</code></pre>
+            </article>
             
-            <p>flagDropExclude implements the -dropexclude flag.</p>
+            <article class="function" data-name="flagGodebug">
+               <h3>
+                  flagGodebug 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>flagGodebug implements the -godebug flag.</p>
+               
+               <pre><code>func flagGodebug(arg string)</code></pre>
+            </article>
             
-            <pre><code>func flagDropExclude(arg string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="flagReplace">
-            <h2>flagReplace</h2>
-            <hr />
+            <article class="function" data-name="flagReplace">
+               <h3>
+                  flagReplace 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>flagReplace implements the -replace flag.</p>
+               
+               <pre><code>func flagReplace(arg string)</code></pre>
+            </article>
             
-            <p>flagReplace implements the -replace flag.</p>
+            <article class="function" data-name="flagRequire">
+               <h3>
+                  flagRequire 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>flagRequire implements the -require flag.</p>
+               
+               <pre><code>func flagRequire(arg string)</code></pre>
+            </article>
             
-            <pre><code>func flagReplace(arg string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="flagDropReplace">
-            <h2>flagDropReplace</h2>
-            <hr />
+            <article class="function" data-name="flagRetract">
+               <h3>
+                  flagRetract 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>flagRetract implements the -retract flag.</p>
+               
+               <pre><code>func flagRetract(arg string)</code></pre>
+            </article>
             
-            <p>flagDropReplace implements the -dropreplace flag.</p>
+            <article class="function" data-name="flagTool">
+               <h3>
+                  flagTool 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>flagTool implements the -tool flag.</p>
+               
+               <pre><code>func flagTool(arg string)</code></pre>
+            </article>
             
-            <pre><code>func flagDropReplace(arg string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="flagRetract">
-            <h2>flagRetract</h2>
-            <hr />
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func init()</code></pre>
+            </article>
             
-            <p>flagRetract implements the -retract flag.</p>
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func init()</code></pre>
+            </article>
             
-            <pre><code>func flagRetract(arg string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="flagDropRetract">
-            <h2>flagDropRetract</h2>
-            <hr />
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func init()</code></pre>
+            </article>
             
-            <p>flagDropRetract implements the -dropretract flag.</p>
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func init()</code></pre>
+            </article>
             
-            <pre><code>func flagDropRetract(arg string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="flagTool">
-            <h2>flagTool</h2>
-            <hr />
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func init()</code></pre>
+            </article>
             
-            <p>flagTool implements the -tool flag.</p>
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func init()</code></pre>
+            </article>
             
-            <pre><code>func flagTool(arg string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="flagDropTool">
-            <h2>flagDropTool</h2>
-            <hr />
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func init()</code></pre>
+            </article>
             
-            <p>flagDropTool implements the -droptool flag.</p>
+            <article class="function" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func init()</code></pre>
+            </article>
             
-            <pre><code>func flagDropTool(arg string)</code></pre>
-         </article>
-         
-         <article class="function" data-name="editPrintJSON">
-            <h2>editPrintJSON</h2>
-            <hr />
+            <article class="function" data-name="matchMetadata">
+               <h3>
+                  matchMetadata 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>matchMetadata reports whether info is a metadata file.</p>
+               
+               <pre><code>func matchMetadata(dir string, info fs.DirEntry) bool</code></pre>
+            </article>
             
-            <p>editPrintJSON prints the -json output.</p>
+            <article class="function" data-name="matchPotentialSourceFile">
+               <h3>
+                  matchPotentialSourceFile 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>matchPotentialSourceFile reports whether info may be relevant to a build operation.</p>
+               
+               <pre><code>func matchPotentialSourceFile(dir string, info fs.DirEntry) bool</code></pre>
+            </article>
             
-            <pre><code>func editPrintJSON(modFile *modfile.File)</code></pre>
-         </article>
+            <article class="function" data-name="moduleLine">
+               <h3>
+                  moduleLine 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func moduleLine(m module.Version, r module.Version) string</code></pre>
+            </article>
+            
+            <article class="function" data-name="parsePath">
+               <h3>
+                  parsePath 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>parsePath parses -flag=arg expecting arg to be path (not path@version).</p>
+               
+               <pre><code>func parsePath(flag string, arg string) (path string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="parsePathVersion">
+               <h3>
+                  parsePathVersion 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>parsePathVersion parses -flag=arg expecting arg to be path@version.</p>
+               
+               <pre><code>func parsePathVersion(flag string, arg string) (path string, version string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="parsePathVersionOptional">
+               <h3>
+                  parsePathVersionOptional 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>parsePathVersionOptional parses path[@version], using adj to
+describe any errors.</p>
+               
+               <pre><code>func parsePathVersionOptional(adj string, arg string, allowDirPath bool) (path string, version string, err error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="parseVersionInterval">
+               <h3>
+                  parseVersionInterval 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>parseVersionInterval parses a single version like "v1.2.3" or a closed
+interval like "[v1.2.3,v1.4.5]". Note that a single version has the same
+representation as an interval with equal upper and lower bounds: both
+Low and High are set.</p>
+               
+               <pre><code>func parseVersionInterval(arg string) (modfile.VersionInterval, error)</code></pre>
+            </article>
+            
+            <article class="function" data-name="runDownload">
+               <h3>
+                  runDownload 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func runDownload(ctx context.Context, cmd *base.Command, args []string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="runEdit">
+               <h3>
+                  runEdit 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func runEdit(ctx context.Context, cmd *base.Command, args []string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="runGraph">
+               <h3>
+                  runGraph 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func runGraph(ctx context.Context, cmd *base.Command, args []string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="runInit">
+               <h3>
+                  runInit 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func runInit(ctx context.Context, cmd *base.Command, args []string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="runTidy">
+               <h3>
+                  runTidy 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func runTidy(ctx context.Context, cmd *base.Command, args []string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="runVendor">
+               <h3>
+                  runVendor 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func runVendor(ctx context.Context, cmd *base.Command, args []string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="runVerify">
+               <h3>
+                  runVerify 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func runVerify(ctx context.Context, cmd *base.Command, args []string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="runWhy">
+               <h3>
+                  runWhy 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func runWhy(ctx context.Context, cmd *base.Command, args []string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="vendorPkg">
+               <h3>
+                  vendorPkg 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func vendorPkg(vdir string, pkg string)</code></pre>
+            </article>
+            
+            <article class="function" data-name="verifyMod">
+               <h3>
+                  verifyMod 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <pre><code>func verifyMod(ctx context.Context, mod module.Version) []error</code></pre>
+            </article>
+            
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -883,59 +1585,170 @@ during -fix).  Even so, we need to make sure the version is a valid token.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });

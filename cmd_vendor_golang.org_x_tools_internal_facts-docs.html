@@ -13,350 +13,753 @@
       />
       <style>
          html {
-            font-size: 13px;
+            font-size: 14px;
+            scroll-behavior: smooth;
          }
+
          body {
             display: flex;
             min-height: 100vh;
             margin: 0;
+            line-height: 1.6;
          }
+
          .sidebar {
-            width: 200px;
-            background: rgba(59, 56, 56, 0.1);
-            padding: 1.2rem;
-            box-shadow: 2px 0 5px rgba(0, 0, 0, 0.3);
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
             overflow-y: auto;
-            margin-right: 7px;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
          }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
          main {
-            flex: 0.9;
-            padding: 1rem;
+            flex: 1;
+            padding: 2rem;
             margin: 0;
-            max-width: calc(100% - 220px);
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
          }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          h1 {
-            font-size: 1.4rem;
-            margin-bottom: 1rem;
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
          }
+
          h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
             font-size: 1.2rem;
-            margin: 0.3rem 0 0.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
          }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
          pre {
-            background: #1e1e1e;
-            color: #dcdcdc;
-            padding: 0.4rem 0.6rem;
-            border-radius: 6px;
-            margin: 0 0 1rem;
-            font-size: 0.85rem;
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
             overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
          }
+
          code {
-            color: #f0dbdb;
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
             white-space: pre-wrap;
          }
+
          p {
             font-size: 15px;
-            padding-top: 10px;
+            margin: 1rem 0;
+            color: #ddd;
          }
+
          article {
-            margin-bottom: 0.5rem;
-            padding: 0.4rem 0.9rem;
-            background: rgba(59, 56, 56, 0.5);
-            border-radius: 10px;
-            max-width: 99%;
-            box-shadow: 0 0 3px rgba(0, 0, 0, 0.3);
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
          }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
          .hidden {
-            display: none;
+            display: none !important;
          }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
          .filter-toggle label {
-            display: block;
-            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
          }
-         .field-line {
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         .field-line,
+         .method-line {
             display: block;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
          }
       </style>
    </head>
    <body>
       <aside class="sidebar">
-         <a href="index.html">⌂</a>
-         |
-         <a href="#" onclick="history.back()">←</a>
-         <hr style="opacity: 0" />
-         <h2>Filters</h2>
-         <hr />
-         <input
-            type="search"
-            id="searchInput"
-            placeholder="Search symbols..."
-            style="
-               width: 100%;
-               margin-bottom: 1rem;
-               margin-top: 0.8rem;
-               border-radius: 10px !important;
-               height: 50px;
-               height: 2.5rem;
-            "
-         />
-         <div class="filter-toggle">
-            <label>
-               <input type="checkbox" id="showPrivateFunctions" />
-               Show private functions
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateStructs" />
-               Show private structs
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateFields" />
-               Show private struct fields
-            </label>
-            <label>
-               <input type="checkbox" id="showPrivateGlobals" />
-               Show private globals
-            </label>
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
          </div>
-         <hr style="opacity: 0" />
-         <h2 style="padding-top: 5px">Subpackages</h2>
-         <hr />
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
          
-         <span style="color: rgba(177, 175, 175, 0.5)">
-            No subpackages
-         </span>
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                 
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
          
       </aside>
+
       <main>
-         <h1>
-            Package
-            <code>facts</code>
-         </h1>
-         <hr />
+         <h1>facts</h1>
+         <div class="section-divider"></div>
+
          
-         <article class="global" data-name="debug">
-            <h2>debug</h2>
-            <hr />
-            
-            <pre><code>debug</code></pre>
-         </article>
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports" data-name="imports">
+               <pre><code>"bytes"
+"encoding/gob"
+"fmt"
+"go/types"
+"io"
+"log"
+"reflect"
+"sort"
+"sync"
+"golang.org/x/tools/go/analysis"
+"golang.org/x/tools/go/types/objectpath"
+"go/types"
+"golang.org/x/tools/internal/aliases"
+"golang.org/x/tools/internal/typesinternal"
+</code></pre>
+            </article>
+         </section>
           
-         <article class="struct" data-name="Set">
-            <h2>type Set struct</h2>
-            <hr />
+         <section id="globals">
+            <h2>Constants & Variables</h2>
             
-            <p>A Set is a set of analysis.Facts.
-
-Decode creates a Set of facts by reading from the imports of a given
-package, and Encode writes out the set. Between these operation,
-the Import and Export methods will query and update the set.
-
-All of Set's methods except String are safe to call concurrently.</p>
+            <article class="global" data-name="debug">
+               <h3>
+                  debug 
+                  <span class="badge const-badge">const</span>
+                  
+               </h3>
+               
+               <pre><code>const debug = false</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">pkg *types.Package
-mu sync.Mutex
-m *ast.MapType</code></pre>
-         </article>
-         
-         <article class="struct" data-name="key">
-            <h2>type key struct</h2>
-            <hr />
+         </section>
+          
+         <section id="types">
+            <h2>Type Aliases</h2>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">pkg *types.Package
-obj types.Object
-t reflect.Type</code></pre>
-         </article>
-         
-         <article class="struct" data-name="gobFact">
-            <h2>type gobFact struct</h2>
-            <hr />
+            <article class="type" data-name="GetPackageFunc">
+               <h3>
+                  GetPackageFunc
+                  <span class="badge type-badge">type</span>
+               </h3>
+               
+               <p>A GetPackageFunc function returns the package denoted by a package path.</p>
+               
+               <pre><code>type GetPackageFunc func(pkgPath string) *types.Package</code></pre>
+            </article>
             
-            <p>gobFact is the Gob declaration of a serialized fact.</p>
+         </section>
+           
+         <section id="structs">
+            <h2>Structs</h2>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">PkgPath string
-Object objectpath.Path
-Fact analysis.Fact</code></pre>
-         </article>
-         
-         <article class="struct" data-name="Decoder">
-            <h2>type Decoder struct</h2>
-            <hr />
-            
-            <p>A Decoder decodes the facts from the direct imports of the package
+            <article class="struct" data-name="Decoder">
+               <h3>
+                  Decoder
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Decoder decodes the facts from the direct imports of the package
 provided to NewEncoder. A single decoder may be used to decode
 multiple fact sets (e.g. each for a different set of fact types)
 for the same package. Each call to Decode returns an independent
 fact set.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Decoder struct {
+pkg *types.Package
+getPackage GetPackageFunc
+}</code></pre>
+            </article>
             
-            <pre
-               class="fields-block"
-            ><code class="fields-code">pkg *types.Package
-getPackage GetPackageFunc</code></pre>
-         </article>
+            <article class="struct" data-name="Set">
+               <h3>
+                  Set
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>A Set is a set of analysis.Facts.
+Decode creates a Set of facts by reading from the imports of a given
+package, and Encode writes out the set. Between these operation,
+the Import and Export methods will query and update the set.
+All of Set's methods except String are safe to call concurrently.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type Set struct {
+pkg *types.Package
+mu sync.Mutex
+m map[key]analysis.Fact
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="gobFact">
+               <h3>
+                  gobFact
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <p>gobFact is the Gob declaration of a serialized fact.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type gobFact struct {
+PkgPath string
+Object objectpath.Path
+Fact analysis.Fact
+}</code></pre>
+            </article>
+            
+            <article class="struct" data-name="key">
+               <h3>
+                  key
+                  <span class="badge">struct</span>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type key struct {
+pkg *types.Package
+obj types.Object
+t reflect.Type
+}</code></pre>
+            </article>
+            
+         </section>
           
-         <article class="function" data-name="ImportObjectFact">
-            <h2>ImportObjectFact</h2>
-            <hr />
+         <section id="functions">
+            <h2>Functions</h2>
             
-            <p>ImportObjectFact implements analysis.Pass.ImportObjectFact.</p>
+            <article class="function" data-name="AllObjectFacts">
+               <h3>
+                  AllObjectFacts 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *Set) AllObjectFacts(filter map[reflect.Type]bool) []analysis.ObjectFact</code></pre>
+            </article>
             
-            <pre><code>func ImportObjectFact(obj types.Object, ptr analysis.Fact) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExportObjectFact">
-            <h2>ExportObjectFact</h2>
-            <hr />
+            <article class="function" data-name="AllPackageFacts">
+               <h3>
+                  AllPackageFacts 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <pre><code>func (s *Set) AllPackageFacts(filter map[reflect.Type]bool) []analysis.PackageFact</code></pre>
+            </article>
             
-            <p>ExportObjectFact implements analysis.Pass.ExportObjectFact.</p>
+            <article class="function" data-name="Decode">
+               <h3>
+                  Decode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Decode decodes all the facts relevant to the analysis of package
+pkgPath. The read function reads serialized fact data from an external
+source for one of pkg's direct imports, identified by package path.
+The empty file is a valid encoding of an empty fact set.
+It is the caller's responsibility to call gob.Register on all
+necessary fact types.
+Concurrent calls to Decode are safe, so long as the
+[GetPackageFunc] (if any) is also concurrency-safe.</p>
+               
+               <pre><code>func (d *Decoder) Decode(read func(pkgPath string) ([]byte, error)) (*Set, error)</code></pre>
+            </article>
             
-            <pre><code>func ExportObjectFact(obj types.Object, fact analysis.Fact)</code></pre>
-         </article>
-         
-         <article class="function" data-name="AllObjectFacts">
-            <h2>AllObjectFacts</h2>
-            <hr />
+            <article class="function" data-name="Encode">
+               <h3>
+                  Encode 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>Encode encodes a set of facts to a memory buffer.
+It may fail if one of the Facts could not be gob-encoded, but this is
+a sign of a bug in an Analyzer.</p>
+               
+               <pre><code>func (s *Set) Encode() []byte</code></pre>
+            </article>
             
-            <pre><code>func AllObjectFacts(filter *ast.MapType) []analysis.ObjectFact</code></pre>
-         </article>
-         
-         <article class="function" data-name="ImportPackageFact">
-            <h2>ImportPackageFact</h2>
-            <hr />
+            <article class="function" data-name="ExportObjectFact">
+               <h3>
+                  ExportObjectFact 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ExportObjectFact implements analysis.Pass.ExportObjectFact.</p>
+               
+               <pre><code>func (s *Set) ExportObjectFact(obj types.Object, fact analysis.Fact)</code></pre>
+            </article>
             
-            <p>ImportPackageFact implements analysis.Pass.ImportPackageFact.</p>
+            <article class="function" data-name="ExportPackageFact">
+               <h3>
+                  ExportPackageFact 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ExportPackageFact implements analysis.Pass.ExportPackageFact.</p>
+               
+               <pre><code>func (s *Set) ExportPackageFact(fact analysis.Fact)</code></pre>
+            </article>
             
-            <pre><code>func ImportPackageFact(pkg *types.Package, ptr analysis.Fact) bool</code></pre>
-         </article>
-         
-         <article class="function" data-name="ExportPackageFact">
-            <h2>ExportPackageFact</h2>
-            <hr />
+            <article class="function" data-name="ImportObjectFact">
+               <h3>
+                  ImportObjectFact 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ImportObjectFact implements analysis.Pass.ImportObjectFact.</p>
+               
+               <pre><code>func (s *Set) ImportObjectFact(obj types.Object, ptr analysis.Fact) bool</code></pre>
+            </article>
             
-            <p>ExportPackageFact implements analysis.Pass.ExportPackageFact.</p>
+            <article class="function" data-name="ImportPackageFact">
+               <h3>
+                  ImportPackageFact 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>ImportPackageFact implements analysis.Pass.ImportPackageFact.</p>
+               
+               <pre><code>func (s *Set) ImportPackageFact(pkg *types.Package, ptr analysis.Fact) bool</code></pre>
+            </article>
             
-            <pre><code>func ExportPackageFact(fact analysis.Fact)</code></pre>
-         </article>
-         
-         <article class="function" data-name="AllPackageFacts">
-            <h2>AllPackageFacts</h2>
-            <hr />
-            
-            <pre><code>func AllPackageFacts(filter *ast.MapType) []analysis.PackageFact</code></pre>
-         </article>
-         
-         <article class="function" data-name="NewDecoder">
-            <h2>NewDecoder</h2>
-            <hr />
-            
-            <p>NewDecoder returns a fact decoder for the specified package.
-
+            <article class="function" data-name="NewDecoder">
+               <h3>
+                  NewDecoder 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewDecoder returns a fact decoder for the specified package.
 It uses a brute-force recursive approach to enumerate all objects
 defined by dependencies of pkg, so that it can learn the set of
 package paths that may be mentioned in the fact encoding. This does
 not scale well; use [NewDecoderFunc] where possible.</p>
+               
+               <pre><code>func NewDecoder(pkg *types.Package) *Decoder</code></pre>
+            </article>
             
-            <pre><code>func NewDecoder(pkg *types.Package) *Decoder</code></pre>
-         </article>
-         
-         <article class="function" data-name="NewDecoderFunc">
-            <h2>NewDecoderFunc</h2>
-            <hr />
-            
-            <p>NewDecoderFunc returns a fact decoder for the specified package.
-
+            <article class="function" data-name="NewDecoderFunc">
+               <h3>
+                  NewDecoderFunc 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>NewDecoderFunc returns a fact decoder for the specified package.
 It calls the getPackage function for the package path string of
 each dependency (perhaps indirect) that it encounters in the
 encoding. If the function returns nil, the fact is discarded.
-
 This function is preferred over [NewDecoder] when the client is
 capable of efficient look-up of packages by package path.</p>
+               
+               <pre><code>func NewDecoderFunc(pkg *types.Package, getPackage GetPackageFunc) *Decoder</code></pre>
+            </article>
             
-            <pre><code>func NewDecoderFunc(pkg *types.Package, getPackage GetPackageFunc) *Decoder</code></pre>
-         </article>
-         
-         <article class="function" data-name="Decode">
-            <h2>Decode</h2>
-            <hr />
-            
-            <p>Decode decodes all the facts relevant to the analysis of package
-pkgPath. The read function reads serialized fact data from an external
-source for one of pkg's direct imports, identified by package path.
-The empty file is a valid encoding of an empty fact set.
-
-It is the caller's responsibility to call gob.Register on all
-necessary fact types.
-
-Concurrent calls to Decode are safe, so long as the
-[GetPackageFunc] (if any) is also concurrency-safe.</p>
-            
-            <pre><code>func Decode(read func) (*Set, error)</code></pre>
-         </article>
-         
-         <article class="function" data-name="Encode">
-            <h2>Encode</h2>
-            <hr />
-            
-            <p>Encode encodes a set of facts to a memory buffer.
-
-It may fail if one of the Facts could not be gob-encoded, but this is
-a sign of a bug in an Analyzer.</p>
-            
-            <pre><code>func Encode() []byte</code></pre>
-         </article>
-         
-         <article class="function" data-name="String">
-            <h2>String</h2>
-            <hr />
-            
-            <p>String is provided only for debugging, and must not be called
+            <article class="function" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+               </h3>
+               
+               <p>String is provided only for debugging, and must not be called
 concurrent with any Import/Export method.</p>
+               
+               <pre><code>func (s *Set) String() string</code></pre>
+            </article>
             
-            <pre><code>func String() string</code></pre>
-         </article>
-         
-         <article class="function" data-name="importMap">
-            <h2>importMap</h2>
-            <hr />
-            
-            <p>importMap computes the import map for a package by traversing the
+            <article class="function" data-name="importMap">
+               <h3>
+                  importMap 
+                  <span class="badge">function</span>
+                  
+               </h3>
+               
+               <p>importMap computes the import map for a package by traversing the
 entire exported API each of its imports.
-
 This is a workaround for the fact that we cannot access the map used
 internally by the types.Importer returned by go/importer. The entries
 in this map are the packages and objects that may be relevant to the
 current analysis unit.
-
 Packages in the map that are only indirectly imported may be
 incomplete (!pkg.Complete()).
-
 This function scales very poorly with packages' transitive object
 references, which can be more than a million for each package near
 the top of a large project. (This was a significant contributor to
 #60621.)
 TODO(adonovan): opt: compute this information more efficiently
 by obtaining it from the internals of the gcexportdata decoder.</p>
+               
+               <pre><code>func importMap(imports []*types.Package) map[string]*types.Package</code></pre>
+            </article>
             
-            <pre><code>func importMap(imports []*types.Package) *ast.MapType</code></pre>
-         </article>
+         </section>
          
       </main>
+
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
+
          document.addEventListener("DOMContentLoaded", () => {
             const toggles = {
                functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
                structs: document.getElementById("showPrivateStructs"),
                fields: document.getElementById("showPrivateFields"),
                globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
             };
+
             const hideInitial = (selector, toggle) => {
                document.querySelectorAll(selector).forEach((el) => {
                   const name = el.dataset.name;
@@ -364,59 +767,170 @@ by obtaining it from the internals of the gcexportdata decoder.</p>
                      el.classList.add("private", "hidden");
                   }
                });
-               toggle.addEventListener("change", () => {
-                  const show = toggle.checked;
-                  document
-                     .querySelectorAll(`${selector}.private`)
-                     .forEach((el) => {
-                        el.classList.toggle("hidden", !show);
-                     });
-               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                  });
+               }
             };
+
+            hideInitial("article.imports", toggles.imports);
             hideInitial("article.function", toggles.functions);
             hideInitial("article.struct", toggles.structs);
             hideInitial("article.global", toggles.globals);
+            hideInitial("article.type", toggles.types);
+            hideInitial("article.interface", toggles.interfaces);
+
             document
                .querySelectorAll("article.struct")
                .forEach((article) => {
                   const codeBlock =
                      article.querySelector("code.fields-code");
                   if (!codeBlock) return;
-                  const lines = codeBlock.innerText.split("\n");
+
+                  const lines = codeBlock.innerHTML.split("\n");
                   const newContent = lines
                      .map((line) => {
                         const trimmed = line.trim();
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch)
-                           return `<span class=\"field-line\">${line}</span>`;
+                        if (!nameMatch && trimmed != "}") {
+                           return `<span class="field-line">${line}</span>`;
+                        }
+                        if (nameMatch == null) return;
                         const name = nameMatch[1];
                         const isPriv = isPrivate(name);
-                        return `<span class=\"field-line${
+                        return `<span class="field-line${
                            isPriv ? " hidden private" : ""
-                        }\" data-name=\"${name}\">${line}</span>`;
+                        }" data-name="${name}">${line}</span>`;
                      })
                      .join("");
+
                   codeBlock.innerHTML = newContent;
-                  toggles.fields.addEventListener("change", () => {
-                     const show = toggles.fields.checked;
-                     article
-                        .querySelectorAll(".field-line.private")
-                        .forEach((el) =>
-                           el.classList.toggle("hidden", !show)
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".field-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            // Handle private methods in interfaces
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
+                        if (!nameMatch) {
+                           return `<span class="method-line">${line}</span>`;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span>`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (toggles.fields) {
+                     // Reuse fields toggle for interface methods
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        // Only show if not hidden by privacy filters
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
                   });
                });
-            const searchInput = document.getElementById("searchInput");
-            searchInput.addEventListener("input", () => {
-               const query = searchInput.value.trim().toLowerCase();
-               document.querySelectorAll("article").forEach((el) => {
-                  const name = el.dataset.name.toLowerCase();
-                  if (query === "" || name.includes(query)) {
-                     el.classList.remove("hidden");
-                  } else {
-                     el.classList.add("hidden");
+            }
+
+            // Helper function to check if private elements should be shown
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  e.preventDefault();
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
                   }
                });
             });
