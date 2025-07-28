@@ -6,7 +6,7 @@
          name="viewport"
          content="width=device-width, initial-scale=1.0"
       />
-      <title>Docs - cgolife</title>
+      <title>Docs - main</title>
       <link
          href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
          rel="stylesheet"
@@ -113,6 +113,14 @@
          .sidebar h3 {
             font-size: 1rem;
             margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
             color: #ccc;
          }
 
@@ -579,7 +587,7 @@
       </aside>
 
       <main>
-         <h1>cgolife</h1>
+         <h1>main</h1>
          <div class="section-divider"></div>
 
          
@@ -590,8 +598,9 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"C"
-"unsafe"
+               <pre><code class="language-go">"flag"
+"fmt"
+"cgolife"
 </code></pre>
             </article>
          </section>
@@ -599,17 +608,37 @@
          <section id="globals">
             <h2>Constants & Variables</h2>
             
-            <article class="global symbol-anchor" id="chans" data-name="chans">
+            <article class="global symbol-anchor" id="MAXDIM" data-name="MAXDIM">
                <h3>
-                  chans 
-                  <span class="badge var-badge">var</span>
+                  MAXDIM 
+                  <span class="badge const-badge">const</span>
                   
-                  <a href="#chans" class="anchor" title="Link to chans">#</a>
+                  <a href="#MAXDIM" class="anchor" title="Link to MAXDIM">#</a>
                </h3>
                
-               <p>Keep the channels visible from Go.</p>
+               <pre><code class="language-go">const MAXDIM = 100</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="dim" data-name="dim">
+               <h3>
+                  dim 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#dim" class="anchor" title="Link to dim">#</a>
+               </h3>
                
-               <pre><code class="language-go">var chans [4]chan bool</code></pre>
+               <pre><code class="language-go">var dim = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="gen" data-name="gen">
+               <h3>
+                  gen 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#gen" class="anchor" title="Link to gen">#</a>
+               </h3>
+               
+               <pre><code class="language-go">var gen = *ast.CallExpr</code></pre>
             </article>
             
          </section>
@@ -617,42 +646,15 @@
          <section id="functions">
             <h2>Functions</h2>
             
-            <article class="function symbol-anchor" id="GoStart" data-name="GoStart">
+            <article class="function symbol-anchor" id="main" data-name="main">
                <h3>
-                  GoStart 
+                  main 
                   <span class="badge">function</span>
                   
-                  <a href="#GoStart" class="anchor" title="Link to GoStart">#</a>
+                  <a href="#main" class="anchor" title="Link to main">#</a>
                </h3>
                
-               <p>Double return value is just for testing.
-export GoStart</p>
-               
-               <pre><code class="language-go">func GoStart(i C.int, xdim C.int, ydim C.int, xstart C.int, xend C.int, ystart C.int, yend C.int, a *C.int, n *C.int) (int, int)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="GoWait" data-name="GoWait">
-               <h3>
-                  GoWait 
-                  <span class="badge">function</span>
-                  
-                  <a href="#GoWait" class="anchor" title="Link to GoWait">#</a>
-               </h3>
-               
-               <p>export GoWait</p>
-               
-               <pre><code class="language-go">func GoWait(i C.int)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Run" data-name="Run">
-               <h3>
-                  Run 
-                  <span class="badge">function</span>
-                  
-                  <a href="#Run" class="anchor" title="Link to Run">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func Run(gen int, x int, y int, a []int32)</code></pre>
+               <pre><code class="language-go">func main()</code></pre>
             </article>
             
          </section>
@@ -663,6 +665,38 @@ export GoStart</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
@@ -751,37 +785,34 @@ export GoStart</p>
                            }
                         }
                      });
+                     updateSectionVisibility();
                   });
                }
             };
 
-            hideInitial("article.imports", toggles.imports);
-            hideInitial("article.function", toggles.functions);
-            hideInitial("article.struct", toggles.structs);
-            hideInitial("article.global", toggles.globals);
-            hideInitial("article.type", toggles.types);
-            hideInitial("article.interface", toggles.interfaces);
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
 
             document.querySelectorAll("article.struct").forEach((article) => {
                const codeBlock = article.querySelector("code.fields-code");
                if (!codeBlock) return;
 
                const raw = codeBlock.textContent.trim();
-
                const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
                if (!match) return;
 
                const fieldsRaw = match[1].trim();
                const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
-
                const formatted = fields.map(line => `\t${line}`).join("\n");
                const structName = article.dataset.name;
-
                const finalCode = `type ${structName} struct {\n${formatted}\n}`;
 
                codeBlock.textContent = finalCode;
 
-               // Apply Prism highlighting again
                if (window.Prism) Prism.highlightElement(codeBlock);
 
    
@@ -871,6 +902,7 @@ export GoStart</p>
                      } else {
                         el.classList.add("hidden");
                      }
+                     updateSectionVisibility();
                   });
 
                   document.querySelectorAll('#symbolIndex li').forEach(li => {

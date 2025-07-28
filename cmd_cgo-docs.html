@@ -116,6 +116,14 @@
             color: #ccc;
          }
 
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            color: #ccc;
+         }
+
          .anchor {
             color: rgba(255, 255, 255, 0.3);
             text-decoration: none;
@@ -594,8 +602,13 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"go/ast"
+               <pre><code class="language-go">"fmt"
+"go/ast"
+"go/printer"
 "go/token"
+"os"
+"path/filepath"
+"strings"
 "flag"
 "fmt"
 "go/ast"
@@ -616,11 +629,23 @@
 "cmd/internal/objabi"
 "cmd/internal/telemetry/counter"
 "bytes"
+"cmd/internal/pkgpath"
+"debug/elf"
+"debug/macho"
+"debug/pe"
 "fmt"
+"go/ast"
+"go/printer"
 "go/token"
+"internal/xcoff"
+"io"
 "os"
 "os/exec"
-"slices"
+"path/filepath"
+"regexp"
+"sort"
+"strings"
+"unicode"
 "fmt"
 "go/ast"
 "go/format"
@@ -629,6 +654,8 @@
 "go/token"
 "os"
 "strings"
+"go/ast"
+"go/token"
 "go/ast"
 "go/token"
 "bytes"
@@ -653,31 +680,12 @@
 "unicode"
 "unicode/utf8"
 "cmd/internal/quoted"
-"fmt"
-"go/ast"
-"go/printer"
-"go/token"
-"os"
-"path/filepath"
-"strings"
 "bytes"
-"cmd/internal/pkgpath"
-"debug/elf"
-"debug/macho"
-"debug/pe"
 "fmt"
-"go/ast"
-"go/printer"
 "go/token"
-"internal/xcoff"
-"io"
 "os"
 "os/exec"
-"path/filepath"
-"regexp"
-"sort"
-"strings"
-"unicode"
+"slices"
 </code></pre>
             </article>
          </section>
@@ -693,7 +701,7 @@
                   <a href="#anonymousStructTag" class="anchor" title="Link to anonymousStructTag">#</a>
                </h3>
                
-               <p>anonymousStructTag provides a consistent tag for an anonymous struct.
+                  <p class="doc-comment">anonymousStructTag provides a consistent tag for an anonymous struct.
 The same dwarf.StructType pointer will always get the same tag.</p>
                
                <pre><code class="language-go">var anonymousStructTag = *ast.CallExpr</code></pre>
@@ -718,7 +726,7 @@ The same dwarf.StructType pointer will always get the same tag.</p>
                   <a href="#builtinExportProlog" class="anchor" title="Link to builtinExportProlog">#</a>
                </h3>
                
-               <p>builtinExportProlog is a shorter version of builtinProlog,
+                  <p class="doc-comment">builtinExportProlog is a shorter version of builtinProlog,
 to be put into the _cgo_export.h file.
 For historical reasons we can't use builtinProlog in _cgo_export.h,
 because _cgo_export.h defines GoString as a struct while builtinProlog
@@ -829,7 +837,7 @@ func _Cfunc__CMalloc(n _Ctype_size_t) unsafe.Pointer {
                   <a href="#cMallocDefC" class="anchor" title="Link to cMallocDefC">#</a>
                </h3>
                
-               <p>cMallocDefC defines the C version of C.malloc for the gc compiler.
+                  <p class="doc-comment">cMallocDefC defines the C version of C.malloc for the gc compiler.
 It is defined here because C.CString and friends need a definition.
 We define it by hand, rather than simply inventing a reference to
 C.malloc, because <stdlib.h> may not have been included.
@@ -1275,7 +1283,7 @@ func _Cfunc_CString(s string) *_Ctype_char {
                   <a href="#dwarfToName" class="anchor" title="Link to dwarfToName">#</a>
                </h3>
                
-               <p>Map from dwarf text names to aliases we use in package "C".</p>
+                  <p class="doc-comment">Map from dwarf text names to aliases we use in package "C".</p>
                
                <pre><code class="language-go">var dwarfToName = map[string]string{...}</code></pre>
             </article>
@@ -1365,7 +1373,7 @@ func _Cfunc_CString(s string) *_Ctype_char {
                   <a href="#gccExportHeaderEpilog" class="anchor" title="Link to gccExportHeaderEpilog">#</a>
                </h3>
                
-               <p>gccExportHeaderEpilog goes at the end of the generated header file.</p>
+                  <p class="doc-comment">gccExportHeaderEpilog goes at the end of the generated header file.</p>
                
                <pre><code class="language-go">const gccExportHeaderEpilog = `
 #ifdef __cplusplus
@@ -1382,7 +1390,7 @@ func _Cfunc_CString(s string) *_Ctype_char {
                   <a href="#gccExportHeaderProlog" class="anchor" title="Link to gccExportHeaderProlog">#</a>
                </h3>
                
-               <p>gccExportHeaderProlog is written to the exported header, after the
+                  <p class="doc-comment">gccExportHeaderProlog is written to the exported header, after the
 import "C" comment preamble but before the generated declarations
 of exported functions. This permits the generated declarations to
 use the type names that appear in goTypes, above.
@@ -1524,7 +1532,7 @@ extern char* _cgo_topofstack(void);
                   <a href="#gccgoExportFileProlog" class="anchor" title="Link to gccgoExportFileProlog">#</a>
                </h3>
                
-               <p>gccgoExportFileProlog is written to the _cgo_export.c file when
+                  <p class="doc-comment">gccgoExportFileProlog is written to the _cgo_export.c file when
 using gccgo.
 We use weak declarations, and test the addresses, so that this code
 works with older versions of gccgo.</p>
@@ -1689,7 +1697,7 @@ func _Cfunc_GoStringN(p *_Ctype_char, l _Ctype_int) string {
                   <a href="#goTypes" class="anchor" title="Link to goTypes">#</a>
                </h3>
                
-               <p>Map predeclared Go types to Type.</p>
+                  <p class="doc-comment">Map predeclared Go types to Type.</p>
                
                <pre><code class="language-go">var goTypes = map[string]*Type{...}</code></pre>
             </article>
@@ -1713,7 +1721,7 @@ func _Cfunc_GoStringN(p *_Ctype_char, l _Ctype_int) string {
                   <a href="#godefs" class="anchor" title="Link to godefs">#</a>
                </h3>
                
-               <p>This flag is for bootstrapping a new Go implementation,
+                  <p class="doc-comment">This flag is for bootstrapping a new Go implementation,
 to generate Go types that match the data layout and
 constant values used in the host's C libraries and system calls.</p>
                
@@ -1838,7 +1846,7 @@ constant values used in the host's C libraries and system calls.</p>
                   <a href="#jniTypes" class="anchor" title="Link to jniTypes">#</a>
                </h3>
                
-               <p>jniTypes maps from JNI types that we want to be uintptrs, to the underlying type to which
+                  <p class="doc-comment">jniTypes maps from JNI types that we want to be uintptrs, to the underlying type to which
 they are mapped. The base "jobject" maps to the empty string.</p>
                
                <pre><code class="language-go">var jniTypes = map[string]string{...}</code></pre>
@@ -1863,7 +1871,7 @@ they are mapped. The base "jobject" maps to the empty string.</p>
                   <a href="#msanProlog" class="anchor" title="Link to msanProlog">#</a>
                </h3>
                
-               <p>msanProlog is set to yesMsanProlog if we see -fsanitize=memory in the flags
+                  <p class="doc-comment">msanProlog is set to yesMsanProlog if we see -fsanitize=memory in the flags
 for the C compiler.</p>
                
                <pre><code class="language-go">var msanProlog = noMsanProlog</code></pre>
@@ -1910,7 +1918,7 @@ for the C compiler.</p>
                   <a href="#noMsanProlog" class="anchor" title="Link to noMsanProlog">#</a>
                </h3>
                
-               <p>noMsanProlog is a prologue defining an MSAN function in C.
+                  <p class="doc-comment">noMsanProlog is a prologue defining an MSAN function in C.
 This is used when not compiling with -fsanitize=memory.</p>
                
                <pre><code class="language-go">const noMsanProlog = `
@@ -1937,7 +1945,7 @@ This is used when not compiling with -fsanitize=memory.</p>
                   <a href="#noTsanProlog" class="anchor" title="Link to noTsanProlog">#</a>
                </h3>
                
-               <p>Prologue defining TSAN functions in C.</p>
+                  <p class="doc-comment">Prologue defining TSAN functions in C.</p>
                
                <pre><code class="language-go">const noTsanProlog = `
 #define CGO_NO_SANITIZE_THREAD
@@ -2020,7 +2028,7 @@ This is used when not compiling with -fsanitize=memory.</p>
                   <a href="#tsanProlog" class="anchor" title="Link to tsanProlog">#</a>
                </h3>
                
-               <p>Set to yesTsanProlog if we see -fsanitize=thread in the flags for gcc.</p>
+                  <p class="doc-comment">Set to yesTsanProlog if we see -fsanitize=thread in the flags for gcc.</p>
                
                <pre><code class="language-go">var tsanProlog = noTsanProlog</code></pre>
             </article>
@@ -2044,7 +2052,7 @@ This is used when not compiling with -fsanitize=memory.</p>
                   <a href="#unionWithPointer" class="anchor" title="Link to unionWithPointer">#</a>
                </h3>
                
-               <p>unionWithPointer is true for a Go type that represents a C union (or class)
+                  <p class="doc-comment">unionWithPointer is true for a Go type that represents a C union (or class)
 that may contain a pointer. This is used for cgo pointer checking.</p>
                
                <pre><code class="language-go">var unionWithPointer = *ast.CallExpr</code></pre>
@@ -2058,7 +2066,7 @@ that may contain a pointer. This is used for cgo pointer checking.</p>
                   <a href="#yesMsanProlog" class="anchor" title="Link to yesMsanProlog">#</a>
                </h3>
                
-               <p>yesMsanProlog is a prologue defining an MSAN function in C.
+                  <p class="doc-comment">yesMsanProlog is a prologue defining an MSAN function in C.
 This is used when compiling with -fsanitize=memory.
 See the comment above where _cgo_msan_write is called.</p>
                
@@ -2077,7 +2085,7 @@ extern void __msan_unpoison(const volatile void *, size_t);
                   <a href="#yesTsanProlog" class="anchor" title="Link to yesTsanProlog">#</a>
                </h3>
                
-               <p>This must match the TSAN code in runtime/cgo/libcgo.h.
+                  <p class="doc-comment">This must match the TSAN code in runtime/cgo/libcgo.h.
 This is used when the code is built with the C/C++ Thread SANitizer,
 which is not the same as the Go race detector.
 __tsan_acquire tells TSAN that we are acquiring a lock on a variable,
@@ -4177,6 +4185,38 @@ a different file.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
@@ -4265,37 +4305,34 @@ a different file.</p>
                            }
                         }
                      });
+                     updateSectionVisibility();
                   });
                }
             };
 
-            hideInitial("article.imports", toggles.imports);
-            hideInitial("article.function", toggles.functions);
-            hideInitial("article.struct", toggles.structs);
-            hideInitial("article.global", toggles.globals);
-            hideInitial("article.type", toggles.types);
-            hideInitial("article.interface", toggles.interfaces);
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
 
             document.querySelectorAll("article.struct").forEach((article) => {
                const codeBlock = article.querySelector("code.fields-code");
                if (!codeBlock) return;
 
                const raw = codeBlock.textContent.trim();
-
                const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
                if (!match) return;
 
                const fieldsRaw = match[1].trim();
                const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
-
                const formatted = fields.map(line => `\t${line}`).join("\n");
                const structName = article.dataset.name;
-
                const finalCode = `type ${structName} struct {\n${formatted}\n}`;
 
                codeBlock.textContent = finalCode;
 
-               // Apply Prism highlighting again
                if (window.Prism) Prism.highlightElement(codeBlock);
 
    
@@ -4385,6 +4422,7 @@ a different file.</p>
                      } else {
                         el.classList.add("hidden");
                      }
+                     updateSectionVisibility();
                   });
 
                   document.querySelectorAll('#symbolIndex li').forEach(li => {

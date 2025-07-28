@@ -116,6 +116,14 @@
             color: #ccc;
          }
 
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            color: #ccc;
+         }
+
          .anchor {
             color: rgba(255, 255, 255, 0.3);
             text-decoration: none;
@@ -628,7 +636,7 @@
                   <a href="#CounterFilePref" class="anchor" title="Link to CounterFilePref">#</a>
                </h3>
                
-               <p>CounterFilePref is the file prefix used when emitting coverage data
+                  <p class="doc-comment">CounterFilePref is the file prefix used when emitting coverage data
 output files. CounterFileTemplate describes the format of the file
 name: prefix followed by meta-file hash followed by process ID
 followed by emit UnixNanoTime.</p>
@@ -666,7 +674,7 @@ followed by emit UnixNanoTime.</p>
                   <a href="#CounterFileVersion" class="anchor" title="Link to CounterFileVersion">#</a>
                </h3>
                
-               <p>CounterFileVersion stores the most recent counter data file version.</p>
+                  <p class="doc-comment">CounterFileVersion stores the most recent counter data file version.</p>
                
                <pre><code class="language-go">const CounterFileVersion = 1</code></pre>
             </article>
@@ -679,7 +687,7 @@ followed by emit UnixNanoTime.</p>
                   <a href="#CovCounterMagic" class="anchor" title="Link to CovCounterMagic">#</a>
                </h3>
                
-               <p>CovCounterMagic holds the magic string for a coverage counter-data file.</p>
+                  <p class="doc-comment">CovCounterMagic holds the magic string for a coverage counter-data file.</p>
                
                <pre><code class="language-go">var CovCounterMagic = [4]byte{...}</code></pre>
             </article>
@@ -703,7 +711,7 @@ followed by emit UnixNanoTime.</p>
                   <a href="#CovMetaMagic" class="anchor" title="Link to CovMetaMagic">#</a>
                </h3>
                
-               <p>CovMetaMagic holds the magic string for a meta-data file.</p>
+                  <p class="doc-comment">CovMetaMagic holds the magic string for a meta-data file.</p>
                
                <pre><code class="language-go">var CovMetaMagic = [4]byte{...}</code></pre>
             </article>
@@ -815,7 +823,7 @@ followed by emit UnixNanoTime.</p>
                   <a href="#CtrRaw" class="anchor" title="Link to CtrRaw">#</a>
                </h3>
                
-               <p>"Raw" representation: all values (pkg ID, func ID, num counters,
+                  <p class="doc-comment">"Raw" representation: all values (pkg ID, func ID, num counters,
 and counters themselves) are stored as uint32's.</p>
                
                <pre><code class="language-go">const CtrRaw CounterFlavor = *ast.BinaryExpr</code></pre>
@@ -829,7 +837,7 @@ and counters themselves) are stored as uint32's.</p>
                   <a href="#CtrULeb128" class="anchor" title="Link to CtrULeb128">#</a>
                </h3>
                
-               <p>"ULeb" representation: all values (pkg ID, func ID, num counters,
+                  <p class="doc-comment">"ULeb" representation: all values (pkg ID, func ID, num counters,
 and counters themselves) are stored with ULEB128 encoding.</p>
                
                <pre><code class="language-go">const CtrULeb128</code></pre>
@@ -865,7 +873,7 @@ and counters themselves) are stored with ULEB128 encoding.</p>
                   <a href="#MetaFilePref" class="anchor" title="Link to MetaFilePref">#</a>
                </h3>
                
-               <p>MetaFilePref is a prefix used when emitting meta-data files; these
+                  <p class="doc-comment">MetaFilePref is a prefix used when emitting meta-data files; these
 files are of the form "covmeta.<hash>", where hash is a hash
 computed from the hashes of all the package meta-data symbols in
 the program.</p>
@@ -881,7 +889,7 @@ the program.</p>
                   <a href="#MetaFileVersion" class="anchor" title="Link to MetaFileVersion">#</a>
                </h3>
                
-               <p>MetaFileVersion contains the current (most recent) meta-data file version.</p>
+                  <p class="doc-comment">MetaFileVersion contains the current (most recent) meta-data file version.</p>
                
                <pre><code class="language-go">const MetaFileVersion = 1</code></pre>
             </article>
@@ -894,7 +902,7 @@ the program.</p>
                   <a href="#MetaFilesFileName" class="anchor" title="Link to MetaFilesFileName">#</a>
                </h3>
                
-               <p>Name of file within the "go test -cover" temp coverdir directory
+                  <p class="doc-comment">Name of file within the "go test -cover" temp coverdir directory
 containing a list of meta-data files for packages being tested
 in a "go test -coverpkg=... ..." run. This constant is shared
 by the Go command and by the coverage runtime.</p>
@@ -910,7 +918,7 @@ by the Go command and by the coverage runtime.</p>
                   <a href="#NotHardCoded" class="anchor" title="Link to NotHardCoded">#</a>
                </h3>
                
-               <p>NotHardCoded is a package pseudo-ID indicating that a given package
+                  <p class="doc-comment">NotHardCoded is a package pseudo-ID indicating that a given package
 is not part of the runtime and doesn't require a hard-coded ID.</p>
                
                <pre><code class="language-go">const NotHardCoded = *ast.UnaryExpr</code></pre>
@@ -1275,6 +1283,38 @@ at -2 and decrease as we go down the list.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
@@ -1363,37 +1403,34 @@ at -2 and decrease as we go down the list.</p>
                            }
                         }
                      });
+                     updateSectionVisibility();
                   });
                }
             };
 
-            hideInitial("article.imports", toggles.imports);
-            hideInitial("article.function", toggles.functions);
-            hideInitial("article.struct", toggles.structs);
-            hideInitial("article.global", toggles.globals);
-            hideInitial("article.type", toggles.types);
-            hideInitial("article.interface", toggles.interfaces);
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
 
             document.querySelectorAll("article.struct").forEach((article) => {
                const codeBlock = article.querySelector("code.fields-code");
                if (!codeBlock) return;
 
                const raw = codeBlock.textContent.trim();
-
                const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
                if (!match) return;
 
                const fieldsRaw = match[1].trim();
                const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
-
                const formatted = fields.map(line => `\t${line}`).join("\n");
                const structName = article.dataset.name;
-
                const finalCode = `type ${structName} struct {\n${formatted}\n}`;
 
                codeBlock.textContent = finalCode;
 
-               // Apply Prism highlighting again
                if (window.Prism) Prism.highlightElement(codeBlock);
 
    
@@ -1483,6 +1520,7 @@ at -2 and decrease as we go down the list.</p>
                      } else {
                         el.classList.add("hidden");
                      }
+                     updateSectionVisibility();
                   });
 
                   document.querySelectorAll('#symbolIndex li').forEach(li => {

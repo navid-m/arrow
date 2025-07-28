@@ -116,6 +116,14 @@
             color: #ccc;
          }
 
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            color: #ccc;
+         }
+
          .anchor {
             color: rgba(255, 255, 255, 0.3);
             text-decoration: none;
@@ -615,7 +623,7 @@
                   <a href="#Discard" class="anchor" title="Link to Discard">#</a>
                </h3>
                
-               <p>Discard is a Transformer for which all Transform calls succeed
+                  <p class="doc-comment">Discard is a Transformer for which all Transform calls succeed
 by consuming all bytes and writing nothing.</p>
                
                <pre><code class="language-go">var Discard Transformer = discard{...}</code></pre>
@@ -629,7 +637,7 @@ by consuming all bytes and writing nothing.</p>
                   <a href="#ErrEndOfSpan" class="anchor" title="Link to ErrEndOfSpan">#</a>
                </h3>
                
-               <p>ErrEndOfSpan means that the input and output (the transformed input)
+                  <p class="doc-comment">ErrEndOfSpan means that the input and output (the transformed input)
 are not identical.</p>
                
                <pre><code class="language-go">var ErrEndOfSpan = *ast.CallExpr</code></pre>
@@ -643,7 +651,7 @@ are not identical.</p>
                   <a href="#ErrShortDst" class="anchor" title="Link to ErrShortDst">#</a>
                </h3>
                
-               <p>ErrShortDst means that the destination buffer was too short to
+                  <p class="doc-comment">ErrShortDst means that the destination buffer was too short to
 receive all of the transformed bytes.</p>
                
                <pre><code class="language-go">var ErrShortDst = *ast.CallExpr</code></pre>
@@ -657,7 +665,7 @@ receive all of the transformed bytes.</p>
                   <a href="#ErrShortSrc" class="anchor" title="Link to ErrShortSrc">#</a>
                </h3>
                
-               <p>ErrShortSrc means that the source buffer has insufficient data to
+                  <p class="doc-comment">ErrShortSrc means that the source buffer has insufficient data to
 complete the transformation.</p>
                
                <pre><code class="language-go">var ErrShortSrc = *ast.CallExpr</code></pre>
@@ -671,7 +679,7 @@ complete the transformation.</p>
                   <a href="#Nop" class="anchor" title="Link to Nop">#</a>
                </h3>
                
-               <p>Nop is a SpanningTransformer that copies src to dst.</p>
+                  <p class="doc-comment">Nop is a SpanningTransformer that copies src to dst.</p>
                
                <pre><code class="language-go">var Nop SpanningTransformer = nop{...}</code></pre>
             </article>
@@ -695,7 +703,7 @@ complete the transformation.</p>
                   <a href="#errInconsistentByteCount" class="anchor" title="Link to errInconsistentByteCount">#</a>
                </h3>
                
-               <p>errInconsistentByteCount means that Transform returned success (nil
+                  <p class="doc-comment">errInconsistentByteCount means that Transform returned success (nil
 error) but also returned nSrc inconsistent with the src argument.</p>
                
                <pre><code class="language-go">var errInconsistentByteCount = *ast.CallExpr</code></pre>
@@ -709,7 +717,7 @@ error) but also returned nSrc inconsistent with the src argument.</p>
                   <a href="#errShortInternal" class="anchor" title="Link to errShortInternal">#</a>
                </h3>
                
-               <p>errShortInternal means that an internal buffer is not large enough
+                  <p class="doc-comment">errShortInternal means that an internal buffer is not large enough
 to make progress and the Transform operation must be aborted.</p>
                
                <pre><code class="language-go">var errShortInternal = *ast.CallExpr</code></pre>
@@ -1222,6 +1230,38 @@ of b to the start of the new slice.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
@@ -1310,37 +1350,34 @@ of b to the start of the new slice.</p>
                            }
                         }
                      });
+                     updateSectionVisibility();
                   });
                }
             };
 
-            hideInitial("article.imports", toggles.imports);
-            hideInitial("article.function", toggles.functions);
-            hideInitial("article.struct", toggles.structs);
-            hideInitial("article.global", toggles.globals);
-            hideInitial("article.type", toggles.types);
-            hideInitial("article.interface", toggles.interfaces);
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
 
             document.querySelectorAll("article.struct").forEach((article) => {
                const codeBlock = article.querySelector("code.fields-code");
                if (!codeBlock) return;
 
                const raw = codeBlock.textContent.trim();
-
                const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
                if (!match) return;
 
                const fieldsRaw = match[1].trim();
                const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
-
                const formatted = fields.map(line => `\t${line}`).join("\n");
                const structName = article.dataset.name;
-
                const finalCode = `type ${structName} struct {\n${formatted}\n}`;
 
                codeBlock.textContent = finalCode;
 
-               // Apply Prism highlighting again
                if (window.Prism) Prism.highlightElement(codeBlock);
 
    
@@ -1430,6 +1467,7 @@ of b to the start of the new slice.</p>
                      } else {
                         el.classList.add("hidden");
                      }
+                     updateSectionVisibility();
                   });
 
                   document.querySelectorAll('#symbolIndex li').forEach(li => {

@@ -116,6 +116,14 @@
             color: #ccc;
          }
 
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            color: #ccc;
+         }
+
          .anchor {
             color: rgba(255, 255, 255, 0.3);
             text-decoration: none;
@@ -600,7 +608,13 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"bufio"
+               <pre><code class="language-go">"errors"
+"fmt"
+"maps"
+"slices"
+"strings"
+"unicode"
+"bufio"
 "os"
 "strings"
 "internal/syscall/windows/registry"
@@ -612,20 +626,14 @@
 "strings"
 "unicode"
 "unicode/utf8"
-"errors"
-"fmt"
-"maps"
-"slices"
-"strings"
-"unicode"
-"bufio"
-"os"
-"strings"
-"strings"
 "fmt"
 "slices"
 "strings"
 "sync"
+"bufio"
+"os"
+"strings"
+"strings"
 </code></pre>
             </article>
          </section>
@@ -641,7 +649,7 @@
                   <a href="#BEncoding" class="anchor" title="Link to BEncoding">#</a>
                </h3>
                
-               <p>BEncoding represents Base64 encoding scheme as defined by RFC 2045.</p>
+                  <p class="doc-comment">BEncoding represents Base64 encoding scheme as defined by RFC 2045.</p>
                
                <pre><code class="language-go">const BEncoding = *ast.CallExpr</code></pre>
             </article>
@@ -654,7 +662,7 @@
                   <a href="#ErrInvalidMediaParameter" class="anchor" title="Link to ErrInvalidMediaParameter">#</a>
                </h3>
                
-               <p>ErrInvalidMediaParameter is returned by [ParseMediaType] if
+                  <p class="doc-comment">ErrInvalidMediaParameter is returned by [ParseMediaType] if
 the media type value was found but there was an error parsing
 the optional parameters</p>
                
@@ -669,7 +677,7 @@ the optional parameters</p>
                   <a href="#QEncoding" class="anchor" title="Link to QEncoding">#</a>
                </h3>
                
-               <p>QEncoding represents the Q-encoding scheme as defined by RFC 2047.</p>
+                  <p class="doc-comment">QEncoding represents the Q-encoding scheme as defined by RFC 2047.</p>
                
                <pre><code class="language-go">const QEncoding = *ast.CallExpr</code></pre>
             </article>
@@ -715,7 +723,7 @@ the optional parameters</p>
                   <a href="#extensionsMu" class="anchor" title="Link to extensionsMu">#</a>
                </h3>
                
-               <p>extensions maps from MIME type to list of lowercase file
+                  <p class="doc-comment">extensions maps from MIME type to list of lowercase file
 extensions: "image/jpeg" => [".jpg", ".jpeg"]</p>
                
                <pre><code class="language-go">var extensionsMu sync.Mutex</code></pre>
@@ -740,7 +748,7 @@ extensions: "image/jpeg" => [".jpg", ".jpeg"]</p>
                   <a href="#maxContentLen" class="anchor" title="Link to maxContentLen">#</a>
                </h3>
                
-               <p>maxContentLen is how much content can be encoded, ignoring the header and
+                  <p class="doc-comment">maxContentLen is how much content can be encoded, ignoring the header and
 2-byte footer.</p>
                
                <pre><code class="language-go">const maxContentLen = *ast.BinaryExpr</code></pre>
@@ -754,7 +762,7 @@ extensions: "image/jpeg" => [".jpg", ".jpeg"]</p>
                   <a href="#maxEncodedWordLen" class="anchor" title="Link to maxEncodedWordLen">#</a>
                </h3>
                
-               <p>The maximum length of an encoded-word is 75 characters.
+                  <p class="doc-comment">The maximum length of an encoded-word is 75 characters.
 See RFC 2047, section 2.</p>
                
                <pre><code class="language-go">const maxEncodedWordLen = 75</code></pre>
@@ -768,7 +776,7 @@ See RFC 2047, section 2.</p>
                   <a href="#mimeGlobs" class="anchor" title="Link to mimeGlobs">#</a>
                </h3>
                
-               <p>See https://specifications.freedesktop.org/shared-mime-info-spec/shared-mime-info-spec-0.21.html
+                  <p class="doc-comment">See https://specifications.freedesktop.org/shared-mime-info-spec/shared-mime-info-spec-0.21.html
 for the FreeDesktop Shared MIME-info Database specification.</p>
                
                <pre><code class="language-go">var mimeGlobs = []string{...}</code></pre>
@@ -837,6 +845,8 @@ for the FreeDesktop Shared MIME-info Database specification.</p>
                   <a href="#typeFiles" class="anchor" title="Link to typeFiles">#</a>
                </h3>
                
+                  <p class="doc-comment">Common locations for mime.types files on unix.</p>
+               
                <pre><code class="language-go">var typeFiles = []string{...}</code></pre>
             </article>
             
@@ -847,8 +857,6 @@ for the FreeDesktop Shared MIME-info Database specification.</p>
                   
                   <a href="#typeFiles" class="anchor" title="Link to typeFiles">#</a>
                </h3>
-               
-               <p>Common locations for mime.types files on unix.</p>
                
                <pre><code class="language-go">var typeFiles = []string{...}</code></pre>
             </article>
@@ -1592,6 +1600,38 @@ encoded-words when necessary.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
@@ -1680,37 +1720,34 @@ encoded-words when necessary.</p>
                            }
                         }
                      });
+                     updateSectionVisibility();
                   });
                }
             };
 
-            hideInitial("article.imports", toggles.imports);
-            hideInitial("article.function", toggles.functions);
-            hideInitial("article.struct", toggles.structs);
-            hideInitial("article.global", toggles.globals);
-            hideInitial("article.type", toggles.types);
-            hideInitial("article.interface", toggles.interfaces);
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
 
             document.querySelectorAll("article.struct").forEach((article) => {
                const codeBlock = article.querySelector("code.fields-code");
                if (!codeBlock) return;
 
                const raw = codeBlock.textContent.trim();
-
                const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
                if (!match) return;
 
                const fieldsRaw = match[1].trim();
                const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
-
                const formatted = fields.map(line => `\t${line}`).join("\n");
                const structName = article.dataset.name;
-
                const finalCode = `type ${structName} struct {\n${formatted}\n}`;
 
                codeBlock.textContent = finalCode;
 
-               // Apply Prism highlighting again
                if (window.Prism) Prism.highlightElement(codeBlock);
 
    
@@ -1800,6 +1837,7 @@ encoded-words when necessary.</p>
                      } else {
                         el.classList.add("hidden");
                      }
+                     updateSectionVisibility();
                   });
 
                   document.querySelectorAll('#symbolIndex li').forEach(li => {

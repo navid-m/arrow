@@ -116,6 +116,14 @@
             color: #ccc;
          }
 
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            color: #ccc;
+         }
+
          .anchor {
             color: rgba(255, 255, 255, 0.3);
             text-decoration: none;
@@ -594,7 +602,11 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"golang.org/x/sys/unix"
+               <pre><code class="language-go">"fmt"
+"runtime"
+"golang.org/x/sys/plan9"
+"golang.org/x/sys/unix"
+"golang.org/x/sys/unix"
 "golang.org/x/sys/unix"
 "fmt"
 "runtime"
@@ -606,10 +618,6 @@
 "strconv"
 "sync"
 "unicode/utf8"
-"fmt"
-"runtime"
-"golang.org/x/sys/plan9"
-"golang.org/x/sys/unix"
 </code></pre>
             </article>
          </section>
@@ -625,7 +633,7 @@
                   <a href="#ErrPasteIndicator" class="anchor" title="Link to ErrPasteIndicator">#</a>
                </h3>
                
-               <p>ErrPasteIndicator may be returned from ReadLine as the error, in addition
+                  <p class="doc-comment">ErrPasteIndicator may be returned from ReadLine as the error, in addition
 to valid line data. It indicates that bracketed paste mode is enabled and
 that the returned line consists only of pasted data. Programs may wish to
 interpret pasted data more literally than typed data.</p>
@@ -1119,7 +1127,7 @@ size int
                <pre
                   class="fields-block"
                ><code class="fields-code language-go">type state struct {
-mode uint32
+termios unix.Termios
 }</code></pre>
             </article>
             
@@ -1147,7 +1155,7 @@ mode uint32
                <pre
                   class="fields-block"
                ><code class="fields-code language-go">type state struct {
-termios unix.Termios
+mode uint32
 }</code></pre>
             </article>
             
@@ -1896,6 +1904,38 @@ reads until it finds \r and ignores any \n it finds during processing.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
@@ -1984,37 +2024,34 @@ reads until it finds \r and ignores any \n it finds during processing.</p>
                            }
                         }
                      });
+                     updateSectionVisibility();
                   });
                }
             };
 
-            hideInitial("article.imports", toggles.imports);
-            hideInitial("article.function", toggles.functions);
-            hideInitial("article.struct", toggles.structs);
-            hideInitial("article.global", toggles.globals);
-            hideInitial("article.type", toggles.types);
-            hideInitial("article.interface", toggles.interfaces);
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
 
             document.querySelectorAll("article.struct").forEach((article) => {
                const codeBlock = article.querySelector("code.fields-code");
                if (!codeBlock) return;
 
                const raw = codeBlock.textContent.trim();
-
                const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
                if (!match) return;
 
                const fieldsRaw = match[1].trim();
                const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
-
                const formatted = fields.map(line => `\t${line}`).join("\n");
                const structName = article.dataset.name;
-
                const finalCode = `type ${structName} struct {\n${formatted}\n}`;
 
                codeBlock.textContent = finalCode;
 
-               // Apply Prism highlighting again
                if (window.Prism) Prism.highlightElement(codeBlock);
 
    
@@ -2104,6 +2141,7 @@ reads until it finds \r and ignores any \n it finds during processing.</p>
                      } else {
                         el.classList.add("hidden");
                      }
+                     updateSectionVisibility();
                   });
 
                   document.querySelectorAll('#symbolIndex li').forEach(li => {

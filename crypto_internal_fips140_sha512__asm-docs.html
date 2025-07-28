@@ -116,6 +116,14 @@
             color: #ccc;
          }
 
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            color: #ccc;
+         }
+
          .anchor {
             color: rgba(255, 255, 255, 0.3);
             text-decoration: none;
@@ -609,7 +617,7 @@
                   <a href="#INP_SIZE" class="anchor" title="Link to INP_SIZE">#</a>
                </h3>
                
-               <p>Line 289</p>
+                  <p class="doc-comment">Line 289</p>
                
                <pre><code class="language-go">var INP_SIZE = *ast.ParenExpr</code></pre>
             </article>
@@ -622,7 +630,7 @@
                   <a href="#MASK_YMM_LO_ptr" class="anchor" title="Link to MASK_YMM_LO_ptr">#</a>
                </h3>
                
-               <p>Pointers for memoizing Data section symbols</p>
+                  <p class="doc-comment">Pointers for memoizing Data section symbols</p>
                
                <pre><code class="language-go">var MASK_YMM_LO_ptr *Mem</code></pre>
             </article>
@@ -635,7 +643,7 @@
                   <a href="#PSHUFFLE_BYTE_FLIP_MASK_DATA_ptr" class="anchor" title="Link to PSHUFFLE_BYTE_FLIP_MASK_DATA_ptr">#</a>
                </h3>
                
-               <p>Pointers for memoizing Data section symbols</p>
+                  <p class="doc-comment">Pointers for memoizing Data section symbols</p>
                
                <pre><code class="language-go">var PSHUFFLE_BYTE_FLIP_MASK_DATA_ptr *Mem</code></pre>
             </article>
@@ -648,7 +656,7 @@
                   <a href="#SRND_SIZE" class="anchor" title="Link to SRND_SIZE">#</a>
                </h3>
                
-               <p>Line 289</p>
+                  <p class="doc-comment">Line 289</p>
                
                <pre><code class="language-go">var SRND_SIZE = *ast.ParenExpr</code></pre>
             </article>
@@ -672,7 +680,7 @@
                   <a href="#YFER_SIZE" class="anchor" title="Link to YFER_SIZE">#</a>
                </h3>
                
-               <p>Line 289</p>
+                  <p class="doc-comment">Line 289</p>
                
                <pre><code class="language-go">var YFER_SIZE int = *ast.ParenExpr</code></pre>
             </article>
@@ -696,7 +704,7 @@
                   <a href="#frame_INP" class="anchor" title="Link to frame_INP">#</a>
                </h3>
                
-               <p>Line 289</p>
+                  <p class="doc-comment">Line 289</p>
                
                <pre><code class="language-go">var frame_INP = *ast.ParenExpr</code></pre>
             </article>
@@ -709,7 +717,7 @@
                   <a href="#frame_INPEND" class="anchor" title="Link to frame_INPEND">#</a>
                </h3>
                
-               <p>Line 289</p>
+                  <p class="doc-comment">Line 289</p>
                
                <pre><code class="language-go">var frame_INPEND = *ast.ParenExpr</code></pre>
             </article>
@@ -722,7 +730,7 @@
                   <a href="#frame_SRND" class="anchor" title="Link to frame_SRND">#</a>
                </h3>
                
-               <p>Line 289</p>
+                  <p class="doc-comment">Line 289</p>
                
                <pre><code class="language-go">var frame_SRND = *ast.ParenExpr</code></pre>
             </article>
@@ -735,7 +743,7 @@
                   <a href="#frame_YFER" class="anchor" title="Link to frame_YFER">#</a>
                </h3>
                
-               <p>Line 289</p>
+                  <p class="doc-comment">Line 289</p>
                
                <pre><code class="language-go">var frame_YFER = *ast.ParenExpr</code></pre>
             </article>
@@ -1050,6 +1058,38 @@ Line 110</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
@@ -1138,37 +1178,34 @@ Line 110</p>
                            }
                         }
                      });
+                     updateSectionVisibility();
                   });
                }
             };
 
-            hideInitial("article.imports", toggles.imports);
-            hideInitial("article.function", toggles.functions);
-            hideInitial("article.struct", toggles.structs);
-            hideInitial("article.global", toggles.globals);
-            hideInitial("article.type", toggles.types);
-            hideInitial("article.interface", toggles.interfaces);
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
 
             document.querySelectorAll("article.struct").forEach((article) => {
                const codeBlock = article.querySelector("code.fields-code");
                if (!codeBlock) return;
 
                const raw = codeBlock.textContent.trim();
-
                const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
                if (!match) return;
 
                const fieldsRaw = match[1].trim();
                const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
-
                const formatted = fields.map(line => `\t${line}`).join("\n");
                const structName = article.dataset.name;
-
                const finalCode = `type ${structName} struct {\n${formatted}\n}`;
 
                codeBlock.textContent = finalCode;
 
-               // Apply Prism highlighting again
                if (window.Prism) Prism.highlightElement(codeBlock);
 
    
@@ -1258,6 +1295,7 @@ Line 110</p>
                      } else {
                         el.classList.add("hidden");
                      }
+                     updateSectionVisibility();
                   });
 
                   document.querySelectorAll('#symbolIndex li').forEach(li => {

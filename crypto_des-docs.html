@@ -116,6 +116,14 @@
             color: #ccc;
          }
 
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            color: #ccc;
+         }
+
          .anchor {
             color: rgba(255, 255, 255, 0.3);
             text-decoration: none;
@@ -617,7 +625,7 @@
                   <a href="#BlockSize" class="anchor" title="Link to BlockSize">#</a>
                </h3>
                
-               <p>The DES block size in bytes.</p>
+                  <p class="doc-comment">The DES block size in bytes.</p>
                
                <pre><code class="language-go">const BlockSize = 8</code></pre>
             </article>
@@ -630,7 +638,7 @@
                   <a href="#expansionFunction" class="anchor" title="Link to expansionFunction">#</a>
                </h3>
                
-               <p>Used to expand an input block of 32 bits, producing an output block of 48
+                  <p class="doc-comment">Used to expand an input block of 32 bits, producing an output block of 48
 bits.</p>
                
                <pre><code class="language-go">var expansionFunction = [48]byte{...}</code></pre>
@@ -644,7 +652,7 @@ bits.</p>
                   <a href="#feistelBox" class="anchor" title="Link to feistelBox">#</a>
                </h3>
                
-               <p>feistelBox[s][16*i+j] contains the output of permutationFunction
+                  <p class="doc-comment">feistelBox[s][16*i+j] contains the output of permutationFunction
 for sBoxes[s][i][j] << 4*(7-s)</p>
                
                <pre><code class="language-go">var feistelBox [8][64]uint32</code></pre>
@@ -669,7 +677,7 @@ for sBoxes[s][i][j] << 4*(7-s)</p>
                   <a href="#finalPermutation" class="anchor" title="Link to finalPermutation">#</a>
                </h3>
                
-               <p>Used to perform a final permutation of a 4-bit preoutput block. This is the
+                  <p class="doc-comment">Used to perform a final permutation of a 4-bit preoutput block. This is the
 inverse of initialPermutation</p>
                
                <pre><code class="language-go">var finalPermutation = [64]byte{...}</code></pre>
@@ -683,7 +691,7 @@ inverse of initialPermutation</p>
                   <a href="#initialPermutation" class="anchor" title="Link to initialPermutation">#</a>
                </h3>
                
-               <p>Used to perform an initial permutation of a 64-bit input block.</p>
+                  <p class="doc-comment">Used to perform an initial permutation of a 64-bit input block.</p>
                
                <pre><code class="language-go">var initialPermutation = [64]byte{...}</code></pre>
             </article>
@@ -696,7 +704,7 @@ inverse of initialPermutation</p>
                   <a href="#ksRotations" class="anchor" title="Link to ksRotations">#</a>
                </h3>
                
-               <p>Size of left rotation per round in each half of the key schedule</p>
+                  <p class="doc-comment">Size of left rotation per round in each half of the key schedule</p>
                
                <pre><code class="language-go">var ksRotations = [16]uint8{...}</code></pre>
             </article>
@@ -709,7 +717,7 @@ inverse of initialPermutation</p>
                   <a href="#permutationFunction" class="anchor" title="Link to permutationFunction">#</a>
                </h3>
                
-               <p>Yields a 32-bit output from a 32-bit input</p>
+                  <p class="doc-comment">Yields a 32-bit output from a 32-bit input</p>
                
                <pre><code class="language-go">var permutationFunction = [32]byte{...}</code></pre>
             </article>
@@ -722,7 +730,7 @@ inverse of initialPermutation</p>
                   <a href="#permutedChoice1" class="anchor" title="Link to permutedChoice1">#</a>
                </h3>
                
-               <p>Used in the key schedule to select 56 bits
+                  <p class="doc-comment">Used in the key schedule to select 56 bits
 from a 64-bit input.</p>
                
                <pre><code class="language-go">var permutedChoice1 = [56]byte{...}</code></pre>
@@ -736,7 +744,7 @@ from a 64-bit input.</p>
                   <a href="#permutedChoice2" class="anchor" title="Link to permutedChoice2">#</a>
                </h3>
                
-               <p>Used in the key schedule to produce each subkey by selecting 48 bits from
+                  <p class="doc-comment">Used in the key schedule to produce each subkey by selecting 48 bits from
 the 56-bit input</p>
                
                <pre><code class="language-go">var permutedChoice2 = [48]byte{...}</code></pre>
@@ -750,7 +758,7 @@ the 56-bit input</p>
                   <a href="#sBoxes" class="anchor" title="Link to sBoxes">#</a>
                </h3>
                
-               <p>8 S-boxes composed of 4 rows and 16 columns
+                  <p class="doc-comment">8 S-boxes composed of 4 rows and 16 columns
 Used in the DES cipher function</p>
                
                <pre><code class="language-go">var sBoxes = [8][4][16]uint8{...}</code></pre>
@@ -1045,6 +1053,38 @@ extra shifts/rotations for alignments.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
@@ -1133,37 +1173,34 @@ extra shifts/rotations for alignments.</p>
                            }
                         }
                      });
+                     updateSectionVisibility();
                   });
                }
             };
 
-            hideInitial("article.imports", toggles.imports);
-            hideInitial("article.function", toggles.functions);
-            hideInitial("article.struct", toggles.structs);
-            hideInitial("article.global", toggles.globals);
-            hideInitial("article.type", toggles.types);
-            hideInitial("article.interface", toggles.interfaces);
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
 
             document.querySelectorAll("article.struct").forEach((article) => {
                const codeBlock = article.querySelector("code.fields-code");
                if (!codeBlock) return;
 
                const raw = codeBlock.textContent.trim();
-
                const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
                if (!match) return;
 
                const fieldsRaw = match[1].trim();
                const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
-
                const formatted = fields.map(line => `\t${line}`).join("\n");
                const structName = article.dataset.name;
-
                const finalCode = `type ${structName} struct {\n${formatted}\n}`;
 
                codeBlock.textContent = finalCode;
 
-               // Apply Prism highlighting again
                if (window.Prism) Prism.highlightElement(codeBlock);
 
    
@@ -1253,6 +1290,7 @@ extra shifts/rotations for alignments.</p>
                      } else {
                         el.classList.add("hidden");
                      }
+                     updateSectionVisibility();
                   });
 
                   document.querySelectorAll('#symbolIndex li').forEach(li => {

@@ -116,6 +116,14 @@
             color: #ccc;
          }
 
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            color: #ccc;
+         }
+
          .anchor {
             color: rgba(255, 255, 255, 0.3);
             text-decoration: none;
@@ -1916,7 +1924,7 @@
                   <a href="#F0" class="anchor" title="Link to F0">#</a>
                </h3>
                
-               <p>Float point register</p>
+                  <p class="doc-comment">Float point register</p>
                
                <pre><code class="language-go">const F0</code></pre>
             </article>
@@ -4800,7 +4808,7 @@
                   <a href="#R0" class="anchor" title="Link to R0">#</a>
                </h3>
                
-               <p>General-purpose register</p>
+                  <p class="doc-comment">General-purpose register</p>
                
                <pre><code class="language-go">const R0 Reg = iota</code></pre>
             </article>
@@ -5924,7 +5932,7 @@
                   <a href="#arg_csr_23_10" class="anchor" title="Link to arg_csr_23_10">#</a>
                </h3>
                
-               <p>11-15</p>
+                  <p class="doc-comment">11-15</p>
                
                <pre><code class="language-go">const arg_csr_23_10</code></pre>
             </article>
@@ -5970,7 +5978,7 @@
                   <a href="#arg_fd" class="anchor" title="Link to arg_fd">#</a>
                </h3>
                
-               <p>1-5</p>
+                  <p class="doc-comment">1-5</p>
                
                <pre><code class="language-go">const arg_fd</code></pre>
             </article>
@@ -6016,7 +6024,7 @@
                   <a href="#arg_hint_4_0" class="anchor" title="Link to arg_hint_4_0">#</a>
                </h3>
                
-               <p>26-30</p>
+                  <p class="doc-comment">26-30</p>
                
                <pre><code class="language-go">const arg_hint_4_0</code></pre>
             </article>
@@ -6117,7 +6125,7 @@
                   <a href="#arg_offset_25_0" class="anchor" title="Link to arg_offset_25_0">#</a>
                </h3>
                
-               <p>36~</p>
+                  <p class="doc-comment">36~</p>
                
                <pre><code class="language-go">const arg_offset_25_0</code></pre>
             </article>
@@ -6152,7 +6160,7 @@
                   <a href="#arg_rj" class="anchor" title="Link to arg_rj">#</a>
                </h3>
                
-               <p>6-10</p>
+                  <p class="doc-comment">6-10</p>
                
                <pre><code class="language-go">const arg_rj</code></pre>
             </article>
@@ -6187,7 +6195,7 @@
                   <a href="#arg_sa3_17_15" class="anchor" title="Link to arg_sa3_17_15">#</a>
                </h3>
                
-               <p>16-20</p>
+                  <p class="doc-comment">16-20</p>
                
                <pre><code class="language-go">const arg_sa3_17_15</code></pre>
             </article>
@@ -6211,7 +6219,7 @@
                   <a href="#arg_si12_21_10" class="anchor" title="Link to arg_si12_21_10">#</a>
                </h3>
                
-               <p>31-35</p>
+                  <p class="doc-comment">31-35</p>
                
                <pre><code class="language-go">const arg_si12_21_10</code></pre>
             </article>
@@ -6257,7 +6265,7 @@
                   <a href="#arg_ui12_21_10" class="anchor" title="Link to arg_ui12_21_10">#</a>
                </h3>
                
-               <p>21-25</p>
+                  <p class="doc-comment">21-25</p>
                
                <pre><code class="language-go">const arg_ui12_21_10</code></pre>
             </article>
@@ -6828,6 +6836,38 @@ It returns nil if x cannot be decoded according to aop.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
@@ -6916,37 +6956,34 @@ It returns nil if x cannot be decoded according to aop.</p>
                            }
                         }
                      });
+                     updateSectionVisibility();
                   });
                }
             };
 
-            hideInitial("article.imports", toggles.imports);
-            hideInitial("article.function", toggles.functions);
-            hideInitial("article.struct", toggles.structs);
-            hideInitial("article.global", toggles.globals);
-            hideInitial("article.type", toggles.types);
-            hideInitial("article.interface", toggles.interfaces);
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
 
             document.querySelectorAll("article.struct").forEach((article) => {
                const codeBlock = article.querySelector("code.fields-code");
                if (!codeBlock) return;
 
                const raw = codeBlock.textContent.trim();
-
                const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
                if (!match) return;
 
                const fieldsRaw = match[1].trim();
                const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
-
                const formatted = fields.map(line => `\t${line}`).join("\n");
                const structName = article.dataset.name;
-
                const finalCode = `type ${structName} struct {\n${formatted}\n}`;
 
                codeBlock.textContent = finalCode;
 
-               // Apply Prism highlighting again
                if (window.Prism) Prism.highlightElement(codeBlock);
 
    
@@ -7036,6 +7073,7 @@ It returns nil if x cannot be decoded according to aop.</p>
                      } else {
                         el.classList.add("hidden");
                      }
+                     updateSectionVisibility();
                   });
 
                   document.querySelectorAll('#symbolIndex li').forEach(li => {

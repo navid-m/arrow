@@ -116,6 +116,14 @@
             color: #ccc;
          }
 
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            color: #ccc;
+         }
+
          .anchor {
             color: rgba(255, 255, 255, 0.3);
             text-decoration: none;
@@ -592,7 +600,16 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"crypto/internal/boring"
+               <pre><code class="language-go">"crypto/elliptic"
+"crypto/internal/fips140only"
+"errors"
+"io"
+"math/big"
+"math/rand/v2"
+"golang.org/x/crypto/cryptobyte"
+"golang.org/x/crypto/cryptobyte/asn1"
+"crypto/internal/boring"
+"crypto/internal/boring"
 "crypto/internal/boring/bbig"
 "crypto/internal/boring/bcache"
 "math/big"
@@ -612,15 +629,6 @@
 "math/big"
 "golang.org/x/crypto/cryptobyte"
 "golang.org/x/crypto/cryptobyte/asn1"
-"crypto/elliptic"
-"crypto/internal/fips140only"
-"errors"
-"io"
-"math/big"
-"math/rand/v2"
-"golang.org/x/crypto/cryptobyte"
-"golang.org/x/crypto/cryptobyte/asn1"
-"crypto/internal/boring"
 </code></pre>
             </article>
          </section>
@@ -636,7 +644,7 @@
                   <a href="#errNoAsm" class="anchor" title="Link to errNoAsm">#</a>
                </h3>
                
-               <p>errNoAsm is returned by signAsm and verifyAsm when the assembly
+                  <p class="doc-comment">errNoAsm is returned by signAsm and verifyAsm when the assembly
 implementation is not available.</p>
                
                <pre><code class="language-go">var errNoAsm = *ast.CallExpr</code></pre>
@@ -769,11 +777,11 @@ orig PublicKey
                   <a href="#ECDH" class="anchor" title="Link to ECDH">#</a>
                </h3>
                
-               <p>ECDH returns k as a [ecdh.PrivateKey]. It returns an error if the key is
-invalid according to the definition of [ecdh.Curve.NewPrivateKey], or if the
-Curve is not supported by [crypto/ecdh].</p>
+               <p>ECDH returns k as a [ecdh.PublicKey]. It returns an error if the key is
+invalid according to the definition of [ecdh.Curve.NewPublicKey], or if the
+Curve is not supported by crypto/ecdh.</p>
                
-               <pre><code class="language-go">func (k *PrivateKey) ECDH() (*ecdh.PrivateKey, error)</code></pre>
+               <pre><code class="language-go">func (k *PublicKey) ECDH() (*ecdh.PublicKey, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ECDH" data-name="ECDH">
@@ -784,25 +792,11 @@ Curve is not supported by [crypto/ecdh].</p>
                   <a href="#ECDH" class="anchor" title="Link to ECDH">#</a>
                </h3>
                
-               <p>ECDH returns k as a [ecdh.PublicKey]. It returns an error if the key is
-invalid according to the definition of [ecdh.Curve.NewPublicKey], or if the
-Curve is not supported by crypto/ecdh.</p>
+               <p>ECDH returns k as a [ecdh.PrivateKey]. It returns an error if the key is
+invalid according to the definition of [ecdh.Curve.NewPrivateKey], or if the
+Curve is not supported by [crypto/ecdh].</p>
                
-               <pre><code class="language-go">func (k *PublicKey) ECDH() (*ecdh.PublicKey, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Equal" data-name="Equal">
-               <h3>
-                  Equal 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Equal" class="anchor" title="Link to Equal">#</a>
-               </h3>
-               
-               <p>Equal reports whether priv and x have the same value.
-See [PublicKey.Equal] for details on how Curve is compared.</p>
-               
-               <pre><code class="language-go">func (priv *PrivateKey) Equal(x crypto.PrivateKey) bool</code></pre>
+               <pre><code class="language-go">func (k *PrivateKey) ECDH() (*ecdh.PrivateKey, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Equal" data-name="Equal">
@@ -819,6 +813,20 @@ Note that for example [elliptic.P256] and elliptic.P256().Params() are different
 values, as the latter is a generic not constant time implementation.</p>
                
                <pre><code class="language-go">func (pub *PublicKey) Equal(x crypto.PublicKey) bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Equal" data-name="Equal">
+               <h3>
+                  Equal 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Equal" class="anchor" title="Link to Equal">#</a>
+               </h3>
+               
+               <p>Equal reports whether priv and x have the same value.
+See [PublicKey.Equal] for details on how Curve is compared.</p>
+               
+               <pre><code class="language-go">func (priv *PrivateKey) Equal(x crypto.PrivateKey) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="GenerateKey" data-name="GenerateKey">
@@ -979,7 +987,7 @@ through timing side-channels.</p>
                   <a href="#boringPrivateKey" class="anchor" title="Link to boringPrivateKey">#</a>
                </h3>
                
-               <pre><code class="language-go">func boringPrivateKey(*PrivateKey) (*boring.PrivateKeyECDSA, error)</code></pre>
+               <pre><code class="language-go">func boringPrivateKey(priv *PrivateKey) (*boring.PrivateKeyECDSA, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="boringPrivateKey" data-name="boringPrivateKey">
@@ -990,18 +998,7 @@ through timing side-channels.</p>
                   <a href="#boringPrivateKey" class="anchor" title="Link to boringPrivateKey">#</a>
                </h3>
                
-               <pre><code class="language-go">func boringPrivateKey(priv *PrivateKey) (*boring.PrivateKeyECDSA, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="boringPublicKey" data-name="boringPublicKey">
-               <h3>
-                  boringPublicKey 
-                  <span class="badge">function</span>
-                  
-                  <a href="#boringPublicKey" class="anchor" title="Link to boringPublicKey">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func boringPublicKey(*PublicKey) (*boring.PublicKeyECDSA, error)</code></pre>
+               <pre><code class="language-go">func boringPrivateKey(*PrivateKey) (*boring.PrivateKeyECDSA, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="boringPublicKey" data-name="boringPublicKey">
@@ -1013,6 +1010,17 @@ through timing side-channels.</p>
                </h3>
                
                <pre><code class="language-go">func boringPublicKey(pub *PublicKey) (*boring.PublicKeyECDSA, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="boringPublicKey" data-name="boringPublicKey">
+               <h3>
+                  boringPublicKey 
+                  <span class="badge">function</span>
+                  
+                  <a href="#boringPublicKey" class="anchor" title="Link to boringPublicKey">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func boringPublicKey(*PublicKey) (*boring.PublicKeyECDSA, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="copyPrivateKey" data-name="copyPrivateKey">
@@ -1298,6 +1306,38 @@ curve using the procedure given in FIPS 186-4, Appendix B.5.2.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
@@ -1386,37 +1426,34 @@ curve using the procedure given in FIPS 186-4, Appendix B.5.2.</p>
                            }
                         }
                      });
+                     updateSectionVisibility();
                   });
                }
             };
 
-            hideInitial("article.imports", toggles.imports);
-            hideInitial("article.function", toggles.functions);
-            hideInitial("article.struct", toggles.structs);
-            hideInitial("article.global", toggles.globals);
-            hideInitial("article.type", toggles.types);
-            hideInitial("article.interface", toggles.interfaces);
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
 
             document.querySelectorAll("article.struct").forEach((article) => {
                const codeBlock = article.querySelector("code.fields-code");
                if (!codeBlock) return;
 
                const raw = codeBlock.textContent.trim();
-
                const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
                if (!match) return;
 
                const fieldsRaw = match[1].trim();
                const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
-
                const formatted = fields.map(line => `\t${line}`).join("\n");
                const structName = article.dataset.name;
-
                const finalCode = `type ${structName} struct {\n${formatted}\n}`;
 
                codeBlock.textContent = finalCode;
 
-               // Apply Prism highlighting again
                if (window.Prism) Prism.highlightElement(codeBlock);
 
    
@@ -1506,6 +1543,7 @@ curve using the procedure given in FIPS 186-4, Appendix B.5.2.</p>
                      } else {
                         el.classList.add("hidden");
                      }
+                     updateSectionVisibility();
                   });
 
                   document.querySelectorAll('#symbolIndex li').forEach(li => {

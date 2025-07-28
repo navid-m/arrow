@@ -6,7 +6,7 @@
          name="viewport"
          content="width=device-width, initial-scale=1.0"
       />
-      <title>Docs - p</title>
+      <title>Docs - a</title>
       <link
          href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
          rel="stylesheet"
@@ -113,6 +113,14 @@
          .sidebar h3 {
             font-size: 1rem;
             margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
             color: #ccc;
          }
 
@@ -564,13 +572,9 @@
          <div class="toc">
             <h4>Quick Navigation</h4>
             <ul>
-               
-               <li><a href="#globals">Constants & Variables</a></li>
-                
-               <li><a href="#types">Type Aliases</a></li>
                   
-               <li><a href="#functions">Functions</a></li>
-               
+               <li><a href="#structs">Structs</a></li>
+                
             </ul>
          </div>
 
@@ -585,99 +589,80 @@
       </aside>
 
       <main>
-         <h1>p</h1>
+         <h1>a</h1>
          <div class="section-divider"></div>
 
-          
-         <section id="globals">
-            <h2>Constants & Variables</h2>
-            
-            <article class="global symbol-anchor" id="C" data-name="C">
-               <h3>
-                  C 
-                  <span class="badge const-badge">const</span>
-                  
-                  <a href="#C" class="anchor" title="Link to C">#</a>
-               </h3>
-               
-               <pre><code class="language-go">const C = 0</code></pre>
-            </article>
-            
-            <article class="global symbol-anchor" id="V" data-name="V">
-               <h3>
-                  V 
-                  <span class="badge var-badge">var</span>
-                  
-                  <a href="#V" class="anchor" title="Link to V">#</a>
-               </h3>
-               
-               <pre><code class="language-go">var V interface{...}</code></pre>
-            </article>
-            
-            <article class="global symbol-anchor" id="V" data-name="V">
-               <h3>
-                  V 
-                  <span class="badge var-badge">var</span>
-                  
-                  <a href="#V" class="anchor" title="Link to V">#</a>
-               </h3>
-               
-               <pre><code class="language-go">var V int</code></pre>
-            </article>
-            
-         </section>
-          
-         <section id="types">
-            <h2>Type Aliases</h2>
-            
-            <article class="type symbol-anchor" id="Error" data-name="Error">
-               <h3>
-                  Error
-                  <span class="badge type-badge">type</span>
-                  <a href="#Error" class="anchor" title="Link to Error">#</a>
-               </h3>
-               
-               <p>The underlying type of Error is the underlying type of error.
-Make sure we can import this again without problems.</p>
-               
-               <pre><code class="language-go">type Error error</code></pre>
-            </article>
-            
-         </section>
-            
-         <section id="functions">
-            <h2>Functions</h2>
-            
-            <article class="function symbol-anchor" id="F" data-name="F">
-               <h3>
-                  F 
-                  <span class="badge">function</span>
-                  
-                  <a href="#F" class="anchor" title="Link to F">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func F() Error</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="F" data-name="F">
-               <h3>
-                  F 
-                  <span class="badge">function</span>
-                  
-                  <a href="#F" class="anchor" title="Link to F">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func F()</code></pre>
-            </article>
-            
-         </section>
          
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports symbol-anchor" id="imports-section" data-name="imports">
+               <h3>
+                  Imports
+                  <a href="#imports-section" class="anchor" title="Link to imports">#</a>
+               </h3>
+               <pre><code class="language-go">"encoding/json"
+</code></pre>
+            </article>
+         </section>
+             
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct symbol-anchor" id="A" data-name="A">
+               <h3>
+                  A
+                  <span class="badge">struct</span>
+                  <a href="#A" class="anchor" title="Link to A">#</a>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code language-go">type A struct {
+a *A
+json json.RawMessage
+}</code></pre>
+            </article>
+            
+         </section>
+          
       </main>
 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
@@ -766,37 +751,34 @@ Make sure we can import this again without problems.</p>
                            }
                         }
                      });
+                     updateSectionVisibility();
                   });
                }
             };
 
-            hideInitial("article.imports", toggles.imports);
-            hideInitial("article.function", toggles.functions);
-            hideInitial("article.struct", toggles.structs);
-            hideInitial("article.global", toggles.globals);
-            hideInitial("article.type", toggles.types);
-            hideInitial("article.interface", toggles.interfaces);
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
 
             document.querySelectorAll("article.struct").forEach((article) => {
                const codeBlock = article.querySelector("code.fields-code");
                if (!codeBlock) return;
 
                const raw = codeBlock.textContent.trim();
-
                const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
                if (!match) return;
 
                const fieldsRaw = match[1].trim();
                const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
-
                const formatted = fields.map(line => `\t${line}`).join("\n");
                const structName = article.dataset.name;
-
                const finalCode = `type ${structName} struct {\n${formatted}\n}`;
 
                codeBlock.textContent = finalCode;
 
-               // Apply Prism highlighting again
                if (window.Prism) Prism.highlightElement(codeBlock);
 
    
@@ -886,6 +868,7 @@ Make sure we can import this again without problems.</p>
                      } else {
                         el.classList.add("hidden");
                      }
+                     updateSectionVisibility();
                   });
 
                   document.querySelectorAll('#symbolIndex li').forEach(li => {

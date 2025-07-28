@@ -116,6 +116,14 @@
             color: #ccc;
          }
 
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            color: #ccc;
+         }
+
          .anchor {
             color: rgba(255, 255, 255, 0.3);
             text-decoration: none;
@@ -593,23 +601,10 @@
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
                <pre><code class="language-go">"cmd/go/internal/base"
-"fmt"
-"internal/godebug"
-"os"
-"os/exec"
-"runtime"
-"syscall"
-"cmd/go/internal/base"
 "io/fs"
 "io/fs"
 "os"
 "path/filepath"
-"cmd/go/internal/gover"
-"internal/syscall/unix"
-"io/fs"
-"os"
-"path/filepath"
-"syscall"
 "cmd/go/internal/gover"
 "io/fs"
 "os"
@@ -654,7 +649,20 @@
 "cmd/go/internal/modfetch"
 "cmd/internal/telemetry/counter"
 "io/fs"
+"internal/syscall/unix"
 "io/fs"
+"os"
+"path/filepath"
+"syscall"
+"cmd/go/internal/gover"
+"io/fs"
+"syscall"
+"cmd/go/internal/base"
+"fmt"
+"internal/godebug"
+"os"
+"os/exec"
+"runtime"
 "syscall"
 </code></pre>
             </article>
@@ -671,7 +679,7 @@
                   <a href="#TestVersionSwitch" class="anchor" title="Link to TestVersionSwitch">#</a>
                </h3>
                
-               <p>TestVersionSwitch is set in the test go binary to the value in $TESTGO_VERSION_SWITCH.
+                  <p class="doc-comment">TestVersionSwitch is set in the test go binary to the value in $TESTGO_VERSION_SWITCH.
 Valid settings are:
 "switch" - simulate version switches by reinvoking the test go binary with a different TESTGO_VERSION.
 "mismatch" - like "switch" but forget to set TESTGO_VERSION, so it looks like we invoked a mismatched toolchain
@@ -688,7 +696,7 @@ Valid settings are:
                   <a href="#countEnv" class="anchor" title="Link to countEnv">#</a>
                </h3>
                
-               <p>countEnv is a special environment variable
+                  <p class="doc-comment">countEnv is a special environment variable
 that is incremented during each toolchain switch, to detect loops.
 It is cleared before invoking programs in 'go run', 'go test', 'go generate', and 'go tool'
 by invoking them in an environment filtered with FilterEnv,
@@ -738,7 +746,7 @@ so user programs should not see this in their environment.</p>
                   <a href="#gotoolchainModule" class="anchor" title="Link to gotoolchainModule">#</a>
                </h3>
                
-               <p>We download golang.org/toolchain version v0.0.1-<gotoolchain>.<goos>-<goarch>.
+                  <p class="doc-comment">We download golang.org/toolchain version v0.0.1-<gotoolchain>.<goos>-<goarch>.
 If the 0.0.1 indicates anything at all, its the version of the toolchain packaging:
 if for some reason we needed to change the way toolchains are packaged into
 module zip files in a future version of Go, we could switch to v0.0.2 and then
@@ -768,7 +776,7 @@ module zip file. It's not likely we'll ever need to change this.</p>
                   <a href="#maxSwitch" class="anchor" title="Link to maxSwitch">#</a>
                </h3>
                
-               <p>maxSwitch is the maximum toolchain switching depth.
+                  <p class="doc-comment">maxSwitch is the maximum toolchain switching depth.
 Most uses should never see more than three.
 (Perhaps one for the initial GOTOOLCHAIN dispatch,
 a second for go get doing an upgrade, and a third if
@@ -801,7 +809,7 @@ That should be enough to see the repetition.</p>
                   <a href="#targetEnv" class="anchor" title="Link to targetEnv">#</a>
                </h3>
                
-               <p>targetEnv is a special environment variable set to the expected
+                  <p class="doc-comment">targetEnv is a special environment variable set to the expected
 toolchain version during the toolchain switch by the parent
 process and cleared in the child process. When set, that indicates
 to the child to confirm that it provides the expected toolchain version.</p>
@@ -1320,6 +1328,38 @@ It must be called when there are no other file system operations happening.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
@@ -1408,37 +1448,34 @@ It must be called when there are no other file system operations happening.</p>
                            }
                         }
                      });
+                     updateSectionVisibility();
                   });
                }
             };
 
-            hideInitial("article.imports", toggles.imports);
-            hideInitial("article.function", toggles.functions);
-            hideInitial("article.struct", toggles.structs);
-            hideInitial("article.global", toggles.globals);
-            hideInitial("article.type", toggles.types);
-            hideInitial("article.interface", toggles.interfaces);
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
 
             document.querySelectorAll("article.struct").forEach((article) => {
                const codeBlock = article.querySelector("code.fields-code");
                if (!codeBlock) return;
 
                const raw = codeBlock.textContent.trim();
-
                const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
                if (!match) return;
 
                const fieldsRaw = match[1].trim();
                const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
-
                const formatted = fields.map(line => `\t${line}`).join("\n");
                const structName = article.dataset.name;
-
                const finalCode = `type ${structName} struct {\n${formatted}\n}`;
 
                codeBlock.textContent = finalCode;
 
-               // Apply Prism highlighting again
                if (window.Prism) Prism.highlightElement(codeBlock);
 
    
@@ -1528,6 +1565,7 @@ It must be called when there are no other file system operations happening.</p>
                      } else {
                         el.classList.add("hidden");
                      }
+                     updateSectionVisibility();
                   });
 
                   document.querySelectorAll('#symbolIndex li').forEach(li => {

@@ -116,6 +116,14 @@
             color: #ccc;
          }
 
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            color: #ccc;
+         }
+
          .anchor {
             color: rgba(255, 255, 255, 0.3);
             text-decoration: none;
@@ -619,7 +627,7 @@
                   <a href="#ALL_ACCESS" class="anchor" title="Link to ALL_ACCESS">#</a>
                </h3>
                
-               <p>Registry key security and access rights.
+                  <p class="doc-comment">Registry key security and access rights.
 See https://learn.microsoft.com/en-us/windows/win32/sysinfo/registry-key-security-and-access-rights
 for details.</p>
                
@@ -645,7 +653,7 @@ for details.</p>
                   <a href="#CLASSES_ROOT" class="anchor" title="Link to CLASSES_ROOT">#</a>
                </h3>
                
-               <p>Windows defines some predefined root keys that are always open.
+                  <p class="doc-comment">Windows defines some predefined root keys that are always open.
 An application can use these keys as entry points to the registry.
 Normally these keys are used in OpenKey to open new keys,
 but they can also be used anywhere a Key is required.</p>
@@ -760,7 +768,7 @@ but they can also be used anywhere a Key is required.</p>
                   <a href="#ErrNotExist" class="anchor" title="Link to ErrNotExist">#</a>
                </h3>
                
-               <p>ErrNotExist is returned when a registry key or value does not exist.</p>
+                  <p class="doc-comment">ErrNotExist is returned when a registry key or value does not exist.</p>
                
                <pre><code class="language-go">var ErrNotExist = syscall.ERROR_FILE_NOT_FOUND</code></pre>
             </article>
@@ -773,7 +781,7 @@ but they can also be used anywhere a Key is required.</p>
                   <a href="#ErrShortBuffer" class="anchor" title="Link to ErrShortBuffer">#</a>
                </h3>
                
-               <p>ErrShortBuffer is returned when the buffer was too short for the operation.</p>
+                  <p class="doc-comment">ErrShortBuffer is returned when the buffer was too short for the operation.</p>
                
                <pre><code class="language-go">var ErrShortBuffer = syscall.ERROR_MORE_DATA</code></pre>
             </article>
@@ -786,7 +794,7 @@ but they can also be used anywhere a Key is required.</p>
                   <a href="#ErrUnexpectedType" class="anchor" title="Link to ErrUnexpectedType">#</a>
                </h3>
                
-               <p>ErrUnexpectedType is returned by Get*Value when the value's type was unexpected.</p>
+                  <p class="doc-comment">ErrUnexpectedType is returned by Get*Value when the value's type was unexpected.</p>
                
                <pre><code class="language-go">var ErrUnexpectedType = *ast.CallExpr</code></pre>
             </article>
@@ -843,7 +851,7 @@ but they can also be used anywhere a Key is required.</p>
                   <a href="#NONE" class="anchor" title="Link to NONE">#</a>
                </h3>
                
-               <p>Registry value types.</p>
+                  <p class="doc-comment">Registry value types.</p>
                
                <pre><code class="language-go">const NONE = 0</code></pre>
             </article>
@@ -1065,7 +1073,7 @@ but they can also be used anywhere a Key is required.</p>
                   <a href="#errnoERROR_IO_PENDING" class="anchor" title="Link to errnoERROR_IO_PENDING">#</a>
                </h3>
                
-               <p>Do the interface allocations only once for common
+                  <p class="doc-comment">Do the interface allocations only once for common
 Errno values.</p>
                
                <pre><code class="language-go">const errnoERROR_IO_PENDING = 997</code></pre>
@@ -1670,6 +1678,38 @@ allocations at runtime.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
@@ -1758,37 +1798,34 @@ allocations at runtime.</p>
                            }
                         }
                      });
+                     updateSectionVisibility();
                   });
                }
             };
 
-            hideInitial("article.imports", toggles.imports);
-            hideInitial("article.function", toggles.functions);
-            hideInitial("article.struct", toggles.structs);
-            hideInitial("article.global", toggles.globals);
-            hideInitial("article.type", toggles.types);
-            hideInitial("article.interface", toggles.interfaces);
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
 
             document.querySelectorAll("article.struct").forEach((article) => {
                const codeBlock = article.querySelector("code.fields-code");
                if (!codeBlock) return;
 
                const raw = codeBlock.textContent.trim();
-
                const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
                if (!match) return;
 
                const fieldsRaw = match[1].trim();
                const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
-
                const formatted = fields.map(line => `\t${line}`).join("\n");
                const structName = article.dataset.name;
-
                const finalCode = `type ${structName} struct {\n${formatted}\n}`;
 
                codeBlock.textContent = finalCode;
 
-               // Apply Prism highlighting again
                if (window.Prism) Prism.highlightElement(codeBlock);
 
    
@@ -1878,6 +1915,7 @@ allocations at runtime.</p>
                      } else {
                         el.classList.add("hidden");
                      }
+                     updateSectionVisibility();
                   });
 
                   document.querySelectorAll('#symbolIndex li').forEach(li => {

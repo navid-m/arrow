@@ -116,6 +116,14 @@
             color: #ccc;
          }
 
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            color: #ccc;
+         }
+
          .anchor {
             color: rgba(255, 255, 255, 0.3);
             text-decoration: none;
@@ -595,6 +603,15 @@
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
                <pre><code class="language-go">"fmt"
+"internal/abi"
+"cmd/compile/internal/base"
+"cmd/compile/internal/bitvec"
+"cmd/compile/internal/ir"
+"cmd/compile/internal/objw"
+"cmd/compile/internal/ssa"
+"cmd/internal/obj"
+"cmd/compile/internal/bitvec"
+"fmt"
 "os"
 "slices"
 "strings"
@@ -628,15 +645,6 @@
 "cmd/internal/obj"
 "cmd/internal/src"
 rtabi "internal/abi"
-"fmt"
-"internal/abi"
-"cmd/compile/internal/base"
-"cmd/compile/internal/bitvec"
-"cmd/compile/internal/ir"
-"cmd/compile/internal/objw"
-"cmd/compile/internal/ssa"
-"cmd/internal/obj"
-"cmd/compile/internal/bitvec"
 </code></pre>
             </article>
          </section>
@@ -674,7 +682,7 @@ rtabi "internal/abi"
                   <a href="#h0" class="anchor" title="Link to h0">#</a>
                </h3>
                
-               <p>FNV-1 hash function constants.</p>
+                  <p class="doc-comment">FNV-1 hash function constants.</p>
                
                <pre><code class="language-go">const h0 = 2166136261</code></pre>
             </article>
@@ -687,7 +695,7 @@ rtabi "internal/abi"
                   <a href="#hp" class="anchor" title="Link to hp">#</a>
                </h3>
                
-               <p>FNV-1 hash function constants.</p>
+                  <p class="doc-comment">FNV-1 hash function constants.</p>
                
                <pre><code class="language-go">const hp = 16777619</code></pre>
             </article>
@@ -1403,7 +1411,7 @@ with some range in is2.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code class="language-go">func (is *Intervals) String() string</code></pre>
+               <pre><code class="language-go">func (i Interval) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -1414,7 +1422,7 @@ with some range in is2.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code class="language-go">func (i Interval) String() string</code></pre>
+               <pre><code class="language-go">func (a nameOff) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -1436,7 +1444,7 @@ with some range in is2.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code class="language-go">func (a nameOff) String() string</code></pre>
+               <pre><code class="language-go">func (is *Intervals) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Subsumed" data-name="Subsumed">
@@ -1552,6 +1560,20 @@ inconsistencies or problems.</p>
             <article class="function symbol-anchor" id="clobber" data-name="clobber">
                <h3>
                   clobber 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#clobber" class="anchor" title="Link to clobber">#</a>
+               </h3>
+               
+               <p>Inserts code to clobber pointer slots in all the dead variables (locals and args)
+at every synchronous safepoint in b.</p>
+               
+               <pre><code class="language-go">func (lv *liveness) clobber(b *ssa.Block)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="clobber" data-name="clobber">
+               <h3>
+                  clobber 
                   <span class="badge">function</span>
                   
                   <a href="#clobber" class="anchor" title="Link to clobber">#</a>
@@ -1562,20 +1584,6 @@ inconsistencies or problems.</p>
 of b.Values.</p>
                
                <pre><code class="language-go">func clobber(lv *liveness, b *ssa.Block, live bitvec.BitVec)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="clobber" data-name="clobber">
-               <h3>
-                  clobber 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#clobber" class="anchor" title="Link to clobber">#</a>
-               </h3>
-               
-               <p>Inserts code to clobber pointer slots in all the dead variables (locals and args)
-at every synchronous safepoint in b.</p>
-               
-               <pre><code class="language-go">func (lv *liveness) clobber(b *ssa.Block)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="clobberPtr" data-name="clobberPtr">
@@ -2395,6 +2403,38 @@ If v does not affect any tracked variables, it returns -1, 0.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
@@ -2483,37 +2523,34 @@ If v does not affect any tracked variables, it returns -1, 0.</p>
                            }
                         }
                      });
+                     updateSectionVisibility();
                   });
                }
             };
 
-            hideInitial("article.imports", toggles.imports);
-            hideInitial("article.function", toggles.functions);
-            hideInitial("article.struct", toggles.structs);
-            hideInitial("article.global", toggles.globals);
-            hideInitial("article.type", toggles.types);
-            hideInitial("article.interface", toggles.interfaces);
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
 
             document.querySelectorAll("article.struct").forEach((article) => {
                const codeBlock = article.querySelector("code.fields-code");
                if (!codeBlock) return;
 
                const raw = codeBlock.textContent.trim();
-
                const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
                if (!match) return;
 
                const fieldsRaw = match[1].trim();
                const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
-
                const formatted = fields.map(line => `\t${line}`).join("\n");
                const structName = article.dataset.name;
-
                const finalCode = `type ${structName} struct {\n${formatted}\n}`;
 
                codeBlock.textContent = finalCode;
 
-               // Apply Prism highlighting again
                if (window.Prism) Prism.highlightElement(codeBlock);
 
    
@@ -2603,6 +2640,7 @@ If v does not affect any tracked variables, it returns -1, 0.</p>
                      } else {
                         el.classList.add("hidden");
                      }
+                     updateSectionVisibility();
                   });
 
                   document.querySelectorAll('#symbolIndex li').forEach(li => {

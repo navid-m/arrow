@@ -116,6 +116,14 @@
             color: #ccc;
          }
 
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            color: #ccc;
+         }
+
          .anchor {
             color: rgba(255, 255, 255, 0.3);
             text-decoration: none;
@@ -600,26 +608,26 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"unsafe"
-"internal/race"
+               <pre><code class="language-go">isync "internal/sync"
 "sync/atomic"
+"sync/atomic"
+"unsafe"
+"unsafe"
 "unsafe"
 "internal/race"
 "sync/atomic"
 "unsafe"
-"sync/atomic"
-"unsafe"
-isync "internal/sync"
-"sync/atomic"
-"unsafe"
-"unsafe"
-"sync/atomic"
 isync "internal/sync"
 "sync/atomic"
 "internal/race"
 "runtime"
 "sync/atomic"
 "unsafe"
+"unsafe"
+"internal/race"
+"sync/atomic"
+"unsafe"
+"sync/atomic"
 "unsafe"
 </code></pre>
             </article>
@@ -636,7 +644,7 @@ isync "internal/sync"
                   <a href="#allPools" class="anchor" title="Link to allPools">#</a>
                </h3>
                
-               <p>allPools is the set of pools that have non-empty primary
+                  <p class="doc-comment">allPools is the set of pools that have non-empty primary
 caches. Protected by either 1) allPoolsMu and pinning or 2)
 STW.</p>
                
@@ -673,7 +681,7 @@ STW.</p>
                   <a href="#dequeueLimit" class="anchor" title="Link to dequeueLimit">#</a>
                </h3>
                
-               <p>dequeueLimit is the maximum size of a poolDequeue.
+                  <p class="doc-comment">dequeueLimit is the maximum size of a poolDequeue.
 This must be at most (1<<dequeueBits)/2 because detecting fullness
 depends on wrapping around the ring buffer without wrapping around
 the index. We divide by 4 so this fits in an int on 32-bit.</p>
@@ -689,7 +697,7 @@ the index. We divide by 4 so this fits in an int on 32-bit.</p>
                   <a href="#expunged" class="anchor" title="Link to expunged">#</a>
                </h3>
                
-               <p>expunged is an arbitrary pointer that marks entries which have been deleted
+                  <p class="doc-comment">expunged is an arbitrary pointer that marks entries which have been deleted
 from the dirty map.</p>
                
                <pre><code class="language-go">var expunged = *ast.CallExpr</code></pre>
@@ -703,7 +711,7 @@ from the dirty map.</p>
                   <a href="#oldPools" class="anchor" title="Link to oldPools">#</a>
                </h3>
                
-               <p>oldPools is the set of pools that may have non-empty victim
+                  <p class="doc-comment">oldPools is the set of pools that may have non-empty victim
 caches. Protected by STW.</p>
                
                <pre><code class="language-go">var oldPools []*Pool</code></pre>
@@ -1607,9 +1615,11 @@ blocks until the mutex is available.</p>
                   <a href="#Lock" class="anchor" title="Link to Lock">#</a>
                </h3>
                
-               <p>Lock is a no-op used by -copylocks checker from `go vet`.</p>
+               <p>Lock locks rw for writing.
+If the lock is already locked for reading or writing,
+Lock blocks until the lock is available.</p>
                
-               <pre><code class="language-go">func (*noCopy) Lock()</code></pre>
+               <pre><code class="language-go">func (rw *RWMutex) Lock()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Lock" data-name="Lock">
@@ -1620,11 +1630,9 @@ blocks until the mutex is available.</p>
                   <a href="#Lock" class="anchor" title="Link to Lock">#</a>
                </h3>
                
-               <p>Lock locks rw for writing.
-If the lock is already locked for reading or writing,
-Lock blocks until the lock is available.</p>
+               <p>Lock is a no-op used by -copylocks checker from `go vet`.</p>
                
-               <pre><code class="language-go">func (rw *RWMutex) Lock()</code></pre>
+               <pre><code class="language-go">func (*noCopy) Lock()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Lock" data-name="Lock">
@@ -1876,12 +1884,12 @@ The loaded result reports whether the key was present.</p>
                   <a href="#TryLock" class="anchor" title="Link to TryLock">#</a>
                </h3>
                
-               <p>TryLock tries to lock m and reports whether it succeeded.
+               <p>TryLock tries to lock rw for writing and reports whether it succeeded.
 Note that while correct uses of TryLock do exist, they are rare,
 and use of TryLock is often a sign of a deeper problem
 in a particular use of mutexes.</p>
                
-               <pre><code class="language-go">func (m *Mutex) TryLock() bool</code></pre>
+               <pre><code class="language-go">func (rw *RWMutex) TryLock() bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="TryLock" data-name="TryLock">
@@ -1892,12 +1900,12 @@ in a particular use of mutexes.</p>
                   <a href="#TryLock" class="anchor" title="Link to TryLock">#</a>
                </h3>
                
-               <p>TryLock tries to lock rw for writing and reports whether it succeeded.
+               <p>TryLock tries to lock m and reports whether it succeeded.
 Note that while correct uses of TryLock do exist, they are rare,
 and use of TryLock is often a sign of a deeper problem
 in a particular use of mutexes.</p>
                
-               <pre><code class="language-go">func (rw *RWMutex) TryLock() bool</code></pre>
+               <pre><code class="language-go">func (m *Mutex) TryLock() bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="TryRLock" data-name="TryRLock">
@@ -1924,7 +1932,7 @@ in a particular use of mutexes.</p>
                   <a href="#Unlock" class="anchor" title="Link to Unlock">#</a>
                </h3>
                
-               <pre><code class="language-go">func (*noCopy) Unlock()</code></pre>
+               <pre><code class="language-go">func (r *rlocker) Unlock()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Unlock" data-name="Unlock">
@@ -1935,7 +1943,7 @@ in a particular use of mutexes.</p>
                   <a href="#Unlock" class="anchor" title="Link to Unlock">#</a>
                </h3>
                
-               <pre><code class="language-go">func (r *rlocker) Unlock()</code></pre>
+               <pre><code class="language-go">func (*noCopy) Unlock()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Unlock" data-name="Unlock">
@@ -2235,11 +2243,7 @@ See discussion on golang.org/cl/31589.</p>
                   <a href="#popHead" class="anchor" title="Link to popHead">#</a>
                </h3>
                
-               <p>popHead removes and returns the element at the head of the queue.
-It returns false if the queue is empty. It must only be called by a
-single producer.</p>
-               
-               <pre><code class="language-go">func (d *poolDequeue) popHead() (any, bool)</code></pre>
+               <pre><code class="language-go">func (c *poolChain) popHead() (any, bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="popHead" data-name="popHead">
@@ -2250,18 +2254,11 @@ single producer.</p>
                   <a href="#popHead" class="anchor" title="Link to popHead">#</a>
                </h3>
                
-               <pre><code class="language-go">func (c *poolChain) popHead() (any, bool)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="popTail" data-name="popTail">
-               <h3>
-                  popTail 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#popTail" class="anchor" title="Link to popTail">#</a>
-               </h3>
+               <p>popHead removes and returns the element at the head of the queue.
+It returns false if the queue is empty. It must only be called by a
+single producer.</p>
                
-               <pre><code class="language-go">func (c *poolChain) popTail() (any, bool)</code></pre>
+               <pre><code class="language-go">func (d *poolDequeue) popHead() (any, bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="popTail" data-name="popTail">
@@ -2279,15 +2276,15 @@ number of consumers.</p>
                <pre><code class="language-go">func (d *poolDequeue) popTail() (any, bool)</code></pre>
             </article>
             
-            <article class="function symbol-anchor" id="pushHead" data-name="pushHead">
+            <article class="function symbol-anchor" id="popTail" data-name="popTail">
                <h3>
-                  pushHead 
+                  popTail 
                   <span class="badge method-badge">method</span>
                   
-                  <a href="#pushHead" class="anchor" title="Link to pushHead">#</a>
+                  <a href="#popTail" class="anchor" title="Link to popTail">#</a>
                </h3>
                
-               <pre><code class="language-go">func (c *poolChain) pushHead(val any)</code></pre>
+               <pre><code class="language-go">func (c *poolChain) popTail() (any, bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="pushHead" data-name="pushHead">
@@ -2302,6 +2299,17 @@ number of consumers.</p>
 queue is full. It must only be called by a single producer.</p>
                
                <pre><code class="language-go">func (d *poolDequeue) pushHead(val any) bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="pushHead" data-name="pushHead">
+               <h3>
+                  pushHead 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#pushHead" class="anchor" title="Link to pushHead">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (c *poolChain) pushHead(val any)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="rUnlockSlow" data-name="rUnlockSlow">
@@ -2670,6 +2678,38 @@ before m.mu is unlocked.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
@@ -2758,37 +2798,34 @@ before m.mu is unlocked.</p>
                            }
                         }
                      });
+                     updateSectionVisibility();
                   });
                }
             };
 
-            hideInitial("article.imports", toggles.imports);
-            hideInitial("article.function", toggles.functions);
-            hideInitial("article.struct", toggles.structs);
-            hideInitial("article.global", toggles.globals);
-            hideInitial("article.type", toggles.types);
-            hideInitial("article.interface", toggles.interfaces);
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
 
             document.querySelectorAll("article.struct").forEach((article) => {
                const codeBlock = article.querySelector("code.fields-code");
                if (!codeBlock) return;
 
                const raw = codeBlock.textContent.trim();
-
                const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
                if (!match) return;
 
                const fieldsRaw = match[1].trim();
                const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
-
                const formatted = fields.map(line => `\t${line}`).join("\n");
                const structName = article.dataset.name;
-
                const finalCode = `type ${structName} struct {\n${formatted}\n}`;
 
                codeBlock.textContent = finalCode;
 
-               // Apply Prism highlighting again
                if (window.Prism) Prism.highlightElement(codeBlock);
 
    
@@ -2878,6 +2915,7 @@ before m.mu is unlocked.</p>
                      } else {
                         el.classList.add("hidden");
                      }
+                     updateSectionVisibility();
                   });
 
                   document.querySelectorAll('#symbolIndex li').forEach(li => {

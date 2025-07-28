@@ -116,6 +116,14 @@
             color: #ccc;
          }
 
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            color: #ccc;
+         }
+
          .anchor {
             color: rgba(255, 255, 255, 0.3);
             text-decoration: none;
@@ -593,10 +601,6 @@
                <pre><code class="language-go">"cmd/internal/objabi"
 "cmd/internal/sys"
 "cmd/link/internal/ld"
-"internal/buildcfg"
-"cmd/internal/objabi"
-"cmd/internal/sys"
-"cmd/link/internal/ld"
 "cmd/link/internal/loader"
 "cmd/link/internal/sym"
 "debug/elf"
@@ -606,6 +610,10 @@
 "log"
 "strconv"
 "strings"
+"cmd/internal/objabi"
+"cmd/internal/sys"
+"cmd/link/internal/ld"
+"internal/buildcfg"
 </code></pre>
             </article>
          </section>
@@ -643,7 +651,7 @@
                   <a href="#MASK_PLD_PFX" class="anchor" title="Link to MASK_PLD_PFX">#</a>
                </h3>
                
-               <p>Masks to match opcodes</p>
+                  <p class="doc-comment">Masks to match opcodes</p>
                
                <pre><code class="language-go">const MASK_PLD_PFX = 0xfff70000</code></pre>
             </article>
@@ -744,7 +752,7 @@
                   <a href="#OP_BCL_NIA" class="anchor" title="Link to OP_BCL_NIA">#</a>
                </h3>
                
-               <p>This is a special, preferred form of bcl to obtain the next
+                  <p class="doc-comment">This is a special, preferred form of bcl to obtain the next
 instruction address (NIA, aka PC+4) in LR.</p>
                
                <pre><code class="language-go">const OP_BCL_NIA = *ast.BinaryExpr</code></pre>
@@ -1022,7 +1030,7 @@ instruction address (NIA, aka PC+4) in LR.</p>
                   <a href="#STUB_TOC" class="anchor" title="Link to STUB_TOC">#</a>
                </h3>
                
-               <p>For genstub, the type of stub required by the caller.</p>
+                  <p class="doc-comment">For genstub, the type of stub required by the caller.</p>
                
                <pre><code class="language-go">const STUB_TOC = iota</code></pre>
             </article>
@@ -1035,7 +1043,7 @@ instruction address (NIA, aka PC+4) in LR.</p>
                   <a href="#dwarfRegLR" class="anchor" title="Link to dwarfRegLR">#</a>
                </h3>
                
-               <p>Used by ../internal/ld/dwarf.go</p>
+                  <p class="doc-comment">Used by ../internal/ld/dwarf.go</p>
                
                <pre><code class="language-go">const dwarfRegLR = 65</code></pre>
             </article>
@@ -1048,7 +1056,7 @@ instruction address (NIA, aka PC+4) in LR.</p>
                   <a href="#dwarfRegSP" class="anchor" title="Link to dwarfRegSP">#</a>
                </h3>
                
-               <p>Used by ../internal/ld/dwarf.go</p>
+                  <p class="doc-comment">Used by ../internal/ld/dwarf.go</p>
                
                <pre><code class="language-go">const dwarfRegSP = 1</code></pre>
             </article>
@@ -1072,7 +1080,7 @@ instruction address (NIA, aka PC+4) in LR.</p>
                   <a href="#hasPCrel" class="anchor" title="Link to hasPCrel">#</a>
                </h3>
                
-               <p>The build configuration supports PC-relative instructions and relocations (limited to tested targets).</p>
+                  <p class="doc-comment">The build configuration supports PC-relative instructions and relocations (limited to tested targets).</p>
                
                <pre><code class="language-go">var hasPCrel = *ast.BinaryExpr</code></pre>
             </article>
@@ -1568,6 +1576,38 @@ a 64 bit relocation into instN and instN+1 in endian order.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
@@ -1656,37 +1696,34 @@ a 64 bit relocation into instN and instN+1 in endian order.</p>
                            }
                         }
                      });
+                     updateSectionVisibility();
                   });
                }
             };
 
-            hideInitial("article.imports", toggles.imports);
-            hideInitial("article.function", toggles.functions);
-            hideInitial("article.struct", toggles.structs);
-            hideInitial("article.global", toggles.globals);
-            hideInitial("article.type", toggles.types);
-            hideInitial("article.interface", toggles.interfaces);
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
 
             document.querySelectorAll("article.struct").forEach((article) => {
                const codeBlock = article.querySelector("code.fields-code");
                if (!codeBlock) return;
 
                const raw = codeBlock.textContent.trim();
-
                const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
                if (!match) return;
 
                const fieldsRaw = match[1].trim();
                const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
-
                const formatted = fields.map(line => `\t${line}`).join("\n");
                const structName = article.dataset.name;
-
                const finalCode = `type ${structName} struct {\n${formatted}\n}`;
 
                codeBlock.textContent = finalCode;
 
-               // Apply Prism highlighting again
                if (window.Prism) Prism.highlightElement(codeBlock);
 
    
@@ -1776,6 +1813,7 @@ a 64 bit relocation into instN and instN+1 in endian order.</p>
                      } else {
                         el.classList.add("hidden");
                      }
+                     updateSectionVisibility();
                   });
 
                   document.querySelectorAll('#symbolIndex li').forEach(li => {

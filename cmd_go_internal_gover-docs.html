@@ -116,6 +116,14 @@
             color: #ccc;
          }
 
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            color: #ccc;
+         }
+
          .anchor {
             color: rgba(255, 255, 255, 0.3);
             text-decoration: none;
@@ -625,7 +633,7 @@
                   <a href="#DefaultGoModVersion" class="anchor" title="Link to DefaultGoModVersion">#</a>
                </h3>
                
-               <p>DefaultGoModVersion is the Go version to assume for go.mod files
+                  <p class="doc-comment">DefaultGoModVersion is the Go version to assume for go.mod files
 that do not declare a Go version. The go command has been
 writing go versions to modules since Go 1.12, so a go.mod
 without a version is either very old or recently hand-written.
@@ -646,7 +654,7 @@ Note that this default must stay at Go 1.16; it cannot be moved forward.</p>
                   <a href="#DefaultGoWorkVersion" class="anchor" title="Link to DefaultGoWorkVersion">#</a>
                </h3>
                
-               <p>DefaultGoWorkVersion is the Go version to assume for go.work files
+                  <p class="doc-comment">DefaultGoWorkVersion is the Go version to assume for go.work files
 that do not declare a Go version. Workspaces were added in Go 1.18,
 so use that.</p>
                
@@ -672,7 +680,7 @@ so use that.</p>
                   <a href="#ExplicitIndirectVersion" class="anchor" title="Link to ExplicitIndirectVersion">#</a>
                </h3>
                
-               <p>ExplicitIndirectVersion is the Go version at which a
+                  <p class="doc-comment">ExplicitIndirectVersion is the Go version at which a
 module's go.mod file is expected to list explicit requirements on every
 module that provides any package transitively imported by that module.
 Other indirect dependencies of such a module can be safely pruned out of
@@ -689,7 +697,7 @@ the module graph; see https://golang.org/ref/mod#graph-pruning.</p>
                   <a href="#ExplicitModulesTxtImportVersion" class="anchor" title="Link to ExplicitModulesTxtImportVersion">#</a>
                </h3>
                
-               <p>ExplicitModulesTxtImportVersion is the Go version at which vendored packages need to be present
+                  <p class="doc-comment">ExplicitModulesTxtImportVersion is the Go version at which vendored packages need to be present
 in modules.txt to be imported.</p>
                
                <pre><code class="language-go">const ExplicitModulesTxtImportVersion = "1.23"</code></pre>
@@ -703,7 +711,7 @@ in modules.txt to be imported.</p>
                   <a href="#GoStrictVersion" class="anchor" title="Link to GoStrictVersion">#</a>
                </h3>
                
-               <p>goStrictVersion is the Go version at which the Go versions
+                  <p class="doc-comment">goStrictVersion is the Go version at which the Go versions
 became "strict" in the sense that, restricted to modules at this version
 or later, every module must have a go version line ≥ all its dependencies.
 It is also the version after which "too new" a version is considered a fatal error.</p>
@@ -719,7 +727,7 @@ It is also the version after which "too new" a version is considered a fatal err
                   <a href="#NarrowAllVersion" class="anchor" title="Link to NarrowAllVersion">#</a>
                </h3>
                
-               <p>narrowAllVersion is the Go version at which the
+                  <p class="doc-comment">narrowAllVersion is the Go version at which the
 module-module "all" pattern no longer closes over the dependencies of
 tests outside of the main module.</p>
                
@@ -734,7 +742,7 @@ tests outside of the main module.</p>
                   <a href="#SeparateIndirectVersion" class="anchor" title="Link to SeparateIndirectVersion">#</a>
                </h3>
                
-               <p>separateIndirectVersion is the Go version at which
+                  <p class="doc-comment">separateIndirectVersion is the Go version at which
 "// indirect" dependencies are added in a block separate from the direct
 ones. See https://golang.org/issue/45965.</p>
                
@@ -749,7 +757,7 @@ ones. See https://golang.org/issue/45965.</p>
                   <a href="#Startup" class="anchor" title="Link to Startup">#</a>
                </h3>
                
-               <p>Startup records the information that went into the startup-time version switch.
+                  <p class="doc-comment">Startup records the information that went into the startup-time version switch.
 It is initialized by switchGoToolchain.</p>
                
                <pre><code class="language-go">var Startup struct{...}</code></pre>
@@ -763,7 +771,7 @@ It is initialized by switchGoToolchain.</p>
                   <a href="#TestVersion" class="anchor" title="Link to TestVersion">#</a>
                </h3>
                
-               <p>TestVersion is initialized in the go command test binary
+                  <p class="doc-comment">TestVersion is initialized in the go command test binary
 to be $TESTGO_VERSION, to allow tests to override the
 go command's idea of its own version as returned by Local.</p>
                
@@ -778,7 +786,7 @@ go command's idea of its own version as returned by Local.</p>
                   <a href="#TidyGoModSumVersion" class="anchor" title="Link to TidyGoModSumVersion">#</a>
                </h3>
                
-               <p>tidyGoModSumVersion is the Go version at which
+                  <p class="doc-comment">tidyGoModSumVersion is the Go version at which
 'go mod tidy' preserves go.mod checksums needed to build test dependencies
 of packages in "all", so that 'go test all' can be run without checksum
 errors.
@@ -1233,6 +1241,38 @@ If x and y compare equal, Max returns x.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
@@ -1321,37 +1361,34 @@ If x and y compare equal, Max returns x.</p>
                            }
                         }
                      });
+                     updateSectionVisibility();
                   });
                }
             };
 
-            hideInitial("article.imports", toggles.imports);
-            hideInitial("article.function", toggles.functions);
-            hideInitial("article.struct", toggles.structs);
-            hideInitial("article.global", toggles.globals);
-            hideInitial("article.type", toggles.types);
-            hideInitial("article.interface", toggles.interfaces);
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
 
             document.querySelectorAll("article.struct").forEach((article) => {
                const codeBlock = article.querySelector("code.fields-code");
                if (!codeBlock) return;
 
                const raw = codeBlock.textContent.trim();
-
                const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
                if (!match) return;
 
                const fieldsRaw = match[1].trim();
                const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
-
                const formatted = fields.map(line => `\t${line}`).join("\n");
                const structName = article.dataset.name;
-
                const finalCode = `type ${structName} struct {\n${formatted}\n}`;
 
                codeBlock.textContent = finalCode;
 
-               // Apply Prism highlighting again
                if (window.Prism) Prism.highlightElement(codeBlock);
 
    
@@ -1441,6 +1478,7 @@ If x and y compare equal, Max returns x.</p>
                      } else {
                         el.classList.add("hidden");
                      }
+                     updateSectionVisibility();
                   });
 
                   document.querySelectorAll('#symbolIndex li').forEach(li => {

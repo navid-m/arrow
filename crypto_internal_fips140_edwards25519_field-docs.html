@@ -116,6 +116,14 @@
             color: #ccc;
          }
 
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            color: #ccc;
+         }
+
          .anchor {
             color: rgba(255, 255, 255, 0.3);
             text-decoration: none;
@@ -596,11 +604,11 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"math/bits"
-_ "crypto/internal/fips140/check"
+               <pre><code class="language-go">_ "crypto/internal/fips140/check"
 "crypto/internal/fips140/subtle"
 "crypto/internal/fips140deps/byteorder"
 "errors"
+"math/bits"
 "math/bits"
 </code></pre>
             </article>
@@ -650,7 +658,7 @@ _ "crypto/internal/fips140/check"
                   <a href="#sqrtM1" class="anchor" title="Link to sqrtM1">#</a>
                </h3>
                
-               <p>sqrtM1 is 2^((p-1)/4), which squared is equal to -1 by Euler's Criterion.</p>
+                  <p class="doc-comment">sqrtM1 is 2^((p-1)/4), which squared is equal to -1 by Euler's Criterion.</p>
                
                <pre><code class="language-go">var sqrtM1 = *ast.UnaryExpr</code></pre>
             </article>
@@ -1003,6 +1011,17 @@ and returns r and 0.</p>
             <article class="function symbol-anchor" id="carryPropagate" data-name="carryPropagate">
                <h3>
                   carryPropagate 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#carryPropagate" class="anchor" title="Link to carryPropagate">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (v *Element) carryPropagate() *Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="carryPropagate" data-name="carryPropagate">
+               <h3>
+                  carryPropagate 
                   <span class="badge">function</span>
                   
                   <a href="#carryPropagate" class="anchor" title="Link to carryPropagate">#</a>
@@ -1011,17 +1030,6 @@ and returns r and 0.</p>
                <p>go:noescape</p>
                
                <pre><code class="language-go">func carryPropagate(v *Element)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="carryPropagate" data-name="carryPropagate">
-               <h3>
-                  carryPropagate 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#carryPropagate" class="anchor" title="Link to carryPropagate">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (v *Element) carryPropagate() *Element</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="carryPropagateGeneric" data-name="carryPropagateGeneric">
@@ -1183,6 +1191,38 @@ go:noescape</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
@@ -1271,37 +1311,34 @@ go:noescape</p>
                            }
                         }
                      });
+                     updateSectionVisibility();
                   });
                }
             };
 
-            hideInitial("article.imports", toggles.imports);
-            hideInitial("article.function", toggles.functions);
-            hideInitial("article.struct", toggles.structs);
-            hideInitial("article.global", toggles.globals);
-            hideInitial("article.type", toggles.types);
-            hideInitial("article.interface", toggles.interfaces);
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
 
             document.querySelectorAll("article.struct").forEach((article) => {
                const codeBlock = article.querySelector("code.fields-code");
                if (!codeBlock) return;
 
                const raw = codeBlock.textContent.trim();
-
                const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
                if (!match) return;
 
                const fieldsRaw = match[1].trim();
                const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
-
                const formatted = fields.map(line => `\t${line}`).join("\n");
                const structName = article.dataset.name;
-
                const finalCode = `type ${structName} struct {\n${formatted}\n}`;
 
                codeBlock.textContent = finalCode;
 
-               // Apply Prism highlighting again
                if (window.Prism) Prism.highlightElement(codeBlock);
 
    
@@ -1391,6 +1428,7 @@ go:noescape</p>
                      } else {
                         el.classList.add("hidden");
                      }
+                     updateSectionVisibility();
                   });
 
                   document.querySelectorAll('#symbolIndex li').forEach(li => {

@@ -116,6 +116,14 @@
             color: #ccc;
          }
 
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            color: #ccc;
+         }
+
          .anchor {
             color: rgba(255, 255, 255, 0.3);
             text-decoration: none;
@@ -595,6 +603,8 @@
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
                <pre><code class="language-go">"internal/abi"
+"internal/goarch"
+"internal/runtime/sys"
 "unsafe"
 "internal/abi"
 "internal/goarch"
@@ -602,8 +612,6 @@
 "internal/runtime/sys"
 "unsafe"
 "internal/abi"
-"unsafe"
-"internal/abi"
 "internal/race"
 "internal/runtime/sys"
 "unsafe"
@@ -615,6 +623,13 @@
 "internal/goarch"
 "internal/race"
 "internal/runtime/sys"
+"unsafe"
+"internal/abi"
+"unsafe"
+"internal/abi"
+"internal/goarch"
+"unsafe"
+"internal/abi"
 "unsafe"
 "internal/abi"
 "unsafe"
@@ -622,13 +637,6 @@
 "internal/asan"
 "internal/msan"
 "internal/race"
-"internal/runtime/sys"
-"unsafe"
-"internal/abi"
-"internal/goarch"
-"unsafe"
-"internal/abi"
-"internal/goarch"
 "internal/runtime/sys"
 "unsafe"
 </code></pre>
@@ -646,7 +654,7 @@
                   <a href="#_" class="anchor" title="Link to _">#</a>
                </h3>
                
-               <p>Ensure the max capacity fits in uint16, used for capacity and growthLeft
+                  <p class="doc-comment">Ensure the max capacity fits in uint16, used for capacity and growthLeft
 below.</p>
                
                <pre><code class="language-go">var _ = *ast.CallExpr</code></pre>
@@ -748,7 +756,7 @@ below.</p>
                   <a href="#errNilAssign" class="anchor" title="Link to errNilAssign">#</a>
                </h3>
                
-               <p>Pushed from runtime in order to use runtime.plainError
+                  <p class="doc-comment">Pushed from runtime in order to use runtime.plainError
 go:linkname errNilAssign</p>
                
                <pre><code class="language-go">var errNilAssign error</code></pre>
@@ -773,7 +781,7 @@ go:linkname errNilAssign</p>
                   <a href="#maxAvgGroupLoad" class="anchor" title="Link to maxAvgGroupLoad">#</a>
                </h3>
                
-               <p>Maximum load factor prior to growing.
+                  <p class="doc-comment">Maximum load factor prior to growing.
 7/8 is the same load factor used by Abseil, but Abseil defaults to
 16 slots per group, so they get two empty slots vs our one empty
 slot. We may want to reevaluate if this is best for us.</p>
@@ -789,7 +797,7 @@ slot. We may want to reevaluate if this is best for us.</p>
                   <a href="#maxTableCapacity" class="anchor" title="Link to maxTableCapacity">#</a>
                </h3>
                
-               <p>Maximum size of a table before it is split at the directory level.
+                  <p class="doc-comment">Maximum size of a table before it is split at the directory level.
 TODO: Completely made up value. This should be tuned for performance vs grow
 latency.
 TODO: This should likely be based on byte size, as copying costs will
@@ -806,7 +814,7 @@ dominate grow latency for large objects.</p>
                   <a href="#zeroVal" class="anchor" title="Link to zeroVal">#</a>
                </h3>
                
-               <p>Pull from runtime. It is important that is this the exact same copy as the
+                  <p class="doc-comment">Pull from runtime. It is important that is this the exact same copy as the
 runtime because runtime.mapaccess1_fat compares the returned pointer with
 &runtime.zeroVal[0].
 TODO: move zeroVal to internal/abi?
@@ -1024,7 +1032,7 @@ groups groupsReference
                
                <p>Clear deletes all entries from the map resulting in an empty map.</p>
                
-               <pre><code class="language-go">func (m *Map) Clear(typ *abi.SwissMapType)</code></pre>
+               <pre><code class="language-go">func (t *table) Clear(typ *abi.SwissMapType)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Clear" data-name="Clear">
@@ -1037,7 +1045,7 @@ groups groupsReference
                
                <p>Clear deletes all entries from the map resulting in an empty map.</p>
                
-               <pre><code class="language-go">func (t *table) Clear(typ *abi.SwissMapType)</code></pre>
+               <pre><code class="language-go">func (m *Map) Clear(typ *abi.SwissMapType)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Delete" data-name="Delete">
@@ -1088,7 +1096,7 @@ Must not be called prior to Next.</p>
                <p>Get performs a lookup of the key that key points to. It returns a pointer to
 the element, or false if the key doesn't exist.</p>
                
-               <pre><code class="language-go">func (t *table) Get(typ *abi.SwissMapType, m *Map, key unsafe.Pointer) (unsafe.Pointer, bool)</code></pre>
+               <pre><code class="language-go">func (m *Map) Get(typ *abi.SwissMapType, key unsafe.Pointer) (unsafe.Pointer, bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Get" data-name="Get">
@@ -1102,7 +1110,7 @@ the element, or false if the key doesn't exist.</p>
                <p>Get performs a lookup of the key that key points to. It returns a pointer to
 the element, or false if the key doesn't exist.</p>
                
-               <pre><code class="language-go">func (m *Map) Get(typ *abi.SwissMapType, key unsafe.Pointer) (unsafe.Pointer, bool)</code></pre>
+               <pre><code class="language-go">func (t *table) Get(typ *abi.SwissMapType, m *Map, key unsafe.Pointer) (unsafe.Pointer, bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Init" data-name="Init">
@@ -1230,10 +1238,12 @@ Init must be called prior to Next.</p>
                </h3>
                
                <p>PutSlot returns a pointer to the element slot where an inserted element
-should be written.
-PutSlot never returns nil.</p>
+should be written, and ok if it returned a valid slot.
+PutSlot returns ok false if the table was split and the Map needs to find
+the new table.
+hash must be the hash of key.</p>
                
-               <pre><code class="language-go">func (m *Map) PutSlot(typ *abi.SwissMapType, key unsafe.Pointer) unsafe.Pointer</code></pre>
+               <pre><code class="language-go">func (t *table) PutSlot(typ *abi.SwissMapType, m *Map, hash uintptr, key unsafe.Pointer) (unsafe.Pointer, bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="PutSlot" data-name="PutSlot">
@@ -1245,12 +1255,10 @@ PutSlot never returns nil.</p>
                </h3>
                
                <p>PutSlot returns a pointer to the element slot where an inserted element
-should be written, and ok if it returned a valid slot.
-PutSlot returns ok false if the table was split and the Map needs to find
-the new table.
-hash must be the hash of key.</p>
+should be written.
+PutSlot never returns nil.</p>
                
-               <pre><code class="language-go">func (t *table) PutSlot(typ *abi.SwissMapType, m *Map, hash uintptr, key unsafe.Pointer) (unsafe.Pointer, bool)</code></pre>
+               <pre><code class="language-go">func (m *Map) PutSlot(typ *abi.SwissMapType, key unsafe.Pointer) unsafe.Pointer</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Used" data-name="Used">
@@ -1585,16 +1593,7 @@ Preconditions: b is not 0 (empty).</p>
                   <a href="#getWithKey" class="anchor" title="Link to getWithKey">#</a>
                </h3>
                
-               <p>getWithKey performs a lookup of key, returning a pointer to the version of
-the key in the map in addition to the element.
-This is relevant when multiple different key values compare equal (e.g.,
-+0.0 and -0.0). When a grow occurs during iteration, iteration perform a
-lookup of keys from the old group in the new group in order to correctly
-expose updated elements. For NeedsKeyUpdate keys, iteration also must return
-the new key value, not the old key value.
-hash must be the hash of the key.</p>
-               
-               <pre><code class="language-go">func (t *table) getWithKey(typ *abi.SwissMapType, hash uintptr, key unsafe.Pointer) (unsafe.Pointer, unsafe.Pointer, bool)</code></pre>
+               <pre><code class="language-go">func (m *Map) getWithKey(typ *abi.SwissMapType, key unsafe.Pointer) (unsafe.Pointer, unsafe.Pointer, bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="getWithKey" data-name="getWithKey">
@@ -1605,7 +1604,16 @@ hash must be the hash of the key.</p>
                   <a href="#getWithKey" class="anchor" title="Link to getWithKey">#</a>
                </h3>
                
-               <pre><code class="language-go">func (m *Map) getWithKey(typ *abi.SwissMapType, key unsafe.Pointer) (unsafe.Pointer, unsafe.Pointer, bool)</code></pre>
+               <p>getWithKey performs a lookup of key, returning a pointer to the version of
+the key in the map in addition to the element.
+This is relevant when multiple different key values compare equal (e.g.,
++0.0 and -0.0). When a grow occurs during iteration, iteration perform a
+lookup of keys from the old group in the new group in order to correctly
+expose updated elements. For NeedsKeyUpdate keys, iteration also must return
+the new key value, not the old key value.
+hash must be the hash of the key.</p>
+               
+               <pre><code class="language-go">func (t *table) getWithKey(typ *abi.SwissMapType, hash uintptr, key unsafe.Pointer) (unsafe.Pointer, unsafe.Pointer, bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="getWithKeySmall" data-name="getWithKeySmall">
@@ -1627,7 +1635,7 @@ hash must be the hash of the key.</p>
                   <a href="#getWithoutKey" class="anchor" title="Link to getWithoutKey">#</a>
                </h3>
                
-               <pre><code class="language-go">func (t *table) getWithoutKey(typ *abi.SwissMapType, hash uintptr, key unsafe.Pointer) (unsafe.Pointer, bool)</code></pre>
+               <pre><code class="language-go">func (m *Map) getWithoutKey(typ *abi.SwissMapType, key unsafe.Pointer) (unsafe.Pointer, bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="getWithoutKey" data-name="getWithoutKey">
@@ -1638,7 +1646,7 @@ hash must be the hash of the key.</p>
                   <a href="#getWithoutKey" class="anchor" title="Link to getWithoutKey">#</a>
                </h3>
                
-               <pre><code class="language-go">func (m *Map) getWithoutKey(typ *abi.SwissMapType, key unsafe.Pointer) (unsafe.Pointer, bool)</code></pre>
+               <pre><code class="language-go">func (t *table) getWithoutKey(typ *abi.SwissMapType, hash uintptr, key unsafe.Pointer) (unsafe.Pointer, bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="getWithoutKeySmallFastStr" data-name="getWithoutKeySmallFastStr">
@@ -1831,7 +1839,7 @@ bitset regardless of whether they are set.</p>
                   <a href="#mapKeyError" class="anchor" title="Link to mapKeyError">#</a>
                </h3>
                
-               <p>For testing, we don't ever need key errors.</p>
+               <p>go:linkname mapKeyError</p>
                
                <pre><code class="language-go">func mapKeyError(typ *abi.SwissMapType, p unsafe.Pointer) error</code></pre>
             </article>
@@ -1844,7 +1852,7 @@ bitset regardless of whether they are set.</p>
                   <a href="#mapKeyError" class="anchor" title="Link to mapKeyError">#</a>
                </h3>
                
-               <p>go:linkname mapKeyError</p>
+               <p>For testing, we don't ever need key errors.</p>
                
                <pre><code class="language-go">func mapKeyError(typ *abi.SwissMapType, p unsafe.Pointer) error</code></pre>
             </article>
@@ -2490,6 +2498,38 @@ map).</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
@@ -2578,37 +2618,34 @@ map).</p>
                            }
                         }
                      });
+                     updateSectionVisibility();
                   });
                }
             };
 
-            hideInitial("article.imports", toggles.imports);
-            hideInitial("article.function", toggles.functions);
-            hideInitial("article.struct", toggles.structs);
-            hideInitial("article.global", toggles.globals);
-            hideInitial("article.type", toggles.types);
-            hideInitial("article.interface", toggles.interfaces);
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
 
             document.querySelectorAll("article.struct").forEach((article) => {
                const codeBlock = article.querySelector("code.fields-code");
                if (!codeBlock) return;
 
                const raw = codeBlock.textContent.trim();
-
                const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
                if (!match) return;
 
                const fieldsRaw = match[1].trim();
                const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
-
                const formatted = fields.map(line => `\t${line}`).join("\n");
                const structName = article.dataset.name;
-
                const finalCode = `type ${structName} struct {\n${formatted}\n}`;
 
                codeBlock.textContent = finalCode;
 
-               // Apply Prism highlighting again
                if (window.Prism) Prism.highlightElement(codeBlock);
 
    
@@ -2698,6 +2735,7 @@ map).</p>
                      } else {
                         el.classList.add("hidden");
                      }
+                     updateSectionVisibility();
                   });
 
                   document.querySelectorAll('#symbolIndex li').forEach(li => {

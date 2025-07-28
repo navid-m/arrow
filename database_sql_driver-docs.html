@@ -116,6 +116,14 @@
             color: #ccc;
          }
 
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            color: #ccc;
+         }
+
          .anchor {
             color: rgba(255, 255, 255, 0.3);
             text-decoration: none;
@@ -618,7 +626,7 @@
                   <a href="#Bool" class="anchor" title="Link to Bool">#</a>
                </h3>
                
-               <p>Bool is a [ValueConverter] that converts input values to bool.
+                  <p class="doc-comment">Bool is a [ValueConverter] that converts input values to bool.
 The conversion rules are:
 - booleans are returned unchanged
 - for integer types,
@@ -639,7 +647,7 @@ other integers are an error
                   <a href="#DefaultParameterConverter" class="anchor" title="Link to DefaultParameterConverter">#</a>
                </h3>
                
-               <p>DefaultParameterConverter is the default implementation of
+                  <p class="doc-comment">DefaultParameterConverter is the default implementation of
 [ValueConverter] that's used when a [Stmt] doesn't implement
 [ColumnConverter].
 DefaultParameterConverter returns its argument directly if
@@ -664,7 +672,7 @@ are an error.</p>
                   <a href="#ErrBadConn" class="anchor" title="Link to ErrBadConn">#</a>
                </h3>
                
-               <p>ErrBadConn should be returned by a driver to signal to the [database/sql]
+                  <p class="doc-comment">ErrBadConn should be returned by a driver to signal to the [database/sql]
 package that a driver.[Conn] is in a bad state (such as the server
 having earlier closed the connection) and the [database/sql] package should
 retry on a new connection.
@@ -686,7 +694,7 @@ wrap ErrBadConn or implement the Is(error) bool method.</p>
                   <a href="#ErrRemoveArgument" class="anchor" title="Link to ErrRemoveArgument">#</a>
                </h3>
                
-               <p>ErrRemoveArgument may be returned from [NamedValueChecker] to instruct the
+                  <p class="doc-comment">ErrRemoveArgument may be returned from [NamedValueChecker] to instruct the
 [database/sql] package to not pass the argument to the driver query interface.
 Return when accepting query specific options or structures that aren't
 SQL query arguments.</p>
@@ -702,7 +710,7 @@ SQL query arguments.</p>
                   <a href="#ErrSkip" class="anchor" title="Link to ErrSkip">#</a>
                </h3>
                
-               <p>ErrSkip may be returned by some optional interfaces' methods to
+                  <p class="doc-comment">ErrSkip may be returned by some optional interfaces' methods to
 indicate at runtime that the fast path is unavailable and the sql
 package should continue as if the optional interface was not
 implemented. ErrSkip is only supported where explicitly
@@ -719,7 +727,7 @@ documented.</p>
                   <a href="#Int32" class="anchor" title="Link to Int32">#</a>
                </h3>
                
-               <p>Int32 is a [ValueConverter] that converts input values to int64,
+                  <p class="doc-comment">Int32 is a [ValueConverter] that converts input values to int64,
 respecting the limits of an int32 value.</p>
                
                <pre><code class="language-go">var Int32 int32Type</code></pre>
@@ -733,7 +741,7 @@ respecting the limits of an int32 value.</p>
                   <a href="#ResultNoRows" class="anchor" title="Link to ResultNoRows">#</a>
                </h3>
                
-               <p>ResultNoRows is a pre-defined [Result] for drivers to return when a DDL
+                  <p class="doc-comment">ResultNoRows is a pre-defined [Result] for drivers to return when a DDL
 command (such as a CREATE TABLE) succeeds. It returns an error for both
 LastInsertId and [RowsAffected].</p>
                
@@ -748,7 +756,7 @@ LastInsertId and [RowsAffected].</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <p>String is a [ValueConverter] that converts its input to a string.
+                  <p class="doc-comment">String is a [ValueConverter] that converts its input to a string.
 If the value is already a string or []byte, it's unchanged.
 If the value is of another type, conversion to string is done
 with fmt.Sprintf("%v", v).</p>
@@ -1811,6 +1819,38 @@ This function is mirrored in the database/sql package.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
@@ -1899,37 +1939,34 @@ This function is mirrored in the database/sql package.</p>
                            }
                         }
                      });
+                     updateSectionVisibility();
                   });
                }
             };
 
-            hideInitial("article.imports", toggles.imports);
-            hideInitial("article.function", toggles.functions);
-            hideInitial("article.struct", toggles.structs);
-            hideInitial("article.global", toggles.globals);
-            hideInitial("article.type", toggles.types);
-            hideInitial("article.interface", toggles.interfaces);
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
 
             document.querySelectorAll("article.struct").forEach((article) => {
                const codeBlock = article.querySelector("code.fields-code");
                if (!codeBlock) return;
 
                const raw = codeBlock.textContent.trim();
-
                const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
                if (!match) return;
 
                const fieldsRaw = match[1].trim();
                const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
-
                const formatted = fields.map(line => `\t${line}`).join("\n");
                const structName = article.dataset.name;
-
                const finalCode = `type ${structName} struct {\n${formatted}\n}`;
 
                codeBlock.textContent = finalCode;
 
-               // Apply Prism highlighting again
                if (window.Prism) Prism.highlightElement(codeBlock);
 
    
@@ -2019,6 +2056,7 @@ This function is mirrored in the database/sql package.</p>
                      } else {
                         el.classList.add("hidden");
                      }
+                     updateSectionVisibility();
                   });
 
                   document.querySelectorAll('#symbolIndex li').forEach(li => {

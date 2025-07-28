@@ -116,6 +116,14 @@
             color: #ccc;
          }
 
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            color: #ccc;
+         }
+
          .anchor {
             color: rgba(255, 255, 255, 0.3);
             text-decoration: none;
@@ -598,6 +606,9 @@
                </h3>
                <pre><code class="language-go">"bytes"
 "crypto/internal/fips140"
+"crypto/internal/fips140/hmac"
+"bytes"
+"crypto/internal/fips140"
 _ "crypto/internal/fips140/check"
 "crypto/internal/fips140/sha512"
 "errors"
@@ -614,9 +625,6 @@ _ "crypto/internal/fips140/check"
 "crypto/internal/fips140deps/cpu"
 "crypto/internal/impl"
 "errors"
-"bytes"
-"crypto/internal/fips140"
-"crypto/internal/fips140/hmac"
 </code></pre>
             </article>
          </section>
@@ -819,7 +827,7 @@ _ "crypto/internal/fips140/check"
                   <a href="#testingOnlyRejectionSamplingLooped" class="anchor" title="Link to testingOnlyRejectionSamplingLooped">#</a>
                </h3>
                
-               <p>testingOnlyRejectionSamplingLooped is called when rejection sampling in
+                  <p class="doc-comment">testingOnlyRejectionSamplingLooped is called when rejection sampling in
 randomPoint rejects a candidate for being higher than the modulus.</p>
                
                <pre><code class="language-go">var testingOnlyRejectionSamplingLooped func()</code></pre>
@@ -1293,7 +1301,7 @@ FIPS 186-5, Section 6.4.1, point 2 and Section 6.4.2, point 3.</p>
                   <a href="#isPersonalizationString" class="anchor" title="Link to isPersonalizationString">#</a>
                </h3>
                
-               <pre><code class="language-go">func (blockAlignedPersonalizationString) isPersonalizationString()</code></pre>
+               <pre><code class="language-go">func (plainPersonalizationString) isPersonalizationString()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="isPersonalizationString" data-name="isPersonalizationString">
@@ -1304,7 +1312,7 @@ FIPS 186-5, Section 6.4.1, point 2 and Section 6.4.2, point 3.</p>
                   <a href="#isPersonalizationString" class="anchor" title="Link to isPersonalizationString">#</a>
                </h3>
                
-               <pre><code class="language-go">func (plainPersonalizationString) isPersonalizationString()</code></pre>
+               <pre><code class="language-go">func (blockAlignedPersonalizationString) isPersonalizationString()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="kdsa" data-name="kdsa">
@@ -1513,6 +1521,38 @@ first byte, but we can't have nice things.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
@@ -1601,37 +1641,34 @@ first byte, but we can't have nice things.</p>
                            }
                         }
                      });
+                     updateSectionVisibility();
                   });
                }
             };
 
-            hideInitial("article.imports", toggles.imports);
-            hideInitial("article.function", toggles.functions);
-            hideInitial("article.struct", toggles.structs);
-            hideInitial("article.global", toggles.globals);
-            hideInitial("article.type", toggles.types);
-            hideInitial("article.interface", toggles.interfaces);
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
 
             document.querySelectorAll("article.struct").forEach((article) => {
                const codeBlock = article.querySelector("code.fields-code");
                if (!codeBlock) return;
 
                const raw = codeBlock.textContent.trim();
-
                const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
                if (!match) return;
 
                const fieldsRaw = match[1].trim();
                const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
-
                const formatted = fields.map(line => `\t${line}`).join("\n");
                const structName = article.dataset.name;
-
                const finalCode = `type ${structName} struct {\n${formatted}\n}`;
 
                codeBlock.textContent = finalCode;
 
-               // Apply Prism highlighting again
                if (window.Prism) Prism.highlightElement(codeBlock);
 
    
@@ -1721,6 +1758,7 @@ first byte, but we can't have nice things.</p>
                      } else {
                         el.classList.add("hidden");
                      }
+                     updateSectionVisibility();
                   });
 
                   document.querySelectorAll('#symbolIndex li').forEach(li => {

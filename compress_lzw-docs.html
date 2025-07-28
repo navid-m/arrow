@@ -116,6 +116,14 @@
             color: #ccc;
          }
 
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            color: #ccc;
+         }
+
          .anchor {
             color: rgba(255, 255, 255, 0.3);
             text-decoration: none;
@@ -619,7 +627,7 @@
                   <a href="#LSB" class="anchor" title="Link to LSB">#</a>
                </h3>
                
-               <p>LSB means Least Significant Bits first, as used in the GIF file format.</p>
+                  <p class="doc-comment">LSB means Least Significant Bits first, as used in the GIF file format.</p>
                
                <pre><code class="language-go">const LSB Order = iota</code></pre>
             </article>
@@ -632,7 +640,7 @@
                   <a href="#MSB" class="anchor" title="Link to MSB">#</a>
                </h3>
                
-               <p>MSB means Most Significant Bits first, as used in the TIFF and PDF
+                  <p class="doc-comment">MSB means Most Significant Bits first, as used in the TIFF and PDF
 file formats.</p>
                
                <pre><code class="language-go">const MSB</code></pre>
@@ -668,7 +676,7 @@ file formats.</p>
                   <a href="#errOutOfCodes" class="anchor" title="Link to errOutOfCodes">#</a>
                </h3>
                
-               <p>errOutOfCodes is an internal error that means that the writer has run out
+                  <p class="doc-comment">errOutOfCodes is an internal error that means that the writer has run out
 of unused codes and a clear code needs to be sent next.</p>
                
                <pre><code class="language-go">var errOutOfCodes = *ast.CallExpr</code></pre>
@@ -704,7 +712,7 @@ of unused codes and a clear code needs to be sent next.</p>
                   <a href="#invalidEntry" class="anchor" title="Link to invalidEntry">#</a>
                </h3>
                
-               <p>A hash table entry is a uint32. Zero is an invalid entry since the
+                  <p class="doc-comment">A hash table entry is a uint32. Zero is an invalid entry since the
 lower 12 bits of a valid entry must be a non-literal code.</p>
                
                <pre><code class="language-go">const invalidEntry = 0</code></pre>
@@ -718,7 +726,7 @@ lower 12 bits of a valid entry must be a non-literal code.</p>
                   <a href="#maxCode" class="anchor" title="Link to maxCode">#</a>
                </h3>
                
-               <p>A code is a 12 bit value, stored as a uint32 when encoding to avoid
+                  <p class="doc-comment">A code is a 12 bit value, stored as a uint32 when encoding to avoid
 type conversions when shifting bits.</p>
                
                <pre><code class="language-go">const maxCode = *ast.BinaryExpr</code></pre>
@@ -754,7 +762,7 @@ type conversions when shifting bits.</p>
                   <a href="#tableSize" class="anchor" title="Link to tableSize">#</a>
                </h3>
                
-               <p>There are 1<<12 possible codes, which is an upper bound on the number of
+                  <p class="doc-comment">There are 1<<12 possible codes, which is an upper bound on the number of
 valid hash table entries at any given point in time. tableSize is 4x that.</p>
                
                <pre><code class="language-go">const tableSize = *ast.BinaryExpr</code></pre>
@@ -1129,6 +1137,38 @@ writer state and returns errOutOfCodes.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
@@ -1217,37 +1257,34 @@ writer state and returns errOutOfCodes.</p>
                            }
                         }
                      });
+                     updateSectionVisibility();
                   });
                }
             };
 
-            hideInitial("article.imports", toggles.imports);
-            hideInitial("article.function", toggles.functions);
-            hideInitial("article.struct", toggles.structs);
-            hideInitial("article.global", toggles.globals);
-            hideInitial("article.type", toggles.types);
-            hideInitial("article.interface", toggles.interfaces);
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
 
             document.querySelectorAll("article.struct").forEach((article) => {
                const codeBlock = article.querySelector("code.fields-code");
                if (!codeBlock) return;
 
                const raw = codeBlock.textContent.trim();
-
                const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
                if (!match) return;
 
                const fieldsRaw = match[1].trim();
                const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
-
                const formatted = fields.map(line => `\t${line}`).join("\n");
                const structName = article.dataset.name;
-
                const finalCode = `type ${structName} struct {\n${formatted}\n}`;
 
                codeBlock.textContent = finalCode;
 
-               // Apply Prism highlighting again
                if (window.Prism) Prism.highlightElement(codeBlock);
 
    
@@ -1337,6 +1374,7 @@ writer state and returns errOutOfCodes.</p>
                      } else {
                         el.classList.add("hidden");
                      }
+                     updateSectionVisibility();
                   });
 
                   document.querySelectorAll('#symbolIndex li').forEach(li => {

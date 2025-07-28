@@ -116,6 +116,14 @@
             color: #ccc;
          }
 
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            color: #ccc;
+         }
+
          .anchor {
             color: rgba(255, 255, 255, 0.3);
             text-decoration: none;
@@ -622,7 +630,7 @@
                   <a href="#CommandLine" class="anchor" title="Link to CommandLine">#</a>
                </h3>
                
-               <p>CommandLine is the default set of command-line flags, parsed from [os.Args].
+                  <p class="doc-comment">CommandLine is the default set of command-line flags, parsed from [os.Args].
 The top-level functions such as [BoolVar], [Arg], and so on are wrappers for the
 methods of CommandLine.</p>
                
@@ -637,7 +645,7 @@ methods of CommandLine.</p>
                   <a href="#ContinueOnError" class="anchor" title="Link to ContinueOnError">#</a>
                </h3>
                
-               <p>These constants cause [FlagSet.Parse] to behave as described if the parse fails.</p>
+                  <p class="doc-comment">These constants cause [FlagSet.Parse] to behave as described if the parse fails.</p>
                
                <pre><code class="language-go">const ContinueOnError ErrorHandling = iota</code></pre>
             </article>
@@ -650,7 +658,7 @@ methods of CommandLine.</p>
                   <a href="#ErrHelp" class="anchor" title="Link to ErrHelp">#</a>
                </h3>
                
-               <p>ErrHelp is the error returned if the -help or -h flag is invoked
+                  <p class="doc-comment">ErrHelp is the error returned if the -help or -h flag is invoked
 but no such flag is defined.</p>
                
                <pre><code class="language-go">var ErrHelp = *ast.CallExpr</code></pre>
@@ -664,7 +672,7 @@ but no such flag is defined.</p>
                   <a href="#ExitOnError" class="anchor" title="Link to ExitOnError">#</a>
                </h3>
                
-               <p>These constants cause [FlagSet.Parse] to behave as described if the parse fails.</p>
+                  <p class="doc-comment">These constants cause [FlagSet.Parse] to behave as described if the parse fails.</p>
                
                <pre><code class="language-go">const ExitOnError</code></pre>
             </article>
@@ -677,7 +685,7 @@ but no such flag is defined.</p>
                   <a href="#PanicOnError" class="anchor" title="Link to PanicOnError">#</a>
                </h3>
                
-               <p>These constants cause [FlagSet.Parse] to behave as described if the parse fails.</p>
+                  <p class="doc-comment">These constants cause [FlagSet.Parse] to behave as described if the parse fails.</p>
                
                <pre><code class="language-go">const PanicOnError</code></pre>
             </article>
@@ -690,7 +698,7 @@ but no such flag is defined.</p>
                   <a href="#Usage" class="anchor" title="Link to Usage">#</a>
                </h3>
                
-               <p>Usage prints a usage message documenting all defined command-line flags
+                  <p class="doc-comment">Usage prints a usage message documenting all defined command-line flags
 to [CommandLine]'s output, which by default is [os.Stderr].
 It is called when an error occurs while parsing flags.
 The function is a variable that may be changed to point to a custom function.
@@ -711,7 +719,7 @@ happens anyway as the command line's error handling strategy is set to
                   <a href="#errParse" class="anchor" title="Link to errParse">#</a>
                </h3>
                
-               <p>errParse is returned by Set if a flag's value fails to parse, such as with an invalid integer for Int.
+                  <p class="doc-comment">errParse is returned by Set if a flag's value fails to parse, such as with an invalid integer for Int.
 It then gets wrapped through failf to provide more information.</p>
                
                <pre><code class="language-go">var errParse = *ast.CallExpr</code></pre>
@@ -725,7 +733,7 @@ It then gets wrapped through failf to provide more information.</p>
                   <a href="#errRange" class="anchor" title="Link to errRange">#</a>
                </h3>
                
-               <p>errRange is returned by Set if a flag's value is out of range.
+                  <p class="doc-comment">errRange is returned by Set if a flag's value is out of range.
 It then gets wrapped through failf to provide more information.</p>
                
                <pre><code class="language-go">var errRange = *ast.CallExpr</code></pre>
@@ -2618,6 +2626,38 @@ or the appropriate default usage function otherwise.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
@@ -2706,37 +2746,34 @@ or the appropriate default usage function otherwise.</p>
                            }
                         }
                      });
+                     updateSectionVisibility();
                   });
                }
             };
 
-            hideInitial("article.imports", toggles.imports);
-            hideInitial("article.function", toggles.functions);
-            hideInitial("article.struct", toggles.structs);
-            hideInitial("article.global", toggles.globals);
-            hideInitial("article.type", toggles.types);
-            hideInitial("article.interface", toggles.interfaces);
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
 
             document.querySelectorAll("article.struct").forEach((article) => {
                const codeBlock = article.querySelector("code.fields-code");
                if (!codeBlock) return;
 
                const raw = codeBlock.textContent.trim();
-
                const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
                if (!match) return;
 
                const fieldsRaw = match[1].trim();
                const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
-
                const formatted = fields.map(line => `\t${line}`).join("\n");
                const structName = article.dataset.name;
-
                const finalCode = `type ${structName} struct {\n${formatted}\n}`;
 
                codeBlock.textContent = finalCode;
 
-               // Apply Prism highlighting again
                if (window.Prism) Prism.highlightElement(codeBlock);
 
    
@@ -2826,6 +2863,7 @@ or the appropriate default usage function otherwise.</p>
                      } else {
                         el.classList.add("hidden");
                      }
+                     updateSectionVisibility();
                   });
 
                   document.querySelectorAll('#symbolIndex li').forEach(li => {

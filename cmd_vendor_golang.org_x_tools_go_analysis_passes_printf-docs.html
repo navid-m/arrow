@@ -116,6 +116,14 @@
             color: #ccc;
          }
 
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            color: #ccc;
+         }
+
          .anchor {
             color: rgba(255, 255, 255, 0.3);
             text-decoration: none;
@@ -689,7 +697,7 @@ _ "embed"
                   <a href="#allFlags" class="anchor" title="Link to allFlags">#</a>
                </h3>
                
-               <p>Common flag sets for printf verbs.</p>
+                  <p class="doc-comment">Common flag sets for printf verbs.</p>
                
                <pre><code class="language-go">const allFlags = " -+.0#"</code></pre>
             </article>
@@ -801,7 +809,7 @@ _ "embed"
                   <a href="#doc" class="anchor" title="Link to doc">#</a>
                </h3>
                
-               <p>go:embed doc.go</p>
+                  <p class="doc-comment">go:embed doc.go</p>
                
                <pre><code class="language-go">var doc string</code></pre>
             </article>
@@ -847,7 +855,7 @@ _ "embed"
                   <a href="#isPrint" class="anchor" title="Link to isPrint">#</a>
                </h3>
                
-               <p>isPrint records the print functions.
+                  <p class="doc-comment">isPrint records the print functions.
 If a key ends in 'f' then it is assumed to be a formatted print.
 Keys are either values returned by (*types.Func).FullName,
 or case-insensitive identifiers such as "errorf".
@@ -869,7 +877,7 @@ not do so with gccgo, and nor do some other build systems.</p>
                   <a href="#noFlag" class="anchor" title="Link to noFlag">#</a>
                </h3>
                
-               <p>Common flag sets for printf verbs.</p>
+                  <p class="doc-comment">Common flag sets for printf verbs.</p>
                
                <pre><code class="language-go">const noFlag = ""</code></pre>
             </article>
@@ -882,7 +890,7 @@ not do so with gccgo, and nor do some other build systems.</p>
                   <a href="#numFlag" class="anchor" title="Link to numFlag">#</a>
                </h3>
                
-               <p>Common flag sets for printf verbs.</p>
+                  <p class="doc-comment">Common flag sets for printf verbs.</p>
                
                <pre><code class="language-go">const numFlag = " -+.0"</code></pre>
             </article>
@@ -906,7 +914,7 @@ not do so with gccgo, and nor do some other build systems.</p>
                   <a href="#printFormatRE" class="anchor" title="Link to printFormatRE">#</a>
                </h3>
                
-               <p>printFormatRE is the regexp we match and report as a possible format string
+                  <p class="doc-comment">printFormatRE is the regexp we match and report as a possible format string
 in the first argument to unformatted prints like fmt.Print.
 We exclude the space flag, so that printing a string like "x % y" is not reported as a format.</p>
                
@@ -921,7 +929,7 @@ We exclude the space flag, so that printing a string like "x % y" is not reporte
                   <a href="#printVerbs" class="anchor" title="Link to printVerbs">#</a>
                </h3>
                
-               <p>printVerbs identifies which flags are known to printf for each verb.</p>
+                  <p class="doc-comment">printVerbs identifies which flags are known to printf for each verb.</p>
                
                <pre><code class="language-go">var printVerbs = []printVerb{...}</code></pre>
             </article>
@@ -934,7 +942,7 @@ We exclude the space flag, so that printing a string like "x % y" is not reporte
                   <a href="#sharpNumFlag" class="anchor" title="Link to sharpNumFlag">#</a>
                </h3>
                
-               <p>Common flag sets for printf verbs.</p>
+                  <p class="doc-comment">Common flag sets for printf verbs.</p>
                
                <pre><code class="language-go">const sharpNumFlag = " -+.0#"</code></pre>
             </article>
@@ -947,7 +955,7 @@ We exclude the space flag, so that printing a string like "x % y" is not reporte
                   <a href="#suppressNonconstants" class="anchor" title="Link to suppressNonconstants">#</a>
                </h3>
                
-               <p>suppressNonconstants suppresses reporting printf calls with
+                  <p class="doc-comment">suppressNonconstants suppresses reporting printf calls with
 non-constant formatting strings (proposal #60529) when true.
 This variable is to allow for staging the transition to newer
 versions of x/tools by vendoring.
@@ -1616,6 +1624,38 @@ constant.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
@@ -1704,37 +1744,34 @@ constant.</p>
                            }
                         }
                      });
+                     updateSectionVisibility();
                   });
                }
             };
 
-            hideInitial("article.imports", toggles.imports);
-            hideInitial("article.function", toggles.functions);
-            hideInitial("article.struct", toggles.structs);
-            hideInitial("article.global", toggles.globals);
-            hideInitial("article.type", toggles.types);
-            hideInitial("article.interface", toggles.interfaces);
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
 
             document.querySelectorAll("article.struct").forEach((article) => {
                const codeBlock = article.querySelector("code.fields-code");
                if (!codeBlock) return;
 
                const raw = codeBlock.textContent.trim();
-
                const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
                if (!match) return;
 
                const fieldsRaw = match[1].trim();
                const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
-
                const formatted = fields.map(line => `\t${line}`).join("\n");
                const structName = article.dataset.name;
-
                const finalCode = `type ${structName} struct {\n${formatted}\n}`;
 
                codeBlock.textContent = finalCode;
 
-               // Apply Prism highlighting again
                if (window.Prism) Prism.highlightElement(codeBlock);
 
    
@@ -1824,6 +1861,7 @@ constant.</p>
                      } else {
                         el.classList.add("hidden");
                      }
+                     updateSectionVisibility();
                   });
 
                   document.querySelectorAll('#symbolIndex li').forEach(li => {
