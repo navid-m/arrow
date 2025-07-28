@@ -77,7 +77,7 @@ func RenderDocs(
 	var (
 		docFile    = fmt.Sprintf("%s-docs.html", docFileName)
 		indexEntry = models.IndexEntry{
-			PackageName: relPath,
+			PackageName: strings.ReplaceAll(relPath, "\\", "/"),
 			DocFile:     docFile,
 		}
 	)
