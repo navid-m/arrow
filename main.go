@@ -22,22 +22,39 @@ var tmpl string
 //go:embed views/index.htmx
 var indexTmpl string
 
-const ver = "v1.2.6"
+const ver = "v1.2.7"
 
 func main() {
 	if len(os.Args) < 2 {
-		fmt.Println("usage: arrow <path-to-go-src-dir> | -v | --version")
+		fmt.Println("usage: arrow <path-to-go-src-dir> [--name=<name>] | -v | --version")
 		return
 	}
 
 	var (
-		srcPath = os.Args[1]
-		fset    = token.NewFileSet()
-		docDir  = filepath.Join(".", "docs")
+		srcPath    string
+		customName string
+		fset       = token.NewFileSet()
+		docDir     = filepath.Join(".", "docs")
 	)
 
-	if srcPath == "--version" || srcPath == "-v" {
-		fmt.Println("arrow " + ver)
+	for _, arg := range os.Args[1:] {
+		if arg == "--version" || arg == "-v" {
+			fmt.Println("arrow " + ver)
+			return
+		}
+
+		if after, ok := strings.CutPrefix(arg, "--name="); ok {
+			customName = after
+			continue
+		}
+
+		if srcPath == "" && !strings.HasPrefix(arg, "--") {
+			srcPath = arg
+		}
+	}
+
+	if srcPath == "" {
+		fmt.Println("usage: arrow <path-to-go-src-dir> [--name=<name>] | -v | --version")
 		return
 	}
 
@@ -90,6 +107,7 @@ func main() {
 			indexEntries = append(indexEntries, entries...)
 			mu.Unlock()
 		}(docFileName, relPath, filteredPkgs)
+
 		return nil
 	})
 
@@ -108,13 +126,19 @@ func main() {
 	defer f.Close()
 
 	t := template.Must(template.New("index").Parse(indexTmpl))
-	wd, err := os.Getwd()
-	if err != nil {
-		fmt.Printf("Failed to get working directory: %v\n", err)
-		return
+
+	var workingDirName string
+	if customName != "" {
+		workingDirName = customName
+	} else {
+		wd, err := os.Getwd()
+		if err != nil {
+			fmt.Printf("Failed to get working directory: %v\n", err)
+			return
+		}
+		workingDirName = filepath.Base(wd)
 	}
 
-	workingDirName := filepath.Base(wd)
 	data := struct {
 		IndexEntries   []models.IndexEntry
 		WorkingDirName string
