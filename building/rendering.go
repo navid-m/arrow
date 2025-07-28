@@ -74,22 +74,24 @@ func RenderDocs(
 	docDir string,
 	srcPath string,
 ) []models.IndexEntry {
-	var (
-		docFile    = fmt.Sprintf("%s-docs.html", docFileName)
-		indexEntry = models.IndexEntry{
-			PackageName: strings.ReplaceAll(relPath, "\\", "/"),
-			DocFile:     docFile,
-		}
-	)
-
+	var indexEntries []models.IndexEntry
 	for pkgName, pkg := range pkgs {
+		var currentDocFile string
+		if len(pkgs) > 1 {
+			currentDocFile = fmt.Sprintf("%s-%s-docs.html", docFileName, pkgName)
+		} else {
+			currentDocFile = fmt.Sprintf("%s-docs.html", docFileName)
+		}
+
 		pageData := models.PageData{PackageName: pkgName}
 		pageData.SubPackages = findImmediateSubpackages(srcPath, relPath)
 
+		functionCount := 0
 		for fileName, file := range pkg.Files {
 			if strings.HasSuffix(fileName, "_test.go") {
 				continue
 			}
+
 			for _, decl := range file.Decls {
 				switch d := decl.(type) {
 				case *ast.FuncDecl:
@@ -98,6 +100,8 @@ func RenderDocs(
 						strings.HasPrefix(d.Name.Name, "Example") {
 						continue
 					}
+
+					functionCount++
 
 					var (
 						params   = parsing.ExtractFieldList(d.Type.Params)
@@ -238,7 +242,7 @@ func RenderDocs(
 			return pageData.SubPackages[i].PackageName < pageData.SubPackages[j].PackageName
 		})
 
-		outFile := filepath.Join(docDir, docFile)
+		outFile := filepath.Join(docDir, currentDocFile)
 		f, err := os.Create(outFile)
 		if err != nil {
 			fmt.Printf("Failed to create %s: %v\n", outFile, err)
@@ -249,8 +253,15 @@ func RenderDocs(
 		t := template.Must(template.New("doc").Parse(tmpl))
 		if err := t.Execute(f, pageData); err != nil {
 			fmt.Printf("Error executing template for %s: %v\n", outFile, err)
+			continue
 		}
-		fmt.Printf("Generated %s\n", outFile)
+
+		indexEntry := models.IndexEntry{
+			PackageName: pkgName,
+			DocFile:     currentDocFile,
+		}
+		indexEntries = append(indexEntries, indexEntry)
 	}
-	return []models.IndexEntry{indexEntry}
+
+	return indexEntries
 }
