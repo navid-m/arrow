@@ -102,6 +102,7 @@
             font-size: 1.2rem;
             margin: 0.8rem 0 0.3rem;
             color: #e0e0e0;
+            position: relative;
          }
 
          .sidebar h2,
@@ -109,6 +110,31 @@
             font-size: 1rem;
             margin: 0.5rem 0 0.3rem;
             color: #ccc;
+         }
+
+         /* Anchor link styling */
+         .anchor {
+            color: rgba(255, 255, 255, 0.3);
+            text-decoration: none;
+            font-weight: normal;
+            margin-left: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            font-size: 0.8em;
+         }
+
+         h3:hover .anchor,
+         .anchor:focus {
+            opacity: 1;
+         }
+
+         .anchor:hover {
+            color: rgba(255, 255, 255, 0.6);
+         }
+
+         /* Scroll target offset for fixed elements */
+         .symbol-anchor {
+            scroll-margin-top: 2rem;
          }
 
          pre {
@@ -148,6 +174,11 @@
          article:hover {
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
             transform: translateY(-2px);
+         }
+
+         article:target {
+            border-color: rgba(100, 200, 255, 0.5);
+            box-shadow: 0 0 0 2px rgba(100, 200, 255, 0.2);
          }
 
          .hidden {
@@ -330,6 +361,48 @@
             color: #fff;
          }
 
+         .symbol-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.2);
+         }
+
+         .symbol-list::-webkit-scrollbar {
+            width: 4px;
+         }
+
+         .symbol-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+         }
+
+         .symbol-list ul {
+            list-style: none;
+            padding: 0.5rem;
+            margin: 0;
+         }
+
+         .symbol-list li {
+            margin-bottom: 0.2rem;
+         }
+
+         .symbol-list a {
+            display: block;
+            padding: 0.3rem 0.5rem;
+            color: #bbb;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            font-size: 0.75rem;
+         }
+
+         .symbol-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
          @media (max-width: 768px) {
             body {
                flex-direction: column;
@@ -429,6 +502,14 @@
                
             </ul>
          </div>
+
+         <div class="filter-section">
+            <h3>All Symbols</h3>
+            <div class="symbol-list">
+               <ul id="symbolIndex">
+               </ul>
+            </div>
+         </div>
          
       </aside>
 
@@ -439,8 +520,35 @@
          
          <section id="imports">
             <h2>Imports</h2>
-            <article class="imports" data-name="imports">
+            <article class="imports symbol-anchor" id="imports-section" data-name="imports">
+               <h3>
+                  Imports
+                  <a href="#imports-section" class="anchor" title="Link to imports">#</a>
+               </h3>
                <pre><code>"golang.org/x/mod/module"
+"bytes"
+"context"
+"encoding/json"
+"errors"
+"fmt"
+"io"
+"io/fs"
+"math/rand"
+"os"
+"path/filepath"
+"strconv"
+"strings"
+"sync"
+"cmd/go/internal/base"
+"cmd/go/internal/cfg"
+"cmd/go/internal/gover"
+"cmd/go/internal/lockedfile"
+"cmd/go/internal/modfetch/codehost"
+"cmd/internal/par"
+"cmd/internal/robustio"
+"cmd/internal/telemetry/counter"
+"golang.org/x/mod/module"
+"golang.org/x/mod/semver"
 "archive/zip"
 "bytes"
 "context"
@@ -468,6 +576,56 @@
 "golang.org/x/mod/sumdb/dirhash"
 modzip "golang.org/x/mod/zip"
 "context"
+"fmt"
+"io"
+"io/fs"
+"os"
+"strconv"
+"time"
+"cmd/go/internal/cfg"
+"cmd/go/internal/modfetch/codehost"
+"cmd/go/internal/vcs"
+web "cmd/go/internal/web"
+"cmd/internal/par"
+"golang.org/x/mod/module"
+"bytes"
+"errors"
+"fmt"
+"io"
+"io/fs"
+"net/url"
+"os"
+"path/filepath"
+"strings"
+"sync"
+"time"
+"cmd/go/internal/base"
+"cmd/go/internal/cfg"
+"cmd/go/internal/lockedfile"
+"cmd/go/internal/web"
+"golang.org/x/mod/module"
+"golang.org/x/mod/sumdb"
+"golang.org/x/mod/sumdb/note"
+"archive/zip"
+"bytes"
+"context"
+"errors"
+"fmt"
+"io"
+"io/fs"
+"os"
+"path"
+"path/filepath"
+"sort"
+"strings"
+"time"
+"cmd/go/internal/gover"
+"cmd/go/internal/modfetch/codehost"
+"golang.org/x/mod/modfile"
+"golang.org/x/mod/module"
+"golang.org/x/mod/semver"
+modzip "golang.org/x/mod/zip"
+"context"
 "encoding/json"
 "errors"
 "fmt"
@@ -489,83 +647,10 @@ pathpkg "path"
 "context"
 "fmt"
 "io"
-"io/fs"
-"os"
-"strconv"
-"time"
-"cmd/go/internal/cfg"
-"cmd/go/internal/modfetch/codehost"
-"cmd/go/internal/vcs"
-web "cmd/go/internal/web"
-"cmd/internal/par"
-"golang.org/x/mod/module"
-"context"
-"fmt"
-"io"
 "sort"
 "strings"
 "cmd/go/internal/gover"
 "cmd/go/internal/modfetch/codehost"
-"bytes"
-"context"
-"encoding/json"
-"errors"
-"fmt"
-"io"
-"io/fs"
-"math/rand"
-"os"
-"path/filepath"
-"strconv"
-"strings"
-"sync"
-"cmd/go/internal/base"
-"cmd/go/internal/cfg"
-"cmd/go/internal/gover"
-"cmd/go/internal/lockedfile"
-"cmd/go/internal/modfetch/codehost"
-"cmd/internal/par"
-"cmd/internal/robustio"
-"cmd/internal/telemetry/counter"
-"golang.org/x/mod/module"
-"golang.org/x/mod/semver"
-"archive/zip"
-"bytes"
-"context"
-"errors"
-"fmt"
-"io"
-"io/fs"
-"os"
-"path"
-"path/filepath"
-"sort"
-"strings"
-"time"
-"cmd/go/internal/gover"
-"cmd/go/internal/modfetch/codehost"
-"golang.org/x/mod/modfile"
-"golang.org/x/mod/module"
-"golang.org/x/mod/semver"
-modzip "golang.org/x/mod/zip"
-"bytes"
-"errors"
-"fmt"
-"io"
-"io/fs"
-"net/url"
-"os"
-"path/filepath"
-"strings"
-"sync"
-"time"
-"cmd/go/internal/base"
-"cmd/go/internal/cfg"
-"cmd/go/internal/lockedfile"
-"cmd/go/internal/web"
-"golang.org/x/mod/module"
-"golang.org/x/mod/sumdb"
-"golang.org/x/mod/sumdb/note"
 </code></pre>
             </article>
          </section>
@@ -573,151 +658,166 @@ modzip "golang.org/x/mod/zip"
          <section id="globals">
             <h2>Constants & Variables</h2>
             
-            <article class="global" data-name="ErrGoSumDirty">
+            <article class="global symbol-anchor" id="ErrGoSumDirty" data-name="ErrGoSumDirty">
                <h3>
                   ErrGoSumDirty 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#ErrGoSumDirty" class="anchor" title="Link to ErrGoSumDirty">#</a>
                </h3>
                
                <pre><code>var ErrGoSumDirty = *ast.CallExpr</code></pre>
             </article>
             
-            <article class="global" data-name="ErrToolchain">
+            <article class="global symbol-anchor" id="ErrToolchain" data-name="ErrToolchain">
                <h3>
                   ErrToolchain 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#ErrToolchain" class="anchor" title="Link to ErrToolchain">#</a>
                </h3>
                
                <pre><code>var ErrToolchain = *ast.CallExpr</code></pre>
             </article>
             
-            <article class="global" data-name="GoSumFile">
+            <article class="global symbol-anchor" id="GoSumFile" data-name="GoSumFile">
                <h3>
                   GoSumFile 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#GoSumFile" class="anchor" title="Link to GoSumFile">#</a>
                </h3>
                
                <pre><code>var GoSumFile string</code></pre>
             </article>
             
-            <article class="global" data-name="HelpGoproxy">
+            <article class="global symbol-anchor" id="HelpGoproxy" data-name="HelpGoproxy">
                <h3>
                   HelpGoproxy 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#HelpGoproxy" class="anchor" title="Link to HelpGoproxy">#</a>
                </h3>
                
                <pre><code>var HelpGoproxy = *ast.UnaryExpr</code></pre>
             </article>
             
-            <article class="global" data-name="HelpModuleAuth">
+            <article class="global symbol-anchor" id="HelpModuleAuth" data-name="HelpModuleAuth">
                <h3>
                   HelpModuleAuth 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#HelpModuleAuth" class="anchor" title="Link to HelpModuleAuth">#</a>
                </h3>
                
                <pre><code>var HelpModuleAuth = *ast.UnaryExpr</code></pre>
             </article>
             
-            <article class="global" data-name="HelpPrivate">
+            <article class="global symbol-anchor" id="HelpPrivate" data-name="HelpPrivate">
                <h3>
                   HelpPrivate 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#HelpPrivate" class="anchor" title="Link to HelpPrivate">#</a>
                </h3>
                
                <pre><code>var HelpPrivate = *ast.UnaryExpr</code></pre>
             </article>
             
-            <article class="global" data-name="WorkspaceGoSumFiles">
+            <article class="global symbol-anchor" id="WorkspaceGoSumFiles" data-name="WorkspaceGoSumFiles">
                <h3>
                   WorkspaceGoSumFiles 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#WorkspaceGoSumFiles" class="anchor" title="Link to WorkspaceGoSumFiles">#</a>
                </h3>
                
                <pre><code>var WorkspaceGoSumFiles []string</code></pre>
             </article>
             
-            <article class="global" data-name="counterErrorsGOMODCACHEEntryRelative">
+            <article class="global symbol-anchor" id="counterErrorsGOMODCACHEEntryRelative" data-name="counterErrorsGOMODCACHEEntryRelative">
                <h3>
                   counterErrorsGOMODCACHEEntryRelative 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#counterErrorsGOMODCACHEEntryRelative" class="anchor" title="Link to counterErrorsGOMODCACHEEntryRelative">#</a>
                </h3>
                
                <pre><code>var counterErrorsGOMODCACHEEntryRelative = *ast.CallExpr</code></pre>
             </article>
             
-            <article class="global" data-name="db">
+            <article class="global symbol-anchor" id="db" data-name="db">
                <h3>
                   db 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#db" class="anchor" title="Link to db">#</a>
                </h3>
                
                <pre><code>var db *sumdb.Client</code></pre>
             </article>
             
-            <article class="global" data-name="dbErr">
+            <article class="global symbol-anchor" id="dbErr" data-name="dbErr">
                <h3>
                   dbErr 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#dbErr" class="anchor" title="Link to dbErr">#</a>
                </h3>
                
                <pre><code>var dbErr error</code></pre>
             </article>
             
-            <article class="global" data-name="dbName">
+            <article class="global symbol-anchor" id="dbName" data-name="dbName">
                <h3>
                   dbName 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#dbName" class="anchor" title="Link to dbName">#</a>
                </h3>
                
                <pre><code>var dbName string</code></pre>
             </article>
             
-            <article class="global" data-name="dbOnce">
+            <article class="global symbol-anchor" id="dbOnce" data-name="dbOnce">
                <h3>
                   dbOnce 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#dbOnce" class="anchor" title="Link to dbOnce">#</a>
                </h3>
                
                <pre><code>var dbOnce sync.Once</code></pre>
             </article>
             
-            <article class="global" data-name="downloadCache">
+            <article class="global symbol-anchor" id="downloadCache" data-name="downloadCache">
                <h3>
                   downloadCache 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#downloadCache" class="anchor" title="Link to downloadCache">#</a>
                </h3>
                
                <pre><code>var downloadCache *ast.IndexListExpr</code></pre>
             </article>
             
-            <article class="global" data-name="downloadZipCache">
+            <article class="global symbol-anchor" id="downloadZipCache" data-name="downloadZipCache">
                <h3>
                   downloadZipCache 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#downloadZipCache" class="anchor" title="Link to downloadZipCache">#</a>
                </h3>
                
                <pre><code>var downloadZipCache *ast.IndexListExpr</code></pre>
             </article>
             
-            <article class="global" data-name="emptyGoModHash">
+            <article class="global symbol-anchor" id="emptyGoModHash" data-name="emptyGoModHash">
                <h3>
                   emptyGoModHash 
                   <span class="badge const-badge">const</span>
                   
+                  <a href="#emptyGoModHash" class="anchor" title="Link to emptyGoModHash">#</a>
                </h3>
                
                <p>emptyGoModHash is the hash of a 1-file tree containing a 0-length go.mod.
@@ -727,81 +827,89 @@ We detect and remove them.</p>
                <pre><code>const emptyGoModHash = "h1:G7mAYYxgmS0lVkHyy2hEOLQCFB0DlQFTMLWggykrydY="</code></pre>
             </article>
             
-            <article class="global" data-name="errLookupDisabled">
+            <article class="global symbol-anchor" id="errLookupDisabled" data-name="errLookupDisabled">
                <h3>
                   errLookupDisabled 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#errLookupDisabled" class="anchor" title="Link to errLookupDisabled">#</a>
                </h3>
                
                <pre><code>var errLookupDisabled error = lookupDisabledError{...}</code></pre>
             </article>
             
-            <article class="global" data-name="errNoproxy">
+            <article class="global symbol-anchor" id="errNoproxy" data-name="errNoproxy">
                <h3>
                   errNoproxy 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#errNoproxy" class="anchor" title="Link to errNoproxy">#</a>
                </h3>
                
                <pre><code>var errNoproxy error = *ast.CallExpr</code></pre>
             </article>
             
-            <article class="global" data-name="errNotCached">
+            <article class="global symbol-anchor" id="errNotCached" data-name="errNotCached">
                <h3>
                   errNotCached 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#errNotCached" class="anchor" title="Link to errNotCached">#</a>
                </h3>
                
                <pre><code>var errNotCached = *ast.CallExpr</code></pre>
             </article>
             
-            <article class="global" data-name="errProxyOff">
+            <article class="global symbol-anchor" id="errProxyOff" data-name="errProxyOff">
                <h3>
                   errProxyOff 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#errProxyOff" class="anchor" title="Link to errProxyOff">#</a>
                </h3>
                
                <pre><code>var errProxyOff = *ast.CallExpr</code></pre>
             </article>
             
-            <article class="global" data-name="errProxyReuse">
+            <article class="global symbol-anchor" id="errProxyReuse" data-name="errProxyReuse">
                <h3>
                   errProxyReuse 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#errProxyReuse" class="anchor" title="Link to errProxyReuse">#</a>
                </h3>
                
                <pre><code>var errProxyReuse = *ast.CallExpr</code></pre>
             </article>
             
-            <article class="global" data-name="errUseProxy">
+            <article class="global symbol-anchor" id="errUseProxy" data-name="errUseProxy">
                <h3>
                   errUseProxy 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#errUseProxy" class="anchor" title="Link to errUseProxy">#</a>
                </h3>
                
                <pre><code>var errUseProxy error = *ast.CallExpr</code></pre>
             </article>
             
-            <article class="global" data-name="goSum">
+            <article class="global symbol-anchor" id="goSum" data-name="goSum">
                <h3>
                   goSum 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#goSum" class="anchor" title="Link to goSum">#</a>
                </h3>
                
                <pre><code>var goSum struct{...}</code></pre>
             </article>
             
-            <article class="global" data-name="goSumMismatch">
+            <article class="global symbol-anchor" id="goSumMismatch" data-name="goSumMismatch">
                <h3>
                   goSumMismatch 
                   <span class="badge const-badge">const</span>
                   
+                  <a href="#goSumMismatch" class="anchor" title="Link to goSumMismatch">#</a>
                </h3>
                
                <pre><code>const goSumMismatch = `
@@ -815,11 +923,12 @@ For more information, see 'go help module-auth'.
 `</code></pre>
             </article>
             
-            <article class="global" data-name="hashVersionMismatch">
+            <article class="global symbol-anchor" id="hashVersionMismatch" data-name="hashVersionMismatch">
                <h3>
                   hashVersionMismatch 
                   <span class="badge const-badge">const</span>
                   
+                  <a href="#hashVersionMismatch" class="anchor" title="Link to hashVersionMismatch">#</a>
                </h3>
                
                <pre><code>const hashVersionMismatch = `
@@ -833,41 +942,45 @@ For more information, see 'go help module-auth'.
 `</code></pre>
             </article>
             
-            <article class="global" data-name="knownGOSUMDB">
+            <article class="global symbol-anchor" id="knownGOSUMDB" data-name="knownGOSUMDB">
                <h3>
                   knownGOSUMDB 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#knownGOSUMDB" class="anchor" title="Link to knownGOSUMDB">#</a>
                </h3>
                
                <pre><code>var knownGOSUMDB = map[string]string{...}</code></pre>
             </article>
             
-            <article class="global" data-name="lookupCache">
+            <article class="global symbol-anchor" id="lookupCache" data-name="lookupCache">
                <h3>
                   lookupCache 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#lookupCache" class="anchor" title="Link to lookupCache">#</a>
                </h3>
                
                <pre><code>var lookupCache *ast.IndexListExpr</code></pre>
             </article>
             
-            <article class="global" data-name="lookupLocalCache">
+            <article class="global symbol-anchor" id="lookupLocalCache" data-name="lookupLocalCache">
                <h3>
                   lookupLocalCache 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#lookupLocalCache" class="anchor" title="Link to lookupLocalCache">#</a>
                </h3>
                
                <pre><code>var lookupLocalCache *ast.IndexListExpr</code></pre>
             </article>
             
-            <article class="global" data-name="oldVgoPrefix">
+            <article class="global symbol-anchor" id="oldVgoPrefix" data-name="oldVgoPrefix">
                <h3>
                   oldVgoPrefix 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#oldVgoPrefix" class="anchor" title="Link to oldVgoPrefix">#</a>
                </h3>
                
                <p>oldVgoPrefix is the prefix in the old auto-generated cached go.mod files.
@@ -879,41 +992,45 @@ and should ignore it.</p>
                <pre><code>var oldVgoPrefix = *ast.CallExpr</code></pre>
             </article>
             
-            <article class="global" data-name="proxyOnce">
+            <article class="global symbol-anchor" id="proxyOnce" data-name="proxyOnce">
                <h3>
                   proxyOnce 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#proxyOnce" class="anchor" title="Link to proxyOnce">#</a>
                </h3>
                
                <pre><code>var proxyOnce struct{...}</code></pre>
             </article>
             
-            <article class="global" data-name="statCacheErr">
+            <article class="global symbol-anchor" id="statCacheErr" data-name="statCacheErr">
                <h3>
                   statCacheErr 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#statCacheErr" class="anchor" title="Link to statCacheErr">#</a>
                </h3>
                
                <pre><code>var statCacheErr error</code></pre>
             </article>
             
-            <article class="global" data-name="statCacheOnce">
+            <article class="global symbol-anchor" id="statCacheOnce" data-name="statCacheOnce">
                <h3>
                   statCacheOnce 
                   <span class="badge var-badge">var</span>
                   
+                  <a href="#statCacheOnce" class="anchor" title="Link to statCacheOnce">#</a>
                </h3>
                
                <pre><code>var statCacheOnce sync.Once</code></pre>
             </article>
             
-            <article class="global" data-name="sumdbMismatch">
+            <article class="global symbol-anchor" id="sumdbMismatch" data-name="sumdbMismatch">
                <h3>
                   sumdbMismatch 
                   <span class="badge const-badge">const</span>
                   
+                  <a href="#sumdbMismatch" class="anchor" title="Link to sumdbMismatch">#</a>
                </h3>
                
                <pre><code>const sumdbMismatch = `
@@ -927,11 +1044,12 @@ For more information, see 'go help module-auth'.
 `</code></pre>
             </article>
             
-            <article class="global" data-name="traceRepo">
+            <article class="global symbol-anchor" id="traceRepo" data-name="traceRepo">
                <h3>
                   traceRepo 
                   <span class="badge const-badge">const</span>
                   
+                  <a href="#traceRepo" class="anchor" title="Link to traceRepo">#</a>
                </h3>
                
                <pre><code>const traceRepo = false</code></pre>
@@ -942,10 +1060,11 @@ For more information, see 'go help module-auth'.
          <section id="interfaces">
             <h2>Interfaces</h2>
             
-            <article class="interface" data-name="Repo">
+            <article class="interface symbol-anchor" id="Repo" data-name="Repo">
                <h3>
                   Repo
                   <span class="badge interface-badge">interface</span>
+                  <a href="#Repo" class="anchor" title="Link to Repo">#</a>
                </h3>
                
                <p>A Repo represents a repository storing all versions of a single module.
@@ -969,10 +1088,11 @@ Zip(ctx context.Context, dst io.Writer, version string) error
          <section id="structs">
             <h2>Structs</h2>
             
-            <article class="struct" data-name="DownloadDirPartialError">
+            <article class="struct symbol-anchor" id="DownloadDirPartialError" data-name="DownloadDirPartialError">
                <h3>
                   DownloadDirPartialError
                   <span class="badge">struct</span>
+                  <a href="#DownloadDirPartialError" class="anchor" title="Link to DownloadDirPartialError">#</a>
                </h3>
                
                <p>DownloadDirPartialError is returned by DownloadDir if a module directory
@@ -987,10 +1107,11 @@ Err error
 }</code></pre>
             </article>
             
-            <article class="struct" data-name="RevInfo">
+            <article class="struct symbol-anchor" id="RevInfo" data-name="RevInfo">
                <h3>
                   RevInfo
                   <span class="badge">struct</span>
+                  <a href="#RevInfo" class="anchor" title="Link to RevInfo">#</a>
                </h3>
                
                <p>A RevInfo describes a single revision in a module repository.</p>
@@ -1006,10 +1127,11 @@ Origin *codehost.Origin `json:",omitempty"`
 }</code></pre>
             </article>
             
-            <article class="struct" data-name="Versions">
+            <article class="struct symbol-anchor" id="Versions" data-name="Versions">
                <h3>
                   Versions
                   <span class="badge">struct</span>
+                  <a href="#Versions" class="anchor" title="Link to Versions">#</a>
                </h3>
                
                <p>A Versions describes the available versions in a module repository.</p>
@@ -1022,10 +1144,11 @@ List []string
 }</code></pre>
             </article>
             
-            <article class="struct" data-name="cachedInfo">
+            <article class="struct symbol-anchor" id="cachedInfo" data-name="cachedInfo">
                <h3>
                   cachedInfo
                   <span class="badge">struct</span>
+                  <a href="#cachedInfo" class="anchor" title="Link to cachedInfo">#</a>
                </h3>
                
                <pre
@@ -1036,10 +1159,11 @@ err error
 }</code></pre>
             </article>
             
-            <article class="struct" data-name="cachingRepo">
+            <article class="struct symbol-anchor" id="cachingRepo" data-name="cachingRepo">
                <h3>
                   cachingRepo
                   <span class="badge">struct</span>
+                  <a href="#cachingRepo" class="anchor" title="Link to cachingRepo">#</a>
                </h3>
                
                <p>A cachingRepo is a cache around an underlying Repo,
@@ -1062,10 +1186,11 @@ r Repo
 }</code></pre>
             </article>
             
-            <article class="struct" data-name="codeRepo">
+            <article class="struct symbol-anchor" id="codeRepo" data-name="codeRepo">
                <h3>
                   codeRepo
                   <span class="badge">struct</span>
+                  <a href="#codeRepo" class="anchor" title="Link to codeRepo">#</a>
                </h3>
                
                <p>A codeRepo implements modfetch.Repo using an underlying codehost.Repo.</p>
@@ -1083,10 +1208,11 @@ pseudoMajor string
 }</code></pre>
             </article>
             
-            <article class="struct" data-name="dataFile">
+            <article class="struct symbol-anchor" id="dataFile" data-name="dataFile">
                <h3>
                   dataFile
                   <span class="badge">struct</span>
+                  <a href="#dataFile" class="anchor" title="Link to dataFile">#</a>
                </h3>
                
                <pre
@@ -1097,10 +1223,11 @@ data []byte
 }</code></pre>
             </article>
             
-            <article class="struct" data-name="dataFileInfo">
+            <article class="struct symbol-anchor" id="dataFileInfo" data-name="dataFileInfo">
                <h3>
                   dataFileInfo
                   <span class="badge">struct</span>
+                  <a href="#dataFileInfo" class="anchor" title="Link to dataFileInfo">#</a>
                </h3>
                
                <pre
@@ -1110,10 +1237,11 @@ f dataFile
 }</code></pre>
             </article>
             
-            <article class="struct" data-name="dbClient">
+            <article class="struct symbol-anchor" id="dbClient" data-name="dbClient">
                <h3>
                   dbClient
                   <span class="badge">struct</span>
+                  <a href="#dbClient" class="anchor" title="Link to dbClient">#</a>
                </h3>
                
                <pre
@@ -1128,10 +1256,11 @@ baseErr error
 }</code></pre>
             </article>
             
-            <article class="struct" data-name="errRepo">
+            <article class="struct symbol-anchor" id="errRepo" data-name="errRepo">
                <h3>
                   errRepo
                   <span class="badge">struct</span>
+                  <a href="#errRepo" class="anchor" title="Link to errRepo">#</a>
                </h3>
                
                <p>errRepo is a Repo that returns the same error for all operations.
@@ -1146,10 +1275,11 @@ err error
 }</code></pre>
             </article>
             
-            <article class="struct" data-name="loggingRepo">
+            <article class="struct symbol-anchor" id="loggingRepo" data-name="loggingRepo">
                <h3>
                   loggingRepo
                   <span class="badge">struct</span>
+                  <a href="#loggingRepo" class="anchor" title="Link to loggingRepo">#</a>
                </h3>
                
                <p>A loggingRepo is a wrapper around an underlying Repo
@@ -1163,10 +1293,11 @@ r Repo
 }</code></pre>
             </article>
             
-            <article class="struct" data-name="lookupCacheKey">
+            <article class="struct symbol-anchor" id="lookupCacheKey" data-name="lookupCacheKey">
                <h3>
                   lookupCacheKey
                   <span class="badge">struct</span>
+                  <a href="#lookupCacheKey" class="anchor" title="Link to lookupCacheKey">#</a>
                </h3>
                
                <pre
@@ -1177,10 +1308,11 @@ path string
 }</code></pre>
             </article>
             
-            <article class="struct" data-name="lookupDisabledError">
+            <article class="struct symbol-anchor" id="lookupDisabledError" data-name="lookupDisabledError">
                <h3>
                   lookupDisabledError
                   <span class="badge">struct</span>
+                  <a href="#lookupDisabledError" class="anchor" title="Link to lookupDisabledError">#</a>
                </h3>
                
                <pre
@@ -1190,10 +1322,11 @@ path string
 }</code></pre>
             </article>
             
-            <article class="struct" data-name="modSum">
+            <article class="struct symbol-anchor" id="modSum" data-name="modSum">
                <h3>
                   modSum
                   <span class="badge">struct</span>
+                  <a href="#modSum" class="anchor" title="Link to modSum">#</a>
                </h3>
                
                <pre
@@ -1204,10 +1337,11 @@ sum string
 }</code></pre>
             </article>
             
-            <article class="struct" data-name="modSumStatus">
+            <article class="struct symbol-anchor" id="modSumStatus" data-name="modSumStatus">
                <h3>
                   modSumStatus
                   <span class="badge">struct</span>
+                  <a href="#modSumStatus" class="anchor" title="Link to modSumStatus">#</a>
                </h3>
                
                <pre
@@ -1218,10 +1352,11 @@ dirty bool
 }</code></pre>
             </article>
             
-            <article class="struct" data-name="notExistError">
+            <article class="struct symbol-anchor" id="notExistError" data-name="notExistError">
                <h3>
                   notExistError
                   <span class="badge">struct</span>
+                  <a href="#notExistError" class="anchor" title="Link to notExistError">#</a>
                </h3>
                
                <p>A notExistError is like fs.ErrNotExist, but with a custom message</p>
@@ -1233,10 +1368,11 @@ err error
 }</code></pre>
             </article>
             
-            <article class="struct" data-name="proxyRepo">
+            <article class="struct symbol-anchor" id="proxyRepo" data-name="proxyRepo">
                <h3>
                   proxyRepo
                   <span class="badge">struct</span>
+                  <a href="#proxyRepo" class="anchor" title="Link to proxyRepo">#</a>
                </h3>
                
                <pre
@@ -1251,10 +1387,11 @@ listLatestErr error
 }</code></pre>
             </article>
             
-            <article class="struct" data-name="proxySpec">
+            <article class="struct symbol-anchor" id="proxySpec" data-name="proxySpec">
                <h3>
                   proxySpec
                   <span class="badge">struct</span>
+                  <a href="#proxySpec" class="anchor" title="Link to proxySpec">#</a>
                </h3>
                
                <pre
@@ -1265,10 +1402,11 @@ fallBackOnError bool
 }</code></pre>
             </article>
             
-            <article class="struct" data-name="toolchainRepo">
+            <article class="struct symbol-anchor" id="toolchainRepo" data-name="toolchainRepo">
                <h3>
                   toolchainRepo
                   <span class="badge">struct</span>
+                  <a href="#toolchainRepo" class="anchor" title="Link to toolchainRepo">#</a>
                </h3>
                
                <p>A toolchainRepo is a synthesized repository reporting Go toolchain versions.
@@ -1290,10 +1428,11 @@ repo Repo
 }</code></pre>
             </article>
             
-            <article class="struct" data-name="zipFile">
+            <article class="struct symbol-anchor" id="zipFile" data-name="zipFile">
                <h3>
                   zipFile
                   <span class="badge">struct</span>
+                  <a href="#zipFile" class="anchor" title="Link to zipFile">#</a>
                </h3>
                
                <pre
@@ -1309,81 +1448,89 @@ f *zip.File
          <section id="functions">
             <h2>Functions</h2>
             
-            <article class="function" data-name="CachePath">
+            <article class="function symbol-anchor" id="CachePath" data-name="CachePath">
                <h3>
                   CachePath 
                   <span class="badge">function</span>
                   
+                  <a href="#CachePath" class="anchor" title="Link to CachePath">#</a>
                </h3>
                
                <pre><code>func CachePath(ctx context.Context, m module.Version, suffix string) (string, error)</code></pre>
             </article>
             
-            <article class="function" data-name="CheckReuse">
+            <article class="function symbol-anchor" id="CheckReuse" data-name="CheckReuse">
                <h3>
                   CheckReuse 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#CheckReuse" class="anchor" title="Link to CheckReuse">#</a>
                </h3>
                
                <pre><code>func (r *cachingRepo) CheckReuse(ctx context.Context, old *codehost.Origin) error</code></pre>
             </article>
             
-            <article class="function" data-name="CheckReuse">
+            <article class="function symbol-anchor" id="CheckReuse" data-name="CheckReuse">
                <h3>
                   CheckReuse 
                   <span class="badge method-badge">method</span>
                   
-               </h3>
-               
-               <pre><code>func (l *loggingRepo) CheckReuse(ctx context.Context, old *codehost.Origin) (err error)</code></pre>
-            </article>
-            
-            <article class="function" data-name="CheckReuse">
-               <h3>
-                  CheckReuse 
-                  <span class="badge method-badge">method</span>
-                  
-               </h3>
-               
-               <pre><code>func (r errRepo) CheckReuse(ctx context.Context, old *codehost.Origin) error</code></pre>
-            </article>
-            
-            <article class="function" data-name="CheckReuse">
-               <h3>
-                  CheckReuse 
-                  <span class="badge method-badge">method</span>
-                  
+                  <a href="#CheckReuse" class="anchor" title="Link to CheckReuse">#</a>
                </h3>
                
                <pre><code>func (r *toolchainRepo) CheckReuse(ctx context.Context, old *codehost.Origin) error</code></pre>
             </article>
             
-            <article class="function" data-name="CheckReuse">
+            <article class="function symbol-anchor" id="CheckReuse" data-name="CheckReuse">
                <h3>
                   CheckReuse 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#CheckReuse" class="anchor" title="Link to CheckReuse">#</a>
+               </h3>
+               
+               <pre><code>func (l *loggingRepo) CheckReuse(ctx context.Context, old *codehost.Origin) (err error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="CheckReuse" data-name="CheckReuse">
+               <h3>
+                  CheckReuse 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#CheckReuse" class="anchor" title="Link to CheckReuse">#</a>
+               </h3>
+               
+               <pre><code>func (r errRepo) CheckReuse(ctx context.Context, old *codehost.Origin) error</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="CheckReuse" data-name="CheckReuse">
+               <h3>
+                  CheckReuse 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#CheckReuse" class="anchor" title="Link to CheckReuse">#</a>
                </h3>
                
                <pre><code>func (r *codeRepo) CheckReuse(ctx context.Context, old *codehost.Origin) error</code></pre>
             </article>
             
-            <article class="function" data-name="CheckReuse">
+            <article class="function symbol-anchor" id="CheckReuse" data-name="CheckReuse">
                <h3>
                   CheckReuse 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#CheckReuse" class="anchor" title="Link to CheckReuse">#</a>
                </h3>
                
                <pre><code>func (p *proxyRepo) CheckReuse(ctx context.Context, old *codehost.Origin) error</code></pre>
             </article>
             
-            <article class="function" data-name="Download">
+            <article class="function symbol-anchor" id="Download" data-name="Download">
                <h3>
                   Download 
                   <span class="badge">function</span>
                   
+                  <a href="#Download" class="anchor" title="Link to Download">#</a>
                </h3>
                
                <p>Download downloads the specific module version to the
@@ -1393,11 +1540,12 @@ corresponding to the root of the module's file tree.</p>
                <pre><code>func Download(ctx context.Context, mod module.Version) (dir string, err error)</code></pre>
             </article>
             
-            <article class="function" data-name="DownloadDir">
+            <article class="function symbol-anchor" id="DownloadDir" data-name="DownloadDir">
                <h3>
                   DownloadDir 
                   <span class="badge">function</span>
                   
+                  <a href="#DownloadDir" class="anchor" title="Link to DownloadDir">#</a>
                </h3>
                
                <p>DownloadDir returns the directory to which m should have been downloaded.
@@ -1409,11 +1557,12 @@ is not completely populated.</p>
                <pre><code>func DownloadDir(ctx context.Context, m module.Version) (string, error)</code></pre>
             </article>
             
-            <article class="function" data-name="DownloadZip">
+            <article class="function symbol-anchor" id="DownloadZip" data-name="DownloadZip">
                <h3>
                   DownloadZip 
                   <span class="badge">function</span>
                   
+                  <a href="#DownloadZip" class="anchor" title="Link to DownloadZip">#</a>
                </h3>
                
                <p>DownloadZip downloads the specific module version to the
@@ -1422,91 +1571,111 @@ local zip cache and returns the name of the zip file.</p>
                <pre><code>func DownloadZip(ctx context.Context, mod module.Version) (zipfile string, err error)</code></pre>
             </article>
             
-            <article class="function" data-name="Error">
+            <article class="function symbol-anchor" id="Error" data-name="Error">
                <h3>
                   Error 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#Error" class="anchor" title="Link to Error">#</a>
                </h3>
                
                <pre><code>func (e *DownloadDirPartialError) Error() string</code></pre>
             </article>
             
-            <article class="function" data-name="Error">
+            <article class="function symbol-anchor" id="Error" data-name="Error">
                <h3>
                   Error 
                   <span class="badge method-badge">method</span>
                   
-               </h3>
-               
-               <pre><code>func (lookupDisabledError) Error() string</code></pre>
-            </article>
-            
-            <article class="function" data-name="Error">
-               <h3>
-                  Error 
-                  <span class="badge method-badge">method</span>
-                  
+                  <a href="#Error" class="anchor" title="Link to Error">#</a>
                </h3>
                
                <pre><code>func (e notExistError) Error() string</code></pre>
             </article>
             
-            <article class="function" data-name="GoMod">
+            <article class="function symbol-anchor" id="Error" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Error" class="anchor" title="Link to Error">#</a>
+               </h3>
+               
+               <pre><code>func (lookupDisabledError) Error() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="GoMod" data-name="GoMod">
                <h3>
                   GoMod 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#GoMod" class="anchor" title="Link to GoMod">#</a>
                </h3>
                
                <pre><code>func (p *proxyRepo) GoMod(ctx context.Context, version string) ([]byte, error)</code></pre>
             </article>
             
-            <article class="function" data-name="GoMod">
+            <article class="function symbol-anchor" id="GoMod" data-name="GoMod">
                <h3>
                   GoMod 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#GoMod" class="anchor" title="Link to GoMod">#</a>
                </h3>
                
-               <pre><code>func (l *loggingRepo) GoMod(ctx context.Context, version string) ([]byte, error)</code></pre>
+               <pre><code>func (r errRepo) GoMod(ctx context.Context, version string) ([]byte, error)</code></pre>
             </article>
             
-            <article class="function" data-name="GoMod">
+            <article class="function symbol-anchor" id="GoMod" data-name="GoMod">
                <h3>
                   GoMod 
                   <span class="badge method-badge">method</span>
                   
-               </h3>
-               
-               <pre><code>func (r *toolchainRepo) GoMod(ctx context.Context, version string) (data []byte, err error)</code></pre>
-            </article>
-            
-            <article class="function" data-name="GoMod">
-               <h3>
-                  GoMod 
-                  <span class="badge method-badge">method</span>
-                  
+                  <a href="#GoMod" class="anchor" title="Link to GoMod">#</a>
                </h3>
                
                <pre><code>func (r *codeRepo) GoMod(ctx context.Context, version string) (data []byte, err error)</code></pre>
             </article>
             
-            <article class="function" data-name="GoMod">
+            <article class="function symbol-anchor" id="GoMod" data-name="GoMod">
                <h3>
                   GoMod 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#GoMod" class="anchor" title="Link to GoMod">#</a>
+               </h3>
+               
+               <pre><code>func (l *loggingRepo) GoMod(ctx context.Context, version string) ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="GoMod" data-name="GoMod">
+               <h3>
+                  GoMod 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#GoMod" class="anchor" title="Link to GoMod">#</a>
                </h3>
                
                <pre><code>func (r *cachingRepo) GoMod(ctx context.Context, version string) ([]byte, error)</code></pre>
             </article>
             
-            <article class="function" data-name="GoMod">
+            <article class="function symbol-anchor" id="GoMod" data-name="GoMod">
+               <h3>
+                  GoMod 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#GoMod" class="anchor" title="Link to GoMod">#</a>
+               </h3>
+               
+               <pre><code>func (r *toolchainRepo) GoMod(ctx context.Context, version string) (data []byte, err error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="GoMod" data-name="GoMod">
                <h3>
                   GoMod 
                   <span class="badge">function</span>
                   
+                  <a href="#GoMod" class="anchor" title="Link to GoMod">#</a>
                </h3>
                
                <p>GoMod is like Lookup(ctx, path).GoMod(rev) but avoids the
@@ -1516,21 +1685,12 @@ already cached on local disk.</p>
                <pre><code>func GoMod(ctx context.Context, path string, rev string) ([]byte, error)</code></pre>
             </article>
             
-            <article class="function" data-name="GoMod">
-               <h3>
-                  GoMod 
-                  <span class="badge method-badge">method</span>
-                  
-               </h3>
-               
-               <pre><code>func (r errRepo) GoMod(ctx context.Context, version string) ([]byte, error)</code></pre>
-            </article>
-            
-            <article class="function" data-name="GoModFile">
+            <article class="function symbol-anchor" id="GoModFile" data-name="GoModFile">
                <h3>
                   GoModFile 
                   <span class="badge">function</span>
                   
+                  <a href="#GoModFile" class="anchor" title="Link to GoModFile">#</a>
                </h3>
                
                <p>GoModFile is like GoMod but returns the name of the file containing
@@ -1539,11 +1699,12 @@ the cached information.</p>
                <pre><code>func GoModFile(ctx context.Context, path string, version string) (string, error)</code></pre>
             </article>
             
-            <article class="function" data-name="GoModSum">
+            <article class="function symbol-anchor" id="GoModSum" data-name="GoModSum">
                <h3>
                   GoModSum 
                   <span class="badge">function</span>
                   
+                  <a href="#GoModSum" class="anchor" title="Link to GoModSum">#</a>
                </h3>
                
                <p>GoModSum returns the go.sum entry for the module version's go.mod file.
@@ -1552,11 +1713,12 @@ the cached information.</p>
                <pre><code>func GoModSum(ctx context.Context, path string, version string) (string, error)</code></pre>
             </article>
             
-            <article class="function" data-name="HaveSum">
+            <article class="function symbol-anchor" id="HaveSum" data-name="HaveSum">
                <h3>
                   HaveSum 
                   <span class="badge">function</span>
                   
+                  <a href="#HaveSum" class="anchor" title="Link to HaveSum">#</a>
                </h3>
                
                <p>HaveSum returns true if the go.sum file contains an entry for mod.
@@ -1567,11 +1729,12 @@ mod.Version may have a "/go.mod" suffix to distinguish sums for
                <pre><code>func HaveSum(mod module.Version) bool</code></pre>
             </article>
             
-            <article class="function" data-name="InfoFile">
+            <article class="function symbol-anchor" id="InfoFile" data-name="InfoFile">
                <h3>
                   InfoFile 
                   <span class="badge">function</span>
                   
+                  <a href="#InfoFile" class="anchor" title="Link to InfoFile">#</a>
                </h3>
                
                <p>InfoFile is like Lookup(ctx, path).Stat(version) but also returns the name of the file
@@ -1580,101 +1743,111 @@ containing the cached information.</p>
                <pre><code>func InfoFile(ctx context.Context, path string, version string) (*RevInfo, string, error)</code></pre>
             </article>
             
-            <article class="function" data-name="Is">
+            <article class="function symbol-anchor" id="Is" data-name="Is">
                <h3>
                   Is 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#Is" class="anchor" title="Link to Is">#</a>
                </h3>
                
                <pre><code>func (notExistError) Is(target error) bool</code></pre>
             </article>
             
-            <article class="function" data-name="Is">
+            <article class="function symbol-anchor" id="Is" data-name="Is">
                <h3>
                   Is 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#Is" class="anchor" title="Link to Is">#</a>
                </h3>
                
                <pre><code>func (e *DownloadDirPartialError) Is(err error) bool</code></pre>
             </article>
             
-            <article class="function" data-name="IsDir">
+            <article class="function symbol-anchor" id="IsDir" data-name="IsDir">
                <h3>
                   IsDir 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#IsDir" class="anchor" title="Link to IsDir">#</a>
                </h3>
                
                <pre><code>func (fi dataFileInfo) IsDir() bool</code></pre>
             </article>
             
-            <article class="function" data-name="Latest">
+            <article class="function symbol-anchor" id="Latest" data-name="Latest">
                <h3>
                   Latest 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#Latest" class="anchor" title="Link to Latest">#</a>
                </h3>
                
                <pre><code>func (r errRepo) Latest(ctx context.Context) (*RevInfo, error)</code></pre>
             </article>
             
-            <article class="function" data-name="Latest">
+            <article class="function symbol-anchor" id="Latest" data-name="Latest">
                <h3>
                   Latest 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#Latest" class="anchor" title="Link to Latest">#</a>
                </h3>
                
                <pre><code>func (r *toolchainRepo) Latest(ctx context.Context) (*RevInfo, error)</code></pre>
             </article>
             
-            <article class="function" data-name="Latest">
+            <article class="function symbol-anchor" id="Latest" data-name="Latest">
                <h3>
                   Latest 
                   <span class="badge method-badge">method</span>
                   
-               </h3>
-               
-               <pre><code>func (p *proxyRepo) Latest(ctx context.Context) (*RevInfo, error)</code></pre>
-            </article>
-            
-            <article class="function" data-name="Latest">
-               <h3>
-                  Latest 
-                  <span class="badge method-badge">method</span>
-                  
-               </h3>
-               
-               <pre><code>func (l *loggingRepo) Latest(ctx context.Context) (*RevInfo, error)</code></pre>
-            </article>
-            
-            <article class="function" data-name="Latest">
-               <h3>
-                  Latest 
-                  <span class="badge method-badge">method</span>
-                  
+                  <a href="#Latest" class="anchor" title="Link to Latest">#</a>
                </h3>
                
                <pre><code>func (r *codeRepo) Latest(ctx context.Context) (*RevInfo, error)</code></pre>
             </article>
             
-            <article class="function" data-name="Latest">
+            <article class="function symbol-anchor" id="Latest" data-name="Latest">
                <h3>
                   Latest 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#Latest" class="anchor" title="Link to Latest">#</a>
                </h3>
                
                <pre><code>func (r *cachingRepo) Latest(ctx context.Context) (*RevInfo, error)</code></pre>
             </article>
             
-            <article class="function" data-name="LegacyGoMod">
+            <article class="function symbol-anchor" id="Latest" data-name="Latest">
+               <h3>
+                  Latest 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Latest" class="anchor" title="Link to Latest">#</a>
+               </h3>
+               
+               <pre><code>func (l *loggingRepo) Latest(ctx context.Context) (*RevInfo, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Latest" data-name="Latest">
+               <h3>
+                  Latest 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Latest" class="anchor" title="Link to Latest">#</a>
+               </h3>
+               
+               <pre><code>func (p *proxyRepo) Latest(ctx context.Context) (*RevInfo, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="LegacyGoMod" data-name="LegacyGoMod">
                <h3>
                   LegacyGoMod 
                   <span class="badge">function</span>
                   
+                  <a href="#LegacyGoMod" class="anchor" title="Link to LegacyGoMod">#</a>
                </h3>
                
                <p>LegacyGoMod generates a fake go.mod file for a module that doesn't have one.
@@ -1690,21 +1863,23 @@ correct. So we stopped.</p>
                <pre><code>func LegacyGoMod(modPath string) []byte</code></pre>
             </article>
             
-            <article class="function" data-name="Log">
+            <article class="function symbol-anchor" id="Log" data-name="Log">
                <h3>
                   Log 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#Log" class="anchor" title="Link to Log">#</a>
                </h3>
                
                <pre><code>func (*dbClient) Log(msg string)</code></pre>
             </article>
             
-            <article class="function" data-name="Lookup">
+            <article class="function symbol-anchor" id="Lookup" data-name="Lookup">
                <h3>
                   Lookup 
                   <span class="badge">function</span>
                   
+                  <a href="#Lookup" class="anchor" title="Link to Lookup">#</a>
                </h3>
                
                <p>Lookup returns the module with the given module path,
@@ -1720,11 +1895,12 @@ has any defined versions.</p>
                <pre><code>func Lookup(ctx context.Context, proxy string, path string) Repo</code></pre>
             </article>
             
-            <article class="function" data-name="LookupLocal">
+            <article class="function symbol-anchor" id="LookupLocal" data-name="LookupLocal">
                <h3>
                   LookupLocal 
                   <span class="badge">function</span>
                   
+                  <a href="#LookupLocal" class="anchor" title="Link to LookupLocal">#</a>
                </h3>
                
                <p>LookupLocal will only use local VCS information to fetch the Repo.</p>
@@ -1732,161 +1908,177 @@ has any defined versions.</p>
                <pre><code>func LookupLocal(ctx context.Context, path string) Repo</code></pre>
             </article>
             
-            <article class="function" data-name="Lstat">
+            <article class="function symbol-anchor" id="Lstat" data-name="Lstat">
                <h3>
                   Lstat 
                   <span class="badge method-badge">method</span>
                   
-               </h3>
-               
-               <pre><code>func (f dataFile) Lstat() (fs.FileInfo, error)</code></pre>
-            </article>
-            
-            <article class="function" data-name="Lstat">
-               <h3>
-                  Lstat 
-                  <span class="badge method-badge">method</span>
-                  
+                  <a href="#Lstat" class="anchor" title="Link to Lstat">#</a>
                </h3>
                
                <pre><code>func (f zipFile) Lstat() (fs.FileInfo, error)</code></pre>
             </article>
             
-            <article class="function" data-name="ModTime">
+            <article class="function symbol-anchor" id="Lstat" data-name="Lstat">
+               <h3>
+                  Lstat 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Lstat" class="anchor" title="Link to Lstat">#</a>
+               </h3>
+               
+               <pre><code>func (f dataFile) Lstat() (fs.FileInfo, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ModTime" data-name="ModTime">
                <h3>
                   ModTime 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#ModTime" class="anchor" title="Link to ModTime">#</a>
                </h3>
                
                <pre><code>func (fi dataFileInfo) ModTime() time.Time</code></pre>
             </article>
             
-            <article class="function" data-name="Mode">
+            <article class="function symbol-anchor" id="Mode" data-name="Mode">
                <h3>
                   Mode 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#Mode" class="anchor" title="Link to Mode">#</a>
                </h3>
                
                <pre><code>func (fi dataFileInfo) Mode() fs.FileMode</code></pre>
             </article>
             
-            <article class="function" data-name="ModulePath">
+            <article class="function symbol-anchor" id="ModulePath" data-name="ModulePath">
                <h3>
                   ModulePath 
                   <span class="badge method-badge">method</span>
                   
-               </h3>
-               
-               <pre><code>func (r *toolchainRepo) ModulePath() string</code></pre>
-            </article>
-            
-            <article class="function" data-name="ModulePath">
-               <h3>
-                  ModulePath 
-                  <span class="badge method-badge">method</span>
-                  
-               </h3>
-               
-               <pre><code>func (l *loggingRepo) ModulePath() string</code></pre>
-            </article>
-            
-            <article class="function" data-name="ModulePath">
-               <h3>
-                  ModulePath 
-                  <span class="badge method-badge">method</span>
-                  
-               </h3>
-               
-               <pre><code>func (r *cachingRepo) ModulePath() string</code></pre>
-            </article>
-            
-            <article class="function" data-name="ModulePath">
-               <h3>
-                  ModulePath 
-                  <span class="badge method-badge">method</span>
-                  
-               </h3>
-               
-               <pre><code>func (p *proxyRepo) ModulePath() string</code></pre>
-            </article>
-            
-            <article class="function" data-name="ModulePath">
-               <h3>
-                  ModulePath 
-                  <span class="badge method-badge">method</span>
-                  
+                  <a href="#ModulePath" class="anchor" title="Link to ModulePath">#</a>
                </h3>
                
                <pre><code>func (r errRepo) ModulePath() string</code></pre>
             </article>
             
-            <article class="function" data-name="ModulePath">
+            <article class="function symbol-anchor" id="ModulePath" data-name="ModulePath">
                <h3>
                   ModulePath 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#ModulePath" class="anchor" title="Link to ModulePath">#</a>
                </h3>
                
                <pre><code>func (r *codeRepo) ModulePath() string</code></pre>
             </article>
             
-            <article class="function" data-name="Name">
+            <article class="function symbol-anchor" id="ModulePath" data-name="ModulePath">
+               <h3>
+                  ModulePath 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#ModulePath" class="anchor" title="Link to ModulePath">#</a>
+               </h3>
+               
+               <pre><code>func (l *loggingRepo) ModulePath() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ModulePath" data-name="ModulePath">
+               <h3>
+                  ModulePath 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#ModulePath" class="anchor" title="Link to ModulePath">#</a>
+               </h3>
+               
+               <pre><code>func (p *proxyRepo) ModulePath() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ModulePath" data-name="ModulePath">
+               <h3>
+                  ModulePath 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#ModulePath" class="anchor" title="Link to ModulePath">#</a>
+               </h3>
+               
+               <pre><code>func (r *cachingRepo) ModulePath() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ModulePath" data-name="ModulePath">
+               <h3>
+                  ModulePath 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#ModulePath" class="anchor" title="Link to ModulePath">#</a>
+               </h3>
+               
+               <pre><code>func (r *toolchainRepo) ModulePath() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Name" data-name="Name">
                <h3>
                   Name 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#Name" class="anchor" title="Link to Name">#</a>
                </h3>
                
                <pre><code>func (fi dataFileInfo) Name() string</code></pre>
             </article>
             
-            <article class="function" data-name="Open">
+            <article class="function symbol-anchor" id="Open" data-name="Open">
                <h3>
                   Open 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#Open" class="anchor" title="Link to Open">#</a>
                </h3>
                
                <pre><code>func (f zipFile) Open() (io.ReadCloser, error)</code></pre>
             </article>
             
-            <article class="function" data-name="Open">
+            <article class="function symbol-anchor" id="Open" data-name="Open">
                <h3>
                   Open 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#Open" class="anchor" title="Link to Open">#</a>
                </h3>
                
                <pre><code>func (f dataFile) Open() (io.ReadCloser, error)</code></pre>
             </article>
             
-            <article class="function" data-name="Path">
+            <article class="function symbol-anchor" id="Path" data-name="Path">
                <h3>
                   Path 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#Path" class="anchor" title="Link to Path">#</a>
                </h3>
                
                <pre><code>func (f zipFile) Path() string</code></pre>
             </article>
             
-            <article class="function" data-name="Path">
+            <article class="function symbol-anchor" id="Path" data-name="Path">
                <h3>
                   Path 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#Path" class="anchor" title="Link to Path">#</a>
                </h3>
                
                <pre><code>func (f dataFile) Path() string</code></pre>
             </article>
             
-            <article class="function" data-name="ReadCache">
+            <article class="function symbol-anchor" id="ReadCache" data-name="ReadCache">
                <h3>
                   ReadCache 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#ReadCache" class="anchor" title="Link to ReadCache">#</a>
                </h3>
                
                <p>ReadCache reads cached lookups or tiles from
@@ -1896,11 +2088,12 @@ which will be deleted by "go clean -modcache".</p>
                <pre><code>func (*dbClient) ReadCache(file string) ([]byte, error)</code></pre>
             </article>
             
-            <article class="function" data-name="ReadConfig">
+            <article class="function symbol-anchor" id="ReadConfig" data-name="ReadConfig">
                <h3>
                   ReadConfig 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#ReadConfig" class="anchor" title="Link to ReadConfig">#</a>
                </h3>
                
                <p>ReadConfig reads the key from c.key
@@ -1909,21 +2102,23 @@ and otherwise reads the config (a latest tree head) from GOPATH/pkg/sumdb/<file>
                <pre><code>func (c *dbClient) ReadConfig(file string) (data []byte, err error)</code></pre>
             </article>
             
-            <article class="function" data-name="ReadRemote">
+            <article class="function symbol-anchor" id="ReadRemote" data-name="ReadRemote">
                <h3>
                   ReadRemote 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#ReadRemote" class="anchor" title="Link to ReadRemote">#</a>
                </h3>
                
                <pre><code>func (c *dbClient) ReadRemote(path string) ([]byte, error)</code></pre>
             </article>
             
-            <article class="function" data-name="RecordedSum">
+            <article class="function symbol-anchor" id="RecordedSum" data-name="RecordedSum">
                <h3>
                   RecordedSum 
                   <span class="badge">function</span>
                   
+                  <a href="#RecordedSum" class="anchor" title="Link to RecordedSum">#</a>
                </h3>
                
                <p>RecordedSum returns the sum if the go.sum file contains an entry for mod.
@@ -1936,11 +2131,12 @@ mod.Version may have a "/go.mod" suffix to distinguish sums for
                <pre><code>func RecordedSum(mod module.Version) (sum string, ok bool)</code></pre>
             </article>
             
-            <article class="function" data-name="RemoveAll">
+            <article class="function symbol-anchor" id="RemoveAll" data-name="RemoveAll">
                <h3>
                   RemoveAll 
                   <span class="badge">function</span>
                   
+                  <a href="#RemoveAll" class="anchor" title="Link to RemoveAll">#</a>
                </h3>
                
                <p>RemoveAll removes a directory written by Download or Unzip, first applying
@@ -1949,11 +2145,12 @@ any permission changes needed to do so.</p>
                <pre><code>func RemoveAll(dir string) error</code></pre>
             </article>
             
-            <article class="function" data-name="Reset">
+            <article class="function symbol-anchor" id="Reset" data-name="Reset">
                <h3>
                   Reset 
                   <span class="badge">function</span>
                   
+                  <a href="#Reset" class="anchor" title="Link to Reset">#</a>
                </h3>
                
                <p>Reset resets globals in the modfetch package, so previous loads don't affect
@@ -1962,21 +2159,23 @@ contents of go.sum files.</p>
                <pre><code>func Reset()</code></pre>
             </article>
             
-            <article class="function" data-name="SecurityError">
+            <article class="function symbol-anchor" id="SecurityError" data-name="SecurityError">
                <h3>
                   SecurityError 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#SecurityError" class="anchor" title="Link to SecurityError">#</a>
                </h3>
                
                <pre><code>func (*dbClient) SecurityError(msg string)</code></pre>
             </article>
             
-            <article class="function" data-name="SideLock">
+            <article class="function symbol-anchor" id="SideLock" data-name="SideLock">
                <h3>
                   SideLock 
                   <span class="badge">function</span>
                   
+                  <a href="#SideLock" class="anchor" title="Link to SideLock">#</a>
                </h3>
                
                <p>SideLock locks a file within the module cache that previously guarded
@@ -1987,91 +2186,100 @@ If err is nil, the caller MUST eventually call the unlock function.</p>
                <pre><code>func SideLock(ctx context.Context) (unlock func(), err error)</code></pre>
             </article>
             
-            <article class="function" data-name="Size">
+            <article class="function symbol-anchor" id="Size" data-name="Size">
                <h3>
                   Size 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#Size" class="anchor" title="Link to Size">#</a>
                </h3>
                
                <pre><code>func (fi dataFileInfo) Size() int64</code></pre>
             </article>
             
-            <article class="function" data-name="Stat">
+            <article class="function symbol-anchor" id="Stat" data-name="Stat">
                <h3>
                   Stat 
                   <span class="badge method-badge">method</span>
                   
-               </h3>
-               
-               <pre><code>func (r *codeRepo) Stat(ctx context.Context, rev string) (*RevInfo, error)</code></pre>
-            </article>
-            
-            <article class="function" data-name="Stat">
-               <h3>
-                  Stat 
-                  <span class="badge method-badge">method</span>
-                  
-               </h3>
-               
-               <pre><code>func (r *cachingRepo) Stat(ctx context.Context, rev string) (*RevInfo, error)</code></pre>
-            </article>
-            
-            <article class="function" data-name="Stat">
-               <h3>
-                  Stat 
-                  <span class="badge method-badge">method</span>
-                  
-               </h3>
-               
-               <pre><code>func (l *loggingRepo) Stat(ctx context.Context, rev string) (*RevInfo, error)</code></pre>
-            </article>
-            
-            <article class="function" data-name="Stat">
-               <h3>
-                  Stat 
-                  <span class="badge method-badge">method</span>
-                  
-               </h3>
-               
-               <pre><code>func (p *proxyRepo) Stat(ctx context.Context, rev string) (*RevInfo, error)</code></pre>
-            </article>
-            
-            <article class="function" data-name="Stat">
-               <h3>
-                  Stat 
-                  <span class="badge method-badge">method</span>
-                  
+                  <a href="#Stat" class="anchor" title="Link to Stat">#</a>
                </h3>
                
                <pre><code>func (r errRepo) Stat(ctx context.Context, rev string) (*RevInfo, error)</code></pre>
             </article>
             
-            <article class="function" data-name="Stat">
+            <article class="function symbol-anchor" id="Stat" data-name="Stat">
                <h3>
                   Stat 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#Stat" class="anchor" title="Link to Stat">#</a>
+               </h3>
+               
+               <pre><code>func (l *loggingRepo) Stat(ctx context.Context, rev string) (*RevInfo, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Stat" data-name="Stat">
+               <h3>
+                  Stat 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Stat" class="anchor" title="Link to Stat">#</a>
+               </h3>
+               
+               <pre><code>func (r *codeRepo) Stat(ctx context.Context, rev string) (*RevInfo, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Stat" data-name="Stat">
+               <h3>
+                  Stat 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Stat" class="anchor" title="Link to Stat">#</a>
+               </h3>
+               
+               <pre><code>func (r *cachingRepo) Stat(ctx context.Context, rev string) (*RevInfo, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Stat" data-name="Stat">
+               <h3>
+                  Stat 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Stat" class="anchor" title="Link to Stat">#</a>
+               </h3>
+               
+               <pre><code>func (p *proxyRepo) Stat(ctx context.Context, rev string) (*RevInfo, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Stat" data-name="Stat">
+               <h3>
+                  Stat 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Stat" class="anchor" title="Link to Stat">#</a>
                </h3>
                
                <pre><code>func (r *toolchainRepo) Stat(ctx context.Context, rev string) (*RevInfo, error)</code></pre>
             </article>
             
-            <article class="function" data-name="String">
+            <article class="function symbol-anchor" id="String" data-name="String">
                <h3>
                   String 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
                <pre><code>func (fi dataFileInfo) String() string</code></pre>
             </article>
             
-            <article class="function" data-name="Sum">
+            <article class="function symbol-anchor" id="Sum" data-name="Sum">
                <h3>
                   Sum 
                   <span class="badge">function</span>
                   
+                  <a href="#Sum" class="anchor" title="Link to Sum">#</a>
                </h3>
                
                <p>Sum returns the checksum for the downloaded copy of the given module,
@@ -2080,21 +2288,23 @@ if present in the download cache.</p>
                <pre><code>func Sum(ctx context.Context, mod module.Version) string</code></pre>
             </article>
             
-            <article class="function" data-name="Sys">
+            <article class="function symbol-anchor" id="Sys" data-name="Sys">
                <h3>
                   Sys 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#Sys" class="anchor" title="Link to Sys">#</a>
                </h3>
                
                <pre><code>func (fi dataFileInfo) Sys() any</code></pre>
             </article>
             
-            <article class="function" data-name="TidyGoSum">
+            <article class="function symbol-anchor" id="TidyGoSum" data-name="TidyGoSum">
                <h3>
                   TidyGoSum 
                   <span class="badge">function</span>
                   
+                  <a href="#TidyGoSum" class="anchor" title="Link to TidyGoSum">#</a>
                </h3>
                
                <p>TidyGoSum returns a tidy version of the go.sum file.
@@ -2103,11 +2313,12 @@ A missing go.sum file is treated as if empty.</p>
                <pre><code>func TidyGoSum(keep map[module.Version]bool) (before []byte, after []byte)</code></pre>
             </article>
             
-            <article class="function" data-name="TrimGoSum">
+            <article class="function symbol-anchor" id="TrimGoSum" data-name="TrimGoSum">
                <h3>
                   TrimGoSum 
                   <span class="badge">function</span>
                   
+                  <a href="#TrimGoSum" class="anchor" title="Link to TrimGoSum">#</a>
                </h3>
                
                <p>TrimGoSum trims go.sum to contain only the modules needed for reproducible
@@ -2119,11 +2330,12 @@ with "/go.mod").</p>
                <pre><code>func TrimGoSum(keep map[module.Version]bool)</code></pre>
             </article>
             
-            <article class="function" data-name="TryProxies">
+            <article class="function symbol-anchor" id="TryProxies" data-name="TryProxies">
                <h3>
                   TryProxies 
                   <span class="badge">function</span>
                   
+                  <a href="#TryProxies" class="anchor" title="Link to TryProxies">#</a>
                </h3>
                
                <p>TryProxies iterates f over each configured proxy (including "noproxy" and
@@ -2137,21 +2349,23 @@ If GOPROXY is set to "off", TryProxies invokes f once with the argument
                <pre><code>func TryProxies(f func(proxy string) error) error</code></pre>
             </article>
             
-            <article class="function" data-name="Unwrap">
+            <article class="function symbol-anchor" id="Unwrap" data-name="Unwrap">
                <h3>
                   Unwrap 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#Unwrap" class="anchor" title="Link to Unwrap">#</a>
                </h3>
                
                <pre><code>func (e notExistError) Unwrap() error</code></pre>
             </article>
             
-            <article class="function" data-name="Unzip">
+            <article class="function symbol-anchor" id="Unzip" data-name="Unzip">
                <h3>
                   Unzip 
                   <span class="badge">function</span>
                   
+                  <a href="#Unzip" class="anchor" title="Link to Unzip">#</a>
                </h3>
                
                <p>Unzip is like Download but is given the explicit zip file to use,
@@ -2161,71 +2375,78 @@ which ship in the Go distribution itself.</p>
                <pre><code>func Unzip(ctx context.Context, mod module.Version, zipfile string) (dir string, err error)</code></pre>
             </article>
             
-            <article class="function" data-name="Versions">
+            <article class="function symbol-anchor" id="Versions" data-name="Versions">
                <h3>
                   Versions 
                   <span class="badge method-badge">method</span>
                   
-               </h3>
-               
-               <pre><code>func (r *toolchainRepo) Versions(ctx context.Context, prefix string) (*Versions, error)</code></pre>
-            </article>
-            
-            <article class="function" data-name="Versions">
-               <h3>
-                  Versions 
-                  <span class="badge method-badge">method</span>
-                  
+                  <a href="#Versions" class="anchor" title="Link to Versions">#</a>
                </h3>
                
                <pre><code>func (l *loggingRepo) Versions(ctx context.Context, prefix string) (*Versions, error)</code></pre>
             </article>
             
-            <article class="function" data-name="Versions">
+            <article class="function symbol-anchor" id="Versions" data-name="Versions">
                <h3>
                   Versions 
                   <span class="badge method-badge">method</span>
                   
-               </h3>
-               
-               <pre><code>func (r *codeRepo) Versions(ctx context.Context, prefix string) (*Versions, error)</code></pre>
-            </article>
-            
-            <article class="function" data-name="Versions">
-               <h3>
-                  Versions 
-                  <span class="badge method-badge">method</span>
-                  
-               </h3>
-               
-               <pre><code>func (r errRepo) Versions(ctx context.Context, prefix string) (*Versions, error)</code></pre>
-            </article>
-            
-            <article class="function" data-name="Versions">
-               <h3>
-                  Versions 
-                  <span class="badge method-badge">method</span>
-                  
+                  <a href="#Versions" class="anchor" title="Link to Versions">#</a>
                </h3>
                
                <pre><code>func (r *cachingRepo) Versions(ctx context.Context, prefix string) (*Versions, error)</code></pre>
             </article>
             
-            <article class="function" data-name="Versions">
+            <article class="function symbol-anchor" id="Versions" data-name="Versions">
                <h3>
                   Versions 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#Versions" class="anchor" title="Link to Versions">#</a>
+               </h3>
+               
+               <pre><code>func (r errRepo) Versions(ctx context.Context, prefix string) (*Versions, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Versions" data-name="Versions">
+               <h3>
+                  Versions 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Versions" class="anchor" title="Link to Versions">#</a>
+               </h3>
+               
+               <pre><code>func (r *toolchainRepo) Versions(ctx context.Context, prefix string) (*Versions, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Versions" data-name="Versions">
+               <h3>
+                  Versions 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Versions" class="anchor" title="Link to Versions">#</a>
                </h3>
                
                <pre><code>func (p *proxyRepo) Versions(ctx context.Context, prefix string) (*Versions, error)</code></pre>
             </article>
             
-            <article class="function" data-name="WriteCache">
+            <article class="function symbol-anchor" id="Versions" data-name="Versions">
+               <h3>
+                  Versions 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Versions" class="anchor" title="Link to Versions">#</a>
+               </h3>
+               
+               <pre><code>func (r *codeRepo) Versions(ctx context.Context, prefix string) (*Versions, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="WriteCache" data-name="WriteCache">
                <h3>
                   WriteCache 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#WriteCache" class="anchor" title="Link to WriteCache">#</a>
                </h3>
                
                <p>WriteCache updates cached lookups or tiles.</p>
@@ -2233,11 +2454,12 @@ which ship in the Go distribution itself.</p>
                <pre><code>func (*dbClient) WriteCache(file string, data []byte)</code></pre>
             </article>
             
-            <article class="function" data-name="WriteConfig">
+            <article class="function symbol-anchor" id="WriteConfig" data-name="WriteConfig">
                <h3>
                   WriteConfig 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#WriteConfig" class="anchor" title="Link to WriteConfig">#</a>
                </h3>
                
                <p>WriteConfig rewrites the latest tree head.</p>
@@ -2245,11 +2467,12 @@ which ship in the Go distribution itself.</p>
                <pre><code>func (*dbClient) WriteConfig(file string, old []byte, new []byte) error</code></pre>
             </article>
             
-            <article class="function" data-name="WriteGoSum">
+            <article class="function symbol-anchor" id="WriteGoSum" data-name="WriteGoSum">
                <h3>
                   WriteGoSum 
                   <span class="badge">function</span>
                   
+                  <a href="#WriteGoSum" class="anchor" title="Link to WriteGoSum">#</a>
                </h3>
                
                <p>WriteGoSum writes the go.sum file if it needs to be updated.
@@ -2261,71 +2484,78 @@ have been marked for deletion with TrimGoSum.</p>
                <pre><code>func WriteGoSum(ctx context.Context, keep map[module.Version]bool, readonly bool) error</code></pre>
             </article>
             
-            <article class="function" data-name="Zip">
+            <article class="function symbol-anchor" id="Zip" data-name="Zip">
                <h3>
                   Zip 
                   <span class="badge method-badge">method</span>
                   
-               </h3>
-               
-               <pre><code>func (r *cachingRepo) Zip(ctx context.Context, dst io.Writer, version string) error</code></pre>
-            </article>
-            
-            <article class="function" data-name="Zip">
-               <h3>
-                  Zip 
-                  <span class="badge method-badge">method</span>
-                  
-               </h3>
-               
-               <pre><code>func (l *loggingRepo) Zip(ctx context.Context, dst io.Writer, version string) error</code></pre>
-            </article>
-            
-            <article class="function" data-name="Zip">
-               <h3>
-                  Zip 
-                  <span class="badge method-badge">method</span>
-                  
-               </h3>
-               
-               <pre><code>func (r *toolchainRepo) Zip(ctx context.Context, dst io.Writer, version string) error</code></pre>
-            </article>
-            
-            <article class="function" data-name="Zip">
-               <h3>
-                  Zip 
-                  <span class="badge method-badge">method</span>
-                  
+                  <a href="#Zip" class="anchor" title="Link to Zip">#</a>
                </h3>
                
                <pre><code>func (r *codeRepo) Zip(ctx context.Context, dst io.Writer, version string) error</code></pre>
             </article>
             
-            <article class="function" data-name="Zip">
+            <article class="function symbol-anchor" id="Zip" data-name="Zip">
                <h3>
                   Zip 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#Zip" class="anchor" title="Link to Zip">#</a>
                </h3>
                
                <pre><code>func (p *proxyRepo) Zip(ctx context.Context, dst io.Writer, version string) error</code></pre>
             </article>
             
-            <article class="function" data-name="Zip">
+            <article class="function symbol-anchor" id="Zip" data-name="Zip">
                <h3>
                   Zip 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#Zip" class="anchor" title="Link to Zip">#</a>
+               </h3>
+               
+               <pre><code>func (l *loggingRepo) Zip(ctx context.Context, dst io.Writer, version string) error</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Zip" data-name="Zip">
+               <h3>
+                  Zip 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Zip" class="anchor" title="Link to Zip">#</a>
+               </h3>
+               
+               <pre><code>func (r *cachingRepo) Zip(ctx context.Context, dst io.Writer, version string) error</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Zip" data-name="Zip">
+               <h3>
+                  Zip 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Zip" class="anchor" title="Link to Zip">#</a>
                </h3>
                
                <pre><code>func (r errRepo) Zip(ctx context.Context, dst io.Writer, version string) error</code></pre>
             </article>
             
-            <article class="function" data-name="addModSumLocked">
+            <article class="function symbol-anchor" id="Zip" data-name="Zip">
+               <h3>
+                  Zip 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Zip" class="anchor" title="Link to Zip">#</a>
+               </h3>
+               
+               <pre><code>func (r *toolchainRepo) Zip(ctx context.Context, dst io.Writer, version string) error</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="addModSumLocked" data-name="addModSumLocked">
                <h3>
                   addModSumLocked 
                   <span class="badge">function</span>
                   
+                  <a href="#addModSumLocked" class="anchor" title="Link to addModSumLocked">#</a>
                </h3>
                
                <p>addModSumLocked adds the pair mod,h to go.sum.
@@ -2334,11 +2564,12 @@ goSum.mu must be locked.</p>
                <pre><code>func addModSumLocked(mod module.Version, h string)</code></pre>
             </article>
             
-            <article class="function" data-name="appendIncompatibleVersions">
+            <article class="function symbol-anchor" id="appendIncompatibleVersions" data-name="appendIncompatibleVersions">
                <h3>
                   appendIncompatibleVersions 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#appendIncompatibleVersions" class="anchor" title="Link to appendIncompatibleVersions">#</a>
                </h3>
                
                <p>appendIncompatibleVersions appends "+incompatible" versions to list if
@@ -2350,21 +2581,23 @@ Both list and incompatible must be sorted in semantic order.</p>
                <pre><code>func (r *codeRepo) appendIncompatibleVersions(ctx context.Context, origin *codehost.Origin, list []string, incompatible []string) (*Versions, error)</code></pre>
             </article>
             
-            <article class="function" data-name="cacheDir">
+            <article class="function symbol-anchor" id="cacheDir" data-name="cacheDir">
                <h3>
                   cacheDir 
                   <span class="badge">function</span>
                   
+                  <a href="#cacheDir" class="anchor" title="Link to cacheDir">#</a>
                </h3>
                
                <pre><code>func cacheDir(ctx context.Context, path string) (string, error)</code></pre>
             </article>
             
-            <article class="function" data-name="canReplaceMismatchedVersionDueToBug">
+            <article class="function symbol-anchor" id="canReplaceMismatchedVersionDueToBug" data-name="canReplaceMismatchedVersionDueToBug">
                <h3>
                   canReplaceMismatchedVersionDueToBug 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#canReplaceMismatchedVersionDueToBug" class="anchor" title="Link to canReplaceMismatchedVersionDueToBug">#</a>
                </h3>
                
                <p>canReplaceMismatchedVersionDueToBug reports whether versions of r
@@ -2374,11 +2607,12 @@ due to a historical bug in the Go command (golang.org/issue/34254).</p>
                <pre><code>func (r *codeRepo) canReplaceMismatchedVersionDueToBug(mpath string) bool</code></pre>
             </article>
             
-            <article class="function" data-name="checkCacheDir">
+            <article class="function symbol-anchor" id="checkCacheDir" data-name="checkCacheDir">
                <h3>
                   checkCacheDir 
                   <span class="badge">function</span>
                   
+                  <a href="#checkCacheDir" class="anchor" title="Link to checkCacheDir">#</a>
                </h3>
                
                <p>checkCacheDir checks if the directory specified by GOMODCACHE exists. An
@@ -2387,11 +2621,12 @@ error is returned if it does not.</p>
                <pre><code>func checkCacheDir(ctx context.Context) error</code></pre>
             </article>
             
-            <article class="function" data-name="checkGoMod">
+            <article class="function symbol-anchor" id="checkGoMod" data-name="checkGoMod">
                <h3>
                   checkGoMod 
                   <span class="badge">function</span>
                   
+                  <a href="#checkGoMod" class="anchor" title="Link to checkGoMod">#</a>
                </h3>
                
                <p>checkGoMod checks the given module's go.mod checksum;
@@ -2400,11 +2635,12 @@ data is the go.mod content.</p>
                <pre><code>func checkGoMod(path string, version string, data []byte) error</code></pre>
             </article>
             
-            <article class="function" data-name="checkMod">
+            <article class="function symbol-anchor" id="checkMod" data-name="checkMod">
                <h3>
                   checkMod 
                   <span class="badge">function</span>
                   
+                  <a href="#checkMod" class="anchor" title="Link to checkMod">#</a>
                </h3>
                
                <p>checkMod checks the given module's checksum and Go version.</p>
@@ -2412,11 +2648,12 @@ data is the go.mod content.</p>
                <pre><code>func checkMod(ctx context.Context, mod module.Version)</code></pre>
             </article>
             
-            <article class="function" data-name="checkModSum">
+            <article class="function symbol-anchor" id="checkModSum" data-name="checkModSum">
                <h3>
                   checkModSum 
                   <span class="badge">function</span>
                   
+                  <a href="#checkModSum" class="anchor" title="Link to checkModSum">#</a>
                </h3>
                
                <p>checkModSum checks that the recorded checksum for mod is h.
@@ -2426,11 +2663,12 @@ for the module's go.mod file only.</p>
                <pre><code>func checkModSum(mod module.Version, h string) error</code></pre>
             </article>
             
-            <article class="function" data-name="checkSumDB">
+            <article class="function symbol-anchor" id="checkSumDB" data-name="checkSumDB">
                <h3>
                   checkSumDB 
                   <span class="badge">function</span>
                   
+                  <a href="#checkSumDB" class="anchor" title="Link to checkSumDB">#</a>
                </h3>
                
                <p>checkSumDB checks the mod, h pair against the Go checksum database.
@@ -2439,11 +2677,12 @@ It calls base.Fatalf if the hash is to be rejected.</p>
                <pre><code>func checkSumDB(mod module.Version, h string) error</code></pre>
             </article>
             
-            <article class="function" data-name="convert">
+            <article class="function symbol-anchor" id="convert" data-name="convert">
                <h3>
                   convert 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#convert" class="anchor" title="Link to convert">#</a>
                </h3>
                
                <p>convert converts a version as reported by the code host to a version as
@@ -2454,21 +2693,23 @@ Otherwise, the Version is derived from the passed-in info and recent tags.</p>
                <pre><code>func (r *codeRepo) convert(ctx context.Context, info *codehost.RevInfo, statVers string) (revInfo *RevInfo, err error)</code></pre>
             </article>
             
-            <article class="function" data-name="dbDial">
+            <article class="function symbol-anchor" id="dbDial" data-name="dbDial">
                <h3>
                   dbDial 
                   <span class="badge">function</span>
                   
+                  <a href="#dbDial" class="anchor" title="Link to dbDial">#</a>
                </h3>
                
                <pre><code>func dbDial() (dbName string, db *sumdb.Client, err error)</code></pre>
             </article>
             
-            <article class="function" data-name="dlToGo">
+            <article class="function symbol-anchor" id="dlToGo" data-name="dlToGo">
                <h3>
                   dlToGo 
                   <span class="badge">function</span>
                   
+                  <a href="#dlToGo" class="anchor" title="Link to dlToGo">#</a>
                </h3>
                
                <p>dlToGo converts a DL module version like "v0.0.1-go1.2.linux-amd64" to a Go version like "1.2".</p>
@@ -2476,31 +2717,34 @@ Otherwise, the Version is derived from the passed-in info and recent tags.</p>
                <pre><code>func dlToGo(v string) (string, bool)</code></pre>
             </article>
             
-            <article class="function" data-name="download">
+            <article class="function symbol-anchor" id="download" data-name="download">
                <h3>
                   download 
                   <span class="badge">function</span>
                   
+                  <a href="#download" class="anchor" title="Link to download">#</a>
                </h3>
                
                <pre><code>func download(ctx context.Context, mod module.Version) (dir string, err error)</code></pre>
             </article>
             
-            <article class="function" data-name="downloadZip">
+            <article class="function symbol-anchor" id="downloadZip" data-name="downloadZip">
                <h3>
                   downloadZip 
                   <span class="badge">function</span>
                   
+                  <a href="#downloadZip" class="anchor" title="Link to downloadZip">#</a>
                </h3>
                
                <pre><code>func downloadZip(ctx context.Context, mod module.Version, zipfile string) (err error)</code></pre>
             </article>
             
-            <article class="function" data-name="findDir">
+            <article class="function symbol-anchor" id="findDir" data-name="findDir">
                <h3>
                   findDir 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#findDir" class="anchor" title="Link to findDir">#</a>
                </h3>
                
                <p>findDir locates the directory within the repo containing the module.
@@ -2510,31 +2754,34 @@ file exists — r.codeDir/r.pathMajor[1:].</p>
                <pre><code>func (r *codeRepo) findDir(ctx context.Context, version string) (rev string, dir string, gomod []byte, err error)</code></pre>
             </article>
             
-            <article class="function" data-name="getBody">
+            <article class="function symbol-anchor" id="getBody" data-name="getBody">
                <h3>
                   getBody 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#getBody" class="anchor" title="Link to getBody">#</a>
                </h3>
                
                <pre><code>func (p *proxyRepo) getBody(ctx context.Context, path string) (r io.ReadCloser, redactedURL string, err error)</code></pre>
             </article>
             
-            <article class="function" data-name="getBytes">
+            <article class="function symbol-anchor" id="getBytes" data-name="getBytes">
                <h3>
                   getBytes 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#getBytes" class="anchor" title="Link to getBytes">#</a>
                </h3>
                
                <pre><code>func (p *proxyRepo) getBytes(ctx context.Context, path string) ([]byte, error)</code></pre>
             </article>
             
-            <article class="function" data-name="goModSum">
+            <article class="function symbol-anchor" id="goModSum" data-name="goModSum">
                <h3>
                   goModSum 
                   <span class="badge">function</span>
                   
+                  <a href="#goModSum" class="anchor" title="Link to goModSum">#</a>
                </h3>
                
                <p>goModSum returns the checksum for the go.mod contents.</p>
@@ -2542,11 +2789,12 @@ file exists — r.codeDir/r.pathMajor[1:].</p>
                <pre><code>func goModSum(data []byte) (string, error)</code></pre>
             </article>
             
-            <article class="function" data-name="goToDL">
+            <article class="function symbol-anchor" id="goToDL" data-name="goToDL">
                <h3>
                   goToDL 
                   <span class="badge">function</span>
                   
+                  <a href="#goToDL" class="anchor" title="Link to goToDL">#</a>
                </h3>
                
                <p>goToDL converts a Go version like "1.2" to a DL module version like "v0.0.1-go1.2.linux-amd64".</p>
@@ -2554,11 +2802,12 @@ file exists — r.codeDir/r.pathMajor[1:].</p>
                <pre><code>func goToDL(v string, goos string, goarch string) string</code></pre>
             </article>
             
-            <article class="function" data-name="hasPathPrefix">
+            <article class="function symbol-anchor" id="hasPathPrefix" data-name="hasPathPrefix">
                <h3>
                   hasPathPrefix 
                   <span class="badge">function</span>
                   
+                  <a href="#hasPathPrefix" class="anchor" title="Link to hasPathPrefix">#</a>
                </h3>
                
                <p>hasPathPrefix reports whether the path s begins with the
@@ -2567,11 +2816,12 @@ elements in prefix.</p>
                <pre><code>func hasPathPrefix(s string, prefix string) bool</code></pre>
             </article>
             
-            <article class="function" data-name="hashZip">
+            <article class="function symbol-anchor" id="hashZip" data-name="hashZip">
                <h3>
                   hashZip 
                   <span class="badge">function</span>
                   
+                  <a href="#hashZip" class="anchor" title="Link to hashZip">#</a>
                </h3>
                
                <p>hashZip reads the zip file opened in f, then writes the hash to ziphashfile,
@@ -2582,11 +2832,12 @@ an error and does not write ziphashfile.</p>
                <pre><code>func hashZip(mod module.Version, zipfile string, ziphashfile string) (err error)</code></pre>
             </article>
             
-            <article class="function" data-name="haveModSumLocked">
+            <article class="function symbol-anchor" id="haveModSumLocked" data-name="haveModSumLocked">
                <h3>
                   haveModSumLocked 
                   <span class="badge">function</span>
                   
+                  <a href="#haveModSumLocked" class="anchor" title="Link to haveModSumLocked">#</a>
                </h3>
                
                <p>haveModSumLocked reports whether the pair mod,h is already listed in go.sum.
@@ -2596,11 +2847,12 @@ goSum.mu must be locked.</p>
                <pre><code>func haveModSumLocked(mod module.Version, h string) bool</code></pre>
             </article>
             
-            <article class="function" data-name="initBase">
+            <article class="function symbol-anchor" id="initBase" data-name="initBase">
                <h3>
                   initBase 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#initBase" class="anchor" title="Link to initBase">#</a>
                </h3>
                
                <p>initBase determines the base URL for connecting to the database.
@@ -2612,11 +2864,12 @@ c.ReadRemote is never called, we will never do this work.</p>
                <pre><code>func (c *dbClient) initBase()</code></pre>
             </article>
             
-            <article class="function" data-name="initGoSum">
+            <article class="function symbol-anchor" id="initGoSum" data-name="initGoSum">
                <h3>
                   initGoSum 
                   <span class="badge">function</span>
                   
+                  <a href="#initGoSum" class="anchor" title="Link to initGoSum">#</a>
                </h3>
                
                <p>initGoSum initializes the go.sum data.
@@ -2627,11 +2880,12 @@ The goSum lock must be held.</p>
                <pre><code>func initGoSum() (bool, error)</code></pre>
             </article>
             
-            <article class="function" data-name="isMajor">
+            <article class="function symbol-anchor" id="isMajor" data-name="isMajor">
                <h3>
                   isMajor 
                   <span class="badge">function</span>
                   
+                  <a href="#isMajor" class="anchor" title="Link to isMajor">#</a>
                </h3>
                
                <p>isMajor reports whether the versions allowed for mpath are compatible with
@@ -2641,11 +2895,12 @@ version suffix.</p>
                <pre><code>func isMajor(mpath string, pathMajor string) bool</code></pre>
             </article>
             
-            <article class="function" data-name="isValidSum">
+            <article class="function symbol-anchor" id="isValidSum" data-name="isValidSum">
                <h3>
                   isValidSum 
                   <span class="badge">function</span>
                   
+                  <a href="#isValidSum" class="anchor" title="Link to isValidSum">#</a>
                </h3>
                
                <p>isValidSum returns true if data is the valid contents of a zip hash file.
@@ -2657,31 +2912,34 @@ bytes written by the truncate operation.</p>
                <pre><code>func isValidSum(data []byte) bool</code></pre>
             </article>
             
-            <article class="function" data-name="latest">
+            <article class="function symbol-anchor" id="latest" data-name="latest">
                <h3>
                   latest 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#latest" class="anchor" title="Link to latest">#</a>
                </h3>
                
                <pre><code>func (p *proxyRepo) latest(ctx context.Context) (*RevInfo, error)</code></pre>
             </article>
             
-            <article class="function" data-name="latestFromList">
+            <article class="function symbol-anchor" id="latestFromList" data-name="latestFromList">
                <h3>
                   latestFromList 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#latestFromList" class="anchor" title="Link to latestFromList">#</a>
                </h3>
                
                <pre><code>func (p *proxyRepo) latestFromList(ctx context.Context, allLine []string) (*RevInfo, error)</code></pre>
             </article>
             
-            <article class="function" data-name="lockVersion">
+            <article class="function symbol-anchor" id="lockVersion" data-name="lockVersion">
                <h3>
                   lockVersion 
                   <span class="badge">function</span>
                   
+                  <a href="#lockVersion" class="anchor" title="Link to lockVersion">#</a>
                </h3>
                
                <p>lockVersion locks a file within the module cache that guards the downloading
@@ -2690,11 +2948,12 @@ and extraction of the zipfile for the given module version.</p>
                <pre><code>func lockVersion(ctx context.Context, mod module.Version) (unlock func(), err error)</code></pre>
             </article>
             
-            <article class="function" data-name="logCall">
+            <article class="function symbol-anchor" id="logCall" data-name="logCall">
                <h3>
                   logCall 
                   <span class="badge">function</span>
                   
+                  <a href="#logCall" class="anchor" title="Link to logCall">#</a>
                </h3>
                
                <p>logCall prints a log message using format and args and then
@@ -2707,11 +2966,12 @@ Note the final ().</p>
                <pre><code>func logCall(format string, args ...any) func()</code></pre>
             </article>
             
-            <article class="function" data-name="lookup">
+            <article class="function symbol-anchor" id="lookup" data-name="lookup">
                <h3>
                   lookup 
                   <span class="badge">function</span>
                   
+                  <a href="#lookup" class="anchor" title="Link to lookup">#</a>
                </h3>
                
                <p>lookup returns the module with the given module path.</p>
@@ -2719,31 +2979,34 @@ Note the final ().</p>
                <pre><code>func lookup(ctx context.Context, proxy string, path string) (r Repo, err error)</code></pre>
             </article>
             
-            <article class="function" data-name="lookupCodeRepo">
+            <article class="function symbol-anchor" id="lookupCodeRepo" data-name="lookupCodeRepo">
                <h3>
                   lookupCodeRepo 
                   <span class="badge">function</span>
                   
+                  <a href="#lookupCodeRepo" class="anchor" title="Link to lookupCodeRepo">#</a>
                </h3>
                
                <pre><code>func lookupCodeRepo(ctx context.Context, rr *vcs.RepoRoot, local bool) (codehost.Repo, error)</code></pre>
             </article>
             
-            <article class="function" data-name="lookupDirect">
+            <article class="function symbol-anchor" id="lookupDirect" data-name="lookupDirect">
                <h3>
                   lookupDirect 
                   <span class="badge">function</span>
                   
+                  <a href="#lookupDirect" class="anchor" title="Link to lookupDirect">#</a>
                </h3>
                
                <pre><code>func lookupDirect(ctx context.Context, path string) (Repo, error)</code></pre>
             </article>
             
-            <article class="function" data-name="lookupSumDB">
+            <article class="function symbol-anchor" id="lookupSumDB" data-name="lookupSumDB">
                <h3>
                   lookupSumDB 
                   <span class="badge">function</span>
                   
+                  <a href="#lookupSumDB" class="anchor" title="Link to lookupSumDB">#</a>
                </h3>
                
                <p>lookupSumDB returns the Go checksum database's go.sum lines for the given module,
@@ -2752,21 +3015,23 @@ along with the name of the database.</p>
                <pre><code>func lookupSumDB(mod module.Version) (dbname string, lines []string, err error)</code></pre>
             </article>
             
-            <article class="function" data-name="lookupSumDB">
+            <article class="function symbol-anchor" id="lookupSumDB" data-name="lookupSumDB">
                <h3>
                   lookupSumDB 
                   <span class="badge">function</span>
                   
+                  <a href="#lookupSumDB" class="anchor" title="Link to lookupSumDB">#</a>
                </h3>
                
                <pre><code>func lookupSumDB(mod module.Version) (string, []string, error)</code></pre>
             </article>
             
-            <article class="function" data-name="makeDirsReadOnly">
+            <article class="function symbol-anchor" id="makeDirsReadOnly" data-name="makeDirsReadOnly">
                <h3>
                   makeDirsReadOnly 
                   <span class="badge">function</span>
                   
+                  <a href="#makeDirsReadOnly" class="anchor" title="Link to makeDirsReadOnly">#</a>
                </h3>
                
                <p>makeDirsReadOnly makes a best-effort attempt to remove write permissions for dir
@@ -2775,31 +3040,34 @@ and its transitive contents.</p>
                <pre><code>func makeDirsReadOnly(dir string)</code></pre>
             </article>
             
-            <article class="function" data-name="modPrefix">
+            <article class="function symbol-anchor" id="modPrefix" data-name="modPrefix">
                <h3>
                   modPrefix 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#modPrefix" class="anchor" title="Link to modPrefix">#</a>
                </h3>
                
                <pre><code>func (r *codeRepo) modPrefix(rev string) string</code></pre>
             </article>
             
-            <article class="function" data-name="newCachingRepo">
+            <article class="function symbol-anchor" id="newCachingRepo" data-name="newCachingRepo">
                <h3>
                   newCachingRepo 
                   <span class="badge">function</span>
                   
+                  <a href="#newCachingRepo" class="anchor" title="Link to newCachingRepo">#</a>
                </h3>
                
                <pre><code>func newCachingRepo(ctx context.Context, path string, initRepo func(context.Context) (Repo, error)) *cachingRepo</code></pre>
             </article>
             
-            <article class="function" data-name="newCodeRepo">
+            <article class="function symbol-anchor" id="newCodeRepo" data-name="newCodeRepo">
                <h3>
                   newCodeRepo 
                   <span class="badge">function</span>
                   
+                  <a href="#newCodeRepo" class="anchor" title="Link to newCodeRepo">#</a>
                </h3>
                
                <p>newCodeRepo returns a Repo that reads the source code for the module with the
@@ -2809,41 +3077,45 @@ containing the path given by codeRoot.</p>
                <pre><code>func newCodeRepo(code codehost.Repo, codeRoot string, path string) (Repo, error)</code></pre>
             </article>
             
-            <article class="function" data-name="newLoggingRepo">
+            <article class="function symbol-anchor" id="newLoggingRepo" data-name="newLoggingRepo">
                <h3>
                   newLoggingRepo 
                   <span class="badge">function</span>
                   
+                  <a href="#newLoggingRepo" class="anchor" title="Link to newLoggingRepo">#</a>
                </h3>
                
                <pre><code>func newLoggingRepo(r Repo) *loggingRepo</code></pre>
             </article>
             
-            <article class="function" data-name="newProxyRepo">
+            <article class="function symbol-anchor" id="newProxyRepo" data-name="newProxyRepo">
                <h3>
                   newProxyRepo 
                   <span class="badge">function</span>
                   
+                  <a href="#newProxyRepo" class="anchor" title="Link to newProxyRepo">#</a>
                </h3>
                
                <pre><code>func newProxyRepo(baseURL string, path string) (Repo, error)</code></pre>
             </article>
             
-            <article class="function" data-name="notExistErrorf">
+            <article class="function symbol-anchor" id="notExistErrorf" data-name="notExistErrorf">
                <h3>
                   notExistErrorf 
                   <span class="badge">function</span>
                   
+                  <a href="#notExistErrorf" class="anchor" title="Link to notExistErrorf">#</a>
                </h3>
                
                <pre><code>func notExistErrorf(format string, args ...any) error</code></pre>
             </article>
             
-            <article class="function" data-name="pathEscape">
+            <article class="function symbol-anchor" id="pathEscape" data-name="pathEscape">
                <h3>
                   pathEscape 
                   <span class="badge">function</span>
                   
+                  <a href="#pathEscape" class="anchor" title="Link to pathEscape">#</a>
                </h3>
                
                <p>pathEscape escapes s so it can be used in a path.
@@ -2853,21 +3125,23 @@ It does not escape / to %2F: our REST API is designed so that / can be left as i
                <pre><code>func pathEscape(s string) string</code></pre>
             </article>
             
-            <article class="function" data-name="proxyList">
+            <article class="function symbol-anchor" id="proxyList" data-name="proxyList">
                <h3>
                   proxyList 
                   <span class="badge">function</span>
                   
+                  <a href="#proxyList" class="anchor" title="Link to proxyList">#</a>
                </h3>
                
                <pre><code>func proxyList() ([]proxySpec, error)</code></pre>
             </article>
             
-            <article class="function" data-name="readDiskCache">
+            <article class="function symbol-anchor" id="readDiskCache" data-name="readDiskCache">
                <h3>
                   readDiskCache 
                   <span class="badge">function</span>
                   
+                  <a href="#readDiskCache" class="anchor" title="Link to readDiskCache">#</a>
                </h3>
                
                <p>readDiskCache is the generic "read from a cache file" implementation.
@@ -2879,11 +3153,12 @@ writeDiskCache(file, data) to write a new cache entry.</p>
                <pre><code>func readDiskCache(ctx context.Context, path string, rev string, suffix string) (file string, data []byte, err error)</code></pre>
             </article>
             
-            <article class="function" data-name="readDiskGoMod">
+            <article class="function symbol-anchor" id="readDiskGoMod" data-name="readDiskGoMod">
                <h3>
                   readDiskGoMod 
                   <span class="badge">function</span>
                   
+                  <a href="#readDiskGoMod" class="anchor" title="Link to readDiskGoMod">#</a>
                </h3>
                
                <p>readDiskGoMod reads a cached go.mod file from disk,
@@ -2894,11 +3169,12 @@ writeDiskGoMod(file, data) to write a new cache entry.</p>
                <pre><code>func readDiskGoMod(ctx context.Context, path string, rev string) (file string, data []byte, err error)</code></pre>
             </article>
             
-            <article class="function" data-name="readDiskStat">
+            <article class="function symbol-anchor" id="readDiskStat" data-name="readDiskStat">
                <h3>
                   readDiskStat 
                   <span class="badge">function</span>
                   
+                  <a href="#readDiskStat" class="anchor" title="Link to readDiskStat">#</a>
                </h3>
                
                <p>readDiskStat reads a cached stat result from disk,
@@ -2909,11 +3185,12 @@ writeDiskStat(file, info) to write a new cache entry.</p>
                <pre><code>func readDiskStat(ctx context.Context, path string, rev string) (file string, info *RevInfo, err error)</code></pre>
             </article>
             
-            <article class="function" data-name="readDiskStatByHash">
+            <article class="function symbol-anchor" id="readDiskStatByHash" data-name="readDiskStatByHash">
                <h3>
                   readDiskStatByHash 
                   <span class="badge">function</span>
                   
+                  <a href="#readDiskStatByHash" class="anchor" title="Link to readDiskStatByHash">#</a>
                </h3>
                
                <p>readDiskStatByHash is a fallback for readDiskStat for the case
@@ -2929,11 +3206,12 @@ just to find out about a commit we already know about
                <pre><code>func readDiskStatByHash(ctx context.Context, path string, rev string) (file string, info *RevInfo, err error)</code></pre>
             </article>
             
-            <article class="function" data-name="readGoSum">
+            <article class="function symbol-anchor" id="readGoSum" data-name="readGoSum">
                <h3>
                   readGoSum 
                   <span class="badge">function</span>
                   
+                  <a href="#readGoSum" class="anchor" title="Link to readGoSum">#</a>
                </h3>
                
                <p>readGoSum parses data, which is the content of file,
@@ -2942,51 +3220,56 @@ and adds it to goSum.m. The goSum lock must be held.</p>
                <pre><code>func readGoSum(dst map[module.Version][]string, file string, data []byte)</code></pre>
             </article>
             
-            <article class="function" data-name="readGoSumFile">
+            <article class="function symbol-anchor" id="readGoSumFile" data-name="readGoSumFile">
                <h3>
                   readGoSumFile 
                   <span class="badge">function</span>
                   
+                  <a href="#readGoSumFile" class="anchor" title="Link to readGoSumFile">#</a>
                </h3>
                
                <pre><code>func readGoSumFile(dst map[module.Version][]string, file string) (bool, error)</code></pre>
             </article>
             
-            <article class="function" data-name="repo">
+            <article class="function symbol-anchor" id="repo" data-name="repo">
                <h3>
                   repo 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#repo" class="anchor" title="Link to repo">#</a>
                </h3>
                
                <pre><code>func (r *cachingRepo) repo(ctx context.Context) Repo</code></pre>
             </article>
             
-            <article class="function" data-name="retractedVersions">
+            <article class="function symbol-anchor" id="retractedVersions" data-name="retractedVersions">
                <h3>
                   retractedVersions 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#retractedVersions" class="anchor" title="Link to retractedVersions">#</a>
                </h3>
                
                <pre><code>func (r *codeRepo) retractedVersions(ctx context.Context) (func(string) bool, error)</code></pre>
             </article>
             
-            <article class="function" data-name="revToRev">
+            <article class="function symbol-anchor" id="revToRev" data-name="revToRev">
                <h3>
                   revToRev 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#revToRev" class="anchor" title="Link to revToRev">#</a>
                </h3>
                
                <pre><code>func (r *codeRepo) revToRev(rev string) string</code></pre>
             </article>
             
-            <article class="function" data-name="rewriteVersionList">
+            <article class="function symbol-anchor" id="rewriteVersionList" data-name="rewriteVersionList">
                <h3>
                   rewriteVersionList 
                   <span class="badge">function</span>
                   
+                  <a href="#rewriteVersionList" class="anchor" title="Link to rewriteVersionList">#</a>
                </h3>
                
                <p>rewriteVersionList rewrites the version list in dir
@@ -2995,21 +3278,23 @@ after a new *.mod file has been written.</p>
                <pre><code>func rewriteVersionList(ctx context.Context, dir string) (err error)</code></pre>
             </article>
             
-            <article class="function" data-name="sumInWorkspaceModulesLocked">
+            <article class="function symbol-anchor" id="sumInWorkspaceModulesLocked" data-name="sumInWorkspaceModulesLocked">
                <h3>
                   sumInWorkspaceModulesLocked 
                   <span class="badge">function</span>
                   
+                  <a href="#sumInWorkspaceModulesLocked" class="anchor" title="Link to sumInWorkspaceModulesLocked">#</a>
                </h3>
                
                <pre><code>func sumInWorkspaceModulesLocked(m module.Version) bool</code></pre>
             </article>
             
-            <article class="function" data-name="tempFile">
+            <article class="function symbol-anchor" id="tempFile" data-name="tempFile">
                <h3>
                   tempFile 
                   <span class="badge">function</span>
                   
+                  <a href="#tempFile" class="anchor" title="Link to tempFile">#</a>
                </h3>
                
                <p>tempFile creates a new temporary file with given permission bits.</p>
@@ -3017,11 +3302,12 @@ after a new *.mod file has been written.</p>
                <pre><code>func tempFile(ctx context.Context, dir string, prefix string, perm fs.FileMode) (f *os.File, err error)</code></pre>
             </article>
             
-            <article class="function" data-name="tidyGoSum">
+            <article class="function symbol-anchor" id="tidyGoSum" data-name="tidyGoSum">
                <h3>
                   tidyGoSum 
                   <span class="badge">function</span>
                   
+                  <a href="#tidyGoSum" class="anchor" title="Link to tidyGoSum">#</a>
                </h3>
                
                <p>tidyGoSum returns a tidy version of the go.sum file.
@@ -3030,21 +3316,23 @@ The goSum lock must be held.</p>
                <pre><code>func tidyGoSum(data []byte, keep map[module.Version]bool) []byte</code></pre>
             </article>
             
-            <article class="function" data-name="unzip">
+            <article class="function symbol-anchor" id="unzip" data-name="unzip">
                <h3>
                   unzip 
                   <span class="badge">function</span>
                   
+                  <a href="#unzip" class="anchor" title="Link to unzip">#</a>
                </h3>
                
                <pre><code>func unzip(ctx context.Context, mod module.Version, zipfile string) (dir string, err error)</code></pre>
             </article>
             
-            <article class="function" data-name="useSumDB">
+            <article class="function symbol-anchor" id="useSumDB" data-name="useSumDB">
                <h3>
                   useSumDB 
                   <span class="badge">function</span>
                   
+                  <a href="#useSumDB" class="anchor" title="Link to useSumDB">#</a>
                </h3>
                
                <p>useSumDB reports whether to use the Go checksum database for the given module.</p>
@@ -3052,21 +3340,23 @@ The goSum lock must be held.</p>
                <pre><code>func useSumDB(mod module.Version) bool</code></pre>
             </article>
             
-            <article class="function" data-name="useSumDB">
+            <article class="function symbol-anchor" id="useSumDB" data-name="useSumDB">
                <h3>
                   useSumDB 
                   <span class="badge">function</span>
                   
+                  <a href="#useSumDB" class="anchor" title="Link to useSumDB">#</a>
                </h3>
                
                <pre><code>func useSumDB(mod module.Version) bool</code></pre>
             </article>
             
-            <article class="function" data-name="validatePseudoVersion">
+            <article class="function symbol-anchor" id="validatePseudoVersion" data-name="validatePseudoVersion">
                <h3>
                   validatePseudoVersion 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#validatePseudoVersion" class="anchor" title="Link to validatePseudoVersion">#</a>
                </h3>
                
                <p>validatePseudoVersion checks that version has a major version compatible with
@@ -3081,11 +3371,12 @@ have trivial bases!</p>
                <pre><code>func (r *codeRepo) validatePseudoVersion(ctx context.Context, info *codehost.RevInfo, version string) (err error)</code></pre>
             </article>
             
-            <article class="function" data-name="versionError">
+            <article class="function symbol-anchor" id="versionError" data-name="versionError">
                <h3>
                   versionError 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#versionError" class="anchor" title="Link to versionError">#</a>
                </h3>
                
                <p>versionError returns err wrapped in a ModuleError for p.path.</p>
@@ -3093,21 +3384,23 @@ have trivial bases!</p>
                <pre><code>func (p *proxyRepo) versionError(version string, err error) error</code></pre>
             </article>
             
-            <article class="function" data-name="versionToRev">
+            <article class="function symbol-anchor" id="versionToRev" data-name="versionToRev">
                <h3>
                   versionToRev 
                   <span class="badge method-badge">method</span>
                   
+                  <a href="#versionToRev" class="anchor" title="Link to versionToRev">#</a>
                </h3>
                
                <pre><code>func (r *codeRepo) versionToRev(version string) (rev string, err error)</code></pre>
             </article>
             
-            <article class="function" data-name="writeDiskCache">
+            <article class="function symbol-anchor" id="writeDiskCache" data-name="writeDiskCache">
                <h3>
                   writeDiskCache 
                   <span class="badge">function</span>
                   
+                  <a href="#writeDiskCache" class="anchor" title="Link to writeDiskCache">#</a>
                </h3>
                
                <p>writeDiskCache is the generic "write to a cache file" implementation.
@@ -3116,11 +3409,12 @@ The file must have been returned by a previous call to readDiskCache.</p>
                <pre><code>func writeDiskCache(ctx context.Context, file string, data []byte) error</code></pre>
             </article>
             
-            <article class="function" data-name="writeDiskGoMod">
+            <article class="function symbol-anchor" id="writeDiskGoMod" data-name="writeDiskGoMod">
                <h3>
                   writeDiskGoMod 
                   <span class="badge">function</span>
                   
+                  <a href="#writeDiskGoMod" class="anchor" title="Link to writeDiskGoMod">#</a>
                </h3>
                
                <p>writeDiskGoMod writes a go.mod cache entry.
@@ -3129,11 +3423,12 @@ The file name must have been returned by a previous call to readDiskGoMod.</p>
                <pre><code>func writeDiskGoMod(ctx context.Context, file string, text []byte) error</code></pre>
             </article>
             
-            <article class="function" data-name="writeDiskStat">
+            <article class="function symbol-anchor" id="writeDiskStat" data-name="writeDiskStat">
                <h3>
                   writeDiskStat 
                   <span class="badge">function</span>
                   
+                  <a href="#writeDiskStat" class="anchor" title="Link to writeDiskStat">#</a>
                </h3>
                
                <p>writeDiskStat writes a stat result cache entry.
@@ -3149,6 +3444,45 @@ The file name must have been returned by a previous call to readDiskStat.</p>
       <script>
          function isPrivate(name) {
             return /^[a-z]/.test(name);
+         }
+
+         function buildSymbolIndex() {
+            const symbolIndex = document.getElementById('symbolIndex');
+            if (!symbolIndex) return;
+
+            const symbols = [];
+            
+            document.querySelectorAll('article[data-name]').forEach(article => {
+               const name = article.dataset.name;
+               const type = article.className.split(' ')[0]; 
+               const isPrivateSymbol = isPrivate(name);
+               
+               if (name && name !== 'imports') {
+                  symbols.push({
+                     name,
+                     type,
+                     element: article,
+                     isPrivate: isPrivateSymbol
+                  });
+               }
+            });
+
+            symbols.sort((a, b) => a.name.localeCompare(b.name));
+            symbolIndex.innerHTML = '';
+            symbols.forEach(symbol => {
+               const li = document.createElement('li');
+               const a = document.createElement('a');
+               a.href = `#${symbol.name}`;
+               a.textContent = symbol.name;
+               a.title = `${symbol.type}: ${symbol.name}`;
+               
+               if (symbol.isPrivate) {
+                  li.classList.add('private', 'hidden');
+               }
+               
+               li.appendChild(a);
+               symbolIndex.appendChild(li);
+            });
          }
 
          document.addEventListener("DOMContentLoaded", () => {
@@ -3180,6 +3514,18 @@ The file name must have been returned by a previous call to readDiskStat.</p>
                         .forEach((el) => {
                            el.classList.toggle("hidden", !show);
                         });
+                     
+                     const symbolIndexItems = document.querySelectorAll('#symbolIndex li.private');
+                     symbolIndexItems.forEach(li => {
+                        const link = li.querySelector('a');
+                        if (link) {
+                           const targetId = link.getAttribute('href').substring(1);
+                           const targetEl = document.getElementById(targetId);
+                           if (targetEl && targetEl.matches(selector)) {
+                              li.classList.toggle("hidden", !show);
+                           }
+                        }
+                     });
                   });
                }
             };
@@ -3231,7 +3577,6 @@ The file name must have been returned by a previous call to readDiskStat.</p>
                   }
                });
 
-            // Handle private methods in interfaces
             document
                .querySelectorAll("article.interface")
                .forEach((article) => {
@@ -3262,7 +3607,6 @@ The file name must have been returned by a previous call to readDiskStat.</p>
                   codeBlock.innerHTML = newContent;
 
                   if (toggles.fields) {
-                     // Reuse fields toggle for interface methods
                      toggles.fields.addEventListener("change", () => {
                         const show = toggles.fields.checked;
                         article
@@ -3290,7 +3634,6 @@ The file name must have been returned by a previous call to readDiskStat.</p>
                            el.textContent.toLowerCase().includes(query));
 
                      if (matches) {
-                        // Only show if not hidden by privacy filters
                         const isPrivateEl =
                            el.classList.contains("private");
                         const shouldShowPrivate =
@@ -3303,10 +3646,30 @@ The file name must have been returned by a previous call to readDiskStat.</p>
                         el.classList.add("hidden");
                      }
                   });
+
+                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                     const link = li.querySelector('a');
+                     if (link) {
+                        const symbolName = link.textContent.toLowerCase();
+                        const matches = query === "" || symbolName.includes(query);
+                        
+                        if (matches) {
+                           const isPrivateSymbol = li.classList.contains('private');
+                           const targetId = link.getAttribute('href').substring(1);
+                           const targetEl = document.getElementById(targetId);
+                           const shouldShowPrivate = targetEl ? getPrivateToggleState(targetEl) : false;
+                           
+                           if (!isPrivateSymbol || shouldShowPrivate) {
+                              li.style.display = '';
+                           }
+                        } else {
+                           li.style.display = 'none';
+                        }
+                     }
+                  });
                });
             }
 
-            // Helper function to check if private elements should be shown
             function getPrivateToggleState(element) {
                if (element.classList.contains("function")) {
                   return toggles.functions?.checked || false;
@@ -3324,9 +3687,10 @@ The file name must have been returned by a previous call to readDiskStat.</p>
                return false;
             }
 
+            buildSymbolIndex();
+
             document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
                anchor.addEventListener("click", function (e) {
-                  e.preventDefault();
                   const target = document.querySelector(
                      this.getAttribute("href")
                   );
@@ -3338,6 +3702,31 @@ The file name must have been returned by a previous call to readDiskStat.</p>
                   }
                });
             });
+
+            window.addEventListener('hashchange', () => {
+               const hash = window.location.hash;
+               if (hash) {
+                  const target = document.querySelector(hash);
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
+                  }
+               }
+            });
+
+            if (window.location.hash) {
+               setTimeout(() => {
+                  const target = document.querySelector(window.location.hash);
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
+                  }
+               }, 100);
+            }
          });
       </script>
    </body>
