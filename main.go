@@ -22,7 +22,7 @@ var tmpl string
 //go:embed views/index.htmx
 var indexTmpl string
 
-const ver = "v1.2.2"
+const ver = "v1.2.5"
 
 func main() {
 	if len(os.Args) < 2 {
