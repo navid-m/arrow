@@ -139,6 +139,10 @@
             scroll-margin-top: 2rem;
          }
 
+         pre, code {
+            white-space: pre;
+         }  
+
          pre[class*="language-"] {
             background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
             border: 1px solid rgba(255, 255, 255, 0.1) !important;
@@ -289,11 +293,6 @@
 
          .filter-toggle input {
             margin-right: 0.6rem;
-         }
-
-         .field-line,
-         .method-line {
-            display: block;
          }
 
          #searchInput {
@@ -812,50 +811,40 @@
             hideInitial("article.type", toggles.types);
             hideInitial("article.interface", toggles.interfaces);
 
-            document
-               .querySelectorAll("article.struct")
-               .forEach((article) => {
-                  const codeBlock =
-                     article.querySelector("code.fields-code");
-                  if (!codeBlock) return;
+            document.querySelectorAll("article.struct").forEach((article) => {
+               const codeBlock = article.querySelector("code.fields-code");
+               if (!codeBlock) return;
 
-                  const lines = codeBlock.innerHTML.split("\n");
-                  const newContent = lines
-                     .map((line) => {
-                        const trimmed = line.trim();
-                        const nameMatch = trimmed.match(
-                           /^([A-Za-z_][A-Za-z0-9_]*)/
+               const raw = codeBlock.textContent.trim();
+
+               const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
+               if (!match) return;
+
+               const fieldsRaw = match[1].trim();
+               const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
+
+               const formatted = fields.map(line => `\t${line}`).join("\n");
+               const structName = article.dataset.name;
+
+               const finalCode = `type ${structName} struct {\n${formatted}\n}`;
+
+               codeBlock.textContent = finalCode;
+
+               // Apply Prism highlighting again
+               if (window.Prism) Prism.highlightElement(codeBlock);
+
+   
+               if (toggles.fields) {
+                  toggles.fields.addEventListener("change", () => {
+                     const show = toggles.fields.checked;
+                     article
+                        .querySelectorAll(".field-line.private")
+                        .forEach((el) =>
+                           el.classList.toggle("hidden", !show)
                         );
-                        if (!nameMatch && trimmed != "}") {
-                           line = line.replace(" {", "\n");
-                           return `<span class="field-line">${line}</span>`;
-                        }
-                        if (nameMatch == null) return;
-                        const name = nameMatch[1];
-                        const isPriv = isPrivate(name);
-                        return `<span class="field-line${
-                           isPriv ? " hidden private" : ""
-                        }" data-name="${name}">${line}</span>`;
-                     })
-                     .join("");
-
-                  codeBlock.innerHTML = newContent;
-
-                  if (window.Prism) {
-                     Prism.highlightElement(codeBlock);
-                  }
-
-                  if (toggles.fields) {
-                     toggles.fields.addEventListener("change", () => {
-                        const show = toggles.fields.checked;
-                        article
-                           .querySelectorAll(".field-line.private")
-                           .forEach((el) =>
-                              el.classList.toggle("hidden", !show)
-                           );
-                     });
-                  }
-               });
+                  });
+               }
+            });
 
             document
                .querySelectorAll("article.interface")
@@ -882,7 +871,7 @@
                         const isPriv = isPrivate(name);
                         return `<span class="method-line${
                            isPriv ? " hidden private" : ""
-                        }" data-name="${name}">${line}</span>`;
+                        }" data-name="${name}">${line}</span><br />`;
                      })
                      .join("");
 
