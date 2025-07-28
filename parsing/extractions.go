@@ -30,7 +30,6 @@ func ExtractStructFields(structType *ast.StructType) string {
 	if structType.Fields == nil {
 		return ""
 	}
-
 	var fields []string
 	for _, field := range structType.Fields.List {
 		typeStr := ExprToString(field.Type)
@@ -46,7 +45,6 @@ func ExtractStructFields(structType *ast.StructType) string {
 			}
 		}
 	}
-
 	return strings.Join(fields, "\n")
 }
 
