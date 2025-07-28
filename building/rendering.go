@@ -256,6 +256,8 @@ func RenderDocs(
 			continue
 		}
 
+		fmt.Printf("Generated %s\n", outFile)
+
 		indexEntry := models.IndexEntry{
 			PackageName: pkgName,
 			DocFile:     currentDocFile,
