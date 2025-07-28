@@ -65,6 +65,7 @@ func main() {
 
 	var (
 		indexEntries []models.IndexEntry
+		seenPackages = make(map[string]bool)
 		mu           sync.Mutex
 		wg           sync.WaitGroup
 	)
@@ -103,8 +104,14 @@ func main() {
 		go func(docFileName, relPath string, pkgs map[string]*ast.Package) {
 			defer wg.Done()
 			entries := building.RenderDocs(tmpl, docFileName, relPath, pkgs, docDir, srcPath)
+
 			mu.Lock()
-			indexEntries = append(indexEntries, entries...)
+			for _, entry := range entries {
+				if !seenPackages[entry.PackageName] {
+					seenPackages[entry.PackageName] = true
+					indexEntries = append(indexEntries, entry)
+				}
+			}
 			mu.Unlock()
 		}(docFileName, relPath, filteredPkgs)
 
