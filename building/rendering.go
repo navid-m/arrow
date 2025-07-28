@@ -3,6 +3,7 @@ package building
 import (
 	"fmt"
 	"go/ast"
+	"go/parser"
 	"go/token"
 	"os"
 	"path/filepath"
@@ -50,9 +51,41 @@ func findImmediateSubpackages(srcPath, relPath string) []models.IndexEntry {
 		}
 
 		if len(nonTestFiles) > 0 {
-			subDocFile := strings.ReplaceAll(subPkgPath, string(filepath.Separator), "_") + "-docs.html"
+			fset := token.NewFileSet()
+			pkgs, err := parser.ParseDir(fset, subPkgFullPath, func(fi os.FileInfo) bool {
+				return strings.HasSuffix(fi.Name(), ".go") && !strings.HasSuffix(fi.Name(), "_test.go")
+			}, 0)
+
+			if err != nil {
+				continue
+			}
+
+			filteredPkgs := make(map[string]*ast.Package)
+			for pkgName, pkg := range pkgs {
+				if !strings.HasSuffix(pkgName, "_test") {
+					filteredPkgs[pkgName] = pkg
+				}
+			}
+
+			baseDocFile := strings.ReplaceAll(subPkgPath, string(filepath.Separator), "_")
 			if relPath == "." || relPath == "" {
-				subDocFile = item.Name() + "-docs.html"
+				baseDocFile = item.Name()
+			}
+
+			var subDocFile string
+			if len(filteredPkgs) > 1 {
+				if _, exists := filteredPkgs[item.Name()]; exists {
+					subDocFile = fmt.Sprintf("%s-%s-docs.html", baseDocFile, item.Name())
+				} else {
+					var pkgNames []string
+					for pkgName := range filteredPkgs {
+						pkgNames = append(pkgNames, pkgName)
+					}
+					sort.Strings(pkgNames)
+					subDocFile = fmt.Sprintf("%s-%s-docs.html", baseDocFile, pkgNames[0])
+				}
+			} else {
+				subDocFile = baseDocFile + "-docs.html"
 			}
 
 			subPackages = append(subPackages, models.IndexEntry{
