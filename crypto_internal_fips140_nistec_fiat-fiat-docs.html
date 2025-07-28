@@ -1,0 +1,2880 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+   <head>
+      <meta charset="UTF-8" />
+      <meta
+         name="viewport"
+         content="width=device-width, initial-scale=1.0"
+      />
+      <title>fiat - Documentation</title>
+      <link
+         href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
+         rel="stylesheet"
+      />
+      <link
+         href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
+         rel="stylesheet"
+      />
+      <style>
+         html {
+            font-size: 14px;
+            scroll-behavior: smooth;
+         }
+
+         body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+            line-height: 1.6;
+         }
+
+         .sidebar {
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
+            overflow-y: auto;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
+         main {
+            flex: 1;
+            padding: 2rem;
+            margin: 0;
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
+         }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
+         h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+         }
+
+         h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
+            font-size: 1.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
+            position: relative;
+         }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            color: #ccc;
+         }
+
+         .anchor {
+            color: rgba(255, 255, 255, 0.3);
+            text-decoration: none;
+            font-weight: normal;
+            margin-left: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            font-size: 0.8em;
+         }
+
+         h3:hover .anchor,
+         .anchor:focus {
+            opacity: 1;
+         }
+
+         .anchor:hover {
+            color: rgba(255, 255, 255, 0.6);
+         }
+
+         .symbol-anchor {
+            scroll-margin-top: 2rem;
+         }
+
+         pre, code {
+            white-space: pre;
+         }  
+
+         pre[class*="language-"] {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+            border-radius: 8px !important;
+            margin: 1rem 0 !important;
+            padding: 1rem 1.2rem !important;
+            font-size: 0.9rem !important;
+            overflow-x: auto !important;
+         }
+
+         code[class*="language-"] {
+            color: #e6e6e6 !important;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace !important;
+            white-space: pre-wrap !important;
+         }
+
+         pre:not([class*="language-"]) {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+         }
+
+         pre:not([class*="language-"]) code {
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+            white-space: pre-wrap;
+         }
+
+         .token.comment,
+         .token.prolog,
+         .token.doctype,
+         .token.cdata {
+            color: #7c7c7c !important;
+         }
+
+         .token.punctuation {
+            color: #c9c9c9 !important;
+         }
+
+         .token.property,
+         .token.tag,
+         .token.boolean,
+         .token.number,
+         .token.constant,
+         .token.symbol,
+         .token.deleted {
+            color: #f2777a !important;
+         }
+
+         .token.selector,
+         .token.attr-name,
+         .token.string,
+         .token.char,
+         .token.builtin,
+         .token.inserted {
+            color: #639fc2 !important;
+         }
+
+         .token.operator,
+         .token.entity,
+         .token.url,
+         .language-css .token.string,
+         .style .token.string {
+            color: #66cccc !important;
+         }
+
+         .token.atrule,
+         .token.attr-value,
+         .token.keyword {
+            color: #d34343 !important;
+         }
+
+         .token.function,
+         .token.class-name {
+            color: #f99157 !important;
+         }
+
+         .token.regex,
+         .token.important,
+         .token.variable {
+            color: #ffcc66 !important;
+         }
+
+         p {
+            font-size: 15px;
+            margin: 1rem 0;
+            color: #ddd;
+         }
+
+         article {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+         }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
+         article:target {
+            border-color: rgba(100, 200, 255, 0.5);
+            box-shadow: 0 0 0 2px rgba(100, 200, 255, 0.2);
+         }
+
+         .hidden {
+            display: none !important;
+         }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
+         .filter-toggle label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
+         }
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         .symbol-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.2);
+         }
+
+         .symbol-list::-webkit-scrollbar {
+            width: 4px;
+         }
+
+         .symbol-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+         }
+
+         .symbol-list ul {
+            list-style: none;
+            padding: 0.5rem;
+            margin: 0;
+         }
+
+         .symbol-list li {
+            margin-bottom: 0.2rem;
+         }
+
+         .symbol-list a {
+            display: block;
+            padding: 0.3rem 0.5rem;
+            color: #bbb;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            font-size: 0.75rem;
+         }
+
+         .symbol-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
+         }
+      </style>
+   </head>
+   <body>
+      <aside class="sidebar">
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
+         </div>
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
+         
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                 
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
+
+         <div class="filter-section">
+            <h3>All Symbols</h3>
+            <div class="symbol-list">
+               <ul id="symbolIndex">
+               </ul>
+            </div>
+         </div>
+         
+      </aside>
+
+      <main>
+         <h1>fiat</h1>
+         <div class="section-divider"></div>
+
+         
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports symbol-anchor" id="imports-section" data-name="imports">
+               <h3>
+                  Imports
+                  <a href="#imports-section" class="anchor" title="Link to imports">#</a>
+               </h3>
+               <pre><code class="language-go">"crypto/internal/fips140/subtle"
+"errors"
+"crypto/internal/fips140/subtle"
+"errors"
+"math/bits"
+_ "crypto/internal/fips140/check"
+"math/bits"
+"math/bits"
+"crypto/internal/fips140/subtle"
+"errors"
+"crypto/internal/fips140/subtle"
+"errors"
+"math/bits"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
+            
+            <article class="global symbol-anchor" id="p224ElementLen" data-name="p224ElementLen">
+               <h3>
+                  p224ElementLen 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#p224ElementLen" class="anchor" title="Link to p224ElementLen">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const p224ElementLen = 28</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="p256ElementLen" data-name="p256ElementLen">
+               <h3>
+                  p256ElementLen 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#p256ElementLen" class="anchor" title="Link to p256ElementLen">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const p256ElementLen = 32</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="p384ElementLen" data-name="p384ElementLen">
+               <h3>
+                  p384ElementLen 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#p384ElementLen" class="anchor" title="Link to p384ElementLen">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const p384ElementLen = 48</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="p521ElementLen" data-name="p521ElementLen">
+               <h3>
+                  p521ElementLen 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#p521ElementLen" class="anchor" title="Link to p521ElementLen">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const p521ElementLen = 66</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="types">
+            <h2>Type Aliases</h2>
+            
+            <article class="type symbol-anchor" id="p224Int1" data-name="p224Int1">
+               <h3>
+                  p224Int1
+                  <span class="badge type-badge">type</span>
+                  <a href="#p224Int1" class="anchor" title="Link to p224Int1">#</a>
+               </h3>
+               
+               <pre><code class="language-go">type p224Int1 int64</code></pre>
+            </article>
+            
+            <article class="type symbol-anchor" id="p224MontgomeryDomainFieldElement" data-name="p224MontgomeryDomainFieldElement">
+               <h3>
+                  p224MontgomeryDomainFieldElement
+                  <span class="badge type-badge">type</span>
+                  <a href="#p224MontgomeryDomainFieldElement" class="anchor" title="Link to p224MontgomeryDomainFieldElement">#</a>
+               </h3>
+               
+               <p>The type p224MontgomeryDomainFieldElement is a field element in the Montgomery domain.
+Bounds: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]</p>
+               
+               <pre><code class="language-go">type p224MontgomeryDomainFieldElement [4]uint64</code></pre>
+            </article>
+            
+            <article class="type symbol-anchor" id="p224NonMontgomeryDomainFieldElement" data-name="p224NonMontgomeryDomainFieldElement">
+               <h3>
+                  p224NonMontgomeryDomainFieldElement
+                  <span class="badge type-badge">type</span>
+                  <a href="#p224NonMontgomeryDomainFieldElement" class="anchor" title="Link to p224NonMontgomeryDomainFieldElement">#</a>
+               </h3>
+               
+               <p>The type p224NonMontgomeryDomainFieldElement is a field element NOT in the Montgomery domain.
+Bounds: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]</p>
+               
+               <pre><code class="language-go">type p224NonMontgomeryDomainFieldElement [4]uint64</code></pre>
+            </article>
+            
+            <article class="type symbol-anchor" id="p224Uint1" data-name="p224Uint1">
+               <h3>
+                  p224Uint1
+                  <span class="badge type-badge">type</span>
+                  <a href="#p224Uint1" class="anchor" title="Link to p224Uint1">#</a>
+               </h3>
+               
+               <pre><code class="language-go">type p224Uint1 uint64</code></pre>
+            </article>
+            
+            <article class="type symbol-anchor" id="p224UntypedFieldElement" data-name="p224UntypedFieldElement">
+               <h3>
+                  p224UntypedFieldElement
+                  <span class="badge type-badge">type</span>
+                  <a href="#p224UntypedFieldElement" class="anchor" title="Link to p224UntypedFieldElement">#</a>
+               </h3>
+               
+               <pre><code class="language-go">type p224UntypedFieldElement [4]uint64</code></pre>
+            </article>
+            
+            <article class="type symbol-anchor" id="p256Int1" data-name="p256Int1">
+               <h3>
+                  p256Int1
+                  <span class="badge type-badge">type</span>
+                  <a href="#p256Int1" class="anchor" title="Link to p256Int1">#</a>
+               </h3>
+               
+               <pre><code class="language-go">type p256Int1 int64</code></pre>
+            </article>
+            
+            <article class="type symbol-anchor" id="p256MontgomeryDomainFieldElement" data-name="p256MontgomeryDomainFieldElement">
+               <h3>
+                  p256MontgomeryDomainFieldElement
+                  <span class="badge type-badge">type</span>
+                  <a href="#p256MontgomeryDomainFieldElement" class="anchor" title="Link to p256MontgomeryDomainFieldElement">#</a>
+               </h3>
+               
+               <p>The type p256MontgomeryDomainFieldElement is a field element in the Montgomery domain.
+Bounds: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]</p>
+               
+               <pre><code class="language-go">type p256MontgomeryDomainFieldElement [4]uint64</code></pre>
+            </article>
+            
+            <article class="type symbol-anchor" id="p256NonMontgomeryDomainFieldElement" data-name="p256NonMontgomeryDomainFieldElement">
+               <h3>
+                  p256NonMontgomeryDomainFieldElement
+                  <span class="badge type-badge">type</span>
+                  <a href="#p256NonMontgomeryDomainFieldElement" class="anchor" title="Link to p256NonMontgomeryDomainFieldElement">#</a>
+               </h3>
+               
+               <p>The type p256NonMontgomeryDomainFieldElement is a field element NOT in the Montgomery domain.
+Bounds: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]</p>
+               
+               <pre><code class="language-go">type p256NonMontgomeryDomainFieldElement [4]uint64</code></pre>
+            </article>
+            
+            <article class="type symbol-anchor" id="p256Uint1" data-name="p256Uint1">
+               <h3>
+                  p256Uint1
+                  <span class="badge type-badge">type</span>
+                  <a href="#p256Uint1" class="anchor" title="Link to p256Uint1">#</a>
+               </h3>
+               
+               <pre><code class="language-go">type p256Uint1 uint64</code></pre>
+            </article>
+            
+            <article class="type symbol-anchor" id="p256UntypedFieldElement" data-name="p256UntypedFieldElement">
+               <h3>
+                  p256UntypedFieldElement
+                  <span class="badge type-badge">type</span>
+                  <a href="#p256UntypedFieldElement" class="anchor" title="Link to p256UntypedFieldElement">#</a>
+               </h3>
+               
+               <pre><code class="language-go">type p256UntypedFieldElement [4]uint64</code></pre>
+            </article>
+            
+            <article class="type symbol-anchor" id="p384Int1" data-name="p384Int1">
+               <h3>
+                  p384Int1
+                  <span class="badge type-badge">type</span>
+                  <a href="#p384Int1" class="anchor" title="Link to p384Int1">#</a>
+               </h3>
+               
+               <pre><code class="language-go">type p384Int1 int64</code></pre>
+            </article>
+            
+            <article class="type symbol-anchor" id="p384MontgomeryDomainFieldElement" data-name="p384MontgomeryDomainFieldElement">
+               <h3>
+                  p384MontgomeryDomainFieldElement
+                  <span class="badge type-badge">type</span>
+                  <a href="#p384MontgomeryDomainFieldElement" class="anchor" title="Link to p384MontgomeryDomainFieldElement">#</a>
+               </h3>
+               
+               <p>The type p384MontgomeryDomainFieldElement is a field element in the Montgomery domain.
+Bounds: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]</p>
+               
+               <pre><code class="language-go">type p384MontgomeryDomainFieldElement [6]uint64</code></pre>
+            </article>
+            
+            <article class="type symbol-anchor" id="p384NonMontgomeryDomainFieldElement" data-name="p384NonMontgomeryDomainFieldElement">
+               <h3>
+                  p384NonMontgomeryDomainFieldElement
+                  <span class="badge type-badge">type</span>
+                  <a href="#p384NonMontgomeryDomainFieldElement" class="anchor" title="Link to p384NonMontgomeryDomainFieldElement">#</a>
+               </h3>
+               
+               <p>The type p384NonMontgomeryDomainFieldElement is a field element NOT in the Montgomery domain.
+Bounds: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]</p>
+               
+               <pre><code class="language-go">type p384NonMontgomeryDomainFieldElement [6]uint64</code></pre>
+            </article>
+            
+            <article class="type symbol-anchor" id="p384Uint1" data-name="p384Uint1">
+               <h3>
+                  p384Uint1
+                  <span class="badge type-badge">type</span>
+                  <a href="#p384Uint1" class="anchor" title="Link to p384Uint1">#</a>
+               </h3>
+               
+               <pre><code class="language-go">type p384Uint1 uint64</code></pre>
+            </article>
+            
+            <article class="type symbol-anchor" id="p384UntypedFieldElement" data-name="p384UntypedFieldElement">
+               <h3>
+                  p384UntypedFieldElement
+                  <span class="badge type-badge">type</span>
+                  <a href="#p384UntypedFieldElement" class="anchor" title="Link to p384UntypedFieldElement">#</a>
+               </h3>
+               
+               <pre><code class="language-go">type p384UntypedFieldElement [6]uint64</code></pre>
+            </article>
+            
+            <article class="type symbol-anchor" id="p521Int1" data-name="p521Int1">
+               <h3>
+                  p521Int1
+                  <span class="badge type-badge">type</span>
+                  <a href="#p521Int1" class="anchor" title="Link to p521Int1">#</a>
+               </h3>
+               
+               <pre><code class="language-go">type p521Int1 int64</code></pre>
+            </article>
+            
+            <article class="type symbol-anchor" id="p521MontgomeryDomainFieldElement" data-name="p521MontgomeryDomainFieldElement">
+               <h3>
+                  p521MontgomeryDomainFieldElement
+                  <span class="badge type-badge">type</span>
+                  <a href="#p521MontgomeryDomainFieldElement" class="anchor" title="Link to p521MontgomeryDomainFieldElement">#</a>
+               </h3>
+               
+               <p>The type p521MontgomeryDomainFieldElement is a field element in the Montgomery domain.
+Bounds: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]</p>
+               
+               <pre><code class="language-go">type p521MontgomeryDomainFieldElement [9]uint64</code></pre>
+            </article>
+            
+            <article class="type symbol-anchor" id="p521NonMontgomeryDomainFieldElement" data-name="p521NonMontgomeryDomainFieldElement">
+               <h3>
+                  p521NonMontgomeryDomainFieldElement
+                  <span class="badge type-badge">type</span>
+                  <a href="#p521NonMontgomeryDomainFieldElement" class="anchor" title="Link to p521NonMontgomeryDomainFieldElement">#</a>
+               </h3>
+               
+               <p>The type p521NonMontgomeryDomainFieldElement is a field element NOT in the Montgomery domain.
+Bounds: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]</p>
+               
+               <pre><code class="language-go">type p521NonMontgomeryDomainFieldElement [9]uint64</code></pre>
+            </article>
+            
+            <article class="type symbol-anchor" id="p521Uint1" data-name="p521Uint1">
+               <h3>
+                  p521Uint1
+                  <span class="badge type-badge">type</span>
+                  <a href="#p521Uint1" class="anchor" title="Link to p521Uint1">#</a>
+               </h3>
+               
+               <pre><code class="language-go">type p521Uint1 uint64</code></pre>
+            </article>
+            
+            <article class="type symbol-anchor" id="p521UntypedFieldElement" data-name="p521UntypedFieldElement">
+               <h3>
+                  p521UntypedFieldElement
+                  <span class="badge type-badge">type</span>
+                  <a href="#p521UntypedFieldElement" class="anchor" title="Link to p521UntypedFieldElement">#</a>
+               </h3>
+               
+               <pre><code class="language-go">type p521UntypedFieldElement [9]uint64</code></pre>
+            </article>
+            
+         </section>
+           
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct symbol-anchor" id="P224Element" data-name="P224Element">
+               <h3>
+                  P224Element
+                  <span class="badge">struct</span>
+                  <a href="#P224Element" class="anchor" title="Link to P224Element">#</a>
+               </h3>
+               
+               <p>P224Element is an integer modulo 2^224 - 2^96 + 1.
+The zero value is a valid zero element.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code language-go">type P224Element struct {
+x p224MontgomeryDomainFieldElement
+}</code></pre>
+            </article>
+            
+            <article class="struct symbol-anchor" id="P256Element" data-name="P256Element">
+               <h3>
+                  P256Element
+                  <span class="badge">struct</span>
+                  <a href="#P256Element" class="anchor" title="Link to P256Element">#</a>
+               </h3>
+               
+               <p>P256Element is an integer modulo 2^256 - 2^224 + 2^192 + 2^96 - 1.
+The zero value is a valid zero element.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code language-go">type P256Element struct {
+x p256MontgomeryDomainFieldElement
+}</code></pre>
+            </article>
+            
+            <article class="struct symbol-anchor" id="P384Element" data-name="P384Element">
+               <h3>
+                  P384Element
+                  <span class="badge">struct</span>
+                  <a href="#P384Element" class="anchor" title="Link to P384Element">#</a>
+               </h3>
+               
+               <p>P384Element is an integer modulo 2^384 - 2^128 - 2^96 + 2^32 - 1.
+The zero value is a valid zero element.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code language-go">type P384Element struct {
+x p384MontgomeryDomainFieldElement
+}</code></pre>
+            </article>
+            
+            <article class="struct symbol-anchor" id="P521Element" data-name="P521Element">
+               <h3>
+                  P521Element
+                  <span class="badge">struct</span>
+                  <a href="#P521Element" class="anchor" title="Link to P521Element">#</a>
+               </h3>
+               
+               <p>P521Element is an integer modulo 2^521 - 1.
+The zero value is a valid zero element.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code language-go">type P521Element struct {
+x p521MontgomeryDomainFieldElement
+}</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="functions">
+            <h2>Functions</h2>
+            
+            <article class="function symbol-anchor" id="Add" data-name="Add">
+               <h3>
+                  Add 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Add" class="anchor" title="Link to Add">#</a>
+               </h3>
+               
+               <p>Add sets e = t1 + t2, and returns e.</p>
+               
+               <pre><code class="language-go">func (e *P384Element) Add(t1 *P384Element, t2 *P384Element) *P384Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Add" data-name="Add">
+               <h3>
+                  Add 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Add" class="anchor" title="Link to Add">#</a>
+               </h3>
+               
+               <p>Add sets e = t1 + t2, and returns e.</p>
+               
+               <pre><code class="language-go">func (e *P521Element) Add(t1 *P521Element, t2 *P521Element) *P521Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Add" data-name="Add">
+               <h3>
+                  Add 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Add" class="anchor" title="Link to Add">#</a>
+               </h3>
+               
+               <p>Add sets e = t1 + t2, and returns e.</p>
+               
+               <pre><code class="language-go">func (e *P256Element) Add(t1 *P256Element, t2 *P256Element) *P256Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Add" data-name="Add">
+               <h3>
+                  Add 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Add" class="anchor" title="Link to Add">#</a>
+               </h3>
+               
+               <p>Add sets e = t1 + t2, and returns e.</p>
+               
+               <pre><code class="language-go">func (e *P224Element) Add(t1 *P224Element, t2 *P224Element) *P224Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Bytes" data-name="Bytes">
+               <h3>
+                  Bytes 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Bytes" class="anchor" title="Link to Bytes">#</a>
+               </h3>
+               
+               <p>Bytes returns the 48-byte big-endian encoding of e.</p>
+               
+               <pre><code class="language-go">func (e *P384Element) Bytes() []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Bytes" data-name="Bytes">
+               <h3>
+                  Bytes 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Bytes" class="anchor" title="Link to Bytes">#</a>
+               </h3>
+               
+               <p>Bytes returns the 32-byte big-endian encoding of e.</p>
+               
+               <pre><code class="language-go">func (e *P256Element) Bytes() []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Bytes" data-name="Bytes">
+               <h3>
+                  Bytes 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Bytes" class="anchor" title="Link to Bytes">#</a>
+               </h3>
+               
+               <p>Bytes returns the 66-byte big-endian encoding of e.</p>
+               
+               <pre><code class="language-go">func (e *P521Element) Bytes() []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Bytes" data-name="Bytes">
+               <h3>
+                  Bytes 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Bytes" class="anchor" title="Link to Bytes">#</a>
+               </h3>
+               
+               <p>Bytes returns the 28-byte big-endian encoding of e.</p>
+               
+               <pre><code class="language-go">func (e *P224Element) Bytes() []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Equal" data-name="Equal">
+               <h3>
+                  Equal 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Equal" class="anchor" title="Link to Equal">#</a>
+               </h3>
+               
+               <p>Equal returns 1 if e == t, and zero otherwise.</p>
+               
+               <pre><code class="language-go">func (e *P224Element) Equal(t *P224Element) int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Equal" data-name="Equal">
+               <h3>
+                  Equal 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Equal" class="anchor" title="Link to Equal">#</a>
+               </h3>
+               
+               <p>Equal returns 1 if e == t, and zero otherwise.</p>
+               
+               <pre><code class="language-go">func (e *P256Element) Equal(t *P256Element) int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Equal" data-name="Equal">
+               <h3>
+                  Equal 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Equal" class="anchor" title="Link to Equal">#</a>
+               </h3>
+               
+               <p>Equal returns 1 if e == t, and zero otherwise.</p>
+               
+               <pre><code class="language-go">func (e *P384Element) Equal(t *P384Element) int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Equal" data-name="Equal">
+               <h3>
+                  Equal 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Equal" class="anchor" title="Link to Equal">#</a>
+               </h3>
+               
+               <p>Equal returns 1 if e == t, and zero otherwise.</p>
+               
+               <pre><code class="language-go">func (e *P521Element) Equal(t *P521Element) int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Invert" data-name="Invert">
+               <h3>
+                  Invert 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Invert" class="anchor" title="Link to Invert">#</a>
+               </h3>
+               
+               <p>Invert sets e = 1/x, and returns e.
+If x == 0, Invert returns e = 0.</p>
+               
+               <pre><code class="language-go">func (e *P521Element) Invert(x *P521Element) *P521Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Invert" data-name="Invert">
+               <h3>
+                  Invert 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Invert" class="anchor" title="Link to Invert">#</a>
+               </h3>
+               
+               <p>Invert sets e = 1/x, and returns e.
+If x == 0, Invert returns e = 0.</p>
+               
+               <pre><code class="language-go">func (e *P256Element) Invert(x *P256Element) *P256Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Invert" data-name="Invert">
+               <h3>
+                  Invert 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Invert" class="anchor" title="Link to Invert">#</a>
+               </h3>
+               
+               <p>Invert sets e = 1/x, and returns e.
+If x == 0, Invert returns e = 0.</p>
+               
+               <pre><code class="language-go">func (e *P384Element) Invert(x *P384Element) *P384Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Invert" data-name="Invert">
+               <h3>
+                  Invert 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Invert" class="anchor" title="Link to Invert">#</a>
+               </h3>
+               
+               <p>Invert sets e = 1/x, and returns e.
+If x == 0, Invert returns e = 0.</p>
+               
+               <pre><code class="language-go">func (e *P224Element) Invert(x *P224Element) *P224Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="IsZero" data-name="IsZero">
+               <h3>
+                  IsZero 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#IsZero" class="anchor" title="Link to IsZero">#</a>
+               </h3>
+               
+               <p>IsZero returns 1 if e == 0, and zero otherwise.</p>
+               
+               <pre><code class="language-go">func (e *P224Element) IsZero() int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="IsZero" data-name="IsZero">
+               <h3>
+                  IsZero 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#IsZero" class="anchor" title="Link to IsZero">#</a>
+               </h3>
+               
+               <p>IsZero returns 1 if e == 0, and zero otherwise.</p>
+               
+               <pre><code class="language-go">func (e *P521Element) IsZero() int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="IsZero" data-name="IsZero">
+               <h3>
+                  IsZero 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#IsZero" class="anchor" title="Link to IsZero">#</a>
+               </h3>
+               
+               <p>IsZero returns 1 if e == 0, and zero otherwise.</p>
+               
+               <pre><code class="language-go">func (e *P384Element) IsZero() int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="IsZero" data-name="IsZero">
+               <h3>
+                  IsZero 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#IsZero" class="anchor" title="Link to IsZero">#</a>
+               </h3>
+               
+               <p>IsZero returns 1 if e == 0, and zero otherwise.</p>
+               
+               <pre><code class="language-go">func (e *P256Element) IsZero() int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Mul" data-name="Mul">
+               <h3>
+                  Mul 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Mul" class="anchor" title="Link to Mul">#</a>
+               </h3>
+               
+               <p>Mul sets e = t1 * t2, and returns e.</p>
+               
+               <pre><code class="language-go">func (e *P384Element) Mul(t1 *P384Element, t2 *P384Element) *P384Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Mul" data-name="Mul">
+               <h3>
+                  Mul 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Mul" class="anchor" title="Link to Mul">#</a>
+               </h3>
+               
+               <p>Mul sets e = t1 * t2, and returns e.</p>
+               
+               <pre><code class="language-go">func (e *P256Element) Mul(t1 *P256Element, t2 *P256Element) *P256Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Mul" data-name="Mul">
+               <h3>
+                  Mul 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Mul" class="anchor" title="Link to Mul">#</a>
+               </h3>
+               
+               <p>Mul sets e = t1 * t2, and returns e.</p>
+               
+               <pre><code class="language-go">func (e *P224Element) Mul(t1 *P224Element, t2 *P224Element) *P224Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Mul" data-name="Mul">
+               <h3>
+                  Mul 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Mul" class="anchor" title="Link to Mul">#</a>
+               </h3>
+               
+               <p>Mul sets e = t1 * t2, and returns e.</p>
+               
+               <pre><code class="language-go">func (e *P521Element) Mul(t1 *P521Element, t2 *P521Element) *P521Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="One" data-name="One">
+               <h3>
+                  One 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#One" class="anchor" title="Link to One">#</a>
+               </h3>
+               
+               <p>One sets e = 1, and returns e.</p>
+               
+               <pre><code class="language-go">func (e *P224Element) One() *P224Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="One" data-name="One">
+               <h3>
+                  One 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#One" class="anchor" title="Link to One">#</a>
+               </h3>
+               
+               <p>One sets e = 1, and returns e.</p>
+               
+               <pre><code class="language-go">func (e *P256Element) One() *P256Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="One" data-name="One">
+               <h3>
+                  One 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#One" class="anchor" title="Link to One">#</a>
+               </h3>
+               
+               <p>One sets e = 1, and returns e.</p>
+               
+               <pre><code class="language-go">func (e *P521Element) One() *P521Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="One" data-name="One">
+               <h3>
+                  One 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#One" class="anchor" title="Link to One">#</a>
+               </h3>
+               
+               <p>One sets e = 1, and returns e.</p>
+               
+               <pre><code class="language-go">func (e *P384Element) One() *P384Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Select" data-name="Select">
+               <h3>
+                  Select 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Select" class="anchor" title="Link to Select">#</a>
+               </h3>
+               
+               <p>Select sets v to a if cond == 1, and to b if cond == 0.</p>
+               
+               <pre><code class="language-go">func (v *P384Element) Select(a *P384Element, b *P384Element, cond int) *P384Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Select" data-name="Select">
+               <h3>
+                  Select 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Select" class="anchor" title="Link to Select">#</a>
+               </h3>
+               
+               <p>Select sets v to a if cond == 1, and to b if cond == 0.</p>
+               
+               <pre><code class="language-go">func (v *P521Element) Select(a *P521Element, b *P521Element, cond int) *P521Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Select" data-name="Select">
+               <h3>
+                  Select 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Select" class="anchor" title="Link to Select">#</a>
+               </h3>
+               
+               <p>Select sets v to a if cond == 1, and to b if cond == 0.</p>
+               
+               <pre><code class="language-go">func (v *P224Element) Select(a *P224Element, b *P224Element, cond int) *P224Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Select" data-name="Select">
+               <h3>
+                  Select 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Select" class="anchor" title="Link to Select">#</a>
+               </h3>
+               
+               <p>Select sets v to a if cond == 1, and to b if cond == 0.</p>
+               
+               <pre><code class="language-go">func (v *P256Element) Select(a *P256Element, b *P256Element, cond int) *P256Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Set" data-name="Set">
+               <h3>
+                  Set 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Set" class="anchor" title="Link to Set">#</a>
+               </h3>
+               
+               <p>Set sets e = t, and returns e.</p>
+               
+               <pre><code class="language-go">func (e *P224Element) Set(t *P224Element) *P224Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Set" data-name="Set">
+               <h3>
+                  Set 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Set" class="anchor" title="Link to Set">#</a>
+               </h3>
+               
+               <p>Set sets e = t, and returns e.</p>
+               
+               <pre><code class="language-go">func (e *P521Element) Set(t *P521Element) *P521Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Set" data-name="Set">
+               <h3>
+                  Set 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Set" class="anchor" title="Link to Set">#</a>
+               </h3>
+               
+               <p>Set sets e = t, and returns e.</p>
+               
+               <pre><code class="language-go">func (e *P256Element) Set(t *P256Element) *P256Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Set" data-name="Set">
+               <h3>
+                  Set 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Set" class="anchor" title="Link to Set">#</a>
+               </h3>
+               
+               <p>Set sets e = t, and returns e.</p>
+               
+               <pre><code class="language-go">func (e *P384Element) Set(t *P384Element) *P384Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="SetBytes" data-name="SetBytes">
+               <h3>
+                  SetBytes 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#SetBytes" class="anchor" title="Link to SetBytes">#</a>
+               </h3>
+               
+               <p>SetBytes sets e = v, where v is a big-endian 66-byte encoding, and returns e.
+If v is not 66 bytes or it encodes a value higher than 2^521 - 1,
+SetBytes returns nil and an error, and e is unchanged.</p>
+               
+               <pre><code class="language-go">func (e *P521Element) SetBytes(v []byte) (*P521Element, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="SetBytes" data-name="SetBytes">
+               <h3>
+                  SetBytes 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#SetBytes" class="anchor" title="Link to SetBytes">#</a>
+               </h3>
+               
+               <p>SetBytes sets e = v, where v is a big-endian 32-byte encoding, and returns e.
+If v is not 32 bytes or it encodes a value higher than 2^256 - 2^224 + 2^192 + 2^96 - 1,
+SetBytes returns nil and an error, and e is unchanged.</p>
+               
+               <pre><code class="language-go">func (e *P256Element) SetBytes(v []byte) (*P256Element, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="SetBytes" data-name="SetBytes">
+               <h3>
+                  SetBytes 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#SetBytes" class="anchor" title="Link to SetBytes">#</a>
+               </h3>
+               
+               <p>SetBytes sets e = v, where v is a big-endian 28-byte encoding, and returns e.
+If v is not 28 bytes or it encodes a value higher than 2^224 - 2^96 + 1,
+SetBytes returns nil and an error, and e is unchanged.</p>
+               
+               <pre><code class="language-go">func (e *P224Element) SetBytes(v []byte) (*P224Element, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="SetBytes" data-name="SetBytes">
+               <h3>
+                  SetBytes 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#SetBytes" class="anchor" title="Link to SetBytes">#</a>
+               </h3>
+               
+               <p>SetBytes sets e = v, where v is a big-endian 48-byte encoding, and returns e.
+If v is not 48 bytes or it encodes a value higher than 2^384 - 2^128 - 2^96 + 2^32 - 1,
+SetBytes returns nil and an error, and e is unchanged.</p>
+               
+               <pre><code class="language-go">func (e *P384Element) SetBytes(v []byte) (*P384Element, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Square" data-name="Square">
+               <h3>
+                  Square 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Square" class="anchor" title="Link to Square">#</a>
+               </h3>
+               
+               <p>Square sets e = t * t, and returns e.</p>
+               
+               <pre><code class="language-go">func (e *P224Element) Square(t *P224Element) *P224Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Square" data-name="Square">
+               <h3>
+                  Square 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Square" class="anchor" title="Link to Square">#</a>
+               </h3>
+               
+               <p>Square sets e = t * t, and returns e.</p>
+               
+               <pre><code class="language-go">func (e *P384Element) Square(t *P384Element) *P384Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Square" data-name="Square">
+               <h3>
+                  Square 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Square" class="anchor" title="Link to Square">#</a>
+               </h3>
+               
+               <p>Square sets e = t * t, and returns e.</p>
+               
+               <pre><code class="language-go">func (e *P256Element) Square(t *P256Element) *P256Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Square" data-name="Square">
+               <h3>
+                  Square 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Square" class="anchor" title="Link to Square">#</a>
+               </h3>
+               
+               <p>Square sets e = t * t, and returns e.</p>
+               
+               <pre><code class="language-go">func (e *P521Element) Square(t *P521Element) *P521Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Sub" data-name="Sub">
+               <h3>
+                  Sub 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Sub" class="anchor" title="Link to Sub">#</a>
+               </h3>
+               
+               <p>Sub sets e = t1 - t2, and returns e.</p>
+               
+               <pre><code class="language-go">func (e *P384Element) Sub(t1 *P384Element, t2 *P384Element) *P384Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Sub" data-name="Sub">
+               <h3>
+                  Sub 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Sub" class="anchor" title="Link to Sub">#</a>
+               </h3>
+               
+               <p>Sub sets e = t1 - t2, and returns e.</p>
+               
+               <pre><code class="language-go">func (e *P224Element) Sub(t1 *P224Element, t2 *P224Element) *P224Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Sub" data-name="Sub">
+               <h3>
+                  Sub 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Sub" class="anchor" title="Link to Sub">#</a>
+               </h3>
+               
+               <p>Sub sets e = t1 - t2, and returns e.</p>
+               
+               <pre><code class="language-go">func (e *P256Element) Sub(t1 *P256Element, t2 *P256Element) *P256Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Sub" data-name="Sub">
+               <h3>
+                  Sub 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Sub" class="anchor" title="Link to Sub">#</a>
+               </h3>
+               
+               <p>Sub sets e = t1 - t2, and returns e.</p>
+               
+               <pre><code class="language-go">func (e *P521Element) Sub(t1 *P521Element, t2 *P521Element) *P521Element</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="bytes" data-name="bytes">
+               <h3>
+                  bytes 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#bytes" class="anchor" title="Link to bytes">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (e *P224Element) bytes(out *[p224ElementLen]byte) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="bytes" data-name="bytes">
+               <h3>
+                  bytes 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#bytes" class="anchor" title="Link to bytes">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (e *P521Element) bytes(out *[p521ElementLen]byte) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="bytes" data-name="bytes">
+               <h3>
+                  bytes 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#bytes" class="anchor" title="Link to bytes">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (e *P384Element) bytes(out *[p384ElementLen]byte) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="bytes" data-name="bytes">
+               <h3>
+                  bytes 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#bytes" class="anchor" title="Link to bytes">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (e *P256Element) bytes(out *[p256ElementLen]byte) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p224Add" data-name="p224Add">
+               <h3>
+                  p224Add 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p224Add" class="anchor" title="Link to p224Add">#</a>
+               </h3>
+               
+               <p>p224Add adds two field elements in the Montgomery domain.
+Preconditions:
+0 ≤ eval arg1 < m
+0 ≤ eval arg2 < m
+Postconditions:
+eval (from_montgomery out1) mod m = (eval (from_montgomery arg1) + eval (from_montgomery arg2)) mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p224Add(out1 *p224MontgomeryDomainFieldElement, arg1 *p224MontgomeryDomainFieldElement, arg2 *p224MontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p224CmovznzU64" data-name="p224CmovznzU64">
+               <h3>
+                  p224CmovznzU64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p224CmovznzU64" class="anchor" title="Link to p224CmovznzU64">#</a>
+               </h3>
+               
+               <p>p224CmovznzU64 is a single-word conditional move.
+Postconditions:
+out1 = (if arg1 = 0 then arg2 else arg3)
+Input Bounds:
+arg1: [0x0 ~> 0x1]
+arg2: [0x0 ~> 0xffffffffffffffff]
+arg3: [0x0 ~> 0xffffffffffffffff]
+Output Bounds:
+out1: [0x0 ~> 0xffffffffffffffff]</p>
+               
+               <pre><code class="language-go">func p224CmovznzU64(out1 *uint64, arg1 p224Uint1, arg2 uint64, arg3 uint64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p224FromBytes" data-name="p224FromBytes">
+               <h3>
+                  p224FromBytes 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p224FromBytes" class="anchor" title="Link to p224FromBytes">#</a>
+               </h3>
+               
+               <p>p224FromBytes deserializes a field element NOT in the Montgomery domain from bytes in little-endian order.
+Preconditions:
+0 ≤ bytes_eval arg1 < m
+Postconditions:
+eval out1 mod m = bytes_eval arg1 mod m
+0 ≤ eval out1 < m
+Input Bounds:
+arg1: [[0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff]]
+Output Bounds:
+out1: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffff]]</p>
+               
+               <pre><code class="language-go">func p224FromBytes(out1 *[4]uint64, arg1 *[28]uint8)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p224FromMontgomery" data-name="p224FromMontgomery">
+               <h3>
+                  p224FromMontgomery 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p224FromMontgomery" class="anchor" title="Link to p224FromMontgomery">#</a>
+               </h3>
+               
+               <p>p224FromMontgomery translates a field element out of the Montgomery domain.
+Preconditions:
+0 ≤ eval arg1 < m
+Postconditions:
+eval out1 mod m = (eval arg1 * ((2^64)⁻¹ mod m)^4) mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p224FromMontgomery(out1 *p224NonMontgomeryDomainFieldElement, arg1 *p224MontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p224InvertEndianness" data-name="p224InvertEndianness">
+               <h3>
+                  p224InvertEndianness 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p224InvertEndianness" class="anchor" title="Link to p224InvertEndianness">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func p224InvertEndianness(v []byte)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p224Mul" data-name="p224Mul">
+               <h3>
+                  p224Mul 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p224Mul" class="anchor" title="Link to p224Mul">#</a>
+               </h3>
+               
+               <p>p224Mul multiplies two field elements in the Montgomery domain.
+Preconditions:
+0 ≤ eval arg1 < m
+0 ≤ eval arg2 < m
+Postconditions:
+eval (from_montgomery out1) mod m = (eval (from_montgomery arg1) * eval (from_montgomery arg2)) mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p224Mul(out1 *p224MontgomeryDomainFieldElement, arg1 *p224MontgomeryDomainFieldElement, arg2 *p224MontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p224Selectznz" data-name="p224Selectznz">
+               <h3>
+                  p224Selectznz 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p224Selectznz" class="anchor" title="Link to p224Selectznz">#</a>
+               </h3>
+               
+               <p>p224Selectznz is a multi-limb conditional select.
+Postconditions:
+eval out1 = (if arg1 = 0 then eval arg2 else eval arg3)
+Input Bounds:
+arg1: [0x0 ~> 0x1]
+arg2: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]
+arg3: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]
+Output Bounds:
+out1: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]</p>
+               
+               <pre><code class="language-go">func p224Selectznz(out1 *[4]uint64, arg1 p224Uint1, arg2 *[4]uint64, arg3 *[4]uint64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p224SetOne" data-name="p224SetOne">
+               <h3>
+                  p224SetOne 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p224SetOne" class="anchor" title="Link to p224SetOne">#</a>
+               </h3>
+               
+               <p>p224SetOne returns the field element one in the Montgomery domain.
+Postconditions:
+eval (from_montgomery out1) mod m = 1 mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p224SetOne(out1 *p224MontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p224Square" data-name="p224Square">
+               <h3>
+                  p224Square 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p224Square" class="anchor" title="Link to p224Square">#</a>
+               </h3>
+               
+               <p>p224Square squares a field element in the Montgomery domain.
+Preconditions:
+0 ≤ eval arg1 < m
+Postconditions:
+eval (from_montgomery out1) mod m = (eval (from_montgomery arg1) * eval (from_montgomery arg1)) mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p224Square(out1 *p224MontgomeryDomainFieldElement, arg1 *p224MontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p224Sub" data-name="p224Sub">
+               <h3>
+                  p224Sub 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p224Sub" class="anchor" title="Link to p224Sub">#</a>
+               </h3>
+               
+               <p>p224Sub subtracts two field elements in the Montgomery domain.
+Preconditions:
+0 ≤ eval arg1 < m
+0 ≤ eval arg2 < m
+Postconditions:
+eval (from_montgomery out1) mod m = (eval (from_montgomery arg1) - eval (from_montgomery arg2)) mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p224Sub(out1 *p224MontgomeryDomainFieldElement, arg1 *p224MontgomeryDomainFieldElement, arg2 *p224MontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p224ToBytes" data-name="p224ToBytes">
+               <h3>
+                  p224ToBytes 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p224ToBytes" class="anchor" title="Link to p224ToBytes">#</a>
+               </h3>
+               
+               <p>p224ToBytes serializes a field element NOT in the Montgomery domain to bytes in little-endian order.
+Preconditions:
+0 ≤ eval arg1 < m
+Postconditions:
+out1 = map (λ x, ⌊((eval arg1 mod m) mod 2^(8 * (x + 1))) / 2^(8 * x)⌋) [0..27]
+Input Bounds:
+arg1: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffff]]
+Output Bounds:
+out1: [[0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff]]</p>
+               
+               <pre><code class="language-go">func p224ToBytes(out1 *[28]uint8, arg1 *[4]uint64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p224ToMontgomery" data-name="p224ToMontgomery">
+               <h3>
+                  p224ToMontgomery 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p224ToMontgomery" class="anchor" title="Link to p224ToMontgomery">#</a>
+               </h3>
+               
+               <p>p224ToMontgomery translates a field element into the Montgomery domain.
+Preconditions:
+0 ≤ eval arg1 < m
+Postconditions:
+eval (from_montgomery out1) mod m = eval arg1 mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p224ToMontgomery(out1 *p224MontgomeryDomainFieldElement, arg1 *p224NonMontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p256Add" data-name="p256Add">
+               <h3>
+                  p256Add 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p256Add" class="anchor" title="Link to p256Add">#</a>
+               </h3>
+               
+               <p>p256Add adds two field elements in the Montgomery domain.
+Preconditions:
+0 ≤ eval arg1 < m
+0 ≤ eval arg2 < m
+Postconditions:
+eval (from_montgomery out1) mod m = (eval (from_montgomery arg1) + eval (from_montgomery arg2)) mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p256Add(out1 *p256MontgomeryDomainFieldElement, arg1 *p256MontgomeryDomainFieldElement, arg2 *p256MontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p256CmovznzU64" data-name="p256CmovznzU64">
+               <h3>
+                  p256CmovznzU64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p256CmovznzU64" class="anchor" title="Link to p256CmovznzU64">#</a>
+               </h3>
+               
+               <p>p256CmovznzU64 is a single-word conditional move.
+Postconditions:
+out1 = (if arg1 = 0 then arg2 else arg3)
+Input Bounds:
+arg1: [0x0 ~> 0x1]
+arg2: [0x0 ~> 0xffffffffffffffff]
+arg3: [0x0 ~> 0xffffffffffffffff]
+Output Bounds:
+out1: [0x0 ~> 0xffffffffffffffff]</p>
+               
+               <pre><code class="language-go">func p256CmovznzU64(out1 *uint64, arg1 p256Uint1, arg2 uint64, arg3 uint64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p256FromBytes" data-name="p256FromBytes">
+               <h3>
+                  p256FromBytes 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p256FromBytes" class="anchor" title="Link to p256FromBytes">#</a>
+               </h3>
+               
+               <p>p256FromBytes deserializes a field element NOT in the Montgomery domain from bytes in little-endian order.
+Preconditions:
+0 ≤ bytes_eval arg1 < m
+Postconditions:
+eval out1 mod m = bytes_eval arg1 mod m
+0 ≤ eval out1 < m
+Input Bounds:
+arg1: [[0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff]]
+Output Bounds:
+out1: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]</p>
+               
+               <pre><code class="language-go">func p256FromBytes(out1 *[4]uint64, arg1 *[32]uint8)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p256FromMontgomery" data-name="p256FromMontgomery">
+               <h3>
+                  p256FromMontgomery 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p256FromMontgomery" class="anchor" title="Link to p256FromMontgomery">#</a>
+               </h3>
+               
+               <p>p256FromMontgomery translates a field element out of the Montgomery domain.
+Preconditions:
+0 ≤ eval arg1 < m
+Postconditions:
+eval out1 mod m = (eval arg1 * ((2^64)⁻¹ mod m)^4) mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p256FromMontgomery(out1 *p256NonMontgomeryDomainFieldElement, arg1 *p256MontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p256InvertEndianness" data-name="p256InvertEndianness">
+               <h3>
+                  p256InvertEndianness 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p256InvertEndianness" class="anchor" title="Link to p256InvertEndianness">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func p256InvertEndianness(v []byte)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p256Mul" data-name="p256Mul">
+               <h3>
+                  p256Mul 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p256Mul" class="anchor" title="Link to p256Mul">#</a>
+               </h3>
+               
+               <p>p256Mul multiplies two field elements in the Montgomery domain.
+Preconditions:
+0 ≤ eval arg1 < m
+0 ≤ eval arg2 < m
+Postconditions:
+eval (from_montgomery out1) mod m = (eval (from_montgomery arg1) * eval (from_montgomery arg2)) mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p256Mul(out1 *p256MontgomeryDomainFieldElement, arg1 *p256MontgomeryDomainFieldElement, arg2 *p256MontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p256Selectznz" data-name="p256Selectznz">
+               <h3>
+                  p256Selectznz 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p256Selectznz" class="anchor" title="Link to p256Selectznz">#</a>
+               </h3>
+               
+               <p>p256Selectznz is a multi-limb conditional select.
+Postconditions:
+eval out1 = (if arg1 = 0 then eval arg2 else eval arg3)
+Input Bounds:
+arg1: [0x0 ~> 0x1]
+arg2: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]
+arg3: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]
+Output Bounds:
+out1: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]</p>
+               
+               <pre><code class="language-go">func p256Selectznz(out1 *[4]uint64, arg1 p256Uint1, arg2 *[4]uint64, arg3 *[4]uint64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p256SetOne" data-name="p256SetOne">
+               <h3>
+                  p256SetOne 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p256SetOne" class="anchor" title="Link to p256SetOne">#</a>
+               </h3>
+               
+               <p>p256SetOne returns the field element one in the Montgomery domain.
+Postconditions:
+eval (from_montgomery out1) mod m = 1 mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p256SetOne(out1 *p256MontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p256Square" data-name="p256Square">
+               <h3>
+                  p256Square 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p256Square" class="anchor" title="Link to p256Square">#</a>
+               </h3>
+               
+               <p>p256Square squares a field element in the Montgomery domain.
+Preconditions:
+0 ≤ eval arg1 < m
+Postconditions:
+eval (from_montgomery out1) mod m = (eval (from_montgomery arg1) * eval (from_montgomery arg1)) mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p256Square(out1 *p256MontgomeryDomainFieldElement, arg1 *p256MontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p256Sub" data-name="p256Sub">
+               <h3>
+                  p256Sub 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p256Sub" class="anchor" title="Link to p256Sub">#</a>
+               </h3>
+               
+               <p>p256Sub subtracts two field elements in the Montgomery domain.
+Preconditions:
+0 ≤ eval arg1 < m
+0 ≤ eval arg2 < m
+Postconditions:
+eval (from_montgomery out1) mod m = (eval (from_montgomery arg1) - eval (from_montgomery arg2)) mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p256Sub(out1 *p256MontgomeryDomainFieldElement, arg1 *p256MontgomeryDomainFieldElement, arg2 *p256MontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p256ToBytes" data-name="p256ToBytes">
+               <h3>
+                  p256ToBytes 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p256ToBytes" class="anchor" title="Link to p256ToBytes">#</a>
+               </h3>
+               
+               <p>p256ToBytes serializes a field element NOT in the Montgomery domain to bytes in little-endian order.
+Preconditions:
+0 ≤ eval arg1 < m
+Postconditions:
+out1 = map (λ x, ⌊((eval arg1 mod m) mod 2^(8 * (x + 1))) / 2^(8 * x)⌋) [0..31]
+Input Bounds:
+arg1: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]
+Output Bounds:
+out1: [[0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff]]</p>
+               
+               <pre><code class="language-go">func p256ToBytes(out1 *[32]uint8, arg1 *[4]uint64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p256ToMontgomery" data-name="p256ToMontgomery">
+               <h3>
+                  p256ToMontgomery 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p256ToMontgomery" class="anchor" title="Link to p256ToMontgomery">#</a>
+               </h3>
+               
+               <p>p256ToMontgomery translates a field element into the Montgomery domain.
+Preconditions:
+0 ≤ eval arg1 < m
+Postconditions:
+eval (from_montgomery out1) mod m = eval arg1 mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p256ToMontgomery(out1 *p256MontgomeryDomainFieldElement, arg1 *p256NonMontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p384Add" data-name="p384Add">
+               <h3>
+                  p384Add 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p384Add" class="anchor" title="Link to p384Add">#</a>
+               </h3>
+               
+               <p>p384Add adds two field elements in the Montgomery domain.
+Preconditions:
+0 ≤ eval arg1 < m
+0 ≤ eval arg2 < m
+Postconditions:
+eval (from_montgomery out1) mod m = (eval (from_montgomery arg1) + eval (from_montgomery arg2)) mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p384Add(out1 *p384MontgomeryDomainFieldElement, arg1 *p384MontgomeryDomainFieldElement, arg2 *p384MontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p384CmovznzU64" data-name="p384CmovznzU64">
+               <h3>
+                  p384CmovznzU64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p384CmovznzU64" class="anchor" title="Link to p384CmovznzU64">#</a>
+               </h3>
+               
+               <p>p384CmovznzU64 is a single-word conditional move.
+Postconditions:
+out1 = (if arg1 = 0 then arg2 else arg3)
+Input Bounds:
+arg1: [0x0 ~> 0x1]
+arg2: [0x0 ~> 0xffffffffffffffff]
+arg3: [0x0 ~> 0xffffffffffffffff]
+Output Bounds:
+out1: [0x0 ~> 0xffffffffffffffff]</p>
+               
+               <pre><code class="language-go">func p384CmovznzU64(out1 *uint64, arg1 p384Uint1, arg2 uint64, arg3 uint64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p384FromBytes" data-name="p384FromBytes">
+               <h3>
+                  p384FromBytes 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p384FromBytes" class="anchor" title="Link to p384FromBytes">#</a>
+               </h3>
+               
+               <p>p384FromBytes deserializes a field element NOT in the Montgomery domain from bytes in little-endian order.
+Preconditions:
+0 ≤ bytes_eval arg1 < m
+Postconditions:
+eval out1 mod m = bytes_eval arg1 mod m
+0 ≤ eval out1 < m
+Input Bounds:
+arg1: [[0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff]]
+Output Bounds:
+out1: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]</p>
+               
+               <pre><code class="language-go">func p384FromBytes(out1 *[6]uint64, arg1 *[48]uint8)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p384FromMontgomery" data-name="p384FromMontgomery">
+               <h3>
+                  p384FromMontgomery 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p384FromMontgomery" class="anchor" title="Link to p384FromMontgomery">#</a>
+               </h3>
+               
+               <p>p384FromMontgomery translates a field element out of the Montgomery domain.
+Preconditions:
+0 ≤ eval arg1 < m
+Postconditions:
+eval out1 mod m = (eval arg1 * ((2^64)⁻¹ mod m)^6) mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p384FromMontgomery(out1 *p384NonMontgomeryDomainFieldElement, arg1 *p384MontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p384InvertEndianness" data-name="p384InvertEndianness">
+               <h3>
+                  p384InvertEndianness 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p384InvertEndianness" class="anchor" title="Link to p384InvertEndianness">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func p384InvertEndianness(v []byte)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p384Mul" data-name="p384Mul">
+               <h3>
+                  p384Mul 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p384Mul" class="anchor" title="Link to p384Mul">#</a>
+               </h3>
+               
+               <p>p384Mul multiplies two field elements in the Montgomery domain.
+Preconditions:
+0 ≤ eval arg1 < m
+0 ≤ eval arg2 < m
+Postconditions:
+eval (from_montgomery out1) mod m = (eval (from_montgomery arg1) * eval (from_montgomery arg2)) mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p384Mul(out1 *p384MontgomeryDomainFieldElement, arg1 *p384MontgomeryDomainFieldElement, arg2 *p384MontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p384Selectznz" data-name="p384Selectznz">
+               <h3>
+                  p384Selectznz 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p384Selectznz" class="anchor" title="Link to p384Selectznz">#</a>
+               </h3>
+               
+               <p>p384Selectznz is a multi-limb conditional select.
+Postconditions:
+eval out1 = (if arg1 = 0 then eval arg2 else eval arg3)
+Input Bounds:
+arg1: [0x0 ~> 0x1]
+arg2: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]
+arg3: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]
+Output Bounds:
+out1: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]</p>
+               
+               <pre><code class="language-go">func p384Selectznz(out1 *[6]uint64, arg1 p384Uint1, arg2 *[6]uint64, arg3 *[6]uint64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p384SetOne" data-name="p384SetOne">
+               <h3>
+                  p384SetOne 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p384SetOne" class="anchor" title="Link to p384SetOne">#</a>
+               </h3>
+               
+               <p>p384SetOne returns the field element one in the Montgomery domain.
+Postconditions:
+eval (from_montgomery out1) mod m = 1 mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p384SetOne(out1 *p384MontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p384Square" data-name="p384Square">
+               <h3>
+                  p384Square 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p384Square" class="anchor" title="Link to p384Square">#</a>
+               </h3>
+               
+               <p>p384Square squares a field element in the Montgomery domain.
+Preconditions:
+0 ≤ eval arg1 < m
+Postconditions:
+eval (from_montgomery out1) mod m = (eval (from_montgomery arg1) * eval (from_montgomery arg1)) mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p384Square(out1 *p384MontgomeryDomainFieldElement, arg1 *p384MontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p384Sub" data-name="p384Sub">
+               <h3>
+                  p384Sub 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p384Sub" class="anchor" title="Link to p384Sub">#</a>
+               </h3>
+               
+               <p>p384Sub subtracts two field elements in the Montgomery domain.
+Preconditions:
+0 ≤ eval arg1 < m
+0 ≤ eval arg2 < m
+Postconditions:
+eval (from_montgomery out1) mod m = (eval (from_montgomery arg1) - eval (from_montgomery arg2)) mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p384Sub(out1 *p384MontgomeryDomainFieldElement, arg1 *p384MontgomeryDomainFieldElement, arg2 *p384MontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p384ToBytes" data-name="p384ToBytes">
+               <h3>
+                  p384ToBytes 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p384ToBytes" class="anchor" title="Link to p384ToBytes">#</a>
+               </h3>
+               
+               <p>p384ToBytes serializes a field element NOT in the Montgomery domain to bytes in little-endian order.
+Preconditions:
+0 ≤ eval arg1 < m
+Postconditions:
+out1 = map (λ x, ⌊((eval arg1 mod m) mod 2^(8 * (x + 1))) / 2^(8 * x)⌋) [0..47]
+Input Bounds:
+arg1: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]
+Output Bounds:
+out1: [[0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff]]</p>
+               
+               <pre><code class="language-go">func p384ToBytes(out1 *[48]uint8, arg1 *[6]uint64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p384ToMontgomery" data-name="p384ToMontgomery">
+               <h3>
+                  p384ToMontgomery 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p384ToMontgomery" class="anchor" title="Link to p384ToMontgomery">#</a>
+               </h3>
+               
+               <p>p384ToMontgomery translates a field element into the Montgomery domain.
+Preconditions:
+0 ≤ eval arg1 < m
+Postconditions:
+eval (from_montgomery out1) mod m = eval arg1 mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p384ToMontgomery(out1 *p384MontgomeryDomainFieldElement, arg1 *p384NonMontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p521Add" data-name="p521Add">
+               <h3>
+                  p521Add 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p521Add" class="anchor" title="Link to p521Add">#</a>
+               </h3>
+               
+               <p>p521Add adds two field elements in the Montgomery domain.
+Preconditions:
+0 ≤ eval arg1 < m
+0 ≤ eval arg2 < m
+Postconditions:
+eval (from_montgomery out1) mod m = (eval (from_montgomery arg1) + eval (from_montgomery arg2)) mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p521Add(out1 *p521MontgomeryDomainFieldElement, arg1 *p521MontgomeryDomainFieldElement, arg2 *p521MontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p521CmovznzU64" data-name="p521CmovznzU64">
+               <h3>
+                  p521CmovznzU64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p521CmovznzU64" class="anchor" title="Link to p521CmovznzU64">#</a>
+               </h3>
+               
+               <p>p521CmovznzU64 is a single-word conditional move.
+Postconditions:
+out1 = (if arg1 = 0 then arg2 else arg3)
+Input Bounds:
+arg1: [0x0 ~> 0x1]
+arg2: [0x0 ~> 0xffffffffffffffff]
+arg3: [0x0 ~> 0xffffffffffffffff]
+Output Bounds:
+out1: [0x0 ~> 0xffffffffffffffff]</p>
+               
+               <pre><code class="language-go">func p521CmovznzU64(out1 *uint64, arg1 p521Uint1, arg2 uint64, arg3 uint64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p521FromBytes" data-name="p521FromBytes">
+               <h3>
+                  p521FromBytes 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p521FromBytes" class="anchor" title="Link to p521FromBytes">#</a>
+               </h3>
+               
+               <p>p521FromBytes deserializes a field element NOT in the Montgomery domain from bytes in little-endian order.
+Preconditions:
+0 ≤ bytes_eval arg1 < m
+Postconditions:
+eval out1 mod m = bytes_eval arg1 mod m
+0 ≤ eval out1 < m
+Input Bounds:
+arg1: [[0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0x1]]
+Output Bounds:
+out1: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0x1ff]]</p>
+               
+               <pre><code class="language-go">func p521FromBytes(out1 *[9]uint64, arg1 *[66]uint8)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p521FromMontgomery" data-name="p521FromMontgomery">
+               <h3>
+                  p521FromMontgomery 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p521FromMontgomery" class="anchor" title="Link to p521FromMontgomery">#</a>
+               </h3>
+               
+               <p>p521FromMontgomery translates a field element out of the Montgomery domain.
+Preconditions:
+0 ≤ eval arg1 < m
+Postconditions:
+eval out1 mod m = (eval arg1 * ((2^64)⁻¹ mod m)^9) mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p521FromMontgomery(out1 *p521NonMontgomeryDomainFieldElement, arg1 *p521MontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p521InvertEndianness" data-name="p521InvertEndianness">
+               <h3>
+                  p521InvertEndianness 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p521InvertEndianness" class="anchor" title="Link to p521InvertEndianness">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func p521InvertEndianness(v []byte)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p521Mul" data-name="p521Mul">
+               <h3>
+                  p521Mul 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p521Mul" class="anchor" title="Link to p521Mul">#</a>
+               </h3>
+               
+               <p>p521Mul multiplies two field elements in the Montgomery domain.
+Preconditions:
+0 ≤ eval arg1 < m
+0 ≤ eval arg2 < m
+Postconditions:
+eval (from_montgomery out1) mod m = (eval (from_montgomery arg1) * eval (from_montgomery arg2)) mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p521Mul(out1 *p521MontgomeryDomainFieldElement, arg1 *p521MontgomeryDomainFieldElement, arg2 *p521MontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p521Selectznz" data-name="p521Selectznz">
+               <h3>
+                  p521Selectznz 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p521Selectznz" class="anchor" title="Link to p521Selectznz">#</a>
+               </h3>
+               
+               <p>p521Selectznz is a multi-limb conditional select.
+Postconditions:
+eval out1 = (if arg1 = 0 then eval arg2 else eval arg3)
+Input Bounds:
+arg1: [0x0 ~> 0x1]
+arg2: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]
+arg3: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]
+Output Bounds:
+out1: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff]]</p>
+               
+               <pre><code class="language-go">func p521Selectznz(out1 *[9]uint64, arg1 p521Uint1, arg2 *[9]uint64, arg3 *[9]uint64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p521SetOne" data-name="p521SetOne">
+               <h3>
+                  p521SetOne 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p521SetOne" class="anchor" title="Link to p521SetOne">#</a>
+               </h3>
+               
+               <p>p521SetOne returns the field element one in the Montgomery domain.
+Postconditions:
+eval (from_montgomery out1) mod m = 1 mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p521SetOne(out1 *p521MontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p521Square" data-name="p521Square">
+               <h3>
+                  p521Square 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p521Square" class="anchor" title="Link to p521Square">#</a>
+               </h3>
+               
+               <p>p521Square squares a field element in the Montgomery domain.
+Preconditions:
+0 ≤ eval arg1 < m
+Postconditions:
+eval (from_montgomery out1) mod m = (eval (from_montgomery arg1) * eval (from_montgomery arg1)) mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p521Square(out1 *p521MontgomeryDomainFieldElement, arg1 *p521MontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p521Sub" data-name="p521Sub">
+               <h3>
+                  p521Sub 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p521Sub" class="anchor" title="Link to p521Sub">#</a>
+               </h3>
+               
+               <p>p521Sub subtracts two field elements in the Montgomery domain.
+Preconditions:
+0 ≤ eval arg1 < m
+0 ≤ eval arg2 < m
+Postconditions:
+eval (from_montgomery out1) mod m = (eval (from_montgomery arg1) - eval (from_montgomery arg2)) mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p521Sub(out1 *p521MontgomeryDomainFieldElement, arg1 *p521MontgomeryDomainFieldElement, arg2 *p521MontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p521ToBytes" data-name="p521ToBytes">
+               <h3>
+                  p521ToBytes 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p521ToBytes" class="anchor" title="Link to p521ToBytes">#</a>
+               </h3>
+               
+               <p>p521ToBytes serializes a field element NOT in the Montgomery domain to bytes in little-endian order.
+Preconditions:
+0 ≤ eval arg1 < m
+Postconditions:
+out1 = map (λ x, ⌊((eval arg1 mod m) mod 2^(8 * (x + 1))) / 2^(8 * x)⌋) [0..65]
+Input Bounds:
+arg1: [[0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0xffffffffffffffff], [0x0 ~> 0x1ff]]
+Output Bounds:
+out1: [[0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0xff], [0x0 ~> 0x1]]</p>
+               
+               <pre><code class="language-go">func p521ToBytes(out1 *[66]uint8, arg1 *[9]uint64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="p521ToMontgomery" data-name="p521ToMontgomery">
+               <h3>
+                  p521ToMontgomery 
+                  <span class="badge">function</span>
+                  
+                  <a href="#p521ToMontgomery" class="anchor" title="Link to p521ToMontgomery">#</a>
+               </h3>
+               
+               <p>p521ToMontgomery translates a field element into the Montgomery domain.
+Preconditions:
+0 ≤ eval arg1 < m
+Postconditions:
+eval (from_montgomery out1) mod m = eval arg1 mod m
+0 ≤ eval out1 < m</p>
+               
+               <pre><code class="language-go">func p521ToMontgomery(out1 *p521MontgomeryDomainFieldElement, arg1 *p521NonMontgomeryDomainFieldElement)</code></pre>
+            </article>
+            
+         </section>
+         
+         <hr />
+         <p style="color:grey; font-size:smaller">Generated with <a href="https://github.com/navid-m/arrow" target="_blank" style="color:rgb(187, 186, 186)">Arrow</a></p>
+      </main>
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+      <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
+         function isPrivate(name) {
+            return /^[a-z]/.test(name);
+         }
+
+         function buildSymbolIndex() {
+            const symbolIndex = document.getElementById('symbolIndex');
+            if (!symbolIndex) return;
+
+            const symbols = [];
+            
+            document.querySelectorAll('article[data-name]').forEach(article => {
+               const name = article.dataset.name;
+               const type = article.className.split(' ')[0]; 
+               const isPrivateSymbol = isPrivate(name);
+               
+               if (name && name !== 'imports') {
+                  symbols.push({
+                     name,
+                     type,
+                     element: article,
+                     isPrivate: isPrivateSymbol
+                  });
+               }
+            });
+
+            symbols.sort((a, b) => a.name.localeCompare(b.name));
+            symbolIndex.innerHTML = '';
+            symbols.forEach(symbol => {
+               const li = document.createElement('li');
+               const a = document.createElement('a');
+               a.href = `#${symbol.name}`;
+               a.textContent = symbol.name;
+               a.title = `${symbol.type}: ${symbol.name}`;
+               
+               if (symbol.isPrivate) {
+                  li.classList.add('private', 'hidden');
+               }
+               
+               li.appendChild(a);
+               symbolIndex.appendChild(li);
+            });
+         }
+
+         document.addEventListener("DOMContentLoaded", () => {
+            if (window.Prism) {
+               Prism.highlightAll();
+            }
+
+            const toggles = {
+               functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
+               structs: document.getElementById("showPrivateStructs"),
+               fields: document.getElementById("showPrivateFields"),
+               globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
+            };
+
+            const hideInitial = (selector, toggle) => {
+               document.querySelectorAll(selector).forEach((el) => {
+                  const name = el.dataset.name;
+                  if (isPrivate(name)) {
+                     el.classList.add("private", "hidden");
+                  }
+               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                     
+                     const symbolIndexItems = document.querySelectorAll('#symbolIndex li.private');
+                     symbolIndexItems.forEach(li => {
+                        const link = li.querySelector('a');
+                        if (link) {
+                           const targetId = link.getAttribute('href').substring(1);
+                           const targetEl = document.getElementById(targetId);
+                           if (targetEl && targetEl.matches(selector)) {
+                              li.classList.toggle("hidden", !show);
+                           }
+                        }
+                     });
+                     updateSectionVisibility();
+                  });
+               }
+            };
+
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
+
+            document.querySelectorAll("article.struct").forEach((article) => {
+               const codeBlock = article.querySelector("code.fields-code");
+               if (!codeBlock) return;
+
+               const raw = codeBlock.textContent.trim();
+               const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
+               if (!match) return;
+
+               const fieldsRaw = match[1].trim();
+               const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
+               const formatted = fields.map(line => `\t${line}`).join("\n");
+               const structName = article.dataset.name;
+               const finalCode = `type ${structName} struct {\n${formatted}\n}`;
+
+               codeBlock.textContent = finalCode;
+
+               if (window.Prism) Prism.highlightElement(codeBlock);
+
+               if (toggles.fields) {
+                  toggles.fields.addEventListener("change", () => {
+                     const show = toggles.fields.checked;
+                     article
+                        .querySelectorAll(".field-line.private")
+                        .forEach((el) =>
+                           el.classList.toggle("hidden", !show)
+                        );
+                  });
+               }
+            });
+
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
+                        );
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
+                           return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span><br />`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (window.Prism) {
+                     Prism.highlightElement(codeBlock);
+                  }
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
+                     updateSectionVisibility();
+                  });
+
+                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                     const link = li.querySelector('a');
+                     if (link) {
+                        const symbolName = link.textContent.toLowerCase();
+                        const matches = query === "" || symbolName.includes(query);
+                        
+                        if (matches) {
+                           const isPrivateSymbol = li.classList.contains('private');
+                           const targetId = link.getAttribute('href').substring(1);
+                           const targetEl = document.getElementById(targetId);
+                           const shouldShowPrivate = targetEl ? getPrivateToggleState(targetEl) : false;
+                           
+                           if (!isPrivateSymbol || shouldShowPrivate) {
+                              li.style.display = '';
+                           }
+                        } else {
+                           li.style.display = 'none';
+                        }
+                     }
+                  });
+               });
+            }
+
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            buildSymbolIndex();
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
+                  }
+               });
+            });
+
+            window.addEventListener('hashchange', () => {
+               const hash = window.location.hash;
+               if (hash) {
+                  const target = document.querySelector(hash);
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
+                  }
+               }
+            });
+
+            if (window.location.hash) {
+               setTimeout(() => {
+                  const target = document.querySelector(window.location.hash);
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
+                  }
+               }, 100);
+            }
+         });
+      </script>
+   </body>
+</html>

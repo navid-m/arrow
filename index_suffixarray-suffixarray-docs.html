@@ -1,0 +1,2030 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+   <head>
+      <meta charset="UTF-8" />
+      <meta
+         name="viewport"
+         content="width=device-width, initial-scale=1.0"
+      />
+      <title>suffixarray - Documentation</title>
+      <link
+         href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
+         rel="stylesheet"
+      />
+      <link
+         href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
+         rel="stylesheet"
+      />
+      <style>
+         html {
+            font-size: 14px;
+            scroll-behavior: smooth;
+         }
+
+         body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+            line-height: 1.6;
+         }
+
+         .sidebar {
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
+            overflow-y: auto;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
+         main {
+            flex: 1;
+            padding: 2rem;
+            margin: 0;
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
+         }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
+         h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+         }
+
+         h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
+            font-size: 1.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
+            position: relative;
+         }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            color: #ccc;
+         }
+
+         .anchor {
+            color: rgba(255, 255, 255, 0.3);
+            text-decoration: none;
+            font-weight: normal;
+            margin-left: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            font-size: 0.8em;
+         }
+
+         h3:hover .anchor,
+         .anchor:focus {
+            opacity: 1;
+         }
+
+         .anchor:hover {
+            color: rgba(255, 255, 255, 0.6);
+         }
+
+         .symbol-anchor {
+            scroll-margin-top: 2rem;
+         }
+
+         pre, code {
+            white-space: pre;
+         }  
+
+         pre[class*="language-"] {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+            border-radius: 8px !important;
+            margin: 1rem 0 !important;
+            padding: 1rem 1.2rem !important;
+            font-size: 0.9rem !important;
+            overflow-x: auto !important;
+         }
+
+         code[class*="language-"] {
+            color: #e6e6e6 !important;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace !important;
+            white-space: pre-wrap !important;
+         }
+
+         pre:not([class*="language-"]) {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+         }
+
+         pre:not([class*="language-"]) code {
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+            white-space: pre-wrap;
+         }
+
+         .token.comment,
+         .token.prolog,
+         .token.doctype,
+         .token.cdata {
+            color: #7c7c7c !important;
+         }
+
+         .token.punctuation {
+            color: #c9c9c9 !important;
+         }
+
+         .token.property,
+         .token.tag,
+         .token.boolean,
+         .token.number,
+         .token.constant,
+         .token.symbol,
+         .token.deleted {
+            color: #f2777a !important;
+         }
+
+         .token.selector,
+         .token.attr-name,
+         .token.string,
+         .token.char,
+         .token.builtin,
+         .token.inserted {
+            color: #639fc2 !important;
+         }
+
+         .token.operator,
+         .token.entity,
+         .token.url,
+         .language-css .token.string,
+         .style .token.string {
+            color: #66cccc !important;
+         }
+
+         .token.atrule,
+         .token.attr-value,
+         .token.keyword {
+            color: #d34343 !important;
+         }
+
+         .token.function,
+         .token.class-name {
+            color: #f99157 !important;
+         }
+
+         .token.regex,
+         .token.important,
+         .token.variable {
+            color: #ffcc66 !important;
+         }
+
+         p {
+            font-size: 15px;
+            margin: 1rem 0;
+            color: #ddd;
+         }
+
+         article {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+         }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
+         article:target {
+            border-color: rgba(100, 200, 255, 0.5);
+            box-shadow: 0 0 0 2px rgba(100, 200, 255, 0.2);
+         }
+
+         .hidden {
+            display: none !important;
+         }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
+         .filter-toggle label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
+         }
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         .symbol-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.2);
+         }
+
+         .symbol-list::-webkit-scrollbar {
+            width: 4px;
+         }
+
+         .symbol-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+         }
+
+         .symbol-list ul {
+            list-style: none;
+            padding: 0.5rem;
+            margin: 0;
+         }
+
+         .symbol-list li {
+            margin-bottom: 0.2rem;
+         }
+
+         .symbol-list a {
+            display: block;
+            padding: 0.3rem 0.5rem;
+            color: #bbb;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            font-size: 0.75rem;
+         }
+
+         .symbol-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
+         }
+      </style>
+   </head>
+   <body>
+      <aside class="sidebar">
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
+         </div>
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
+         
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                  
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
+
+         <div class="filter-section">
+            <h3>All Symbols</h3>
+            <div class="symbol-list">
+               <ul id="symbolIndex">
+               </ul>
+            </div>
+         </div>
+         
+      </aside>
+
+      <main>
+         <h1>suffixarray</h1>
+         <div class="section-divider"></div>
+
+         
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports symbol-anchor" id="imports-section" data-name="imports">
+               <h3>
+                  Imports
+                  <a href="#imports-section" class="anchor" title="Link to imports">#</a>
+               </h3>
+               <pre><code class="language-go">"bytes"
+"encoding/binary"
+"errors"
+"io"
+"math"
+"regexp"
+"slices"
+"sort"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
+            
+            <article class="global symbol-anchor" id="bufSize" data-name="bufSize">
+               <h3>
+                  bufSize 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#bufSize" class="anchor" title="Link to bufSize">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const bufSize = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="errTooBig" data-name="errTooBig">
+               <h3>
+                  errTooBig 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#errTooBig" class="anchor" title="Link to errTooBig">#</a>
+               </h3>
+               
+               <pre><code class="language-go">var errTooBig = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="maxData32" data-name="maxData32">
+               <h3>
+                  maxData32 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#maxData32" class="anchor" title="Link to maxData32">#</a>
+               </h3>
+               
+                  <p class="doc-comment">Can change for testing</p>
+               
+               <pre><code class="language-go">var maxData32 int = realMaxData32</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="realMaxData32" data-name="realMaxData32">
+               <h3>
+                  realMaxData32 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#realMaxData32" class="anchor" title="Link to realMaxData32">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const realMaxData32 = math.MaxInt32</code></pre>
+            </article>
+            
+         </section>
+            
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct symbol-anchor" id="Index" data-name="Index">
+               <h3>
+                  Index
+                  <span class="badge">struct</span>
+                  <a href="#Index" class="anchor" title="Link to Index">#</a>
+               </h3>
+               
+               <p>Index implements a suffix array for fast substring search.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code language-go">type Index struct {
+data []byte
+sa ints
+}</code></pre>
+            </article>
+            
+            <article class="struct symbol-anchor" id="ints" data-name="ints">
+               <h3>
+                  ints
+                  <span class="badge">struct</span>
+                  <a href="#ints" class="anchor" title="Link to ints">#</a>
+               </h3>
+               
+               <p>An ints is either an []int32 or an []int64.
+That is, one of them is empty, and one is the real data.
+The int64 form is used when len(data) > maxData32</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code language-go">type ints struct {
+int32 []int32
+int64 []int64
+}</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="functions">
+            <h2>Functions</h2>
+            
+            <article class="function symbol-anchor" id="Bytes" data-name="Bytes">
+               <h3>
+                  Bytes 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Bytes" class="anchor" title="Link to Bytes">#</a>
+               </h3>
+               
+               <p>Bytes returns the data over which the index was created.
+It must not be modified.</p>
+               
+               <pre><code class="language-go">func (x *Index) Bytes() []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="FindAllIndex" data-name="FindAllIndex">
+               <h3>
+                  FindAllIndex 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#FindAllIndex" class="anchor" title="Link to FindAllIndex">#</a>
+               </h3>
+               
+               <p>FindAllIndex returns a sorted list of non-overlapping matches of the
+regular expression r, where a match is a pair of indices specifying
+the matched slice of x.Bytes(). If n < 0, all matches are returned
+in successive order. Otherwise, at most n matches are returned and
+they may not be successive. The result is nil if there are no matches,
+or if n == 0.</p>
+               
+               <pre><code class="language-go">func (x *Index) FindAllIndex(r *regexp.Regexp, n int) (result [][]int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Lookup" data-name="Lookup">
+               <h3>
+                  Lookup 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Lookup" class="anchor" title="Link to Lookup">#</a>
+               </h3>
+               
+               <p>Lookup returns an unsorted list of at most n indices where the byte string s
+occurs in the indexed data. If n < 0, all occurrences are returned.
+The result is nil if s is empty, s is not found, or n == 0.
+Lookup time is O(log(N)*len(s) + len(result)) where N is the
+size of the indexed data.</p>
+               
+               <pre><code class="language-go">func (x *Index) Lookup(s []byte, n int) (result []int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="New" data-name="New">
+               <h3>
+                  New 
+                  <span class="badge">function</span>
+                  
+                  <a href="#New" class="anchor" title="Link to New">#</a>
+               </h3>
+               
+               <p>New creates a new [Index] for data.
+[Index] creation time is O(N) for N = len(data).</p>
+               
+               <pre><code class="language-go">func New(data []byte) *Index</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Read" data-name="Read">
+               <h3>
+                  Read 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Read" class="anchor" title="Link to Read">#</a>
+               </h3>
+               
+               <p>Read reads the index from r into x; x must not be nil.</p>
+               
+               <pre><code class="language-go">func (x *Index) Read(r io.Reader) error</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Write" data-name="Write">
+               <h3>
+                  Write 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Write" class="anchor" title="Link to Write">#</a>
+               </h3>
+               
+               <p>Write writes the index x to w.</p>
+               
+               <pre><code class="language-go">func (x *Index) Write(w io.Writer) error</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="assignID_32" data-name="assignID_32">
+               <h3>
+                  assignID_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#assignID_32" class="anchor" title="Link to assignID_32">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func assignID_32(text []int32, sa []int32, numLMS int) int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="assignID_64" data-name="assignID_64">
+               <h3>
+                  assignID_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#assignID_64" class="anchor" title="Link to assignID_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func assignID_64(text []int64, sa []int64, numLMS int) int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="assignID_8_32" data-name="assignID_8_32">
+               <h3>
+                  assignID_8_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#assignID_8_32" class="anchor" title="Link to assignID_8_32">#</a>
+               </h3>
+               
+               <p>assignID_8_32 assigns a dense ID numbering to the
+set of LMS-substrings respecting string ordering and equality,
+returning the maximum assigned ID.
+For example given the input "ababab", the LMS-substrings
+are "aba", "aba", and "ab", renumbered as 2 2 1.
+sa[len(sa)-numLMS:] holds the LMS-substring indexes
+sorted in string order, so to assign numbers we can
+consider each in turn, removing adjacent duplicates.
+The new ID for the LMS-substring at index j is written to sa[j/2],
+overwriting the length previously stored there (by length_8_32 above).</p>
+               
+               <pre><code class="language-go">func assignID_8_32(text []byte, sa []int32, numLMS int) int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="assignID_8_64" data-name="assignID_8_64">
+               <h3>
+                  assignID_8_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#assignID_8_64" class="anchor" title="Link to assignID_8_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func assignID_8_64(text []byte, sa []int64, numLMS int) int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="at" data-name="at">
+               <h3>
+                  at 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#at" class="anchor" title="Link to at">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (x *Index) at(i int) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="bucketMax_32" data-name="bucketMax_32">
+               <h3>
+                  bucketMax_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#bucketMax_32" class="anchor" title="Link to bucketMax_32">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func bucketMax_32(text []int32, freq []int32, bucket []int32)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="bucketMax_64" data-name="bucketMax_64">
+               <h3>
+                  bucketMax_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#bucketMax_64" class="anchor" title="Link to bucketMax_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func bucketMax_64(text []int64, freq []int64, bucket []int64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="bucketMax_8_32" data-name="bucketMax_8_32">
+               <h3>
+                  bucketMax_8_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#bucketMax_8_32" class="anchor" title="Link to bucketMax_8_32">#</a>
+               </h3>
+               
+               <p>bucketMax_8_32 stores into bucket[c] the maximum index
+in the bucket for character c in a bucket-sort of text.
+The bucket indexes for c are [min, max).
+That is, max is one past the final index in that bucket.</p>
+               
+               <pre><code class="language-go">func bucketMax_8_32(text []byte, freq []int32, bucket []int32)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="bucketMax_8_64" data-name="bucketMax_8_64">
+               <h3>
+                  bucketMax_8_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#bucketMax_8_64" class="anchor" title="Link to bucketMax_8_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func bucketMax_8_64(text []byte, freq []int64, bucket []int64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="bucketMin_32" data-name="bucketMin_32">
+               <h3>
+                  bucketMin_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#bucketMin_32" class="anchor" title="Link to bucketMin_32">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func bucketMin_32(text []int32, freq []int32, bucket []int32)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="bucketMin_64" data-name="bucketMin_64">
+               <h3>
+                  bucketMin_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#bucketMin_64" class="anchor" title="Link to bucketMin_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func bucketMin_64(text []int64, freq []int64, bucket []int64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="bucketMin_8_32" data-name="bucketMin_8_32">
+               <h3>
+                  bucketMin_8_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#bucketMin_8_32" class="anchor" title="Link to bucketMin_8_32">#</a>
+               </h3>
+               
+               <p>bucketMin_8_32 stores into bucket[c] the minimum index
+in the bucket for character c in a bucket-sort of text.</p>
+               
+               <pre><code class="language-go">func bucketMin_8_32(text []byte, freq []int32, bucket []int32)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="bucketMin_8_64" data-name="bucketMin_8_64">
+               <h3>
+                  bucketMin_8_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#bucketMin_8_64" class="anchor" title="Link to bucketMin_8_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func bucketMin_8_64(text []byte, freq []int64, bucket []int64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="expand_32" data-name="expand_32">
+               <h3>
+                  expand_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#expand_32" class="anchor" title="Link to expand_32">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func expand_32(text []int32, freq []int32, bucket []int32, sa []int32, numLMS int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="expand_64" data-name="expand_64">
+               <h3>
+                  expand_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#expand_64" class="anchor" title="Link to expand_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func expand_64(text []int64, freq []int64, bucket []int64, sa []int64, numLMS int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="expand_8_32" data-name="expand_8_32">
+               <h3>
+                  expand_8_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#expand_8_32" class="anchor" title="Link to expand_8_32">#</a>
+               </h3>
+               
+               <p>expand_8_32 distributes the compacted, sorted LMS-suffix indexes
+from sa[:numLMS] into the tops of the appropriate buckets in sa,
+preserving the sorted order and making room for the L-type indexes
+to be slotted into the sorted sequence by induceL_8_32.</p>
+               
+               <pre><code class="language-go">func expand_8_32(text []byte, freq []int32, bucket []int32, sa []int32, numLMS int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="expand_8_64" data-name="expand_8_64">
+               <h3>
+                  expand_8_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#expand_8_64" class="anchor" title="Link to expand_8_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func expand_8_64(text []byte, freq []int64, bucket []int64, sa []int64, numLMS int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="freq_32" data-name="freq_32">
+               <h3>
+                  freq_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#freq_32" class="anchor" title="Link to freq_32">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func freq_32(text []int32, freq []int32, bucket []int32) []int32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="freq_64" data-name="freq_64">
+               <h3>
+                  freq_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#freq_64" class="anchor" title="Link to freq_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func freq_64(text []int64, freq []int64, bucket []int64) []int64</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="freq_8_32" data-name="freq_8_32">
+               <h3>
+                  freq_8_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#freq_8_32" class="anchor" title="Link to freq_8_32">#</a>
+               </h3>
+               
+               <p>freq_8_32 returns the character frequencies
+for text, as a slice indexed by character value.
+If freq is nil, freq_8_32 uses and returns bucket.
+If freq is non-nil, freq_8_32 assumes that freq[0] >= 0
+means the frequencies are already computed.
+If the frequency data is overwritten or uninitialized,
+the caller must set freq[0] = -1 to force recomputation
+the next time it is needed.</p>
+               
+               <pre><code class="language-go">func freq_8_32(text []byte, freq []int32, bucket []int32) []int32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="freq_8_64" data-name="freq_8_64">
+               <h3>
+                  freq_8_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#freq_8_64" class="anchor" title="Link to freq_8_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func freq_8_64(text []byte, freq []int64, bucket []int64) []int64</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="get" data-name="get">
+               <h3>
+                  get 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#get" class="anchor" title="Link to get">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (a *ints) get(i int) int64</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="induceL_32" data-name="induceL_32">
+               <h3>
+                  induceL_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#induceL_32" class="anchor" title="Link to induceL_32">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func induceL_32(text []int32, sa []int32, freq []int32, bucket []int32)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="induceL_64" data-name="induceL_64">
+               <h3>
+                  induceL_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#induceL_64" class="anchor" title="Link to induceL_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func induceL_64(text []int64, sa []int64, freq []int64, bucket []int64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="induceL_8_32" data-name="induceL_8_32">
+               <h3>
+                  induceL_8_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#induceL_8_32" class="anchor" title="Link to induceL_8_32">#</a>
+               </h3>
+               
+               <p>induceL_8_32 inserts L-type text indexes into sa,
+assuming that the leftmost S-type indexes are inserted
+into sa, in sorted order, in the right bucket halves.
+It leaves all the L-type indexes in sa, but the
+leftmost L-type indexes are negated, to mark them
+for processing by induceS_8_32.</p>
+               
+               <pre><code class="language-go">func induceL_8_32(text []byte, sa []int32, freq []int32, bucket []int32)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="induceL_8_64" data-name="induceL_8_64">
+               <h3>
+                  induceL_8_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#induceL_8_64" class="anchor" title="Link to induceL_8_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func induceL_8_64(text []byte, sa []int64, freq []int64, bucket []int64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="induceS_32" data-name="induceS_32">
+               <h3>
+                  induceS_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#induceS_32" class="anchor" title="Link to induceS_32">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func induceS_32(text []int32, sa []int32, freq []int32, bucket []int32)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="induceS_64" data-name="induceS_64">
+               <h3>
+                  induceS_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#induceS_64" class="anchor" title="Link to induceS_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func induceS_64(text []int64, sa []int64, freq []int64, bucket []int64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="induceS_8_32" data-name="induceS_8_32">
+               <h3>
+                  induceS_8_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#induceS_8_32" class="anchor" title="Link to induceS_8_32">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func induceS_8_32(text []byte, sa []int32, freq []int32, bucket []int32)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="induceS_8_64" data-name="induceS_8_64">
+               <h3>
+                  induceS_8_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#induceS_8_64" class="anchor" title="Link to induceS_8_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func induceS_8_64(text []byte, sa []int64, freq []int64, bucket []int64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="induceSubL_32" data-name="induceSubL_32">
+               <h3>
+                  induceSubL_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#induceSubL_32" class="anchor" title="Link to induceSubL_32">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func induceSubL_32(text []int32, sa []int32, freq []int32, bucket []int32)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="induceSubL_64" data-name="induceSubL_64">
+               <h3>
+                  induceSubL_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#induceSubL_64" class="anchor" title="Link to induceSubL_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func induceSubL_64(text []int64, sa []int64, freq []int64, bucket []int64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="induceSubL_8_32" data-name="induceSubL_8_32">
+               <h3>
+                  induceSubL_8_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#induceSubL_8_32" class="anchor" title="Link to induceSubL_8_32">#</a>
+               </h3>
+               
+               <p>induceSubL_8_32 inserts the L-type text indexes of LMS-substrings
+into sa, assuming that the final characters of the LMS-substrings
+are already inserted into sa, sorted by final character, and at the
+right (not left) end of the corresponding character bucket.
+Each LMS-substring has the form (as a regexp) /S+L+S/:
+one or more S-type, one or more L-type, final S-type.
+induceSubL_8_32 leaves behind only the leftmost L-type text
+index for each LMS-substring. That is, it removes the final S-type
+indexes that are present on entry, and it inserts but then removes
+the interior L-type indexes too.
+(Only the leftmost L-type index is needed by induceSubS_8_32.)</p>
+               
+               <pre><code class="language-go">func induceSubL_8_32(text []byte, sa []int32, freq []int32, bucket []int32)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="induceSubL_8_64" data-name="induceSubL_8_64">
+               <h3>
+                  induceSubL_8_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#induceSubL_8_64" class="anchor" title="Link to induceSubL_8_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func induceSubL_8_64(text []byte, sa []int64, freq []int64, bucket []int64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="induceSubS_32" data-name="induceSubS_32">
+               <h3>
+                  induceSubS_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#induceSubS_32" class="anchor" title="Link to induceSubS_32">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func induceSubS_32(text []int32, sa []int32, freq []int32, bucket []int32)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="induceSubS_64" data-name="induceSubS_64">
+               <h3>
+                  induceSubS_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#induceSubS_64" class="anchor" title="Link to induceSubS_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func induceSubS_64(text []int64, sa []int64, freq []int64, bucket []int64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="induceSubS_8_32" data-name="induceSubS_8_32">
+               <h3>
+                  induceSubS_8_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#induceSubS_8_32" class="anchor" title="Link to induceSubS_8_32">#</a>
+               </h3>
+               
+               <p>induceSubS_8_32 inserts the S-type text indexes of LMS-substrings
+into sa, assuming that the leftmost L-type text indexes are already
+inserted into sa, sorted by LMS-substring suffix, and at the
+left end of the corresponding character bucket.
+Each LMS-substring has the form (as a regexp) /S+L+S/:
+one or more S-type, one or more L-type, final S-type.
+induceSubS_8_32 leaves behind only the leftmost S-type text
+index for each LMS-substring, in sorted order, at the right end of sa.
+That is, it removes the L-type indexes that are present on entry,
+and it inserts but then removes the interior S-type indexes too,
+leaving the LMS-substring start indexes packed into sa[len(sa)-numLMS:].
+(Only the LMS-substring start indexes are processed by the recursion.)</p>
+               
+               <pre><code class="language-go">func induceSubS_8_32(text []byte, sa []int32, freq []int32, bucket []int32)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="induceSubS_8_64" data-name="induceSubS_8_64">
+               <h3>
+                  induceSubS_8_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#induceSubS_8_64" class="anchor" title="Link to induceSubS_8_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func induceSubS_8_64(text []byte, sa []int64, freq []int64, bucket []int64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="len" data-name="len">
+               <h3>
+                  len 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#len" class="anchor" title="Link to len">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (a *ints) len() int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="length_32" data-name="length_32">
+               <h3>
+                  length_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#length_32" class="anchor" title="Link to length_32">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func length_32(text []int32, sa []int32, numLMS int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="length_64" data-name="length_64">
+               <h3>
+                  length_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#length_64" class="anchor" title="Link to length_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func length_64(text []int64, sa []int64, numLMS int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="length_8_32" data-name="length_8_32">
+               <h3>
+                  length_8_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#length_8_32" class="anchor" title="Link to length_8_32">#</a>
+               </h3>
+               
+               <p>length_8_32 computes and records the length of each LMS-substring in text.
+The length of the LMS-substring at index j is stored at sa[j/2],
+avoiding the LMS-substring indexes already stored in the top half of sa.
+(If index j is an LMS-substring start, then index j-1 is type L and cannot be.)
+There are two exceptions, made for optimizations in name_8_32 below.
+First, the final LMS-substring is recorded as having length 0, which is otherwise
+impossible, instead of giving it a length that includes the implicit sentinel.
+This ensures the final LMS-substring has length unequal to all others
+and therefore can be detected as different without text comparison
+(it is unequal because it is the only one that ends in the implicit sentinel,
+and the text comparison would be problematic since the implicit sentinel
+is not actually present at text[len(text)]).
+Second, to avoid text comparison entirely, if an LMS-substring is very short,
+sa[j/2] records its actual text instead of its length, so that if two such
+substrings have matching “length,” the text need not be read at all.
+The definition of “very short” is that the text bytes must pack into a uint32,
+and the unsigned encoding e must be ≥ len(text), so that it can be
+distinguished from a valid length.</p>
+               
+               <pre><code class="language-go">func length_8_32(text []byte, sa []int32, numLMS int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="length_8_64" data-name="length_8_64">
+               <h3>
+                  length_8_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#length_8_64" class="anchor" title="Link to length_8_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func length_8_64(text []byte, sa []int64, numLMS int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="lookupAll" data-name="lookupAll">
+               <h3>
+                  lookupAll 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#lookupAll" class="anchor" title="Link to lookupAll">#</a>
+               </h3>
+               
+               <p>lookupAll returns a slice into the matching region of the index.
+The runtime is O(log(N)*len(s)).</p>
+               
+               <pre><code class="language-go">func (x *Index) lookupAll(s []byte) ints</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="map_32" data-name="map_32">
+               <h3>
+                  map_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#map_32" class="anchor" title="Link to map_32">#</a>
+               </h3>
+               
+               <p>map_32 maps the LMS-substrings in text to their new IDs,
+producing the subproblem for the recursion.
+The mapping itself was mostly applied by assignID_8_32:
+sa[i] is either 0, the ID for the LMS-substring at index 2*i,
+or the ID for the LMS-substring at index 2*i+1.
+To produce the subproblem we need only remove the zeros
+and change ID into ID-1 (our IDs start at 1, but text chars start at 0).
+map_32 packs the result, which is the input to the recursion,
+into the top of sa, so that the recursion result can be stored
+in the bottom of sa, which sets up for expand_8_32 well.</p>
+               
+               <pre><code class="language-go">func map_32(sa []int32, numLMS int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="map_64" data-name="map_64">
+               <h3>
+                  map_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#map_64" class="anchor" title="Link to map_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func map_64(sa []int64, numLMS int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="placeLMS_32" data-name="placeLMS_32">
+               <h3>
+                  placeLMS_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#placeLMS_32" class="anchor" title="Link to placeLMS_32">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func placeLMS_32(text []int32, sa []int32, freq []int32, bucket []int32) int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="placeLMS_64" data-name="placeLMS_64">
+               <h3>
+                  placeLMS_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#placeLMS_64" class="anchor" title="Link to placeLMS_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func placeLMS_64(text []int64, sa []int64, freq []int64, bucket []int64) int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="placeLMS_8_32" data-name="placeLMS_8_32">
+               <h3>
+                  placeLMS_8_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#placeLMS_8_32" class="anchor" title="Link to placeLMS_8_32">#</a>
+               </h3>
+               
+               <p>placeLMS_8_32 places into sa the indexes of the
+final characters of the LMS substrings of text,
+sorted into the rightmost ends of their correct buckets
+in the suffix array.
+The imaginary sentinel character at the end of the text
+is the final character of the final LMS substring, but there
+is no bucket for the imaginary sentinel character,
+which has a smaller value than any real character.
+The caller must therefore pretend that sa[-1] == len(text).
+The text indexes of LMS-substring characters are always ≥ 1
+(the first LMS-substring must be preceded by one or more L-type
+characters that are not part of any LMS-substring),
+so using 0 as a “not present” suffix array entry is safe,
+both in this function and in most later functions
+(until induceL_8_32 below).</p>
+               
+               <pre><code class="language-go">func placeLMS_8_32(text []byte, sa []int32, freq []int32, bucket []int32) int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="placeLMS_8_64" data-name="placeLMS_8_64">
+               <h3>
+                  placeLMS_8_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#placeLMS_8_64" class="anchor" title="Link to placeLMS_8_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func placeLMS_8_64(text []byte, sa []int64, freq []int64, bucket []int64) int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="readInt" data-name="readInt">
+               <h3>
+                  readInt 
+                  <span class="badge">function</span>
+                  
+                  <a href="#readInt" class="anchor" title="Link to readInt">#</a>
+               </h3>
+               
+               <p>readInt reads an int x from r using buf to buffer the read and returns x.</p>
+               
+               <pre><code class="language-go">func readInt(r io.Reader, buf []byte) (int64, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="readSlice" data-name="readSlice">
+               <h3>
+                  readSlice 
+                  <span class="badge">function</span>
+                  
+                  <a href="#readSlice" class="anchor" title="Link to readSlice">#</a>
+               </h3>
+               
+               <p>readSlice reads data[:n] from r and returns n.
+It uses buf to buffer the read.</p>
+               
+               <pre><code class="language-go">func readSlice(r io.Reader, buf []byte, data ints) (n int, err error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="recurse_32" data-name="recurse_32">
+               <h3>
+                  recurse_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#recurse_32" class="anchor" title="Link to recurse_32">#</a>
+               </h3>
+               
+               <p>recurse_32 calls sais_32 recursively to solve the subproblem we've built.
+The subproblem is at the right end of sa, the suffix array result will be
+written at the left end of sa, and the middle of sa is available for use as
+temporary frequency and bucket storage.</p>
+               
+               <pre><code class="language-go">func recurse_32(sa []int32, oldTmp []int32, numLMS int, maxID int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="recurse_64" data-name="recurse_64">
+               <h3>
+                  recurse_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#recurse_64" class="anchor" title="Link to recurse_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func recurse_64(sa []int64, oldTmp []int64, numLMS int, maxID int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="sais_32" data-name="sais_32">
+               <h3>
+                  sais_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#sais_32" class="anchor" title="Link to sais_32">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func sais_32(text []int32, textMax int, sa []int32, tmp []int32)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="sais_64" data-name="sais_64">
+               <h3>
+                  sais_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#sais_64" class="anchor" title="Link to sais_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func sais_64(text []int64, textMax int, sa []int64, tmp []int64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="sais_8_32" data-name="sais_8_32">
+               <h3>
+                  sais_8_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#sais_8_32" class="anchor" title="Link to sais_8_32">#</a>
+               </h3>
+               
+               <p>sais_8_32 computes the suffix array of text.
+The text must contain only values in [0, textMax).
+The suffix array is stored in sa, which the caller
+must ensure is already zeroed.
+The caller must also provide temporary space tmp
+with len(tmp) ≥ textMax. If len(tmp) ≥ 2*textMax
+then the algorithm runs a little faster.
+If sais_8_32 modifies tmp, it sets tmp[0] = -1 on return.</p>
+               
+               <pre><code class="language-go">func sais_8_32(text []byte, textMax int, sa []int32, tmp []int32)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="sais_8_64" data-name="sais_8_64">
+               <h3>
+                  sais_8_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#sais_8_64" class="anchor" title="Link to sais_8_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func sais_8_64(text []byte, textMax int, sa []int64, tmp []int64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="set" data-name="set">
+               <h3>
+                  set 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#set" class="anchor" title="Link to set">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (a *ints) set(i int, v int64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="slice" data-name="slice">
+               <h3>
+                  slice 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#slice" class="anchor" title="Link to slice">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (a *ints) slice(i int, j int) ints</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="text_32" data-name="text_32">
+               <h3>
+                  text_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#text_32" class="anchor" title="Link to text_32">#</a>
+               </h3>
+               
+               <p>text_32 returns the suffix array for the input text.
+It requires that len(text) fit in an int32
+and that the caller zero sa.</p>
+               
+               <pre><code class="language-go">func text_32(text []byte, sa []int32)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="text_64" data-name="text_64">
+               <h3>
+                  text_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#text_64" class="anchor" title="Link to text_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func text_64(text []byte, sa []int64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="unmap_32" data-name="unmap_32">
+               <h3>
+                  unmap_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#unmap_32" class="anchor" title="Link to unmap_32">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func unmap_32(text []int32, sa []int32, numLMS int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="unmap_64" data-name="unmap_64">
+               <h3>
+                  unmap_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#unmap_64" class="anchor" title="Link to unmap_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func unmap_64(text []int64, sa []int64, numLMS int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="unmap_8_32" data-name="unmap_8_32">
+               <h3>
+                  unmap_8_32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#unmap_8_32" class="anchor" title="Link to unmap_8_32">#</a>
+               </h3>
+               
+               <p>unmap_8_32 unmaps the subproblem back to the original.
+sa[:numLMS] is the LMS-substring numbers, which don't matter much anymore.
+sa[len(sa)-numLMS:] is the sorted list of those LMS-substring numbers.
+The key part is that if the list says K that means the K'th substring.
+We can replace sa[:numLMS] with the indexes of the LMS-substrings.
+Then if the list says K it really means sa[K].
+Having mapped the list back to LMS-substring indexes,
+we can place those into the right buckets.</p>
+               
+               <pre><code class="language-go">func unmap_8_32(text []byte, sa []int32, numLMS int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="unmap_8_64" data-name="unmap_8_64">
+               <h3>
+                  unmap_8_64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#unmap_8_64" class="anchor" title="Link to unmap_8_64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func unmap_8_64(text []byte, sa []int64, numLMS int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="writeInt" data-name="writeInt">
+               <h3>
+                  writeInt 
+                  <span class="badge">function</span>
+                  
+                  <a href="#writeInt" class="anchor" title="Link to writeInt">#</a>
+               </h3>
+               
+               <p>writeInt writes an int x to w using buf to buffer the write.</p>
+               
+               <pre><code class="language-go">func writeInt(w io.Writer, buf []byte, x int) error</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="writeSlice" data-name="writeSlice">
+               <h3>
+                  writeSlice 
+                  <span class="badge">function</span>
+                  
+                  <a href="#writeSlice" class="anchor" title="Link to writeSlice">#</a>
+               </h3>
+               
+               <p>writeSlice writes data[:n] to w and returns n.
+It uses buf to buffer the write.</p>
+               
+               <pre><code class="language-go">func writeSlice(w io.Writer, buf []byte, data ints) (n int, err error)</code></pre>
+            </article>
+            
+         </section>
+         
+         <hr />
+         <p style="color:grey; font-size:smaller">Generated with <a href="https://github.com/navid-m/arrow" target="_blank" style="color:rgb(187, 186, 186)">Arrow</a></p>
+      </main>
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+      <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
+         function isPrivate(name) {
+            return /^[a-z]/.test(name);
+         }
+
+         function buildSymbolIndex() {
+            const symbolIndex = document.getElementById('symbolIndex');
+            if (!symbolIndex) return;
+
+            const symbols = [];
+            
+            document.querySelectorAll('article[data-name]').forEach(article => {
+               const name = article.dataset.name;
+               const type = article.className.split(' ')[0]; 
+               const isPrivateSymbol = isPrivate(name);
+               
+               if (name && name !== 'imports') {
+                  symbols.push({
+                     name,
+                     type,
+                     element: article,
+                     isPrivate: isPrivateSymbol
+                  });
+               }
+            });
+
+            symbols.sort((a, b) => a.name.localeCompare(b.name));
+            symbolIndex.innerHTML = '';
+            symbols.forEach(symbol => {
+               const li = document.createElement('li');
+               const a = document.createElement('a');
+               a.href = `#${symbol.name}`;
+               a.textContent = symbol.name;
+               a.title = `${symbol.type}: ${symbol.name}`;
+               
+               if (symbol.isPrivate) {
+                  li.classList.add('private', 'hidden');
+               }
+               
+               li.appendChild(a);
+               symbolIndex.appendChild(li);
+            });
+         }
+
+         document.addEventListener("DOMContentLoaded", () => {
+            if (window.Prism) {
+               Prism.highlightAll();
+            }
+
+            const toggles = {
+               functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
+               structs: document.getElementById("showPrivateStructs"),
+               fields: document.getElementById("showPrivateFields"),
+               globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
+            };
+
+            const hideInitial = (selector, toggle) => {
+               document.querySelectorAll(selector).forEach((el) => {
+                  const name = el.dataset.name;
+                  if (isPrivate(name)) {
+                     el.classList.add("private", "hidden");
+                  }
+               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                     
+                     const symbolIndexItems = document.querySelectorAll('#symbolIndex li.private');
+                     symbolIndexItems.forEach(li => {
+                        const link = li.querySelector('a');
+                        if (link) {
+                           const targetId = link.getAttribute('href').substring(1);
+                           const targetEl = document.getElementById(targetId);
+                           if (targetEl && targetEl.matches(selector)) {
+                              li.classList.toggle("hidden", !show);
+                           }
+                        }
+                     });
+                     updateSectionVisibility();
+                  });
+               }
+            };
+
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
+
+            document.querySelectorAll("article.struct").forEach((article) => {
+               const codeBlock = article.querySelector("code.fields-code");
+               if (!codeBlock) return;
+
+               const raw = codeBlock.textContent.trim();
+               const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
+               if (!match) return;
+
+               const fieldsRaw = match[1].trim();
+               const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
+               const formatted = fields.map(line => `\t${line}`).join("\n");
+               const structName = article.dataset.name;
+               const finalCode = `type ${structName} struct {\n${formatted}\n}`;
+
+               codeBlock.textContent = finalCode;
+
+               if (window.Prism) Prism.highlightElement(codeBlock);
+
+               if (toggles.fields) {
+                  toggles.fields.addEventListener("change", () => {
+                     const show = toggles.fields.checked;
+                     article
+                        .querySelectorAll(".field-line.private")
+                        .forEach((el) =>
+                           el.classList.toggle("hidden", !show)
+                        );
+                  });
+               }
+            });
+
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
+                        );
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
+                           return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span><br />`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (window.Prism) {
+                     Prism.highlightElement(codeBlock);
+                  }
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
+                     updateSectionVisibility();
+                  });
+
+                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                     const link = li.querySelector('a');
+                     if (link) {
+                        const symbolName = link.textContent.toLowerCase();
+                        const matches = query === "" || symbolName.includes(query);
+                        
+                        if (matches) {
+                           const isPrivateSymbol = li.classList.contains('private');
+                           const targetId = link.getAttribute('href').substring(1);
+                           const targetEl = document.getElementById(targetId);
+                           const shouldShowPrivate = targetEl ? getPrivateToggleState(targetEl) : false;
+                           
+                           if (!isPrivateSymbol || shouldShowPrivate) {
+                              li.style.display = '';
+                           }
+                        } else {
+                           li.style.display = 'none';
+                        }
+                     }
+                  });
+               });
+            }
+
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            buildSymbolIndex();
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
+                  }
+               });
+            });
+
+            window.addEventListener('hashchange', () => {
+               const hash = window.location.hash;
+               if (hash) {
+                  const target = document.querySelector(hash);
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
+                  }
+               }
+            });
+
+            if (window.location.hash) {
+               setTimeout(() => {
+                  const target = document.querySelector(window.location.hash);
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
+                  }
+               }, 100);
+            }
+         });
+      </script>
+   </body>
+</html>

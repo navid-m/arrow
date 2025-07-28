@@ -1,0 +1,2248 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+   <head>
+      <meta charset="UTF-8" />
+      <meta
+         name="viewport"
+         content="width=device-width, initial-scale=1.0"
+      />
+      <title>crc32 - Documentation</title>
+      <link
+         href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
+         rel="stylesheet"
+      />
+      <link
+         href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
+         rel="stylesheet"
+      />
+      <style>
+         html {
+            font-size: 14px;
+            scroll-behavior: smooth;
+         }
+
+         body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+            line-height: 1.6;
+         }
+
+         .sidebar {
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
+            overflow-y: auto;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
+         main {
+            flex: 1;
+            padding: 2rem;
+            margin: 0;
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
+         }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
+         h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+         }
+
+         h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
+            font-size: 1.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
+            position: relative;
+         }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            color: #ccc;
+         }
+
+         .anchor {
+            color: rgba(255, 255, 255, 0.3);
+            text-decoration: none;
+            font-weight: normal;
+            margin-left: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            font-size: 0.8em;
+         }
+
+         h3:hover .anchor,
+         .anchor:focus {
+            opacity: 1;
+         }
+
+         .anchor:hover {
+            color: rgba(255, 255, 255, 0.6);
+         }
+
+         .symbol-anchor {
+            scroll-margin-top: 2rem;
+         }
+
+         pre, code {
+            white-space: pre;
+         }  
+
+         pre[class*="language-"] {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+            border-radius: 8px !important;
+            margin: 1rem 0 !important;
+            padding: 1rem 1.2rem !important;
+            font-size: 0.9rem !important;
+            overflow-x: auto !important;
+         }
+
+         code[class*="language-"] {
+            color: #e6e6e6 !important;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace !important;
+            white-space: pre-wrap !important;
+         }
+
+         pre:not([class*="language-"]) {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+         }
+
+         pre:not([class*="language-"]) code {
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+            white-space: pre-wrap;
+         }
+
+         .token.comment,
+         .token.prolog,
+         .token.doctype,
+         .token.cdata {
+            color: #7c7c7c !important;
+         }
+
+         .token.punctuation {
+            color: #c9c9c9 !important;
+         }
+
+         .token.property,
+         .token.tag,
+         .token.boolean,
+         .token.number,
+         .token.constant,
+         .token.symbol,
+         .token.deleted {
+            color: #f2777a !important;
+         }
+
+         .token.selector,
+         .token.attr-name,
+         .token.string,
+         .token.char,
+         .token.builtin,
+         .token.inserted {
+            color: #639fc2 !important;
+         }
+
+         .token.operator,
+         .token.entity,
+         .token.url,
+         .language-css .token.string,
+         .style .token.string {
+            color: #66cccc !important;
+         }
+
+         .token.atrule,
+         .token.attr-value,
+         .token.keyword {
+            color: #d34343 !important;
+         }
+
+         .token.function,
+         .token.class-name {
+            color: #f99157 !important;
+         }
+
+         .token.regex,
+         .token.important,
+         .token.variable {
+            color: #ffcc66 !important;
+         }
+
+         p {
+            font-size: 15px;
+            margin: 1rem 0;
+            color: #ddd;
+         }
+
+         article {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+         }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
+         article:target {
+            border-color: rgba(100, 200, 255, 0.5);
+            box-shadow: 0 0 0 2px rgba(100, 200, 255, 0.2);
+         }
+
+         .hidden {
+            display: none !important;
+         }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
+         .filter-toggle label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
+         }
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         .symbol-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.2);
+         }
+
+         .symbol-list::-webkit-scrollbar {
+            width: 4px;
+         }
+
+         .symbol-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+         }
+
+         .symbol-list ul {
+            list-style: none;
+            padding: 0.5rem;
+            margin: 0;
+         }
+
+         .symbol-list li {
+            margin-bottom: 0.2rem;
+         }
+
+         .symbol-list a {
+            display: block;
+            padding: 0.3rem 0.5rem;
+            color: #bbb;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            font-size: 0.75rem;
+         }
+
+         .symbol-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
+         }
+      </style>
+   </head>
+   <body>
+      <aside class="sidebar">
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
+         </div>
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
+         
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                
+               <li><a href="#types">Type Aliases</a></li>
+                 
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
+
+         <div class="filter-section">
+            <h3>All Symbols</h3>
+            <div class="symbol-list">
+               <ul id="symbolIndex">
+               </ul>
+            </div>
+         </div>
+         
+      </aside>
+
+      <main>
+         <h1>crc32</h1>
+         <div class="section-divider"></div>
+
+         
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports symbol-anchor" id="imports-section" data-name="imports">
+               <h3>
+                  Imports
+                  <a href="#imports-section" class="anchor" title="Link to imports">#</a>
+               </h3>
+               <pre><code class="language-go">"errors"
+"hash"
+"internal/byteorder"
+"sync"
+"sync/atomic"
+"internal/cpu"
+"unsafe"
+"internal/byteorder"
+"internal/cpu"
+"unsafe"
+"internal/cpu"
+"internal/cpu"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
+            
+            <article class="global symbol-anchor" id="Castagnoli" data-name="Castagnoli">
+               <h3>
+                  Castagnoli 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#Castagnoli" class="anchor" title="Link to Castagnoli">#</a>
+               </h3>
+               
+                  <p class="doc-comment">Castagnoli's polynomial, used in iSCSI.
+Has better error detection characteristics than IEEE.
+https://dx.doi.org/10.1109/26.231911</p>
+               
+               <pre><code class="language-go">const Castagnoli = 0x82f63b78</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="IEEE" data-name="IEEE">
+               <h3>
+                  IEEE 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#IEEE" class="anchor" title="Link to IEEE">#</a>
+               </h3>
+               
+                  <p class="doc-comment">IEEE is by far and away the most common CRC-32 polynomial.
+Used by ethernet (IEEE 802.3), v.42, fddi, gzip, zip, png, ...</p>
+               
+               <pre><code class="language-go">const IEEE = 0xedb88320</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="IEEETable" data-name="IEEETable">
+               <h3>
+                  IEEETable 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#IEEETable" class="anchor" title="Link to IEEETable">#</a>
+               </h3>
+               
+                  <p class="doc-comment">IEEETable is the table for the [IEEE] polynomial.</p>
+               
+               <pre><code class="language-go">var IEEETable = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="Koopman" data-name="Koopman">
+               <h3>
+                  Koopman 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#Koopman" class="anchor" title="Link to Koopman">#</a>
+               </h3>
+               
+                  <p class="doc-comment">Koopman's polynomial.
+Also has better error detection characteristics than IEEE.
+https://dx.doi.org/10.1109/DSN.2002.1028931</p>
+               
+               <pre><code class="language-go">const Koopman = 0xeb31d82e</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="Size" data-name="Size">
+               <h3>
+                  Size 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#Size" class="anchor" title="Link to Size">#</a>
+               </h3>
+               
+                  <p class="doc-comment">The size of a CRC-32 checksum in bytes.</p>
+               
+               <pre><code class="language-go">const Size = 4</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="archCastagnoliTable8" data-name="archCastagnoliTable8">
+               <h3>
+                  archCastagnoliTable8 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#archCastagnoliTable8" class="anchor" title="Link to archCastagnoliTable8">#</a>
+               </h3>
+               
+               <pre><code class="language-go">var archCastagnoliTable8 *slicing8Table</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="archCastagnoliTable8" data-name="archCastagnoliTable8">
+               <h3>
+                  archCastagnoliTable8 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#archCastagnoliTable8" class="anchor" title="Link to archCastagnoliTable8">#</a>
+               </h3>
+               
+               <pre><code class="language-go">var archCastagnoliTable8 *slicing8Table</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="archIeeeTable8" data-name="archIeeeTable8">
+               <h3>
+                  archIeeeTable8 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#archIeeeTable8" class="anchor" title="Link to archIeeeTable8">#</a>
+               </h3>
+               
+               <pre><code class="language-go">var archIeeeTable8 *slicing8Table</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="archIeeeTable8" data-name="archIeeeTable8">
+               <h3>
+                  archIeeeTable8 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#archIeeeTable8" class="anchor" title="Link to archIeeeTable8">#</a>
+               </h3>
+               
+               <pre><code class="language-go">var archIeeeTable8 *slicing8Table</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="archIeeeTable8" data-name="archIeeeTable8">
+               <h3>
+                  archIeeeTable8 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#archIeeeTable8" class="anchor" title="Link to archIeeeTable8">#</a>
+               </h3>
+               
+               <pre><code class="language-go">var archIeeeTable8 *slicing8Table</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="castagnoliInitOnce" data-name="castagnoliInitOnce">
+               <h3>
+                  castagnoliInitOnce 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#castagnoliInitOnce" class="anchor" title="Link to castagnoliInitOnce">#</a>
+               </h3>
+               
+               <pre><code class="language-go">var castagnoliInitOnce = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="castagnoliK1" data-name="castagnoliK1">
+               <h3>
+                  castagnoliK1 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#castagnoliK1" class="anchor" title="Link to castagnoliK1">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const castagnoliK1 = 168</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="castagnoliK2" data-name="castagnoliK2">
+               <h3>
+                  castagnoliK2 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#castagnoliK2" class="anchor" title="Link to castagnoliK2">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const castagnoliK2 = 1344</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="castagnoliSSE42TableK1" data-name="castagnoliSSE42TableK1">
+               <h3>
+                  castagnoliSSE42TableK1 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#castagnoliSSE42TableK1" class="anchor" title="Link to castagnoliSSE42TableK1">#</a>
+               </h3>
+               
+               <pre><code class="language-go">var castagnoliSSE42TableK1 *sse42Table</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="castagnoliSSE42TableK2" data-name="castagnoliSSE42TableK2">
+               <h3>
+                  castagnoliSSE42TableK2 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#castagnoliSSE42TableK2" class="anchor" title="Link to castagnoliSSE42TableK2">#</a>
+               </h3>
+               
+               <pre><code class="language-go">var castagnoliSSE42TableK2 *sse42Table</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="castagnoliTable" data-name="castagnoliTable">
+               <h3>
+                  castagnoliTable 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#castagnoliTable" class="anchor" title="Link to castagnoliTable">#</a>
+               </h3>
+               
+                  <p class="doc-comment">castagnoliTable points to a lazily initialized Table for the Castagnoli
+polynomial. MakeTable will always return this value when asked to make a
+Castagnoli table so we can compare against it to find when the caller is
+using this polynomial.</p>
+               
+               <pre><code class="language-go">var castagnoliTable *Table</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="castagnoliTable8" data-name="castagnoliTable8">
+               <h3>
+                  castagnoliTable8 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#castagnoliTable8" class="anchor" title="Link to castagnoliTable8">#</a>
+               </h3>
+               
+               <pre><code class="language-go">var castagnoliTable8 *slicing8Table</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="crcCast" data-name="crcCast">
+               <h3>
+                  crcCast 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#crcCast" class="anchor" title="Link to crcCast">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const crcCast = 2</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="crcIEEE" data-name="crcIEEE">
+               <h3>
+                  crcIEEE 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#crcIEEE" class="anchor" title="Link to crcIEEE">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const crcIEEE = 1</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="hasVX" data-name="hasVX">
+               <h3>
+                  hasVX 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#hasVX" class="anchor" title="Link to hasVX">#</a>
+               </h3>
+               
+                  <p class="doc-comment">hasVX reports whether the machine has the z/Architecture
+vector facility installed and enabled.</p>
+               
+               <pre><code class="language-go">var hasVX = cpu.S390X.HasVX</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="haveCastagnoli" data-name="haveCastagnoli">
+               <h3>
+                  haveCastagnoli 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#haveCastagnoli" class="anchor" title="Link to haveCastagnoli">#</a>
+               </h3>
+               
+               <pre><code class="language-go">var haveCastagnoli atomic.Bool</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="ieeeInitOnce" data-name="ieeeInitOnce">
+               <h3>
+                  ieeeInitOnce 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#ieeeInitOnce" class="anchor" title="Link to ieeeInitOnce">#</a>
+               </h3>
+               
+               <pre><code class="language-go">var ieeeInitOnce = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="ieeeTable8" data-name="ieeeTable8">
+               <h3>
+                  ieeeTable8 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#ieeeTable8" class="anchor" title="Link to ieeeTable8">#</a>
+               </h3>
+               
+                  <p class="doc-comment">ieeeTable8 is the slicing8Table for IEEE</p>
+               
+               <pre><code class="language-go">var ieeeTable8 *slicing8Table</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="magic" data-name="magic">
+               <h3>
+                  magic 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#magic" class="anchor" title="Link to magic">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const magic = "crc\x01"</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="marshaledSize" data-name="marshaledSize">
+               <h3>
+                  marshaledSize 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#marshaledSize" class="anchor" title="Link to marshaledSize">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const marshaledSize = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="slicing8Cutoff" data-name="slicing8Cutoff">
+               <h3>
+                  slicing8Cutoff 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#slicing8Cutoff" class="anchor" title="Link to slicing8Cutoff">#</a>
+               </h3>
+               
+                  <p class="doc-comment">Use slicing-by-8 when payload >= this value.</p>
+               
+               <pre><code class="language-go">const slicing8Cutoff = 16</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="updateCastagnoli" data-name="updateCastagnoli">
+               <h3>
+                  updateCastagnoli 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#updateCastagnoli" class="anchor" title="Link to updateCastagnoli">#</a>
+               </h3>
+               
+               <pre><code class="language-go">var updateCastagnoli func(crc uint32, p []byte) uint32</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="updateIEEE" data-name="updateIEEE">
+               <h3>
+                  updateIEEE 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#updateIEEE" class="anchor" title="Link to updateIEEE">#</a>
+               </h3>
+               
+               <pre><code class="language-go">var updateIEEE func(crc uint32, p []byte) uint32</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="vecAlignMask" data-name="vecAlignMask">
+               <h3>
+                  vecAlignMask 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#vecAlignMask" class="anchor" title="Link to vecAlignMask">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const vecAlignMask = 15</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="vecMinLen" data-name="vecMinLen">
+               <h3>
+                  vecMinLen 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#vecMinLen" class="anchor" title="Link to vecMinLen">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const vecMinLen = 16</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="vxAlignMask" data-name="vxAlignMask">
+               <h3>
+                  vxAlignMask 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#vxAlignMask" class="anchor" title="Link to vxAlignMask">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const vxAlignMask = 15</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="vxMinLen" data-name="vxMinLen">
+               <h3>
+                  vxMinLen 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#vxMinLen" class="anchor" title="Link to vxMinLen">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const vxMinLen = 64</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="types">
+            <h2>Type Aliases</h2>
+            
+            <article class="type symbol-anchor" id="Table" data-name="Table">
+               <h3>
+                  Table
+                  <span class="badge type-badge">type</span>
+                  <a href="#Table" class="anchor" title="Link to Table">#</a>
+               </h3>
+               
+               <p>Table is a 256-word table representing the polynomial for efficient processing.</p>
+               
+               <pre><code class="language-go">type Table [256]uint32</code></pre>
+            </article>
+            
+            <article class="type symbol-anchor" id="slicing8Table" data-name="slicing8Table">
+               <h3>
+                  slicing8Table
+                  <span class="badge type-badge">type</span>
+                  <a href="#slicing8Table" class="anchor" title="Link to slicing8Table">#</a>
+               </h3>
+               
+               <p>slicing8Table is array of 8 Tables, used by the slicing-by-8 algorithm.</p>
+               
+               <pre><code class="language-go">type slicing8Table [8]Table</code></pre>
+            </article>
+            
+            <article class="type symbol-anchor" id="sse42Table" data-name="sse42Table">
+               <h3>
+                  sse42Table
+                  <span class="badge type-badge">type</span>
+                  <a href="#sse42Table" class="anchor" title="Link to sse42Table">#</a>
+               </h3>
+               
+               <pre><code class="language-go">type sse42Table [4]Table</code></pre>
+            </article>
+            
+         </section>
+           
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct symbol-anchor" id="digest" data-name="digest">
+               <h3>
+                  digest
+                  <span class="badge">struct</span>
+                  <a href="#digest" class="anchor" title="Link to digest">#</a>
+               </h3>
+               
+               <p>digest represents the partial evaluation of a checksum.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code language-go">type digest struct {
+crc uint32
+tab *Table
+}</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="functions">
+            <h2>Functions</h2>
+            
+            <article class="function symbol-anchor" id="AppendBinary" data-name="AppendBinary">
+               <h3>
+                  AppendBinary 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#AppendBinary" class="anchor" title="Link to AppendBinary">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (d *digest) AppendBinary(b []byte) ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="BlockSize" data-name="BlockSize">
+               <h3>
+                  BlockSize 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#BlockSize" class="anchor" title="Link to BlockSize">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (d *digest) BlockSize() int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Checksum" data-name="Checksum">
+               <h3>
+                  Checksum 
+                  <span class="badge">function</span>
+                  
+                  <a href="#Checksum" class="anchor" title="Link to Checksum">#</a>
+               </h3>
+               
+               <p>Checksum returns the CRC-32 checksum of data
+using the polynomial represented by the [Table].</p>
+               
+               <pre><code class="language-go">func Checksum(data []byte, tab *Table) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ChecksumIEEE" data-name="ChecksumIEEE">
+               <h3>
+                  ChecksumIEEE 
+                  <span class="badge">function</span>
+                  
+                  <a href="#ChecksumIEEE" class="anchor" title="Link to ChecksumIEEE">#</a>
+               </h3>
+               
+               <p>ChecksumIEEE returns the CRC-32 checksum of data
+using the [IEEE] polynomial.</p>
+               
+               <pre><code class="language-go">func ChecksumIEEE(data []byte) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="MakeTable" data-name="MakeTable">
+               <h3>
+                  MakeTable 
+                  <span class="badge">function</span>
+                  
+                  <a href="#MakeTable" class="anchor" title="Link to MakeTable">#</a>
+               </h3>
+               
+               <p>MakeTable returns a [Table] constructed from the specified polynomial.
+The contents of this [Table] must not be modified.</p>
+               
+               <pre><code class="language-go">func MakeTable(poly uint32) *Table</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="MarshalBinary" data-name="MarshalBinary">
+               <h3>
+                  MarshalBinary 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#MarshalBinary" class="anchor" title="Link to MarshalBinary">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (d *digest) MarshalBinary() ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="New" data-name="New">
+               <h3>
+                  New 
+                  <span class="badge">function</span>
+                  
+                  <a href="#New" class="anchor" title="Link to New">#</a>
+               </h3>
+               
+               <p>New creates a new [hash.Hash32] computing the CRC-32 checksum using the
+polynomial represented by the [Table]. Its Sum method will lay the
+value out in big-endian byte order. The returned Hash32 also
+implements [encoding.BinaryMarshaler] and [encoding.BinaryUnmarshaler] to
+marshal and unmarshal the internal state of the hash.</p>
+               
+               <pre><code class="language-go">func New(tab *Table) hash.Hash32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="NewIEEE" data-name="NewIEEE">
+               <h3>
+                  NewIEEE 
+                  <span class="badge">function</span>
+                  
+                  <a href="#NewIEEE" class="anchor" title="Link to NewIEEE">#</a>
+               </h3>
+               
+               <p>NewIEEE creates a new [hash.Hash32] computing the CRC-32 checksum using
+the [IEEE] polynomial. Its Sum method will lay the value out in
+big-endian byte order. The returned Hash32 also implements
+[encoding.BinaryMarshaler] and [encoding.BinaryUnmarshaler] to marshal
+and unmarshal the internal state of the hash.</p>
+               
+               <pre><code class="language-go">func NewIEEE() hash.Hash32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Reset" data-name="Reset">
+               <h3>
+                  Reset 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Reset" class="anchor" title="Link to Reset">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (d *digest) Reset()</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Size" data-name="Size">
+               <h3>
+                  Size 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Size" class="anchor" title="Link to Size">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (d *digest) Size() int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Sum" data-name="Sum">
+               <h3>
+                  Sum 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Sum" class="anchor" title="Link to Sum">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (d *digest) Sum(in []byte) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Sum32" data-name="Sum32">
+               <h3>
+                  Sum32 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Sum32" class="anchor" title="Link to Sum32">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (d *digest) Sum32() uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="UnmarshalBinary" data-name="UnmarshalBinary">
+               <h3>
+                  UnmarshalBinary 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#UnmarshalBinary" class="anchor" title="Link to UnmarshalBinary">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (d *digest) UnmarshalBinary(b []byte) error</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Update" data-name="Update">
+               <h3>
+                  Update 
+                  <span class="badge">function</span>
+                  
+                  <a href="#Update" class="anchor" title="Link to Update">#</a>
+               </h3>
+               
+               <p>Update returns the result of adding the bytes in p to the crc.</p>
+               
+               <pre><code class="language-go">func Update(crc uint32, tab *Table, p []byte) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Write" data-name="Write">
+               <h3>
+                  Write 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Write" class="anchor" title="Link to Write">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (d *digest) Write(p []byte) (n int, err error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archAvailableCastagnoli" data-name="archAvailableCastagnoli">
+               <h3>
+                  archAvailableCastagnoli 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archAvailableCastagnoli" class="anchor" title="Link to archAvailableCastagnoli">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archAvailableCastagnoli() bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archAvailableCastagnoli" data-name="archAvailableCastagnoli">
+               <h3>
+                  archAvailableCastagnoli 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archAvailableCastagnoli" class="anchor" title="Link to archAvailableCastagnoli">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archAvailableCastagnoli() bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archAvailableCastagnoli" data-name="archAvailableCastagnoli">
+               <h3>
+                  archAvailableCastagnoli 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archAvailableCastagnoli" class="anchor" title="Link to archAvailableCastagnoli">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archAvailableCastagnoli() bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archAvailableCastagnoli" data-name="archAvailableCastagnoli">
+               <h3>
+                  archAvailableCastagnoli 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archAvailableCastagnoli" class="anchor" title="Link to archAvailableCastagnoli">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archAvailableCastagnoli() bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archAvailableCastagnoli" data-name="archAvailableCastagnoli">
+               <h3>
+                  archAvailableCastagnoli 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archAvailableCastagnoli" class="anchor" title="Link to archAvailableCastagnoli">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archAvailableCastagnoli() bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archAvailableCastagnoli" data-name="archAvailableCastagnoli">
+               <h3>
+                  archAvailableCastagnoli 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archAvailableCastagnoli" class="anchor" title="Link to archAvailableCastagnoli">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archAvailableCastagnoli() bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archAvailableIEEE" data-name="archAvailableIEEE">
+               <h3>
+                  archAvailableIEEE 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archAvailableIEEE" class="anchor" title="Link to archAvailableIEEE">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archAvailableIEEE() bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archAvailableIEEE" data-name="archAvailableIEEE">
+               <h3>
+                  archAvailableIEEE 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archAvailableIEEE" class="anchor" title="Link to archAvailableIEEE">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archAvailableIEEE() bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archAvailableIEEE" data-name="archAvailableIEEE">
+               <h3>
+                  archAvailableIEEE 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archAvailableIEEE" class="anchor" title="Link to archAvailableIEEE">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archAvailableIEEE() bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archAvailableIEEE" data-name="archAvailableIEEE">
+               <h3>
+                  archAvailableIEEE 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archAvailableIEEE" class="anchor" title="Link to archAvailableIEEE">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archAvailableIEEE() bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archAvailableIEEE" data-name="archAvailableIEEE">
+               <h3>
+                  archAvailableIEEE 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archAvailableIEEE" class="anchor" title="Link to archAvailableIEEE">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archAvailableIEEE() bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archAvailableIEEE" data-name="archAvailableIEEE">
+               <h3>
+                  archAvailableIEEE 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archAvailableIEEE" class="anchor" title="Link to archAvailableIEEE">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archAvailableIEEE() bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archInitCastagnoli" data-name="archInitCastagnoli">
+               <h3>
+                  archInitCastagnoli 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archInitCastagnoli" class="anchor" title="Link to archInitCastagnoli">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archInitCastagnoli()</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archInitCastagnoli" data-name="archInitCastagnoli">
+               <h3>
+                  archInitCastagnoli 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archInitCastagnoli" class="anchor" title="Link to archInitCastagnoli">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archInitCastagnoli()</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archInitCastagnoli" data-name="archInitCastagnoli">
+               <h3>
+                  archInitCastagnoli 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archInitCastagnoli" class="anchor" title="Link to archInitCastagnoli">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archInitCastagnoli()</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archInitCastagnoli" data-name="archInitCastagnoli">
+               <h3>
+                  archInitCastagnoli 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archInitCastagnoli" class="anchor" title="Link to archInitCastagnoli">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archInitCastagnoli()</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archInitCastagnoli" data-name="archInitCastagnoli">
+               <h3>
+                  archInitCastagnoli 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archInitCastagnoli" class="anchor" title="Link to archInitCastagnoli">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archInitCastagnoli()</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archInitCastagnoli" data-name="archInitCastagnoli">
+               <h3>
+                  archInitCastagnoli 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archInitCastagnoli" class="anchor" title="Link to archInitCastagnoli">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archInitCastagnoli()</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archInitIEEE" data-name="archInitIEEE">
+               <h3>
+                  archInitIEEE 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archInitIEEE" class="anchor" title="Link to archInitIEEE">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archInitIEEE()</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archInitIEEE" data-name="archInitIEEE">
+               <h3>
+                  archInitIEEE 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archInitIEEE" class="anchor" title="Link to archInitIEEE">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archInitIEEE()</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archInitIEEE" data-name="archInitIEEE">
+               <h3>
+                  archInitIEEE 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archInitIEEE" class="anchor" title="Link to archInitIEEE">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archInitIEEE()</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archInitIEEE" data-name="archInitIEEE">
+               <h3>
+                  archInitIEEE 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archInitIEEE" class="anchor" title="Link to archInitIEEE">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archInitIEEE()</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archInitIEEE" data-name="archInitIEEE">
+               <h3>
+                  archInitIEEE 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archInitIEEE" class="anchor" title="Link to archInitIEEE">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archInitIEEE()</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archInitIEEE" data-name="archInitIEEE">
+               <h3>
+                  archInitIEEE 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archInitIEEE" class="anchor" title="Link to archInitIEEE">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archInitIEEE()</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archUpdateCastagnoli" data-name="archUpdateCastagnoli">
+               <h3>
+                  archUpdateCastagnoli 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archUpdateCastagnoli" class="anchor" title="Link to archUpdateCastagnoli">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archUpdateCastagnoli(crc uint32, p []byte) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archUpdateCastagnoli" data-name="archUpdateCastagnoli">
+               <h3>
+                  archUpdateCastagnoli 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archUpdateCastagnoli" class="anchor" title="Link to archUpdateCastagnoli">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archUpdateCastagnoli(crc uint32, p []byte) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archUpdateCastagnoli" data-name="archUpdateCastagnoli">
+               <h3>
+                  archUpdateCastagnoli 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archUpdateCastagnoli" class="anchor" title="Link to archUpdateCastagnoli">#</a>
+               </h3>
+               
+               <p>archUpdateCastagnoli calculates the checksum of p using
+vectorizedCastagnoli.</p>
+               
+               <pre><code class="language-go">func archUpdateCastagnoli(crc uint32, p []byte) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archUpdateCastagnoli" data-name="archUpdateCastagnoli">
+               <h3>
+                  archUpdateCastagnoli 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archUpdateCastagnoli" class="anchor" title="Link to archUpdateCastagnoli">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archUpdateCastagnoli(crc uint32, p []byte) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archUpdateCastagnoli" data-name="archUpdateCastagnoli">
+               <h3>
+                  archUpdateCastagnoli 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archUpdateCastagnoli" class="anchor" title="Link to archUpdateCastagnoli">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archUpdateCastagnoli(crc uint32, p []byte) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archUpdateCastagnoli" data-name="archUpdateCastagnoli">
+               <h3>
+                  archUpdateCastagnoli 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archUpdateCastagnoli" class="anchor" title="Link to archUpdateCastagnoli">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archUpdateCastagnoli(crc uint32, p []byte) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archUpdateIEEE" data-name="archUpdateIEEE">
+               <h3>
+                  archUpdateIEEE 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archUpdateIEEE" class="anchor" title="Link to archUpdateIEEE">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archUpdateIEEE(crc uint32, p []byte) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archUpdateIEEE" data-name="archUpdateIEEE">
+               <h3>
+                  archUpdateIEEE 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archUpdateIEEE" class="anchor" title="Link to archUpdateIEEE">#</a>
+               </h3>
+               
+               <p>archUpdateIEEE calculates the checksum of p using vectorizedIEEE.</p>
+               
+               <pre><code class="language-go">func archUpdateIEEE(crc uint32, p []byte) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archUpdateIEEE" data-name="archUpdateIEEE">
+               <h3>
+                  archUpdateIEEE 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archUpdateIEEE" class="anchor" title="Link to archUpdateIEEE">#</a>
+               </h3>
+               
+               <p>archUpdateIEEE calculates the checksum of p using vectorizedIEEE.</p>
+               
+               <pre><code class="language-go">func archUpdateIEEE(crc uint32, p []byte) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archUpdateIEEE" data-name="archUpdateIEEE">
+               <h3>
+                  archUpdateIEEE 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archUpdateIEEE" class="anchor" title="Link to archUpdateIEEE">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archUpdateIEEE(crc uint32, p []byte) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archUpdateIEEE" data-name="archUpdateIEEE">
+               <h3>
+                  archUpdateIEEE 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archUpdateIEEE" class="anchor" title="Link to archUpdateIEEE">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archUpdateIEEE(crc uint32, p []byte) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="archUpdateIEEE" data-name="archUpdateIEEE">
+               <h3>
+                  archUpdateIEEE 
+                  <span class="badge">function</span>
+                  
+                  <a href="#archUpdateIEEE" class="anchor" title="Link to archUpdateIEEE">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func archUpdateIEEE(crc uint32, p []byte) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="castagnoliSSE42" data-name="castagnoliSSE42">
+               <h3>
+                  castagnoliSSE42 
+                  <span class="badge">function</span>
+                  
+                  <a href="#castagnoliSSE42" class="anchor" title="Link to castagnoliSSE42">#</a>
+               </h3>
+               
+               <p>castagnoliSSE42 is defined in crc32_amd64.s and uses the SSE 4.2 CRC32
+instruction.
+go:noescape</p>
+               
+               <pre><code class="language-go">func castagnoliSSE42(crc uint32, p []byte) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="castagnoliSSE42Triple" data-name="castagnoliSSE42Triple">
+               <h3>
+                  castagnoliSSE42Triple 
+                  <span class="badge">function</span>
+                  
+                  <a href="#castagnoliSSE42Triple" class="anchor" title="Link to castagnoliSSE42Triple">#</a>
+               </h3>
+               
+               <p>castagnoliSSE42Triple is defined in crc32_amd64.s and uses the SSE 4.2 CRC32
+instruction.
+go:noescape</p>
+               
+               <pre><code class="language-go">func castagnoliSSE42Triple(crcA uint32, crcB uint32, crcC uint32, a []byte, b []byte, c []byte, rounds uint32) (retA uint32, retB uint32, retC uint32)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="castagnoliShift" data-name="castagnoliShift">
+               <h3>
+                  castagnoliShift 
+                  <span class="badge">function</span>
+                  
+                  <a href="#castagnoliShift" class="anchor" title="Link to castagnoliShift">#</a>
+               </h3>
+               
+               <p>castagnoliShift computes the CRC32-C of K1 or K2 zeroes (depending on the
+table given) with the given initial crc value. This corresponds to
+CRC(crc, O) in the description in updateCastagnoli.</p>
+               
+               <pre><code class="language-go">func castagnoliShift(table *sse42Table, crc uint32) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="castagnoliUpdate" data-name="castagnoliUpdate">
+               <h3>
+                  castagnoliUpdate 
+                  <span class="badge">function</span>
+                  
+                  <a href="#castagnoliUpdate" class="anchor" title="Link to castagnoliUpdate">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func castagnoliUpdate(crc uint32, p []byte) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="castagnoliUpdate" data-name="castagnoliUpdate">
+               <h3>
+                  castagnoliUpdate 
+                  <span class="badge">function</span>
+                  
+                  <a href="#castagnoliUpdate" class="anchor" title="Link to castagnoliUpdate">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func castagnoliUpdate(crc uint32, p []byte) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ieeeCLMUL" data-name="ieeeCLMUL">
+               <h3>
+                  ieeeCLMUL 
+                  <span class="badge">function</span>
+                  
+                  <a href="#ieeeCLMUL" class="anchor" title="Link to ieeeCLMUL">#</a>
+               </h3>
+               
+               <p>ieeeCLMUL is defined in crc_amd64.s and uses the PCLMULQDQ
+instruction as well as SSE 4.1.
+go:noescape</p>
+               
+               <pre><code class="language-go">func ieeeCLMUL(crc uint32, p []byte) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ieeeUpdate" data-name="ieeeUpdate">
+               <h3>
+                  ieeeUpdate 
+                  <span class="badge">function</span>
+                  
+                  <a href="#ieeeUpdate" class="anchor" title="Link to ieeeUpdate">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func ieeeUpdate(crc uint32, p []byte) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ieeeUpdate" data-name="ieeeUpdate">
+               <h3>
+                  ieeeUpdate 
+                  <span class="badge">function</span>
+                  
+                  <a href="#ieeeUpdate" class="anchor" title="Link to ieeeUpdate">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func ieeeUpdate(crc uint32, p []byte) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ppc64SlicingUpdateBy8" data-name="ppc64SlicingUpdateBy8">
+               <h3>
+                  ppc64SlicingUpdateBy8 
+                  <span class="badge">function</span>
+                  
+                  <a href="#ppc64SlicingUpdateBy8" class="anchor" title="Link to ppc64SlicingUpdateBy8">#</a>
+               </h3>
+               
+               <p>go:noescape</p>
+               
+               <pre><code class="language-go">func ppc64SlicingUpdateBy8(crc uint32, table8 *slicing8Table, p []byte) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="simpleMakeTable" data-name="simpleMakeTable">
+               <h3>
+                  simpleMakeTable 
+                  <span class="badge">function</span>
+                  
+                  <a href="#simpleMakeTable" class="anchor" title="Link to simpleMakeTable">#</a>
+               </h3>
+               
+               <p>simpleMakeTable allocates and constructs a Table for the specified
+polynomial. The table is suitable for use with the simple algorithm
+(simpleUpdate).</p>
+               
+               <pre><code class="language-go">func simpleMakeTable(poly uint32) *Table</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="simplePopulateTable" data-name="simplePopulateTable">
+               <h3>
+                  simplePopulateTable 
+                  <span class="badge">function</span>
+                  
+                  <a href="#simplePopulateTable" class="anchor" title="Link to simplePopulateTable">#</a>
+               </h3>
+               
+               <p>simplePopulateTable constructs a Table for the specified polynomial, suitable
+for use with simpleUpdate.</p>
+               
+               <pre><code class="language-go">func simplePopulateTable(poly uint32, t *Table)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="simpleUpdate" data-name="simpleUpdate">
+               <h3>
+                  simpleUpdate 
+                  <span class="badge">function</span>
+                  
+                  <a href="#simpleUpdate" class="anchor" title="Link to simpleUpdate">#</a>
+               </h3>
+               
+               <p>simpleUpdate uses the simple algorithm to update the CRC, given a table that
+was previously computed using simpleMakeTable.</p>
+               
+               <pre><code class="language-go">func simpleUpdate(crc uint32, tab *Table, p []byte) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="slicingMakeTable" data-name="slicingMakeTable">
+               <h3>
+                  slicingMakeTable 
+                  <span class="badge">function</span>
+                  
+                  <a href="#slicingMakeTable" class="anchor" title="Link to slicingMakeTable">#</a>
+               </h3>
+               
+               <p>slicingMakeTable constructs a slicing8Table for the specified polynomial. The
+table is suitable for use with the slicing-by-8 algorithm (slicingUpdate).</p>
+               
+               <pre><code class="language-go">func slicingMakeTable(poly uint32) *slicing8Table</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="slicingUpdate" data-name="slicingUpdate">
+               <h3>
+                  slicingUpdate 
+                  <span class="badge">function</span>
+                  
+                  <a href="#slicingUpdate" class="anchor" title="Link to slicingUpdate">#</a>
+               </h3>
+               
+               <p>slicingUpdate uses the slicing-by-8 algorithm to update the CRC, given a
+table that was previously computed using slicingMakeTable.</p>
+               
+               <pre><code class="language-go">func slicingUpdate(crc uint32, tab *slicing8Table, p []byte) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="tableSum" data-name="tableSum">
+               <h3>
+                  tableSum 
+                  <span class="badge">function</span>
+                  
+                  <a href="#tableSum" class="anchor" title="Link to tableSum">#</a>
+               </h3>
+               
+               <p>tableSum returns the IEEE checksum of table t.</p>
+               
+               <pre><code class="language-go">func tableSum(t *Table) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="update" data-name="update">
+               <h3>
+                  update 
+                  <span class="badge">function</span>
+                  
+                  <a href="#update" class="anchor" title="Link to update">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func update(crc uint32, tab *Table, p []byte, checkInitIEEE bool) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="vectorCrc32" data-name="vectorCrc32">
+               <h3>
+                  vectorCrc32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#vectorCrc32" class="anchor" title="Link to vectorCrc32">#</a>
+               </h3>
+               
+               <p>this function requires the buffer to be 16 byte aligned and > 16 bytes long.
+go:noescape</p>
+               
+               <pre><code class="language-go">func vectorCrc32(crc uint32, poly uint32, p []byte) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="vectorizedCastagnoli" data-name="vectorizedCastagnoli">
+               <h3>
+                  vectorizedCastagnoli 
+                  <span class="badge">function</span>
+                  
+                  <a href="#vectorizedCastagnoli" class="anchor" title="Link to vectorizedCastagnoli">#</a>
+               </h3>
+               
+               <p>vectorizedCastagnoli implements CRC32 using vector instructions.
+It is defined in crc32_s390x.s.
+go:noescape</p>
+               
+               <pre><code class="language-go">func vectorizedCastagnoli(crc uint32, p []byte) uint32</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="vectorizedIEEE" data-name="vectorizedIEEE">
+               <h3>
+                  vectorizedIEEE 
+                  <span class="badge">function</span>
+                  
+                  <a href="#vectorizedIEEE" class="anchor" title="Link to vectorizedIEEE">#</a>
+               </h3>
+               
+               <p>vectorizedIEEE implements CRC32 using vector instructions.
+It is defined in crc32_s390x.s.
+go:noescape</p>
+               
+               <pre><code class="language-go">func vectorizedIEEE(crc uint32, p []byte) uint32</code></pre>
+            </article>
+            
+         </section>
+         
+         <hr />
+         <p style="color:grey; font-size:smaller">Generated with <a href="https://github.com/navid-m/arrow" target="_blank" style="color:rgb(187, 186, 186)">Arrow</a></p>
+      </main>
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+      <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
+         function isPrivate(name) {
+            return /^[a-z]/.test(name);
+         }
+
+         function buildSymbolIndex() {
+            const symbolIndex = document.getElementById('symbolIndex');
+            if (!symbolIndex) return;
+
+            const symbols = [];
+            
+            document.querySelectorAll('article[data-name]').forEach(article => {
+               const name = article.dataset.name;
+               const type = article.className.split(' ')[0]; 
+               const isPrivateSymbol = isPrivate(name);
+               
+               if (name && name !== 'imports') {
+                  symbols.push({
+                     name,
+                     type,
+                     element: article,
+                     isPrivate: isPrivateSymbol
+                  });
+               }
+            });
+
+            symbols.sort((a, b) => a.name.localeCompare(b.name));
+            symbolIndex.innerHTML = '';
+            symbols.forEach(symbol => {
+               const li = document.createElement('li');
+               const a = document.createElement('a');
+               a.href = `#${symbol.name}`;
+               a.textContent = symbol.name;
+               a.title = `${symbol.type}: ${symbol.name}`;
+               
+               if (symbol.isPrivate) {
+                  li.classList.add('private', 'hidden');
+               }
+               
+               li.appendChild(a);
+               symbolIndex.appendChild(li);
+            });
+         }
+
+         document.addEventListener("DOMContentLoaded", () => {
+            if (window.Prism) {
+               Prism.highlightAll();
+            }
+
+            const toggles = {
+               functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
+               structs: document.getElementById("showPrivateStructs"),
+               fields: document.getElementById("showPrivateFields"),
+               globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
+            };
+
+            const hideInitial = (selector, toggle) => {
+               document.querySelectorAll(selector).forEach((el) => {
+                  const name = el.dataset.name;
+                  if (isPrivate(name)) {
+                     el.classList.add("private", "hidden");
+                  }
+               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                     
+                     const symbolIndexItems = document.querySelectorAll('#symbolIndex li.private');
+                     symbolIndexItems.forEach(li => {
+                        const link = li.querySelector('a');
+                        if (link) {
+                           const targetId = link.getAttribute('href').substring(1);
+                           const targetEl = document.getElementById(targetId);
+                           if (targetEl && targetEl.matches(selector)) {
+                              li.classList.toggle("hidden", !show);
+                           }
+                        }
+                     });
+                     updateSectionVisibility();
+                  });
+               }
+            };
+
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
+
+            document.querySelectorAll("article.struct").forEach((article) => {
+               const codeBlock = article.querySelector("code.fields-code");
+               if (!codeBlock) return;
+
+               const raw = codeBlock.textContent.trim();
+               const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
+               if (!match) return;
+
+               const fieldsRaw = match[1].trim();
+               const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
+               const formatted = fields.map(line => `\t${line}`).join("\n");
+               const structName = article.dataset.name;
+               const finalCode = `type ${structName} struct {\n${formatted}\n}`;
+
+               codeBlock.textContent = finalCode;
+
+               if (window.Prism) Prism.highlightElement(codeBlock);
+
+               if (toggles.fields) {
+                  toggles.fields.addEventListener("change", () => {
+                     const show = toggles.fields.checked;
+                     article
+                        .querySelectorAll(".field-line.private")
+                        .forEach((el) =>
+                           el.classList.toggle("hidden", !show)
+                        );
+                  });
+               }
+            });
+
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
+                        );
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
+                           return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span><br />`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (window.Prism) {
+                     Prism.highlightElement(codeBlock);
+                  }
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
+                     updateSectionVisibility();
+                  });
+
+                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                     const link = li.querySelector('a');
+                     if (link) {
+                        const symbolName = link.textContent.toLowerCase();
+                        const matches = query === "" || symbolName.includes(query);
+                        
+                        if (matches) {
+                           const isPrivateSymbol = li.classList.contains('private');
+                           const targetId = link.getAttribute('href').substring(1);
+                           const targetEl = document.getElementById(targetId);
+                           const shouldShowPrivate = targetEl ? getPrivateToggleState(targetEl) : false;
+                           
+                           if (!isPrivateSymbol || shouldShowPrivate) {
+                              li.style.display = '';
+                           }
+                        } else {
+                           li.style.display = 'none';
+                        }
+                     }
+                  });
+               });
+            }
+
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            buildSymbolIndex();
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
+                  }
+               });
+            });
+
+            window.addEventListener('hashchange', () => {
+               const hash = window.location.hash;
+               if (hash) {
+                  const target = document.querySelector(hash);
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
+                  }
+               }
+            });
+
+            if (window.location.hash) {
+               setTimeout(() => {
+                  const target = document.querySelector(window.location.hash);
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
+                  }
+               }, 100);
+            }
+         });
+      </script>
+   </body>
+</html>

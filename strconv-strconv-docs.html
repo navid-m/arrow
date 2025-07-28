@@ -1,0 +1,2953 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+   <head>
+      <meta charset="UTF-8" />
+      <meta
+         name="viewport"
+         content="width=device-width, initial-scale=1.0"
+      />
+      <title>strconv - Documentation</title>
+      <link
+         href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
+         rel="stylesheet"
+      />
+      <link
+         href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/themes/prism-tomorrow.min.css"
+         rel="stylesheet"
+      />
+      <style>
+         html {
+            font-size: 14px;
+            scroll-behavior: smooth;
+         }
+
+         body {
+            display: flex;
+            min-height: 100vh;
+            margin: 0;
+            line-height: 1.6;
+         }
+
+         .sidebar {
+            width: 12%;
+            background: rgba(59, 56, 56, 0.15);
+            padding: 1.5rem;
+            box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
+            overflow-y: auto;
+            position: sticky;
+            top: 0;
+            height: 100vh;
+            border-right: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar {
+            width: 6px;
+         }
+
+         .sidebar::-webkit-scrollbar-track {
+            background: rgba(0, 0, 0, 0.1);
+         }
+
+         .sidebar::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.3);
+            border-radius: 3px;
+         }
+
+         main {
+            flex: 1;
+            padding: 2rem;
+            margin: 0;
+            max-width: calc(100% - 280px);
+            background: linear-gradient(
+               135deg,
+               rgba(59, 56, 56, 0.05) 0%,
+               rgba(0, 0, 0, 0.1) 100%
+            );
+         }
+
+         .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+         }
+
+         .nav-links a {
+            color: #ddd;
+            text-decoration: none;
+            padding: 0.5rem;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+         }
+
+         .nav-links a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
+         h1 {
+            font-size: 2rem;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, #fff 0%, #ddd 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+         }
+
+         h2 {
+            font-size: 1.4rem;
+            margin: 1rem 0 0.5rem;
+            color: #f0f0f0;
+         }
+
+         h3 {
+            font-size: 1.2rem;
+            margin: 0.8rem 0 0.3rem;
+            color: #e0e0e0;
+            position: relative;
+         }
+
+         .sidebar h2,
+         .sidebar h3 {
+            font-size: 1rem;
+            margin: 0.5rem 0 0.3rem;
+            color: #ccc;
+         }
+
+         p {
+            word-wrap: break-word;
+            line-height: 1.6;
+            font-size: 14px;
+            margin-bottom: 1rem;
+            color: #ccc;
+         }
+
+         .anchor {
+            color: rgba(255, 255, 255, 0.3);
+            text-decoration: none;
+            font-weight: normal;
+            margin-left: 0.5rem;
+            opacity: 0;
+            transition: opacity 0.2s ease;
+            font-size: 0.8em;
+         }
+
+         h3:hover .anchor,
+         .anchor:focus {
+            opacity: 1;
+         }
+
+         .anchor:hover {
+            color: rgba(255, 255, 255, 0.6);
+         }
+
+         .symbol-anchor {
+            scroll-margin-top: 2rem;
+         }
+
+         pre, code {
+            white-space: pre;
+         }  
+
+         pre[class*="language-"] {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%) !important;
+            border: 1px solid rgba(255, 255, 255, 0.1) !important;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+            border-radius: 8px !important;
+            margin: 1rem 0 !important;
+            padding: 1rem 1.2rem !important;
+            font-size: 0.9rem !important;
+            overflow-x: auto !important;
+         }
+
+         code[class*="language-"] {
+            color: #e6e6e6 !important;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace !important;
+            white-space: pre-wrap !important;
+         }
+
+         pre:not([class*="language-"]) {
+            background: linear-gradient(135deg, #1a1a1a 0%, #2d2d2d 100%);
+            color: #e6e6e6;
+            padding: 1rem 1.2rem;
+            border-radius: 8px;
+            margin: 1rem 0;
+            font-size: 0.9rem;
+            overflow-x: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+         }
+
+         pre:not([class*="language-"]) code {
+            color: #f5f5f5;
+            font-family: "Monaco", "Menlo", "Ubuntu Mono", monospace;
+            white-space: pre-wrap;
+         }
+
+         .token.comment,
+         .token.prolog,
+         .token.doctype,
+         .token.cdata {
+            color: #7c7c7c !important;
+         }
+
+         .token.punctuation {
+            color: #c9c9c9 !important;
+         }
+
+         .token.property,
+         .token.tag,
+         .token.boolean,
+         .token.number,
+         .token.constant,
+         .token.symbol,
+         .token.deleted {
+            color: #f2777a !important;
+         }
+
+         .token.selector,
+         .token.attr-name,
+         .token.string,
+         .token.char,
+         .token.builtin,
+         .token.inserted {
+            color: #639fc2 !important;
+         }
+
+         .token.operator,
+         .token.entity,
+         .token.url,
+         .language-css .token.string,
+         .style .token.string {
+            color: #66cccc !important;
+         }
+
+         .token.atrule,
+         .token.attr-value,
+         .token.keyword {
+            color: #d34343 !important;
+         }
+
+         .token.function,
+         .token.class-name {
+            color: #f99157 !important;
+         }
+
+         .token.regex,
+         .token.important,
+         .token.variable {
+            color: #ffcc66 !important;
+         }
+
+         p {
+            font-size: 15px;
+            margin: 1rem 0;
+            color: #ddd;
+         }
+
+         article {
+            margin-bottom: 2rem;
+            padding: 1.5rem;
+            background: rgba(59, 56, 56, 0.3);
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.4);
+            transition: all 0.3s ease;
+         }
+
+         article:hover {
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.5);
+            transform: translateY(-2px);
+         }
+
+         article:target {
+            border-color: rgba(100, 200, 255, 0.5);
+            box-shadow: 0 0 0 2px rgba(100, 200, 255, 0.2);
+         }
+
+         .hidden {
+            display: none !important;
+         }
+
+         .filter-section {
+            margin-bottom: 1.5rem;
+         }
+
+         .filter-section h3 {
+            margin-bottom: 0.8rem;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #aaa;
+         }
+
+         .filter-toggle label {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.6rem;
+            font-size: 0.85rem;
+            color: #bbb;
+            cursor: pointer;
+            padding: 0.3rem;
+            border-radius: 4px;
+            transition: background 0.2s ease;
+         }
+
+         .filter-toggle label:hover {
+            background: rgba(255, 255, 255, 0.05);
+         }
+
+         .filter-toggle input {
+            margin-right: 0.6rem;
+         }
+
+         #searchInput {
+            width: 100%;
+            margin-bottom: 1.5rem;
+            border-radius: 8px !important;
+            height: 2.8rem;
+            font-size: 0.9rem;
+            background: rgba(0, 0, 0, 0.3);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            color: #fff;
+            padding: 0 1rem;
+         }
+
+         #searchInput::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+         }
+
+         #searchInput:focus {
+            border-color: rgba(255, 255, 255, 0.4);
+            box-shadow: 0 0 0 2px rgba(255, 255, 255, 0.1);
+         }
+
+         .section-divider {
+            height: 1px;
+            background: linear-gradient(
+               90deg,
+               transparent 0%,
+               rgba(255, 255, 255, 0.3) 50%,
+               transparent 100%
+            );
+            margin: 1.5rem 0;
+         }
+
+         .subpackage-list {
+            list-style: none;
+            padding: 0;
+         }
+
+         .subpackage-list li {
+            margin-bottom: 0.4rem;
+         }
+
+         .subpackage-list a {
+            display: block;
+            padding: 0.5rem 0.8rem;
+            color: #ccc;
+            text-decoration: none;
+            border-radius: 6px;
+            transition: all 0.2s ease;
+            font-size: 0.85rem;
+         }
+
+         .subpackage-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+            transform: translateX(4px);
+         }
+
+         .empty-state {
+            color: rgba(177, 175, 175, 0.6);
+            font-style: italic;
+            font-size: 0.8rem;
+         }
+
+         .badge {
+            display: inline-block;
+            background: rgba(255, 255, 255, 0.1);
+            color: #ddd;
+            padding: 0.2rem 0.6rem;
+            border-radius: 12px;
+            font-size: 0.7rem;
+            font-weight: 500;
+            margin-left: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .method-badge {
+            background: rgba(100, 200, 255, 0.2);
+            color: #87ceeb;
+         }
+
+         .const-badge {
+            background: rgba(255, 200, 100, 0.2);
+            color: #ffd700;
+         }
+
+         .var-badge {
+            background: rgba(200, 255, 100, 0.2);
+            color: #90ee90;
+         }
+
+         .type-badge {
+            background: rgba(255, 100, 200, 0.2);
+            color: #699eff;
+         }
+
+         .interface-badge {
+            background: rgba(150, 100, 255, 0.2);
+            color: #dda0dd;
+         }
+
+         .toc {
+            position: sticky;
+            top: 1rem;
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1.5rem;
+         }
+
+         .toc h4 {
+            margin: 0 0 0.8rem;
+            font-size: 0.9rem;
+            color: #aaa;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+         }
+
+         .toc ul {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+         }
+
+         .toc li {
+            margin-bottom: 0.3rem;
+         }
+
+         .toc a {
+            color: #bbb;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: color 0.2s ease;
+         }
+
+         .toc a:hover {
+            color: #fff;
+         }
+
+         .symbol-list {
+            max-height: 300px;
+            overflow-y: auto;
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.2);
+         }
+
+         .symbol-list::-webkit-scrollbar {
+            width: 4px;
+         }
+
+         .symbol-list::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 2px;
+         }
+
+         .symbol-list ul {
+            list-style: none;
+            padding: 0.5rem;
+            margin: 0;
+         }
+
+         .symbol-list li {
+            margin-bottom: 0.2rem;
+         }
+
+         .symbol-list a {
+            display: block;
+            padding: 0.3rem 0.5rem;
+            color: #bbb;
+            text-decoration: none;
+            border-radius: 4px;
+            transition: all 0.2s ease;
+            font-size: 0.75rem;
+         }
+
+         .symbol-list a:hover {
+            background: rgba(255, 255, 255, 0.1);
+            color: #fff;
+         }
+
+         @media (max-width: 768px) {
+            body {
+               flex-direction: column;
+            }
+
+            .sidebar {
+               width: 90%;
+               height: auto;
+               position: relative;
+            }
+
+            main {
+               max-width: 100%;
+               padding: 1rem;
+            }
+         }
+      </style>
+   </head>
+   <body>
+      <aside class="sidebar">
+         <div class="nav-links">
+            <a href="index.html" title="Home">⌂</a>
+            <span>|</span>
+            <a href="#" onclick="history.back()" title="Back">←</a>
+         </div>
+
+         <div class="filter-section">
+            <h3>Search</h3>
+            <input
+               type="search"
+               id="searchInput"
+               placeholder="Search symbols..."
+            />
+         </div>
+
+         <div class="filter-section">
+            <h3>Filters</h3>
+            <div class="filter-toggle">
+               <label>
+                  <input type="checkbox" id="showImports" />
+                  Show imports
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFunctions" />
+                  Show private functions
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateStructs" />
+                  Show private structs
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateFields" />
+                  Show private fields
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateGlobals" />
+                  Show private globals
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateTypes" />
+                  Show private types
+               </label>
+               <label>
+                  <input type="checkbox" id="showPrivateInterfaces" />
+                  Show private interfaces
+               </label>
+            </div>
+         </div>
+
+         <div class="section-divider"></div>
+
+         <div class="filter-section">
+            <h3>Subpackages</h3>
+            
+            <div class="empty-state">No subpackages</div>
+            
+         </div>
+
+         
+         <div class="section-divider"></div>
+
+         <div class="toc">
+            <h4>Quick Navigation</h4>
+            <ul>
+               
+               <li><a href="#globals">Constants & Variables</a></li>
+                  
+               <li><a href="#structs">Structs</a></li>
+                
+               <li><a href="#functions">Functions</a></li>
+               
+            </ul>
+         </div>
+
+         <div class="filter-section">
+            <h3>All Symbols</h3>
+            <div class="symbol-list">
+               <ul id="symbolIndex">
+               </ul>
+            </div>
+         </div>
+         
+      </aside>
+
+      <main>
+         <h1>strconv</h1>
+         <div class="section-divider"></div>
+
+         
+         <section id="imports">
+            <h2>Imports</h2>
+            <article class="imports symbol-anchor" id="imports-section" data-name="imports">
+               <h3>
+                  Imports
+                  <a href="#imports-section" class="anchor" title="Link to imports">#</a>
+               </h3>
+               <pre><code class="language-go">"internal/stringslite"
+"math"
+"errors"
+"internal/stringslite"
+"math/bits"
+"unicode/utf8"
+"internal/bytealg"
+"math/bits"
+"math"
+"math/bits"
+"math"
+</code></pre>
+            </article>
+         </section>
+          
+         <section id="globals">
+            <h2>Constants & Variables</h2>
+            
+            <article class="global symbol-anchor" id="ErrRange" data-name="ErrRange">
+               <h3>
+                  ErrRange 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#ErrRange" class="anchor" title="Link to ErrRange">#</a>
+               </h3>
+               
+                  <p class="doc-comment">ErrRange indicates that a value is out of range for the target type.</p>
+               
+               <pre><code class="language-go">var ErrRange = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="ErrSyntax" data-name="ErrSyntax">
+               <h3>
+                  ErrSyntax 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#ErrSyntax" class="anchor" title="Link to ErrSyntax">#</a>
+               </h3>
+               
+                  <p class="doc-comment">ErrSyntax indicates that a value does not have the right syntax for the target type.</p>
+               
+               <pre><code class="language-go">var ErrSyntax = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="IntSize" data-name="IntSize">
+               <h3>
+                  IntSize 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#IntSize" class="anchor" title="Link to IntSize">#</a>
+               </h3>
+               
+                  <p class="doc-comment">IntSize is the size in bits of an int or uint value.</p>
+               
+               <pre><code class="language-go">const IntSize = intSize</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="detailedPowersOfTen" data-name="detailedPowersOfTen">
+               <h3>
+                  detailedPowersOfTen 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#detailedPowersOfTen" class="anchor" title="Link to detailedPowersOfTen">#</a>
+               </h3>
+               
+                  <p class="doc-comment">detailedPowersOfTen contains 128-bit mantissa approximations (rounded down)
+to the powers of 10. For example:
+- 1e43 ≈ (0xE596B7B0_C643C719                   * (2 ** 79))
+- 1e43 = (0xE596B7B0_C643C719_6D9CCD05_D0000000 * (2 ** 15))
+The mantissas are explicitly listed. The exponents are implied by a linear
+expression with slope 217706.0/65536.0 ≈ log(10)/log(2).
+The table was generated by
+https://github.com/google/wuffs/blob/ba3818cb6b473a2ed0b38ecfc07dbbd3a97e8ae7/script/print-mpb-powers-of-10.go</p>
+               
+               <pre><code class="language-go">var detailedPowersOfTen = [...][2]uint64{...}</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="detailedPowersOfTenMaxExp10" data-name="detailedPowersOfTenMaxExp10">
+               <h3>
+                  detailedPowersOfTenMaxExp10 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#detailedPowersOfTenMaxExp10" class="anchor" title="Link to detailedPowersOfTenMaxExp10">#</a>
+               </h3>
+               
+                  <p class="doc-comment">detailedPowersOfTen{Min,Max}Exp10 is the power of 10 represented by the
+first and last rows of detailedPowersOfTen. Both bounds are inclusive.</p>
+               
+               <pre><code class="language-go">const detailedPowersOfTenMaxExp10 = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="detailedPowersOfTenMinExp10" data-name="detailedPowersOfTenMinExp10">
+               <h3>
+                  detailedPowersOfTenMinExp10 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#detailedPowersOfTenMinExp10" class="anchor" title="Link to detailedPowersOfTenMinExp10">#</a>
+               </h3>
+               
+                  <p class="doc-comment">detailedPowersOfTen{Min,Max}Exp10 is the power of 10 represented by the
+first and last rows of detailedPowersOfTen. Both bounds are inclusive.</p>
+               
+               <pre><code class="language-go">const detailedPowersOfTenMinExp10 = *ast.UnaryExpr</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="digits" data-name="digits">
+               <h3>
+                  digits 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#digits" class="anchor" title="Link to digits">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const digits = "0123456789abcdefghijklmnopqrstuvwxyz"</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="fastSmalls" data-name="fastSmalls">
+               <h3>
+                  fastSmalls 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#fastSmalls" class="anchor" title="Link to fastSmalls">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const fastSmalls = true</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="float32info" data-name="float32info">
+               <h3>
+                  float32info 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#float32info" class="anchor" title="Link to float32info">#</a>
+               </h3>
+               
+               <pre><code class="language-go">var float32info = floatInfo{...}</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="float32pow10" data-name="float32pow10">
+               <h3>
+                  float32pow10 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#float32pow10" class="anchor" title="Link to float32pow10">#</a>
+               </h3>
+               
+               <pre><code class="language-go">var float32pow10 = []float32{...}</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="float64info" data-name="float64info">
+               <h3>
+                  float64info 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#float64info" class="anchor" title="Link to float64info">#</a>
+               </h3>
+               
+               <pre><code class="language-go">var float64info = floatInfo{...}</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="float64pow10" data-name="float64pow10">
+               <h3>
+                  float64pow10 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#float64pow10" class="anchor" title="Link to float64pow10">#</a>
+               </h3>
+               
+                  <p class="doc-comment">Exact powers of 10.</p>
+               
+               <pre><code class="language-go">var float64pow10 = []float64{...}</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="fnParseComplex" data-name="fnParseComplex">
+               <h3>
+                  fnParseComplex 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#fnParseComplex" class="anchor" title="Link to fnParseComplex">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const fnParseComplex = "ParseComplex"</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="fnParseFloat" data-name="fnParseFloat">
+               <h3>
+                  fnParseFloat 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#fnParseFloat" class="anchor" title="Link to fnParseFloat">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const fnParseFloat = "ParseFloat"</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="host32bit" data-name="host32bit">
+               <h3>
+                  host32bit 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#host32bit" class="anchor" title="Link to host32bit">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const host32bit = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="intSize" data-name="intSize">
+               <h3>
+                  intSize 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#intSize" class="anchor" title="Link to intSize">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const intSize = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="isGraphic" data-name="isGraphic">
+               <h3>
+                  isGraphic 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#isGraphic" class="anchor" title="Link to isGraphic">#</a>
+               </h3>
+               
+                  <p class="doc-comment">isGraphic lists the graphic runes not matched by IsPrint.</p>
+               
+               <pre><code class="language-go">var isGraphic = []uint16{...}</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="isNotPrint16" data-name="isNotPrint16">
+               <h3>
+                  isNotPrint16 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#isNotPrint16" class="anchor" title="Link to isNotPrint16">#</a>
+               </h3>
+               
+               <pre><code class="language-go">var isNotPrint16 = []uint16{...}</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="isNotPrint32" data-name="isNotPrint32">
+               <h3>
+                  isNotPrint32 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#isNotPrint32" class="anchor" title="Link to isNotPrint32">#</a>
+               </h3>
+               
+               <pre><code class="language-go">var isNotPrint32 = []uint16{...}</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="isPrint16" data-name="isPrint16">
+               <h3>
+                  isPrint16 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#isPrint16" class="anchor" title="Link to isPrint16">#</a>
+               </h3>
+               
+               <pre><code class="language-go">var isPrint16 = []uint16{...}</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="isPrint32" data-name="isPrint32">
+               <h3>
+                  isPrint32 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#isPrint32" class="anchor" title="Link to isPrint32">#</a>
+               </h3>
+               
+               <pre><code class="language-go">var isPrint32 = []uint32{...}</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="leftcheats" data-name="leftcheats">
+               <h3>
+                  leftcheats 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#leftcheats" class="anchor" title="Link to leftcheats">#</a>
+               </h3>
+               
+               <pre><code class="language-go">var leftcheats = []leftCheat{...}</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="lowerhex" data-name="lowerhex">
+               <h3>
+                  lowerhex 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#lowerhex" class="anchor" title="Link to lowerhex">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const lowerhex = "0123456789abcdef"</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="maxShift" data-name="maxShift">
+               <h3>
+                  maxShift 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#maxShift" class="anchor" title="Link to maxShift">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const maxShift = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="maxUint64" data-name="maxUint64">
+               <h3>
+                  maxUint64 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#maxUint64" class="anchor" title="Link to maxUint64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const maxUint64 = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="nSmalls" data-name="nSmalls">
+               <h3>
+                  nSmalls 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#nSmalls" class="anchor" title="Link to nSmalls">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const nSmalls = 100</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="optimize" data-name="optimize">
+               <h3>
+                  optimize 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#optimize" class="anchor" title="Link to optimize">#</a>
+               </h3>
+               
+               <pre><code class="language-go">var optimize = true</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="powtab" data-name="powtab">
+               <h3>
+                  powtab 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#powtab" class="anchor" title="Link to powtab">#</a>
+               </h3>
+               
+                  <p class="doc-comment">decimal power of ten to binary power of two.</p>
+               
+               <pre><code class="language-go">var powtab = []int{...}</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="smallsString" data-name="smallsString">
+               <h3>
+                  smallsString 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#smallsString" class="anchor" title="Link to smallsString">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const smallsString = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="uint64pow10" data-name="uint64pow10">
+               <h3>
+                  uint64pow10 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#uint64pow10" class="anchor" title="Link to uint64pow10">#</a>
+               </h3>
+               
+               <pre><code class="language-go">var uint64pow10 = [...]uint64{...}</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="uintSize" data-name="uintSize">
+               <h3>
+                  uintSize 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#uintSize" class="anchor" title="Link to uintSize">#</a>
+               </h3>
+               
+                  <p class="doc-comment">Maximum shift that we can do in one pass without overflow.
+A uint has 32 or 64 bits, and we have to be able to accommodate 9<<k.</p>
+               
+               <pre><code class="language-go">const uintSize = *ast.BinaryExpr</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="upperhex" data-name="upperhex">
+               <h3>
+                  upperhex 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#upperhex" class="anchor" title="Link to upperhex">#</a>
+               </h3>
+               
+               <pre><code class="language-go">const upperhex = "0123456789ABCDEF"</code></pre>
+            </article>
+            
+         </section>
+            
+         <section id="structs">
+            <h2>Structs</h2>
+            
+            <article class="struct symbol-anchor" id="NumError" data-name="NumError">
+               <h3>
+                  NumError
+                  <span class="badge">struct</span>
+                  <a href="#NumError" class="anchor" title="Link to NumError">#</a>
+               </h3>
+               
+               <p>A NumError records a failed conversion.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code language-go">type NumError struct {
+Func string
+Num string
+Err error
+}</code></pre>
+            </article>
+            
+            <article class="struct symbol-anchor" id="decimal" data-name="decimal">
+               <h3>
+                  decimal
+                  <span class="badge">struct</span>
+                  <a href="#decimal" class="anchor" title="Link to decimal">#</a>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code language-go">type decimal struct {
+d [800]byte
+nd int
+dp int
+neg bool
+trunc bool
+}</code></pre>
+            </article>
+            
+            <article class="struct symbol-anchor" id="decimalSlice" data-name="decimalSlice">
+               <h3>
+                  decimalSlice
+                  <span class="badge">struct</span>
+                  <a href="#decimalSlice" class="anchor" title="Link to decimalSlice">#</a>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code language-go">type decimalSlice struct {
+d []byte
+nd int
+dp int
+}</code></pre>
+            </article>
+            
+            <article class="struct symbol-anchor" id="floatInfo" data-name="floatInfo">
+               <h3>
+                  floatInfo
+                  <span class="badge">struct</span>
+                  <a href="#floatInfo" class="anchor" title="Link to floatInfo">#</a>
+               </h3>
+               
+               <p>TODO: move elsewhere?</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code language-go">type floatInfo struct {
+mantbits uint
+expbits uint
+bias int
+}</code></pre>
+            </article>
+            
+            <article class="struct symbol-anchor" id="leftCheat" data-name="leftCheat">
+               <h3>
+                  leftCheat
+                  <span class="badge">struct</span>
+                  <a href="#leftCheat" class="anchor" title="Link to leftCheat">#</a>
+               </h3>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code language-go">type leftCheat struct {
+delta int
+cutoff string
+}</code></pre>
+            </article>
+            
+         </section>
+          
+         <section id="functions">
+            <h2>Functions</h2>
+            
+            <article class="function symbol-anchor" id="AppendBool" data-name="AppendBool">
+               <h3>
+                  AppendBool 
+                  <span class="badge">function</span>
+                  
+                  <a href="#AppendBool" class="anchor" title="Link to AppendBool">#</a>
+               </h3>
+               
+               <p>AppendBool appends "true" or "false", according to the value of b,
+to dst and returns the extended buffer.</p>
+               
+               <pre><code class="language-go">func AppendBool(dst []byte, b bool) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="AppendFloat" data-name="AppendFloat">
+               <h3>
+                  AppendFloat 
+                  <span class="badge">function</span>
+                  
+                  <a href="#AppendFloat" class="anchor" title="Link to AppendFloat">#</a>
+               </h3>
+               
+               <p>AppendFloat appends the string form of the floating-point number f,
+as generated by [FormatFloat], to dst and returns the extended buffer.</p>
+               
+               <pre><code class="language-go">func AppendFloat(dst []byte, f float64, fmt byte, prec int, bitSize int) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="AppendInt" data-name="AppendInt">
+               <h3>
+                  AppendInt 
+                  <span class="badge">function</span>
+                  
+                  <a href="#AppendInt" class="anchor" title="Link to AppendInt">#</a>
+               </h3>
+               
+               <p>AppendInt appends the string form of the integer i,
+as generated by [FormatInt], to dst and returns the extended buffer.</p>
+               
+               <pre><code class="language-go">func AppendInt(dst []byte, i int64, base int) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="AppendQuote" data-name="AppendQuote">
+               <h3>
+                  AppendQuote 
+                  <span class="badge">function</span>
+                  
+                  <a href="#AppendQuote" class="anchor" title="Link to AppendQuote">#</a>
+               </h3>
+               
+               <p>AppendQuote appends a double-quoted Go string literal representing s,
+as generated by [Quote], to dst and returns the extended buffer.</p>
+               
+               <pre><code class="language-go">func AppendQuote(dst []byte, s string) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="AppendQuoteRune" data-name="AppendQuoteRune">
+               <h3>
+                  AppendQuoteRune 
+                  <span class="badge">function</span>
+                  
+                  <a href="#AppendQuoteRune" class="anchor" title="Link to AppendQuoteRune">#</a>
+               </h3>
+               
+               <p>AppendQuoteRune appends a single-quoted Go character literal representing the rune,
+as generated by [QuoteRune], to dst and returns the extended buffer.</p>
+               
+               <pre><code class="language-go">func AppendQuoteRune(dst []byte, r rune) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="AppendQuoteRuneToASCII" data-name="AppendQuoteRuneToASCII">
+               <h3>
+                  AppendQuoteRuneToASCII 
+                  <span class="badge">function</span>
+                  
+                  <a href="#AppendQuoteRuneToASCII" class="anchor" title="Link to AppendQuoteRuneToASCII">#</a>
+               </h3>
+               
+               <p>AppendQuoteRuneToASCII appends a single-quoted Go character literal representing the rune,
+as generated by [QuoteRuneToASCII], to dst and returns the extended buffer.</p>
+               
+               <pre><code class="language-go">func AppendQuoteRuneToASCII(dst []byte, r rune) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="AppendQuoteRuneToGraphic" data-name="AppendQuoteRuneToGraphic">
+               <h3>
+                  AppendQuoteRuneToGraphic 
+                  <span class="badge">function</span>
+                  
+                  <a href="#AppendQuoteRuneToGraphic" class="anchor" title="Link to AppendQuoteRuneToGraphic">#</a>
+               </h3>
+               
+               <p>AppendQuoteRuneToGraphic appends a single-quoted Go character literal representing the rune,
+as generated by [QuoteRuneToGraphic], to dst and returns the extended buffer.</p>
+               
+               <pre><code class="language-go">func AppendQuoteRuneToGraphic(dst []byte, r rune) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="AppendQuoteToASCII" data-name="AppendQuoteToASCII">
+               <h3>
+                  AppendQuoteToASCII 
+                  <span class="badge">function</span>
+                  
+                  <a href="#AppendQuoteToASCII" class="anchor" title="Link to AppendQuoteToASCII">#</a>
+               </h3>
+               
+               <p>AppendQuoteToASCII appends a double-quoted Go string literal representing s,
+as generated by [QuoteToASCII], to dst and returns the extended buffer.</p>
+               
+               <pre><code class="language-go">func AppendQuoteToASCII(dst []byte, s string) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="AppendQuoteToGraphic" data-name="AppendQuoteToGraphic">
+               <h3>
+                  AppendQuoteToGraphic 
+                  <span class="badge">function</span>
+                  
+                  <a href="#AppendQuoteToGraphic" class="anchor" title="Link to AppendQuoteToGraphic">#</a>
+               </h3>
+               
+               <p>AppendQuoteToGraphic appends a double-quoted Go string literal representing s,
+as generated by [QuoteToGraphic], to dst and returns the extended buffer.</p>
+               
+               <pre><code class="language-go">func AppendQuoteToGraphic(dst []byte, s string) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="AppendUint" data-name="AppendUint">
+               <h3>
+                  AppendUint 
+                  <span class="badge">function</span>
+                  
+                  <a href="#AppendUint" class="anchor" title="Link to AppendUint">#</a>
+               </h3>
+               
+               <p>AppendUint appends the string form of the unsigned integer i,
+as generated by [FormatUint], to dst and returns the extended buffer.</p>
+               
+               <pre><code class="language-go">func AppendUint(dst []byte, i uint64, base int) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Assign" data-name="Assign">
+               <h3>
+                  Assign 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Assign" class="anchor" title="Link to Assign">#</a>
+               </h3>
+               
+               <p>Assign v to a.</p>
+               
+               <pre><code class="language-go">func (a *decimal) Assign(v uint64)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Atoi" data-name="Atoi">
+               <h3>
+                  Atoi 
+                  <span class="badge">function</span>
+                  
+                  <a href="#Atoi" class="anchor" title="Link to Atoi">#</a>
+               </h3>
+               
+               <p>Atoi is equivalent to ParseInt(s, 10, 0), converted to type int.</p>
+               
+               <pre><code class="language-go">func Atoi(s string) (int, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="CanBackquote" data-name="CanBackquote">
+               <h3>
+                  CanBackquote 
+                  <span class="badge">function</span>
+                  
+                  <a href="#CanBackquote" class="anchor" title="Link to CanBackquote">#</a>
+               </h3>
+               
+               <p>CanBackquote reports whether the string s can be represented
+unchanged as a single-line backquoted string without control
+characters other than tab.</p>
+               
+               <pre><code class="language-go">func CanBackquote(s string) bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Error" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Error" class="anchor" title="Link to Error">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (e *NumError) Error() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="FormatBool" data-name="FormatBool">
+               <h3>
+                  FormatBool 
+                  <span class="badge">function</span>
+                  
+                  <a href="#FormatBool" class="anchor" title="Link to FormatBool">#</a>
+               </h3>
+               
+               <p>FormatBool returns "true" or "false" according to the value of b.</p>
+               
+               <pre><code class="language-go">func FormatBool(b bool) string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="FormatComplex" data-name="FormatComplex">
+               <h3>
+                  FormatComplex 
+                  <span class="badge">function</span>
+                  
+                  <a href="#FormatComplex" class="anchor" title="Link to FormatComplex">#</a>
+               </h3>
+               
+               <p>FormatComplex converts the complex number c to a string of the
+form (a+bi) where a and b are the real and imaginary parts,
+formatted according to the format fmt and precision prec.
+The format fmt and precision prec have the same meaning as in [FormatFloat].
+It rounds the result assuming that the original was obtained from a complex
+value of bitSize bits, which must be 64 for complex64 and 128 for complex128.</p>
+               
+               <pre><code class="language-go">func FormatComplex(c complex128, fmt byte, prec int, bitSize int) string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="FormatFloat" data-name="FormatFloat">
+               <h3>
+                  FormatFloat 
+                  <span class="badge">function</span>
+                  
+                  <a href="#FormatFloat" class="anchor" title="Link to FormatFloat">#</a>
+               </h3>
+               
+               <p>FormatFloat converts the floating-point number f to a string,
+according to the format fmt and precision prec. It rounds the
+result assuming that the original was obtained from a floating-point
+value of bitSize bits (32 for float32, 64 for float64).
+The format fmt is one of
+- 'b' (-ddddp±ddd, a binary exponent),
+- 'e' (-d.dddde±dd, a decimal exponent),
+- 'E' (-d.ddddE±dd, a decimal exponent),
+- 'f' (-ddd.dddd, no exponent),
+- 'g' ('e' for large exponents, 'f' otherwise),
+- 'G' ('E' for large exponents, 'f' otherwise),
+- 'x' (-0xd.ddddp±ddd, a hexadecimal fraction and binary exponent), or
+- 'X' (-0Xd.ddddP±ddd, a hexadecimal fraction and binary exponent).
+The precision prec controls the number of digits (excluding the exponent)
+printed by the 'e', 'E', 'f', 'g', 'G', 'x', and 'X' formats.
+For 'e', 'E', 'f', 'x', and 'X', it is the number of digits after the decimal point.
+For 'g' and 'G' it is the maximum number of significant digits (trailing
+zeros are removed).
+The special precision -1 uses the smallest number of digits
+necessary such that ParseFloat will return f exactly.
+The exponent is written as a decimal integer;
+for all formats other than 'b', it will be at least two digits.</p>
+               
+               <pre><code class="language-go">func FormatFloat(f float64, fmt byte, prec int, bitSize int) string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="FormatInt" data-name="FormatInt">
+               <h3>
+                  FormatInt 
+                  <span class="badge">function</span>
+                  
+                  <a href="#FormatInt" class="anchor" title="Link to FormatInt">#</a>
+               </h3>
+               
+               <p>FormatInt returns the string representation of i in the given base,
+for 2 <= base <= 36. The result uses the lower-case letters 'a' to 'z'
+for digit values >= 10.</p>
+               
+               <pre><code class="language-go">func FormatInt(i int64, base int) string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="FormatUint" data-name="FormatUint">
+               <h3>
+                  FormatUint 
+                  <span class="badge">function</span>
+                  
+                  <a href="#FormatUint" class="anchor" title="Link to FormatUint">#</a>
+               </h3>
+               
+               <p>FormatUint returns the string representation of i in the given base,
+for 2 <= base <= 36. The result uses the lower-case letters 'a' to 'z'
+for digit values >= 10.</p>
+               
+               <pre><code class="language-go">func FormatUint(i uint64, base int) string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="IsGraphic" data-name="IsGraphic">
+               <h3>
+                  IsGraphic 
+                  <span class="badge">function</span>
+                  
+                  <a href="#IsGraphic" class="anchor" title="Link to IsGraphic">#</a>
+               </h3>
+               
+               <p>IsGraphic reports whether the rune is defined as a Graphic by Unicode. Such
+characters include letters, marks, numbers, punctuation, symbols, and
+spaces, from categories L, M, N, P, S, and Zs.</p>
+               
+               <pre><code class="language-go">func IsGraphic(r rune) bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="IsPrint" data-name="IsPrint">
+               <h3>
+                  IsPrint 
+                  <span class="badge">function</span>
+                  
+                  <a href="#IsPrint" class="anchor" title="Link to IsPrint">#</a>
+               </h3>
+               
+               <p>IsPrint reports whether the rune is defined as printable by Go, with
+the same definition as [unicode.IsPrint]: letters, numbers, punctuation,
+symbols and ASCII space.</p>
+               
+               <pre><code class="language-go">func IsPrint(r rune) bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Itoa" data-name="Itoa">
+               <h3>
+                  Itoa 
+                  <span class="badge">function</span>
+                  
+                  <a href="#Itoa" class="anchor" title="Link to Itoa">#</a>
+               </h3>
+               
+               <p>Itoa is equivalent to [FormatInt](int64(i), 10).</p>
+               
+               <pre><code class="language-go">func Itoa(i int) string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ParseBool" data-name="ParseBool">
+               <h3>
+                  ParseBool 
+                  <span class="badge">function</span>
+                  
+                  <a href="#ParseBool" class="anchor" title="Link to ParseBool">#</a>
+               </h3>
+               
+               <p>ParseBool returns the boolean value represented by the string.
+It accepts 1, t, T, TRUE, true, True, 0, f, F, FALSE, false, False.
+Any other value returns an error.</p>
+               
+               <pre><code class="language-go">func ParseBool(str string) (bool, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ParseComplex" data-name="ParseComplex">
+               <h3>
+                  ParseComplex 
+                  <span class="badge">function</span>
+                  
+                  <a href="#ParseComplex" class="anchor" title="Link to ParseComplex">#</a>
+               </h3>
+               
+               <p>ParseComplex converts the string s to a complex number
+with the precision specified by bitSize: 64 for complex64, or 128 for complex128.
+When bitSize=64, the result still has type complex128, but it will be
+convertible to complex64 without changing its value.
+The number represented by s must be of the form N, Ni, or N±Ni, where N stands
+for a floating-point number as recognized by [ParseFloat], and i is the imaginary
+component. If the second N is unsigned, a + sign is required between the two components
+as indicated by the ±. If the second N is NaN, only a + sign is accepted.
+The form may be parenthesized and cannot contain any spaces.
+The resulting complex number consists of the two components converted by ParseFloat.
+The errors that ParseComplex returns have concrete type [*NumError]
+and include err.Num = s.
+If s is not syntactically well-formed, ParseComplex returns err.Err = ErrSyntax.
+If s is syntactically well-formed but either component is more than 1/2 ULP
+away from the largest floating point number of the given component's size,
+ParseComplex returns err.Err = ErrRange and c = ±Inf for the respective component.</p>
+               
+               <pre><code class="language-go">func ParseComplex(s string, bitSize int) (complex128, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ParseFloat" data-name="ParseFloat">
+               <h3>
+                  ParseFloat 
+                  <span class="badge">function</span>
+                  
+                  <a href="#ParseFloat" class="anchor" title="Link to ParseFloat">#</a>
+               </h3>
+               
+               <p>ParseFloat converts the string s to a floating-point number
+with the precision specified by bitSize: 32 for float32, or 64 for float64.
+When bitSize=32, the result still has type float64, but it will be
+convertible to float32 without changing its value.
+ParseFloat accepts decimal and hexadecimal floating-point numbers
+as defined by the Go syntax for [floating-point literals].
+If s is well-formed and near a valid floating-point number,
+ParseFloat returns the nearest floating-point number rounded
+using IEEE754 unbiased rounding.
+(Parsing a hexadecimal floating-point value only rounds when
+there are more bits in the hexadecimal representation than
+will fit in the mantissa.)
+The errors that ParseFloat returns have concrete type *NumError
+and include err.Num = s.
+If s is not syntactically well-formed, ParseFloat returns err.Err = ErrSyntax.
+If s is syntactically well-formed but is more than 1/2 ULP
+away from the largest floating point number of the given size,
+ParseFloat returns f = ±Inf, err.Err = ErrRange.
+ParseFloat recognizes the string "NaN", and the (possibly signed) strings "Inf" and "Infinity"
+as their respective special floating point values. It ignores case when matching.
+[floating-point literals]: https://go.dev/ref/spec#Floating-point_literals</p>
+               
+               <pre><code class="language-go">func ParseFloat(s string, bitSize int) (float64, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ParseInt" data-name="ParseInt">
+               <h3>
+                  ParseInt 
+                  <span class="badge">function</span>
+                  
+                  <a href="#ParseInt" class="anchor" title="Link to ParseInt">#</a>
+               </h3>
+               
+               <p>ParseInt interprets a string s in the given base (0, 2 to 36) and
+bit size (0 to 64) and returns the corresponding value i.
+The string may begin with a leading sign: "+" or "-".
+If the base argument is 0, the true base is implied by the string's
+prefix following the sign (if present): 2 for "0b", 8 for "0" or "0o",
+16 for "0x", and 10 otherwise. Also, for argument base 0 only,
+underscore characters are permitted as defined by the Go syntax for
+[integer literals].
+The bitSize argument specifies the integer type
+that the result must fit into. Bit sizes 0, 8, 16, 32, and 64
+correspond to int, int8, int16, int32, and int64.
+If bitSize is below 0 or above 64, an error is returned.
+The errors that ParseInt returns have concrete type [*NumError]
+and include err.Num = s. If s is empty or contains invalid
+digits, err.Err = [ErrSyntax] and the returned value is 0;
+if the value corresponding to s cannot be represented by a
+signed integer of the given size, err.Err = [ErrRange] and the
+returned value is the maximum magnitude integer of the
+appropriate bitSize and sign.
+[integer literals]: https://go.dev/ref/spec#Integer_literals</p>
+               
+               <pre><code class="language-go">func ParseInt(s string, base int, bitSize int) (i int64, err error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ParseUint" data-name="ParseUint">
+               <h3>
+                  ParseUint 
+                  <span class="badge">function</span>
+                  
+                  <a href="#ParseUint" class="anchor" title="Link to ParseUint">#</a>
+               </h3>
+               
+               <p>ParseUint is like [ParseInt] but for unsigned numbers.
+A sign prefix is not permitted.</p>
+               
+               <pre><code class="language-go">func ParseUint(s string, base int, bitSize int) (uint64, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Quote" data-name="Quote">
+               <h3>
+                  Quote 
+                  <span class="badge">function</span>
+                  
+                  <a href="#Quote" class="anchor" title="Link to Quote">#</a>
+               </h3>
+               
+               <p>Quote returns a double-quoted Go string literal representing s. The
+returned string uses Go escape sequences (\t, \n, \xFF, \u0100) for
+control characters and non-printable characters as defined by
+[IsPrint].</p>
+               
+               <pre><code class="language-go">func Quote(s string) string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="QuoteRune" data-name="QuoteRune">
+               <h3>
+                  QuoteRune 
+                  <span class="badge">function</span>
+                  
+                  <a href="#QuoteRune" class="anchor" title="Link to QuoteRune">#</a>
+               </h3>
+               
+               <p>QuoteRune returns a single-quoted Go character literal representing the
+rune. The returned string uses Go escape sequences (\t, \n, \xFF, \u0100)
+for control characters and non-printable characters as defined by [IsPrint].
+If r is not a valid Unicode code point, it is interpreted as the Unicode
+replacement character U+FFFD.</p>
+               
+               <pre><code class="language-go">func QuoteRune(r rune) string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="QuoteRuneToASCII" data-name="QuoteRuneToASCII">
+               <h3>
+                  QuoteRuneToASCII 
+                  <span class="badge">function</span>
+                  
+                  <a href="#QuoteRuneToASCII" class="anchor" title="Link to QuoteRuneToASCII">#</a>
+               </h3>
+               
+               <p>QuoteRuneToASCII returns a single-quoted Go character literal representing
+the rune. The returned string uses Go escape sequences (\t, \n, \xFF,
+\u0100) for non-ASCII characters and non-printable characters as defined
+by [IsPrint].
+If r is not a valid Unicode code point, it is interpreted as the Unicode
+replacement character U+FFFD.</p>
+               
+               <pre><code class="language-go">func QuoteRuneToASCII(r rune) string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="QuoteRuneToGraphic" data-name="QuoteRuneToGraphic">
+               <h3>
+                  QuoteRuneToGraphic 
+                  <span class="badge">function</span>
+                  
+                  <a href="#QuoteRuneToGraphic" class="anchor" title="Link to QuoteRuneToGraphic">#</a>
+               </h3>
+               
+               <p>QuoteRuneToGraphic returns a single-quoted Go character literal representing
+the rune. If the rune is not a Unicode graphic character,
+as defined by [IsGraphic], the returned string will use a Go escape sequence
+(\t, \n, \xFF, \u0100).
+If r is not a valid Unicode code point, it is interpreted as the Unicode
+replacement character U+FFFD.</p>
+               
+               <pre><code class="language-go">func QuoteRuneToGraphic(r rune) string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="QuoteToASCII" data-name="QuoteToASCII">
+               <h3>
+                  QuoteToASCII 
+                  <span class="badge">function</span>
+                  
+                  <a href="#QuoteToASCII" class="anchor" title="Link to QuoteToASCII">#</a>
+               </h3>
+               
+               <p>QuoteToASCII returns a double-quoted Go string literal representing s.
+The returned string uses Go escape sequences (\t, \n, \xFF, \u0100) for
+non-ASCII characters and non-printable characters as defined by [IsPrint].</p>
+               
+               <pre><code class="language-go">func QuoteToASCII(s string) string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="QuoteToGraphic" data-name="QuoteToGraphic">
+               <h3>
+                  QuoteToGraphic 
+                  <span class="badge">function</span>
+                  
+                  <a href="#QuoteToGraphic" class="anchor" title="Link to QuoteToGraphic">#</a>
+               </h3>
+               
+               <p>QuoteToGraphic returns a double-quoted Go string literal representing s.
+The returned string leaves Unicode graphic characters, as defined by
+[IsGraphic], unchanged and uses Go escape sequences (\t, \n, \xFF, \u0100)
+for non-graphic characters.</p>
+               
+               <pre><code class="language-go">func QuoteToGraphic(s string) string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="QuotedPrefix" data-name="QuotedPrefix">
+               <h3>
+                  QuotedPrefix 
+                  <span class="badge">function</span>
+                  
+                  <a href="#QuotedPrefix" class="anchor" title="Link to QuotedPrefix">#</a>
+               </h3>
+               
+               <p>QuotedPrefix returns the quoted string (as understood by [Unquote]) at the prefix of s.
+If s does not start with a valid quoted string, QuotedPrefix returns an error.</p>
+               
+               <pre><code class="language-go">func QuotedPrefix(s string) (string, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Round" data-name="Round">
+               <h3>
+                  Round 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Round" class="anchor" title="Link to Round">#</a>
+               </h3>
+               
+               <p>Round a to nd digits (or fewer).
+If nd is zero, it means we're rounding
+just to the left of the digits, as in
+0.09 -> 0.1.</p>
+               
+               <pre><code class="language-go">func (a *decimal) Round(nd int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="RoundDown" data-name="RoundDown">
+               <h3>
+                  RoundDown 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#RoundDown" class="anchor" title="Link to RoundDown">#</a>
+               </h3>
+               
+               <p>Round a down to nd digits (or fewer).</p>
+               
+               <pre><code class="language-go">func (a *decimal) RoundDown(nd int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="RoundUp" data-name="RoundUp">
+               <h3>
+                  RoundUp 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#RoundUp" class="anchor" title="Link to RoundUp">#</a>
+               </h3>
+               
+               <p>Round a up to nd digits (or fewer).</p>
+               
+               <pre><code class="language-go">func (a *decimal) RoundUp(nd int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="RoundedInteger" data-name="RoundedInteger">
+               <h3>
+                  RoundedInteger 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#RoundedInteger" class="anchor" title="Link to RoundedInteger">#</a>
+               </h3>
+               
+               <p>Extract integer part, rounded appropriately.
+No guarantees about overflow.</p>
+               
+               <pre><code class="language-go">func (a *decimal) RoundedInteger() uint64</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Shift" data-name="Shift">
+               <h3>
+                  Shift 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Shift" class="anchor" title="Link to Shift">#</a>
+               </h3>
+               
+               <p>Binary shift left (k > 0) or right (k < 0).</p>
+               
+               <pre><code class="language-go">func (a *decimal) Shift(k int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (a *decimal) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Unquote" data-name="Unquote">
+               <h3>
+                  Unquote 
+                  <span class="badge">function</span>
+                  
+                  <a href="#Unquote" class="anchor" title="Link to Unquote">#</a>
+               </h3>
+               
+               <p>Unquote interprets s as a single-quoted, double-quoted,
+or backquoted Go string literal, returning the string value
+that s quotes.  (If s is single-quoted, it would be a Go
+character literal; Unquote returns the corresponding
+one-character string. For an empty character literal
+Unquote returns the empty string.)</p>
+               
+               <pre><code class="language-go">func Unquote(s string) (string, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="UnquoteChar" data-name="UnquoteChar">
+               <h3>
+                  UnquoteChar 
+                  <span class="badge">function</span>
+                  
+                  <a href="#UnquoteChar" class="anchor" title="Link to UnquoteChar">#</a>
+               </h3>
+               
+               <p>UnquoteChar decodes the first character or byte in the escaped string
+or character literal represented by the string s.
+It returns four values:
+1. value, the decoded Unicode code point or byte value;
+2. multibyte, a boolean indicating whether the decoded character requires a multibyte UTF-8 representation;
+3. tail, the remainder of the string after the character; and
+4. an error that will be nil if the character is syntactically valid.
+The second argument, quote, specifies the type of literal being parsed
+and therefore which escaped quote character is permitted.
+If set to a single quote, it permits the sequence \' and disallows unescaped '.
+If set to a double quote, it permits \" and disallows unescaped ".
+If set to zero, it does not permit either escape and allows both quote characters to appear unescaped.</p>
+               
+               <pre><code class="language-go">func UnquoteChar(s string, quote byte) (value rune, multibyte bool, tail string, err error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Unwrap" data-name="Unwrap">
+               <h3>
+                  Unwrap 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Unwrap" class="anchor" title="Link to Unwrap">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (e *NumError) Unwrap() error</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="appendEscapedRune" data-name="appendEscapedRune">
+               <h3>
+                  appendEscapedRune 
+                  <span class="badge">function</span>
+                  
+                  <a href="#appendEscapedRune" class="anchor" title="Link to appendEscapedRune">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func appendEscapedRune(buf []byte, r rune, quote byte, ASCIIonly bool, graphicOnly bool) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="appendQuotedRuneWith" data-name="appendQuotedRuneWith">
+               <h3>
+                  appendQuotedRuneWith 
+                  <span class="badge">function</span>
+                  
+                  <a href="#appendQuotedRuneWith" class="anchor" title="Link to appendQuotedRuneWith">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func appendQuotedRuneWith(buf []byte, r rune, quote byte, ASCIIonly bool, graphicOnly bool) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="appendQuotedWith" data-name="appendQuotedWith">
+               <h3>
+                  appendQuotedWith 
+                  <span class="badge">function</span>
+                  
+                  <a href="#appendQuotedWith" class="anchor" title="Link to appendQuotedWith">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func appendQuotedWith(buf []byte, s string, quote byte, ASCIIonly bool, graphicOnly bool) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="atof32" data-name="atof32">
+               <h3>
+                  atof32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#atof32" class="anchor" title="Link to atof32">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func atof32(s string) (f float32, n int, err error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="atof32exact" data-name="atof32exact">
+               <h3>
+                  atof32exact 
+                  <span class="badge">function</span>
+                  
+                  <a href="#atof32exact" class="anchor" title="Link to atof32exact">#</a>
+               </h3>
+               
+               <p>If possible to compute mantissa*10^exp to 32-bit float f exactly,
+entirely in floating-point math, do so, avoiding the machinery above.</p>
+               
+               <pre><code class="language-go">func atof32exact(mantissa uint64, exp int, neg bool) (f float32, ok bool)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="atof64" data-name="atof64">
+               <h3>
+                  atof64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#atof64" class="anchor" title="Link to atof64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func atof64(s string) (f float64, n int, err error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="atof64exact" data-name="atof64exact">
+               <h3>
+                  atof64exact 
+                  <span class="badge">function</span>
+                  
+                  <a href="#atof64exact" class="anchor" title="Link to atof64exact">#</a>
+               </h3>
+               
+               <p>If possible to convert decimal representation to 64-bit float f exactly,
+entirely in floating-point math, do so, avoiding the expense of decimalToFloatBits.
+Three common cases:
+value is exact integer
+value is exact integer * exact power of ten
+value is exact integer / exact power of ten
+These all produce potentially inexact but correctly rounded answers.</p>
+               
+               <pre><code class="language-go">func atof64exact(mantissa uint64, exp int, neg bool) (f float64, ok bool)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="atofHex" data-name="atofHex">
+               <h3>
+                  atofHex 
+                  <span class="badge">function</span>
+                  
+                  <a href="#atofHex" class="anchor" title="Link to atofHex">#</a>
+               </h3>
+               
+               <p>atofHex converts the hex floating-point string s
+to a rounded float32 or float64 value (depending on flt==&float32info or flt==&float64info)
+and returns it as a float64.
+The string s has already been parsed into a mantissa, exponent, and sign (neg==true for negative).
+If trunc is true, trailing non-zero bits have been omitted from the mantissa.</p>
+               
+               <pre><code class="language-go">func atofHex(s string, flt *floatInfo, mantissa uint64, exp int, neg bool, trunc bool) (float64, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="baseError" data-name="baseError">
+               <h3>
+                  baseError 
+                  <span class="badge">function</span>
+                  
+                  <a href="#baseError" class="anchor" title="Link to baseError">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func baseError(fn string, str string, base int) *NumError</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="bigFtoa" data-name="bigFtoa">
+               <h3>
+                  bigFtoa 
+                  <span class="badge">function</span>
+                  
+                  <a href="#bigFtoa" class="anchor" title="Link to bigFtoa">#</a>
+               </h3>
+               
+               <p>bigFtoa uses multiprecision computations to format a float.</p>
+               
+               <pre><code class="language-go">func bigFtoa(dst []byte, prec int, fmt byte, neg bool, mant uint64, exp int, flt *floatInfo) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="bitSizeError" data-name="bitSizeError">
+               <h3>
+                  bitSizeError 
+                  <span class="badge">function</span>
+                  
+                  <a href="#bitSizeError" class="anchor" title="Link to bitSizeError">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func bitSizeError(fn string, str string, bitSize int) *NumError</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="bsearch" data-name="bsearch">
+               <h3>
+                  bsearch 
+                  <span class="badge">function</span>
+                  
+                  <a href="#bsearch" class="anchor" title="Link to bsearch">#</a>
+               </h3>
+               
+               <p>bsearch is semantically the same as [slices.BinarySearch] (without NaN checks)
+We copied this function because we can not import "slices" here.</p>
+               
+               <pre><code class="language-go">func bsearch(s S, v E) (int, bool)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="commonPrefixLenIgnoreCase" data-name="commonPrefixLenIgnoreCase">
+               <h3>
+                  commonPrefixLenIgnoreCase 
+                  <span class="badge">function</span>
+                  
+                  <a href="#commonPrefixLenIgnoreCase" class="anchor" title="Link to commonPrefixLenIgnoreCase">#</a>
+               </h3>
+               
+               <p>commonPrefixLenIgnoreCase returns the length of the common
+prefix of s and prefix, with the character case of s ignored.
+The prefix argument must be all lower-case.</p>
+               
+               <pre><code class="language-go">func commonPrefixLenIgnoreCase(s string, prefix string) int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="computeBounds" data-name="computeBounds">
+               <h3>
+                  computeBounds 
+                  <span class="badge">function</span>
+                  
+                  <a href="#computeBounds" class="anchor" title="Link to computeBounds">#</a>
+               </h3>
+               
+               <p>computeBounds returns a floating-point vector (l, c, u)×2^e2
+where the mantissas are 55-bit (or 26-bit) integers, describing the interval
+represented by the input float64 or float32.</p>
+               
+               <pre><code class="language-go">func computeBounds(mant uint64, exp int, flt *floatInfo) (lower uint64, central uint64, upper uint64, e2 int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="contains" data-name="contains">
+               <h3>
+                  contains 
+                  <span class="badge">function</span>
+                  
+                  <a href="#contains" class="anchor" title="Link to contains">#</a>
+               </h3>
+               
+               <p>contains reports whether the string contains the byte c.</p>
+               
+               <pre><code class="language-go">func contains(s string, c byte) bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="convErr" data-name="convErr">
+               <h3>
+                  convErr 
+                  <span class="badge">function</span>
+                  
+                  <a href="#convErr" class="anchor" title="Link to convErr">#</a>
+               </h3>
+               
+               <p>convErr splits an error returned by parseFloatPrefix
+into a syntax or range error for ParseComplex.</p>
+               
+               <pre><code class="language-go">func convErr(err error, s string) (syntax error, range_ error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="digitZero" data-name="digitZero">
+               <h3>
+                  digitZero 
+                  <span class="badge">function</span>
+                  
+                  <a href="#digitZero" class="anchor" title="Link to digitZero">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func digitZero(dst []byte) int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="divisibleByPower5" data-name="divisibleByPower5">
+               <h3>
+                  divisibleByPower5 
+                  <span class="badge">function</span>
+                  
+                  <a href="#divisibleByPower5" class="anchor" title="Link to divisibleByPower5">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func divisibleByPower5(m uint64, k int) bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="divmod1e9" data-name="divmod1e9">
+               <h3>
+                  divmod1e9 
+                  <span class="badge">function</span>
+                  
+                  <a href="#divmod1e9" class="anchor" title="Link to divmod1e9">#</a>
+               </h3>
+               
+               <p>divmod1e9 computes quotient and remainder of division by 1e9,
+avoiding runtime uint64 division on 32-bit platforms.</p>
+               
+               <pre><code class="language-go">func divmod1e9(x uint64) (uint32, uint32)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="eiselLemire32" data-name="eiselLemire32">
+               <h3>
+                  eiselLemire32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#eiselLemire32" class="anchor" title="Link to eiselLemire32">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func eiselLemire32(man uint64, exp10 int, neg bool) (f float32, ok bool)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="eiselLemire64" data-name="eiselLemire64">
+               <h3>
+                  eiselLemire64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#eiselLemire64" class="anchor" title="Link to eiselLemire64">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func eiselLemire64(man uint64, exp10 int, neg bool) (f float64, ok bool)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="floatBits" data-name="floatBits">
+               <h3>
+                  floatBits 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#floatBits" class="anchor" title="Link to floatBits">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (d *decimal) floatBits(flt *floatInfo) (b uint64, overflow bool)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="fmtB" data-name="fmtB">
+               <h3>
+                  fmtB 
+                  <span class="badge">function</span>
+                  
+                  <a href="#fmtB" class="anchor" title="Link to fmtB">#</a>
+               </h3>
+               
+               <p>%b: -ddddddddp±ddd</p>
+               
+               <pre><code class="language-go">func fmtB(dst []byte, neg bool, mant uint64, exp int, flt *floatInfo) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="fmtE" data-name="fmtE">
+               <h3>
+                  fmtE 
+                  <span class="badge">function</span>
+                  
+                  <a href="#fmtE" class="anchor" title="Link to fmtE">#</a>
+               </h3>
+               
+               <p>%e: -d.ddddde±dd</p>
+               
+               <pre><code class="language-go">func fmtE(dst []byte, neg bool, d decimalSlice, prec int, fmt byte) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="fmtF" data-name="fmtF">
+               <h3>
+                  fmtF 
+                  <span class="badge">function</span>
+                  
+                  <a href="#fmtF" class="anchor" title="Link to fmtF">#</a>
+               </h3>
+               
+               <p>%f: -ddddddd.ddddd</p>
+               
+               <pre><code class="language-go">func fmtF(dst []byte, neg bool, d decimalSlice, prec int) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="fmtX" data-name="fmtX">
+               <h3>
+                  fmtX 
+                  <span class="badge">function</span>
+                  
+                  <a href="#fmtX" class="anchor" title="Link to fmtX">#</a>
+               </h3>
+               
+               <p>%x: -0x1.yyyyyyyyp±ddd or -0x0p+0. (y is hex digit, d is decimal digit)</p>
+               
+               <pre><code class="language-go">func fmtX(dst []byte, prec int, fmt byte, neg bool, mant uint64, exp int, flt *floatInfo) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="formatBits" data-name="formatBits">
+               <h3>
+                  formatBits 
+                  <span class="badge">function</span>
+                  
+                  <a href="#formatBits" class="anchor" title="Link to formatBits">#</a>
+               </h3>
+               
+               <p>formatBits computes the string representation of u in the given base.
+If neg is set, u is treated as negative int64 value. If append_ is
+set, the string is appended to dst and the resulting byte slice is
+returned as the first result value; otherwise the string is returned
+as the second result value.</p>
+               
+               <pre><code class="language-go">func formatBits(dst []byte, u uint64, base int, neg bool, append_ bool) (d []byte, s string)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="formatDecimal" data-name="formatDecimal">
+               <h3>
+                  formatDecimal 
+                  <span class="badge">function</span>
+                  
+                  <a href="#formatDecimal" class="anchor" title="Link to formatDecimal">#</a>
+               </h3>
+               
+               <p>formatDecimal fills d with at most prec decimal digits
+of mantissa m. The boolean trunc indicates whether m
+is truncated compared to the original number being formatted.</p>
+               
+               <pre><code class="language-go">func formatDecimal(d *decimalSlice, m uint64, trunc bool, roundUp bool, prec int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="formatDigits" data-name="formatDigits">
+               <h3>
+                  formatDigits 
+                  <span class="badge">function</span>
+                  
+                  <a href="#formatDigits" class="anchor" title="Link to formatDigits">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func formatDigits(dst []byte, shortest bool, neg bool, digs decimalSlice, prec int, fmt byte) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="genericFtoa" data-name="genericFtoa">
+               <h3>
+                  genericFtoa 
+                  <span class="badge">function</span>
+                  
+                  <a href="#genericFtoa" class="anchor" title="Link to genericFtoa">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func genericFtoa(dst []byte, val float64, fmt byte, prec int, bitSize int) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="index" data-name="index">
+               <h3>
+                  index 
+                  <span class="badge">function</span>
+                  
+                  <a href="#index" class="anchor" title="Link to index">#</a>
+               </h3>
+               
+               <p>index returns the index of the first instance of c in s, or -1 if missing.</p>
+               
+               <pre><code class="language-go">func index(s string, c byte) int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="index" data-name="index">
+               <h3>
+                  index 
+                  <span class="badge">function</span>
+                  
+                  <a href="#index" class="anchor" title="Link to index">#</a>
+               </h3>
+               
+               <p>index returns the index of the first instance of c in s, or -1 if missing.</p>
+               
+               <pre><code class="language-go">func index(s string, c byte) int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="isInGraphicList" data-name="isInGraphicList">
+               <h3>
+                  isInGraphicList 
+                  <span class="badge">function</span>
+                  
+                  <a href="#isInGraphicList" class="anchor" title="Link to isInGraphicList">#</a>
+               </h3>
+               
+               <p>isInGraphicList reports whether the rune is in the isGraphic list. This separation
+from IsGraphic allows quoteWith to avoid two calls to IsPrint.
+Should be called only if IsPrint fails.</p>
+               
+               <pre><code class="language-go">func isInGraphicList(r rune) bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="isPowerOfTwo" data-name="isPowerOfTwo">
+               <h3>
+                  isPowerOfTwo 
+                  <span class="badge">function</span>
+                  
+                  <a href="#isPowerOfTwo" class="anchor" title="Link to isPowerOfTwo">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func isPowerOfTwo(x int) bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="leftShift" data-name="leftShift">
+               <h3>
+                  leftShift 
+                  <span class="badge">function</span>
+                  
+                  <a href="#leftShift" class="anchor" title="Link to leftShift">#</a>
+               </h3>
+               
+               <p>Binary shift left (* 2) by k bits.  k <= maxShift to avoid overflow.</p>
+               
+               <pre><code class="language-go">func leftShift(a *decimal, k uint)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="lower" data-name="lower">
+               <h3>
+                  lower 
+                  <span class="badge">function</span>
+                  
+                  <a href="#lower" class="anchor" title="Link to lower">#</a>
+               </h3>
+               
+               <p>lower(c) is a lower-case letter if and only if
+c is either that lower-case letter or the equivalent upper-case letter.
+Instead of writing c == 'x' || c == 'X' one can write lower(c) == 'x'.
+Note that lower of non-letters can produce other non-letters.</p>
+               
+               <pre><code class="language-go">func lower(c byte) byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="mulByLog10Log2" data-name="mulByLog10Log2">
+               <h3>
+                  mulByLog10Log2 
+                  <span class="badge">function</span>
+                  
+                  <a href="#mulByLog10Log2" class="anchor" title="Link to mulByLog10Log2">#</a>
+               </h3>
+               
+               <p>mulByLog10Log2 returns math.Floor(x * log(10)/log(2)) for an integer x in
+the range -500 <= x && x <= +500.
+The range restriction lets us work in faster integer arithmetic instead of
+slower floating point arithmetic. Correctness is verified by unit tests.</p>
+               
+               <pre><code class="language-go">func mulByLog10Log2(x int) int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="mulByLog2Log10" data-name="mulByLog2Log10">
+               <h3>
+                  mulByLog2Log10 
+                  <span class="badge">function</span>
+                  
+                  <a href="#mulByLog2Log10" class="anchor" title="Link to mulByLog2Log10">#</a>
+               </h3>
+               
+               <p>mulByLog2Log10 returns math.Floor(x * log(2)/log(10)) for an integer x in
+the range -1600 <= x && x <= +1600.
+The range restriction lets us work in faster integer arithmetic instead of
+slower floating point arithmetic. Correctness is verified by unit tests.</p>
+               
+               <pre><code class="language-go">func mulByLog2Log10(x int) int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="mult128bitPow10" data-name="mult128bitPow10">
+               <h3>
+                  mult128bitPow10 
+                  <span class="badge">function</span>
+                  
+                  <a href="#mult128bitPow10" class="anchor" title="Link to mult128bitPow10">#</a>
+               </h3>
+               
+               <p>mult128bitPow10 takes a floating-point input with a 55-bit
+mantissa and multiplies it with 10^q. The resulting mantissa
+is m*P >> 119 where P is a 128-bit element of the detailedPowersOfTen tables.
+It is typically 63 or 64-bit wide.
+The returned boolean is true is all trimmed bits were zero.
+That is:
+m*2^e2 * round(10^q) = resM * 2^resE + ε
+exact = ε == 0</p>
+               
+               <pre><code class="language-go">func mult128bitPow10(m uint64, e2 int, q int) (resM uint64, resE int, exact bool)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="mult64bitPow10" data-name="mult64bitPow10">
+               <h3>
+                  mult64bitPow10 
+                  <span class="badge">function</span>
+                  
+                  <a href="#mult64bitPow10" class="anchor" title="Link to mult64bitPow10">#</a>
+               </h3>
+               
+               <p>mult64bitPow10 takes a floating-point input with a 25-bit
+mantissa and multiplies it with 10^q. The resulting mantissa
+is m*P >> 57 where P is a 64-bit element of the detailedPowersOfTen tables.
+It is typically 31 or 32-bit wide.
+The returned boolean is true if all trimmed bits were zero.
+That is:
+m*2^e2 * round(10^q) = resM * 2^resE + ε
+exact = ε == 0</p>
+               
+               <pre><code class="language-go">func mult64bitPow10(m uint32, e2 int, q int) (resM uint32, resE int, exact bool)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="parseFloatPrefix" data-name="parseFloatPrefix">
+               <h3>
+                  parseFloatPrefix 
+                  <span class="badge">function</span>
+                  
+                  <a href="#parseFloatPrefix" class="anchor" title="Link to parseFloatPrefix">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func parseFloatPrefix(s string, bitSize int) (float64, int, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="prefixIsLessThan" data-name="prefixIsLessThan">
+               <h3>
+                  prefixIsLessThan 
+                  <span class="badge">function</span>
+                  
+                  <a href="#prefixIsLessThan" class="anchor" title="Link to prefixIsLessThan">#</a>
+               </h3>
+               
+               <p>Is the leading prefix of b lexicographically less than s?</p>
+               
+               <pre><code class="language-go">func prefixIsLessThan(b []byte, s string) bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="quoteRuneWith" data-name="quoteRuneWith">
+               <h3>
+                  quoteRuneWith 
+                  <span class="badge">function</span>
+                  
+                  <a href="#quoteRuneWith" class="anchor" title="Link to quoteRuneWith">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func quoteRuneWith(r rune, quote byte, ASCIIonly bool, graphicOnly bool) string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="quoteWith" data-name="quoteWith">
+               <h3>
+                  quoteWith 
+                  <span class="badge">function</span>
+                  
+                  <a href="#quoteWith" class="anchor" title="Link to quoteWith">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func quoteWith(s string, quote byte, ASCIIonly bool, graphicOnly bool) string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="rangeError" data-name="rangeError">
+               <h3>
+                  rangeError 
+                  <span class="badge">function</span>
+                  
+                  <a href="#rangeError" class="anchor" title="Link to rangeError">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func rangeError(fn string, str string) *NumError</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="readFloat" data-name="readFloat">
+               <h3>
+                  readFloat 
+                  <span class="badge">function</span>
+                  
+                  <a href="#readFloat" class="anchor" title="Link to readFloat">#</a>
+               </h3>
+               
+               <p>readFloat reads a decimal or hexadecimal mantissa and exponent from a float
+string representation in s; the number may be followed by other characters.
+readFloat reports the number of bytes consumed (i), and whether the number
+is valid (ok).</p>
+               
+               <pre><code class="language-go">func readFloat(s string) (mantissa uint64, exp int, neg bool, trunc bool, hex bool, i int, ok bool)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="rightShift" data-name="rightShift">
+               <h3>
+                  rightShift 
+                  <span class="badge">function</span>
+                  
+                  <a href="#rightShift" class="anchor" title="Link to rightShift">#</a>
+               </h3>
+               
+               <p>Binary shift right (/ 2) by k bits.  k <= maxShift to avoid overflow.</p>
+               
+               <pre><code class="language-go">func rightShift(a *decimal, k uint)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="roundShortest" data-name="roundShortest">
+               <h3>
+                  roundShortest 
+                  <span class="badge">function</span>
+                  
+                  <a href="#roundShortest" class="anchor" title="Link to roundShortest">#</a>
+               </h3>
+               
+               <p>roundShortest rounds d (= mant * 2^exp) to the shortest number of digits
+that will let the original floating point value be precisely reconstructed.</p>
+               
+               <pre><code class="language-go">func roundShortest(d *decimal, mant uint64, exp int, flt *floatInfo)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ryuDigits" data-name="ryuDigits">
+               <h3>
+                  ryuDigits 
+                  <span class="badge">function</span>
+                  
+                  <a href="#ryuDigits" class="anchor" title="Link to ryuDigits">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func ryuDigits(d *decimalSlice, lower uint64, central uint64, upper uint64, c0 bool, cup bool)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ryuDigits32" data-name="ryuDigits32">
+               <h3>
+                  ryuDigits32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#ryuDigits32" class="anchor" title="Link to ryuDigits32">#</a>
+               </h3>
+               
+               <p>ryuDigits32 emits decimal digits for a number less than 1e9.</p>
+               
+               <pre><code class="language-go">func ryuDigits32(d *decimalSlice, lower uint32, central uint32, upper uint32, c0 bool, cup bool, endindex int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ryuFtoaFixed32" data-name="ryuFtoaFixed32">
+               <h3>
+                  ryuFtoaFixed32 
+                  <span class="badge">function</span>
+                  
+                  <a href="#ryuFtoaFixed32" class="anchor" title="Link to ryuFtoaFixed32">#</a>
+               </h3>
+               
+               <p>ryuFtoaFixed32 formats mant*(2^exp) with prec decimal digits.</p>
+               
+               <pre><code class="language-go">func ryuFtoaFixed32(d *decimalSlice, mant uint32, exp int, prec int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ryuFtoaFixed64" data-name="ryuFtoaFixed64">
+               <h3>
+                  ryuFtoaFixed64 
+                  <span class="badge">function</span>
+                  
+                  <a href="#ryuFtoaFixed64" class="anchor" title="Link to ryuFtoaFixed64">#</a>
+               </h3>
+               
+               <p>ryuFtoaFixed64 formats mant*(2^exp) with prec decimal digits.</p>
+               
+               <pre><code class="language-go">func ryuFtoaFixed64(d *decimalSlice, mant uint64, exp int, prec int)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ryuFtoaShortest" data-name="ryuFtoaShortest">
+               <h3>
+                  ryuFtoaShortest 
+                  <span class="badge">function</span>
+                  
+                  <a href="#ryuFtoaShortest" class="anchor" title="Link to ryuFtoaShortest">#</a>
+               </h3>
+               
+               <p>ryuFtoaShortest formats mant*2^exp with prec decimal digits.</p>
+               
+               <pre><code class="language-go">func ryuFtoaShortest(d *decimalSlice, mant uint64, exp int, flt *floatInfo)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="set" data-name="set">
+               <h3>
+                  set 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#set" class="anchor" title="Link to set">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (b *decimal) set(s string) (ok bool)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="shouldRoundUp" data-name="shouldRoundUp">
+               <h3>
+                  shouldRoundUp 
+                  <span class="badge">function</span>
+                  
+                  <a href="#shouldRoundUp" class="anchor" title="Link to shouldRoundUp">#</a>
+               </h3>
+               
+               <p>If we chop a at nd digits, should we round up?</p>
+               
+               <pre><code class="language-go">func shouldRoundUp(a *decimal, nd int) bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="small" data-name="small">
+               <h3>
+                  small 
+                  <span class="badge">function</span>
+                  
+                  <a href="#small" class="anchor" title="Link to small">#</a>
+               </h3>
+               
+               <p>small returns the string for an i with 0 <= i < nSmalls.</p>
+               
+               <pre><code class="language-go">func small(i int) string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="special" data-name="special">
+               <h3>
+                  special 
+                  <span class="badge">function</span>
+                  
+                  <a href="#special" class="anchor" title="Link to special">#</a>
+               </h3>
+               
+               <p>special returns the floating-point value for the special,
+possibly signed floating-point representations inf, infinity,
+and NaN. The result is ok if a prefix of s contains one
+of these representations and n is the length of that prefix.
+The character case is ignored.</p>
+               
+               <pre><code class="language-go">func special(s string) (f float64, n int, ok bool)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="syntaxError" data-name="syntaxError">
+               <h3>
+                  syntaxError 
+                  <span class="badge">function</span>
+                  
+                  <a href="#syntaxError" class="anchor" title="Link to syntaxError">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func syntaxError(fn string, str string) *NumError</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="trim" data-name="trim">
+               <h3>
+                  trim 
+                  <span class="badge">function</span>
+                  
+                  <a href="#trim" class="anchor" title="Link to trim">#</a>
+               </h3>
+               
+               <p>trim trailing zeros from number.
+(They are meaningless; the decimal point is tracked
+independent of the number of digits.)</p>
+               
+               <pre><code class="language-go">func trim(a *decimal)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="underscoreOK" data-name="underscoreOK">
+               <h3>
+                  underscoreOK 
+                  <span class="badge">function</span>
+                  
+                  <a href="#underscoreOK" class="anchor" title="Link to underscoreOK">#</a>
+               </h3>
+               
+               <p>underscoreOK reports whether the underscores in s are allowed.
+Checking them in this one function lets all the parsers skip over them simply.
+Underscore must appear only between digits or between a base prefix and a digit.</p>
+               
+               <pre><code class="language-go">func underscoreOK(s string) bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="unhex" data-name="unhex">
+               <h3>
+                  unhex 
+                  <span class="badge">function</span>
+                  
+                  <a href="#unhex" class="anchor" title="Link to unhex">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func unhex(b byte) (v rune, ok bool)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="unquote" data-name="unquote">
+               <h3>
+                  unquote 
+                  <span class="badge">function</span>
+                  
+                  <a href="#unquote" class="anchor" title="Link to unquote">#</a>
+               </h3>
+               
+               <p>unquote parses a quoted string at the start of the input,
+returning the parsed prefix, the remaining suffix, and any parse errors.
+If unescape is true, the parsed prefix is unescaped,
+otherwise the input prefix is provided verbatim.</p>
+               
+               <pre><code class="language-go">func unquote(in string, unescape bool) (out string, rem string, err error)</code></pre>
+            </article>
+            
+         </section>
+         
+         <hr />
+         <p style="color:grey; font-size:smaller">Generated with <a href="https://github.com/navid-m/arrow" target="_blank" style="color:rgb(187, 186, 186)">Arrow</a></p>
+      </main>
+
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
+      <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
+
+      <script>
+         function updateSectionVisibility() {
+            document.querySelectorAll("section").forEach(section => {
+               const visibleArticles = section.querySelectorAll("article:not(.hidden)");
+               const header = section.querySelector("h2");
+               if (header) {
+                  if (visibleArticles.length === 0) {
+                     section.classList.add("hidden");
+                  } else {
+                     section.classList.remove("hidden");
+                  }
+               }
+            });
+         }
+
+         document.addEventListener('DOMContentLoaded', () => {
+            document.querySelectorAll('p').forEach(el => {
+               const raw = el.textContent;
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
+               let html = '';
+               sentences.forEach((sent, idx) => {
+                  html += sent;
+                  html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
+               });
+               if (sentences.length > 1) {
+                  el.innerHTML = html.trim();
+               }
+            });
+         });
+
+         function isPrivate(name) {
+            return /^[a-z]/.test(name);
+         }
+
+         function buildSymbolIndex() {
+            const symbolIndex = document.getElementById('symbolIndex');
+            if (!symbolIndex) return;
+
+            const symbols = [];
+            
+            document.querySelectorAll('article[data-name]').forEach(article => {
+               const name = article.dataset.name;
+               const type = article.className.split(' ')[0]; 
+               const isPrivateSymbol = isPrivate(name);
+               
+               if (name && name !== 'imports') {
+                  symbols.push({
+                     name,
+                     type,
+                     element: article,
+                     isPrivate: isPrivateSymbol
+                  });
+               }
+            });
+
+            symbols.sort((a, b) => a.name.localeCompare(b.name));
+            symbolIndex.innerHTML = '';
+            symbols.forEach(symbol => {
+               const li = document.createElement('li');
+               const a = document.createElement('a');
+               a.href = `#${symbol.name}`;
+               a.textContent = symbol.name;
+               a.title = `${symbol.type}: ${symbol.name}`;
+               
+               if (symbol.isPrivate) {
+                  li.classList.add('private', 'hidden');
+               }
+               
+               li.appendChild(a);
+               symbolIndex.appendChild(li);
+            });
+         }
+
+         document.addEventListener("DOMContentLoaded", () => {
+            if (window.Prism) {
+               Prism.highlightAll();
+            }
+
+            const toggles = {
+               functions: document.getElementById("showPrivateFunctions"),
+               imports: document.getElementById("showImports"),
+               structs: document.getElementById("showPrivateStructs"),
+               fields: document.getElementById("showPrivateFields"),
+               globals: document.getElementById("showPrivateGlobals"),
+               types: document.getElementById("showPrivateTypes"),
+               interfaces: document.getElementById(
+                  "showPrivateInterfaces"
+               ),
+            };
+
+            const hideInitial = (selector, toggle) => {
+               document.querySelectorAll(selector).forEach((el) => {
+                  const name = el.dataset.name;
+                  if (isPrivate(name)) {
+                     el.classList.add("private", "hidden");
+                  }
+               });
+
+               if (toggle) {
+                  toggle.addEventListener("change", () => {
+                     const show = toggle.checked;
+                     document
+                        .querySelectorAll(`${selector}.private`)
+                        .forEach((el) => {
+                           el.classList.toggle("hidden", !show);
+                        });
+                     
+                     const symbolIndexItems = document.querySelectorAll('#symbolIndex li.private');
+                     symbolIndexItems.forEach(li => {
+                        const link = li.querySelector('a');
+                        if (link) {
+                           const targetId = link.getAttribute('href').substring(1);
+                           const targetEl = document.getElementById(targetId);
+                           if (targetEl && targetEl.matches(selector)) {
+                              li.classList.toggle("hidden", !show);
+                           }
+                        }
+                     });
+                     updateSectionVisibility();
+                  });
+               }
+            };
+
+            hideInitial("article.imports", toggles.imports); updateSectionVisibility();
+            hideInitial("article.function", toggles.functions); updateSectionVisibility();
+            hideInitial("article.struct", toggles.structs); updateSectionVisibility();
+            hideInitial("article.global", toggles.globals); updateSectionVisibility();
+            hideInitial("article.type", toggles.types); updateSectionVisibility();
+            hideInitial("article.interface", toggles.interfaces); updateSectionVisibility();
+
+            document.querySelectorAll("article.struct").forEach((article) => {
+               const codeBlock = article.querySelector("code.fields-code");
+               if (!codeBlock) return;
+
+               const raw = codeBlock.textContent.trim();
+               const match = raw.match(/^type\s+\w+\s+struct\s*{(.*)}$/s);
+               if (!match) return;
+
+               const fieldsRaw = match[1].trim();
+               const fields = fieldsRaw.split("\n").map(line => line.trim()).filter(Boolean);
+               const formatted = fields.map(line => `\t${line}`).join("\n");
+               const structName = article.dataset.name;
+               const finalCode = `type ${structName} struct {\n${formatted}\n}`;
+
+               codeBlock.textContent = finalCode;
+
+               if (window.Prism) Prism.highlightElement(codeBlock);
+
+               if (toggles.fields) {
+                  toggles.fields.addEventListener("change", () => {
+                     const show = toggles.fields.checked;
+                     article
+                        .querySelectorAll(".field-line.private")
+                        .forEach((el) =>
+                           el.classList.toggle("hidden", !show)
+                        );
+                  });
+               }
+            });
+
+            document
+               .querySelectorAll("article.interface")
+               .forEach((article) => {
+                  const codeBlock = article.querySelector(
+                     "code.methods-code"
+                  );
+                  if (!codeBlock) return;
+
+                  const lines = codeBlock.innerHTML.split("\n");
+                  const newContent = lines
+                     .map((line) => {
+                        const trimmed = line.trim();
+                        const nameMatch = trimmed.match(
+                           /^([A-Za-z_][A-Za-z0-9_]*)/
+                        );
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
+                           return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
+                        }
+
+                        const name = nameMatch[1];
+                        const isPriv = isPrivate(name);
+                        return `<span class="method-line${
+                           isPriv ? " hidden private" : ""
+                        }" data-name="${name}">${line}</span><br />`;
+                     })
+                     .join("");
+
+                  codeBlock.innerHTML = newContent;
+
+                  if (window.Prism) {
+                     Prism.highlightElement(codeBlock);
+                  }
+
+                  if (toggles.fields) {
+                     toggles.fields.addEventListener("change", () => {
+                        const show = toggles.fields.checked;
+                        article
+                           .querySelectorAll(".method-line.private")
+                           .forEach((el) =>
+                              el.classList.toggle("hidden", !show)
+                           );
+                     });
+                  }
+               });
+
+            const searchInput = document.getElementById("searchInput");
+            if (searchInput) {
+               searchInput.addEventListener("input", () => {
+                  const query = searchInput.value.trim().toLowerCase();
+
+                  document.querySelectorAll("article").forEach((el) => {
+                     const name = el.dataset.name;
+                     if (!name) return;
+
+                     const matches =
+                        query === "" ||
+                        name.toLowerCase().includes(query) ||
+                        (el.textContent &&
+                           el.textContent.toLowerCase().includes(query));
+
+                     if (matches) {
+                        const isPrivateEl =
+                           el.classList.contains("private");
+                        const shouldShowPrivate =
+                           getPrivateToggleState(el);
+
+                        if (!isPrivateEl || shouldShowPrivate) {
+                           el.classList.remove("hidden");
+                        }
+                     } else {
+                        el.classList.add("hidden");
+                     }
+                     updateSectionVisibility();
+                  });
+
+                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                     const link = li.querySelector('a');
+                     if (link) {
+                        const symbolName = link.textContent.toLowerCase();
+                        const matches = query === "" || symbolName.includes(query);
+                        
+                        if (matches) {
+                           const isPrivateSymbol = li.classList.contains('private');
+                           const targetId = link.getAttribute('href').substring(1);
+                           const targetEl = document.getElementById(targetId);
+                           const shouldShowPrivate = targetEl ? getPrivateToggleState(targetEl) : false;
+                           
+                           if (!isPrivateSymbol || shouldShowPrivate) {
+                              li.style.display = '';
+                           }
+                        } else {
+                           li.style.display = 'none';
+                        }
+                     }
+                  });
+               });
+            }
+
+            function getPrivateToggleState(element) {
+               if (element.classList.contains("function")) {
+                  return toggles.functions?.checked || false;
+               } else if (element.classList.contains("struct")) {
+                  return toggles.structs?.checked || false;
+               } else if (element.classList.contains("global")) {
+                  return toggles.globals?.checked || false;
+               } else if (element.classList.contains("type")) {
+                  return toggles.types?.checked || false;
+               } else if (element.classList.contains("interface")) {
+                  return toggles.interfaces?.checked || false;
+               } else if (element.classList.contains("imports")) {
+                  return toggles.imports?.checked || false;
+               }
+               return false;
+            }
+
+            buildSymbolIndex();
+
+            document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
+               anchor.addEventListener("click", function (e) {
+                  const target = document.querySelector(
+                     this.getAttribute("href")
+                  );
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
+                  }
+               });
+            });
+
+            window.addEventListener('hashchange', () => {
+               const hash = window.location.hash;
+               if (hash) {
+                  const target = document.querySelector(hash);
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
+                  }
+               }
+            });
+
+            if (window.location.hash) {
+               setTimeout(() => {
+                  const target = document.querySelector(window.location.hash);
+                  if (target) {
+                     target.scrollIntoView({
+                        behavior: "smooth",
+                        block: "start",
+                     });
+                  }
+               }, 100);
+            }
+         });
+      </script>
+   </body>
+</html>
