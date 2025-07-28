@@ -6,7 +6,7 @@
          name="viewport"
          content="width=device-width, initial-scale=1.0"
       />
-      <title>Docs - fmt</title>
+      <title>fmt - Documentation</title>
       <link
          href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
          rel="stylesheet"
@@ -604,11 +604,7 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"errors"
-"slices"
-"strconv"
-"unicode/utf8"
-"internal/fmtsort"
+               <pre><code class="language-go">"internal/fmtsort"
 "io"
 "os"
 "reflect"
@@ -622,6 +618,10 @@
 "reflect"
 "strconv"
 "sync"
+"unicode/utf8"
+"errors"
+"slices"
+"strconv"
 "unicode/utf8"
 </code></pre>
             </article>
@@ -1468,7 +1468,7 @@ between operands and a newline is appended.</p>
                   <a href="#Error" class="anchor" title="Link to Error">#</a>
                </h3>
                
-               <pre><code class="language-go">func (e *wrapError) Error() string</code></pre>
+               <pre><code class="language-go">func (e *wrapErrors) Error() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Error" data-name="Error">
@@ -1479,7 +1479,7 @@ between operands and a newline is appended.</p>
                   <a href="#Error" class="anchor" title="Link to Error">#</a>
                </h3>
                
-               <pre><code class="language-go">func (e *wrapErrors) Error() string</code></pre>
+               <pre><code class="language-go">func (e *wrapError) Error() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Errorf" data-name="Errorf">
@@ -1685,11 +1685,7 @@ It returns the number of bytes written and any write error encountered.</p>
                   <a href="#Read" class="anchor" title="Link to Read">#</a>
                </h3>
                
-               <p>The Read method is only in ScanState so that ScanState
-satisfies io.Reader. It will never be called when used as
-intended, so there is no need to make it actually work.</p>
-               
-               <pre><code class="language-go">func (s *ss) Read(buf []byte) (n int, err error)</code></pre>
+               <pre><code class="language-go">func (r *stringReader) Read(b []byte) (n int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Read" data-name="Read">
@@ -1700,7 +1696,11 @@ intended, so there is no need to make it actually work.</p>
                   <a href="#Read" class="anchor" title="Link to Read">#</a>
                </h3>
                
-               <pre><code class="language-go">func (r *stringReader) Read(b []byte) (n int, err error)</code></pre>
+               <p>The Read method is only in ScanState so that ScanState
+satisfies io.Reader. It will never be called when used as
+intended, so there is no need to make it actually work.</p>
+               
+               <pre><code class="language-go">func (s *ss) Read(buf []byte) (n int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ReadRune" data-name="ReadRune">
@@ -1898,7 +1898,7 @@ after the final item there must be a newline or EOF.</p>
                   <a href="#UnreadRune" class="anchor" title="Link to UnreadRune">#</a>
                </h3>
                
-               <pre><code class="language-go">func (r *readRune) UnreadRune() error</code></pre>
+               <pre><code class="language-go">func (s *ss) UnreadRune() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="UnreadRune" data-name="UnreadRune">
@@ -1909,18 +1909,7 @@ after the final item there must be a newline or EOF.</p>
                   <a href="#UnreadRune" class="anchor" title="Link to UnreadRune">#</a>
                </h3>
                
-               <pre><code class="language-go">func (s *ss) UnreadRune() error</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Unwrap" data-name="Unwrap">
-               <h3>
-                  Unwrap 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Unwrap" class="anchor" title="Link to Unwrap">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (e *wrapError) Unwrap() error</code></pre>
+               <pre><code class="language-go">func (r *readRune) UnreadRune() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Unwrap" data-name="Unwrap">
@@ -1932,6 +1921,17 @@ after the final item there must be a newline or EOF.</p>
                </h3>
                
                <pre><code class="language-go">func (e *wrapErrors) Unwrap() []error</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Unwrap" data-name="Unwrap">
+               <h3>
+                  Unwrap 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Unwrap" class="anchor" title="Link to Unwrap">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (e *wrapError) Unwrap() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Width" data-name="Width">
@@ -2358,10 +2358,10 @@ fmtFloat for r and j formatting.</p>
                   <a href="#fmtFloat" class="anchor" title="Link to fmtFloat">#</a>
                </h3>
                
-               <p>fmtFloat formats a float64. It assumes that verb is a valid format specifier
-for strconv.AppendFloat and therefore fits into a byte.</p>
+               <p>fmtFloat formats a float. The default precision for each verb
+is specified as last argument in the call to fmt_float.</p>
                
-               <pre><code class="language-go">func (f *fmt) fmtFloat(v float64, size int, verb rune, prec int)</code></pre>
+               <pre><code class="language-go">func (p *pp) fmtFloat(v float64, size int, verb rune)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="fmtFloat" data-name="fmtFloat">
@@ -2372,23 +2372,10 @@ for strconv.AppendFloat and therefore fits into a byte.</p>
                   <a href="#fmtFloat" class="anchor" title="Link to fmtFloat">#</a>
                </h3>
                
-               <p>fmtFloat formats a float. The default precision for each verb
-is specified as last argument in the call to fmt_float.</p>
+               <p>fmtFloat formats a float64. It assumes that verb is a valid format specifier
+for strconv.AppendFloat and therefore fits into a byte.</p>
                
-               <pre><code class="language-go">func (p *pp) fmtFloat(v float64, size int, verb rune)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="fmtInteger" data-name="fmtInteger">
-               <h3>
-                  fmtInteger 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#fmtInteger" class="anchor" title="Link to fmtInteger">#</a>
-               </h3>
-               
-               <p>fmtInteger formats signed and unsigned integers.</p>
-               
-               <pre><code class="language-go">func (f *fmt) fmtInteger(u uint64, base int, isSigned bool, verb rune, digits string)</code></pre>
+               <pre><code class="language-go">func (f *fmt) fmtFloat(v float64, size int, verb rune, prec int)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="fmtInteger" data-name="fmtInteger">
@@ -2402,6 +2389,19 @@ is specified as last argument in the call to fmt_float.</p>
                <p>fmtInteger formats a signed or unsigned integer.</p>
                
                <pre><code class="language-go">func (p *pp) fmtInteger(v uint64, isSigned bool, verb rune)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="fmtInteger" data-name="fmtInteger">
+               <h3>
+                  fmtInteger 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#fmtInteger" class="anchor" title="Link to fmtInteger">#</a>
+               </h3>
+               
+               <p>fmtInteger formats signed and unsigned integers.</p>
+               
+               <pre><code class="language-go">func (f *fmt) fmtInteger(u uint64, base int, isSigned bool, verb rune, digits string)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="fmtPointer" data-name="fmtPointer">
@@ -3144,6 +3144,8 @@ too large to be used as a formatting width or precision.</p>
             
          </section>
          
+         <hr />
+         <p style="color:grey; font-size:smaller">Generated with <a href="https://github.com/navid-m/arrow" target="_blank" style="color:rgb(187, 186, 186)">Arrow</a></p>
       </main>
 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
@@ -3300,7 +3302,6 @@ too large to be used as a formatting width or precision.</p>
 
                if (window.Prism) Prism.highlightElement(codeBlock);
 
-   
                if (toggles.fields) {
                   toggles.fields.addEventListener("change", () => {
                      const show = toggles.fields.checked;

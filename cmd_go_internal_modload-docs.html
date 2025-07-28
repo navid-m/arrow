@@ -6,7 +6,7 @@
          name="viewport"
          content="width=device-width, initial-scale=1.0"
       />
-      <title>Docs - modload</title>
+      <title>modload - Documentation</title>
       <link
          href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
          rel="stylesheet"
@@ -604,25 +604,115 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"context"
+               <pre><code class="language-go">"bytes"
+"context"
+"encoding/json"
 "errors"
 "fmt"
-"go/build"
+"io"
+"os"
+"runtime"
+"strings"
+"cmd/go/internal/base"
+"cmd/go/internal/cfg"
+"cmd/go/internal/gover"
+"cmd/go/internal/modfetch/codehost"
+"cmd/go/internal/modinfo"
+"cmd/go/internal/search"
+"cmd/internal/par"
+"cmd/internal/pkgpattern"
+"golang.org/x/mod/module"
+"io/fs"
+"os"
+"syscall"
+"context"
+"errors"
+"os"
+"sort"
+"cmd/go/internal/gover"
+"cmd/go/internal/modfetch"
+"cmd/go/internal/modfetch/codehost"
+"golang.org/x/mod/module"
+"bytes"
+"context"
+"errors"
+"fmt"
 "io/fs"
 "os"
 pathpkg "path"
-"path/filepath"
+"slices"
 "sort"
 "strings"
+"sync"
+"time"
+"cmd/go/internal/cfg"
+"cmd/go/internal/gover"
+"cmd/go/internal/imports"
+"cmd/go/internal/modfetch"
+"cmd/go/internal/modfetch/codehost"
+"cmd/go/internal/modinfo"
+"cmd/go/internal/search"
+"cmd/go/internal/str"
+"cmd/go/internal/trace"
+"cmd/internal/pkgpattern"
+"golang.org/x/mod/module"
+"golang.org/x/mod/semver"
+"io/fs"
+"context"
+"errors"
+"fmt"
+"os"
+"path/filepath"
+"strings"
+"sync"
+"unicode"
+"cmd/go/internal/base"
 "cmd/go/internal/cfg"
 "cmd/go/internal/fsys"
 "cmd/go/internal/gover"
+"cmd/go/internal/lockedfile"
 "cmd/go/internal/modfetch"
+"cmd/go/internal/trace"
+"cmd/internal/par"
+"golang.org/x/mod/modfile"
+"golang.org/x/mod/module"
+"io/fs"
+"os"
+"context"
+"encoding/hex"
+"errors"
+"fmt"
+"io/fs"
+"os"
+"path/filepath"
+"strings"
+"cmd/go/internal/base"
+"cmd/go/internal/cfg"
+"cmd/go/internal/gover"
+"cmd/go/internal/modfetch"
+"cmd/go/internal/modfetch/codehost"
 "cmd/go/internal/modindex"
+"cmd/go/internal/modinfo"
 "cmd/go/internal/search"
-"cmd/go/internal/str"
+"golang.org/x/mod/module"
+"context"
+"errors"
+"fmt"
+"maps"
+"os"
+"runtime"
+"runtime/debug"
+"slices"
+"strings"
+"sync"
+"sync/atomic"
+"cmd/go/internal/base"
+"cmd/go/internal/cfg"
+"cmd/go/internal/gover"
+"cmd/go/internal/mvs"
 "cmd/internal/par"
 "golang.org/x/mod/module"
+"cmd/go/internal/base"
 "bytes"
 "context"
 "encoding/json"
@@ -647,24 +737,6 @@ pathpkg "path"
 "cmd/go/internal/modfetch"
 "cmd/go/internal/search"
 "golang.org/x/mod/modfile"
-"golang.org/x/mod/module"
-"bytes"
-"context"
-"encoding/json"
-"errors"
-"fmt"
-"io"
-"os"
-"runtime"
-"strings"
-"cmd/go/internal/base"
-"cmd/go/internal/cfg"
-"cmd/go/internal/gover"
-"cmd/go/internal/modfetch/codehost"
-"cmd/go/internal/modinfo"
-"cmd/go/internal/search"
-"cmd/internal/par"
-"cmd/internal/pkgpattern"
 "golang.org/x/mod/module"
 "context"
 "errors"
@@ -699,105 +771,6 @@ pathpkg "path"
 "context"
 "errors"
 "fmt"
-"os"
-"path/filepath"
-"strings"
-"sync"
-"unicode"
-"cmd/go/internal/base"
-"cmd/go/internal/cfg"
-"cmd/go/internal/fsys"
-"cmd/go/internal/gover"
-"cmd/go/internal/lockedfile"
-"cmd/go/internal/modfetch"
-"cmd/go/internal/trace"
-"cmd/internal/par"
-"golang.org/x/mod/modfile"
-"golang.org/x/mod/module"
-"bytes"
-"context"
-"errors"
-"fmt"
-"io/fs"
-"os"
-pathpkg "path"
-"slices"
-"sort"
-"strings"
-"sync"
-"time"
-"cmd/go/internal/cfg"
-"cmd/go/internal/gover"
-"cmd/go/internal/imports"
-"cmd/go/internal/modfetch"
-"cmd/go/internal/modfetch/codehost"
-"cmd/go/internal/modinfo"
-"cmd/go/internal/search"
-"cmd/go/internal/str"
-"cmd/go/internal/trace"
-"cmd/internal/pkgpattern"
-"golang.org/x/mod/module"
-"golang.org/x/mod/semver"
-"io/fs"
-"os"
-"syscall"
-"context"
-"encoding/hex"
-"errors"
-"fmt"
-"io/fs"
-"os"
-"path/filepath"
-"strings"
-"cmd/go/internal/base"
-"cmd/go/internal/cfg"
-"cmd/go/internal/gover"
-"cmd/go/internal/modfetch"
-"cmd/go/internal/modfetch/codehost"
-"cmd/go/internal/modindex"
-"cmd/go/internal/modinfo"
-"cmd/go/internal/search"
-"golang.org/x/mod/module"
-"cmd/go/internal/base"
-"context"
-"errors"
-"fmt"
-"maps"
-"os"
-"runtime"
-"runtime/debug"
-"slices"
-"strings"
-"sync"
-"sync/atomic"
-"cmd/go/internal/base"
-"cmd/go/internal/cfg"
-"cmd/go/internal/gover"
-"cmd/go/internal/mvs"
-"cmd/internal/par"
-"golang.org/x/mod/module"
-"cmd/go/internal/cfg"
-"cmd/go/internal/gover"
-"cmd/go/internal/mvs"
-"cmd/internal/par"
-"context"
-"errors"
-"fmt"
-"maps"
-"os"
-"slices"
-"golang.org/x/mod/module"
-"context"
-"errors"
-"os"
-"sort"
-"cmd/go/internal/gover"
-"cmd/go/internal/modfetch"
-"cmd/go/internal/modfetch/codehost"
-"golang.org/x/mod/module"
-"context"
-"errors"
-"fmt"
 "io/fs"
 "os"
 "path"
@@ -817,9 +790,6 @@ pathpkg "path"
 "cmd/internal/par"
 "cmd/internal/pkgpattern"
 "golang.org/x/mod/module"
-"io/fs"
-"os"
-"io/fs"
 "errors"
 "fmt"
 "io/fs"
@@ -832,6 +802,36 @@ pathpkg "path"
 "golang.org/x/mod/modfile"
 "golang.org/x/mod/module"
 "golang.org/x/mod/semver"
+"cmd/go/internal/cfg"
+"cmd/go/internal/gover"
+"cmd/go/internal/mvs"
+"cmd/internal/par"
+"context"
+"errors"
+"fmt"
+"maps"
+"os"
+"slices"
+"golang.org/x/mod/module"
+"context"
+"errors"
+"fmt"
+"go/build"
+"io/fs"
+"os"
+pathpkg "path"
+"path/filepath"
+"sort"
+"strings"
+"cmd/go/internal/cfg"
+"cmd/go/internal/fsys"
+"cmd/go/internal/gover"
+"cmd/go/internal/modfetch"
+"cmd/go/internal/modindex"
+"cmd/go/internal/search"
+"cmd/go/internal/str"
+"cmd/internal/par"
+"golang.org/x/mod/module"
 </code></pre>
             </article>
          </section>
@@ -1051,7 +1051,7 @@ file the current directory or in parent directories.</p>
                   <a href="#_" class="anchor" title="Link to _">#</a>
                </h3>
                
-               <pre><code class="language-go">var _</code></pre>
+               <pre><code class="language-go">var _ versionRepo = emptyRepo{...}</code></pre>
             </article>
             
             <article class="global symbol-anchor" id="_" data-name="_">
@@ -1073,7 +1073,7 @@ file the current directory or in parent directories.</p>
                   <a href="#_" class="anchor" title="Link to _">#</a>
                </h3>
                
-               <pre><code class="language-go">var _ versionRepo = emptyRepo{...}</code></pre>
+               <pre><code class="language-go">var _</code></pre>
             </article>
             
             <article class="global symbol-anchor" id="_" data-name="_">
@@ -2871,61 +2871,6 @@ and then the first use of module information will call die
                   <a href="#Error" class="anchor" title="Link to Error">#</a>
                </h3>
                
-               <pre><code class="language-go">func (e *sumMissingError) Error() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Error" data-name="Error">
-               <h3>
-                  Error 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Error" class="anchor" title="Link to Error">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (e *WildcardInFirstElementError) Error() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Error" data-name="Error">
-               <h3>
-                  Error 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Error" class="anchor" title="Link to Error">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (e *QueryUpgradesAllError) Error() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Error" data-name="Error">
-               <h3>
-                  Error 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Error" class="anchor" title="Link to Error">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (e *retractionLoadingError) Error() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Error" data-name="Error">
-               <h3>
-                  Error 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Error" class="anchor" title="Link to Error">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (queryDisabledError) Error() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Error" data-name="Error">
-               <h3>
-                  Error 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Error" class="anchor" title="Link to Error">#</a>
-               </h3>
-               
                <pre><code class="language-go">func (e *invalidImportError) Error() string</code></pre>
             </article>
             
@@ -2948,95 +2893,29 @@ and then the first use of module information will call die
                   <a href="#Error" class="anchor" title="Link to Error">#</a>
                </h3>
                
+               <pre><code class="language-go">func (queryDisabledError) Error() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Error" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Error" class="anchor" title="Link to Error">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (e *retractionLoadingError) Error() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Error" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Error" class="anchor" title="Link to Error">#</a>
+               </h3>
+               
                <pre><code class="language-go">func (e *ModuleRetractedError) Error() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Error" data-name="Error">
-               <h3>
-                  Error 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Error" class="anchor" title="Link to Error">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (e *NoPatchBaseError) Error() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Error" data-name="Error">
-               <h3>
-                  Error 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Error" class="anchor" title="Link to Error">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (e *AmbiguousImportError) Error() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Error" data-name="Error">
-               <h3>
-                  Error 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Error" class="anchor" title="Link to Error">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (e *PackageNotInModuleError) Error() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Error" data-name="Error">
-               <h3>
-                  Error 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Error" class="anchor" title="Link to Error">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (e *QueryMatchesPackagesInMainModuleError) Error() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Error" data-name="Error">
-               <h3>
-                  Error 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Error" class="anchor" title="Link to Error">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (goModDirtyError) Error() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Error" data-name="Error">
-               <h3>
-                  Error 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Error" class="anchor" title="Link to Error">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (e *ImportMissingSumError) Error() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Error" data-name="Error">
-               <h3>
-                  Error 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Error" class="anchor" title="Link to Error">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (e *excludedError) Error() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Error" data-name="Error">
-               <h3>
-                  Error 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Error" class="anchor" title="Link to Error">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (e *ImportMissingError) Error() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Error" data-name="Error">
@@ -3058,7 +2937,7 @@ and then the first use of module information will call die
                   <a href="#Error" class="anchor" title="Link to Error">#</a>
                </h3>
                
-               <pre><code class="language-go">func (e *DirectImportFromImplicitDependencyError) Error() string</code></pre>
+               <pre><code class="language-go">func (e *excludedError) Error() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Error" data-name="Error">
@@ -3070,6 +2949,127 @@ and then the first use of module information will call die
                </h3>
                
                <pre><code class="language-go">func (e *QueryMatchesMainModulesError) Error() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Error" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Error" class="anchor" title="Link to Error">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (goModDirtyError) Error() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Error" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Error" class="anchor" title="Link to Error">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (e *ImportMissingError) Error() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Error" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Error" class="anchor" title="Link to Error">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (e *NoPatchBaseError) Error() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Error" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Error" class="anchor" title="Link to Error">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (e *WildcardInFirstElementError) Error() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Error" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Error" class="anchor" title="Link to Error">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (e *PackageNotInModuleError) Error() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Error" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Error" class="anchor" title="Link to Error">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (e *AmbiguousImportError) Error() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Error" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Error" class="anchor" title="Link to Error">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (e *ImportMissingSumError) Error() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Error" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Error" class="anchor" title="Link to Error">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (e *DirectImportFromImplicitDependencyError) Error() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Error" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Error" class="anchor" title="Link to Error">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (e *QueryMatchesPackagesInMainModuleError) Error() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Error" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Error" class="anchor" title="Link to Error">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (e *sumMissingError) Error() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Error" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Error" class="anchor" title="Link to Error">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (e *QueryUpgradesAllError) Error() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="FindGoMod" data-name="FindGoMod">
@@ -3228,7 +3228,40 @@ figure out what the error-reporting actually ought to be.</p>
                   <a href="#ImportPath" class="anchor" title="Link to ImportPath">#</a>
                </h3>
                
+               <pre><code class="language-go">func (e *invalidImportError) ImportPath() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ImportPath" data-name="ImportPath">
+               <h3>
+                  ImportPath 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#ImportPath" class="anchor" title="Link to ImportPath">#</a>
+               </h3>
+               
                <pre><code class="language-go">func (e *ImportMissingError) ImportPath() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ImportPath" data-name="ImportPath">
+               <h3>
+                  ImportPath 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#ImportPath" class="anchor" title="Link to ImportPath">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (e *PackageNotInModuleError) ImportPath() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ImportPath" data-name="ImportPath">
+               <h3>
+                  ImportPath 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#ImportPath" class="anchor" title="Link to ImportPath">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (e *ImportMissingSumError) ImportPath() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ImportPath" data-name="ImportPath">
@@ -3251,39 +3284,6 @@ figure out what the error-reporting actually ought to be.</p>
                </h3>
                
                <pre><code class="language-go">func (e *DirectImportFromImplicitDependencyError) ImportPath() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="ImportPath" data-name="ImportPath">
-               <h3>
-                  ImportPath 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#ImportPath" class="anchor" title="Link to ImportPath">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (e *ImportMissingSumError) ImportPath() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="ImportPath" data-name="ImportPath">
-               <h3>
-                  ImportPath 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#ImportPath" class="anchor" title="Link to ImportPath">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (e *invalidImportError) ImportPath() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="ImportPath" data-name="ImportPath">
-               <h3>
-                  ImportPath 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#ImportPath" class="anchor" title="Link to ImportPath">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (e *PackageNotInModuleError) ImportPath() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="InGorootSrc" data-name="InGorootSrc">
@@ -3347,7 +3347,7 @@ for example 'go mod tidy', that don't operate in workspace mode.</p>
                   <a href="#Is" class="anchor" title="Link to Is">#</a>
                </h3>
                
-               <pre><code class="language-go">func (e *ModuleRetractedError) Is(err error) bool</code></pre>
+               <pre><code class="language-go">func (e *excludedError) Is(err error) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Is" data-name="Is">
@@ -3358,7 +3358,7 @@ for example 'go mod tidy', that don't operate in workspace mode.</p>
                   <a href="#Is" class="anchor" title="Link to Is">#</a>
                </h3>
                
-               <pre><code class="language-go">func (e *excludedError) Is(err error) bool</code></pre>
+               <pre><code class="language-go">func (e *ModuleRetractedError) Is(err error) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="IsDirect" data-name="IsDirect">
@@ -3987,7 +3987,7 @@ returns a hard-coded string.</p>
                   <a href="#Stat" class="anchor" title="Link to Stat">#</a>
                </h3>
                
-               <pre><code class="language-go">func (er emptyRepo) Stat(ctx context.Context, rev string) (*modfetch.RevInfo, error)</code></pre>
+               <pre><code class="language-go">func (rr *replacementRepo) Stat(ctx context.Context, rev string) (*modfetch.RevInfo, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Stat" data-name="Stat">
@@ -3998,7 +3998,7 @@ returns a hard-coded string.</p>
                   <a href="#Stat" class="anchor" title="Link to Stat">#</a>
                </h3>
                
-               <pre><code class="language-go">func (rr *replacementRepo) Stat(ctx context.Context, rev string) (*modfetch.RevInfo, error)</code></pre>
+               <pre><code class="language-go">func (er emptyRepo) Stat(ctx context.Context, rev string) (*modfetch.RevInfo, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -4022,19 +4022,6 @@ returns a hard-coded string.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <p>String returns a string that describes the full conflict path.</p>
-               
-               <pre><code class="language-go">func (c Conflict) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
                <pre><code class="language-go">func (p modPruning) String() string</code></pre>
             </article>
             
@@ -4047,6 +4034,19 @@ returns a hard-coded string.</p>
                </h3>
                
                <pre><code class="language-go">func (dq dqState) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <p>String returns a string that describes the full conflict path.</p>
+               
+               <pre><code class="language-go">func (c Conflict) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Summary" data-name="Summary">
@@ -4114,17 +4114,6 @@ The key is the absolute package path of the tool.</p>
                   <a href="#Unwrap" class="anchor" title="Link to Unwrap">#</a>
                </h3>
                
-               <pre><code class="language-go">func (e *retractionLoadingError) Unwrap() error</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Unwrap" data-name="Unwrap">
-               <h3>
-                  Unwrap 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Unwrap" class="anchor" title="Link to Unwrap">#</a>
-               </h3>
-               
                <pre><code class="language-go">func (e *ImportMissingError) Unwrap() error</code></pre>
             </article>
             
@@ -4137,6 +4126,17 @@ The key is the absolute package path of the tool.</p>
                </h3>
                
                <pre><code class="language-go">func (e *invalidImportError) Unwrap() error</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Unwrap" data-name="Unwrap">
+               <h3>
+                  Unwrap 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Unwrap" class="anchor" title="Link to Unwrap">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (e *retractionLoadingError) Unwrap() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="UnwrapModuleError" data-name="UnwrapModuleError">
@@ -4228,12 +4228,10 @@ The upgrade logic for go get -u is in ../modget/get.go.</p>
                   <a href="#Versions" class="anchor" title="Link to Versions">#</a>
                </h3>
                
-               <p>Versions returns the module.Version values of each of the main modules.
-For each of them, the Path fields are ordinary module paths and the Version
-fields are empty strings.
-Callers should not modify the returned slice.</p>
+               <p>Versions returns the versions from rr.repo augmented with any matching
+replacement versions.</p>
                
-               <pre><code class="language-go">func (mms *MainModuleSet) Versions() []module.Version</code></pre>
+               <pre><code class="language-go">func (rr *replacementRepo) Versions(ctx context.Context, prefix string) (*modfetch.Versions, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Versions" data-name="Versions">
@@ -4255,10 +4253,12 @@ Callers should not modify the returned slice.</p>
                   <a href="#Versions" class="anchor" title="Link to Versions">#</a>
                </h3>
                
-               <p>Versions returns the versions from rr.repo augmented with any matching
-replacement versions.</p>
+               <p>Versions returns the module.Version values of each of the main modules.
+For each of them, the Path fields are ordinary module paths and the Version
+fields are empty strings.
+Callers should not modify the returned slice.</p>
                
-               <pre><code class="language-go">func (rr *replacementRepo) Versions(ctx context.Context, prefix string) (*modfetch.Versions, error)</code></pre>
+               <pre><code class="language-go">func (mms *MainModuleSet) Versions() []module.Version</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="WalkBreadthFirst" data-name="WalkBreadthFirst">
@@ -5088,9 +5088,9 @@ otherwise.</p>
                   <a href="#has" class="anchor" title="Link to has">#</a>
                </h3>
                
-               <p>has reports whether all of the flags in cond are set in af.</p>
+               <p>has reports whether all of the flags in cond are set in f.</p>
                
-               <pre><code class="language-go">func (af *atomicLoadPkgFlags) has(cond loadPkgFlags) bool</code></pre>
+               <pre><code class="language-go">func (f loadPkgFlags) has(cond loadPkgFlags) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="has" data-name="has">
@@ -5101,9 +5101,9 @@ otherwise.</p>
                   <a href="#has" class="anchor" title="Link to has">#</a>
                </h3>
                
-               <p>has reports whether all of the flags in cond are set in f.</p>
+               <p>has reports whether all of the flags in cond are set in af.</p>
                
-               <pre><code class="language-go">func (f loadPkgFlags) has(cond loadPkgFlags) bool</code></pre>
+               <pre><code class="language-go">func (af *atomicLoadPkgFlags) has(cond loadPkgFlags) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="hasRedundantRoot" data-name="hasRedundantRoot">
@@ -5120,20 +5120,6 @@ Redundant requirements should be pruned, but they may influence version
 selection.</p>
                
                <pre><code class="language-go">func (rs *Requirements) hasRedundantRoot() bool</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="hasWritePerm" data-name="hasWritePerm">
-               <h3>
-                  hasWritePerm 
-                  <span class="badge">function</span>
-                  
-                  <a href="#hasWritePerm" class="anchor" title="Link to hasWritePerm">#</a>
-               </h3>
-               
-               <p>hasWritePerm reports whether the current user has permission to write to the
-file with the given info.</p>
-               
-               <pre><code class="language-go">func hasWritePerm(_ string, fi fs.FileInfo) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="hasWritePerm" data-name="hasWritePerm">
@@ -5165,6 +5151,20 @@ permission, hasWritePerm reports false if no appropriate permission bit is
 set even if the current user is root.</p>
                
                <pre><code class="language-go">func hasWritePerm(path string, fi fs.FileInfo) bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="hasWritePerm" data-name="hasWritePerm">
+               <h3>
+                  hasWritePerm 
+                  <span class="badge">function</span>
+                  
+                  <a href="#hasWritePerm" class="anchor" title="Link to hasWritePerm">#</a>
+               </h3>
+               
+               <p>hasWritePerm reports whether the current user has permission to write to the
+file with the given info.</p>
+               
+               <pre><code class="language-go">func hasWritePerm(_ string, fi fs.FileInfo) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="importFromModules" data-name="importFromModules">
@@ -6439,6 +6439,8 @@ It is less ornate than the stackText but contains the same information.</p>
             
          </section>
          
+         <hr />
+         <p style="color:grey; font-size:smaller">Generated with <a href="https://github.com/navid-m/arrow" target="_blank" style="color:rgb(187, 186, 186)">Arrow</a></p>
       </main>
 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
@@ -6595,7 +6597,6 @@ It is less ornate than the stackText but contains the same information.</p>
 
                if (window.Prism) Prism.highlightElement(codeBlock);
 
-   
                if (toggles.fields) {
                   toggles.fields.addEventListener("change", () => {
                      const show = toggles.fields.checked;

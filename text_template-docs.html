@@ -6,7 +6,7 @@
          name="viewport"
          content="width=device-width, initial-scale=1.0"
       />
-      <title>Docs - template</title>
+      <title>template - Documentation</title>
       <link
          href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
          rel="stylesheet"
@@ -606,13 +606,7 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"fmt"
-"io/fs"
-"os"
-"path"
-"path/filepath"
-"strings"
-"maps"
+               <pre><code class="language-go">"maps"
 "reflect"
 "sync"
 "text/template/parse"
@@ -633,6 +627,12 @@
 "sync"
 "unicode"
 "unicode/utf8"
+"fmt"
+"io/fs"
+"os"
+"path"
+"path/filepath"
+"strings"
 </code></pre>
             </article>
          </section>
@@ -1552,6 +1552,19 @@ var t = template.Must(template.New("name").Parse("text"))</p>
             <article class="function symbol-anchor" id="New" data-name="New">
                <h3>
                   New 
+                  <span class="badge">function</span>
+                  
+                  <a href="#New" class="anchor" title="Link to New">#</a>
+               </h3>
+               
+               <p>New allocates a new, undefined template with the given name.</p>
+               
+               <pre><code class="language-go">func New(name string) *Template</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="New" data-name="New">
+               <h3>
+                  New 
                   <span class="badge method-badge">method</span>
                   
                   <a href="#New" class="anchor" title="Link to New">#</a>
@@ -1565,19 +1578,6 @@ cannot be done safely in parallel. Once the templates are constructed, they
 can be executed in parallel.</p>
                
                <pre><code class="language-go">func (t *Template) New(name string) *Template</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="New" data-name="New">
-               <h3>
-                  New 
-                  <span class="badge">function</span>
-                  
-                  <a href="#New" class="anchor" title="Link to New">#</a>
-               </h3>
-               
-               <p>New allocates a new, undefined template with the given name.</p>
-               
-               <pre><code class="language-go">func New(name string) *Template</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Option" data-name="Option">
@@ -1631,6 +1631,22 @@ overwriting the main template body.</p>
             <article class="function symbol-anchor" id="ParseFS" data-name="ParseFS">
                <h3>
                   ParseFS 
+                  <span class="badge">function</span>
+                  
+                  <a href="#ParseFS" class="anchor" title="Link to ParseFS">#</a>
+               </h3>
+               
+               <p>ParseFS is like [Template.ParseFiles] or [Template.ParseGlob] but reads from the file system fsys
+instead of the host operating system's file system.
+It accepts a list of glob patterns (see [path.Match]).
+(Note that most file names serve as glob patterns matching only themselves.)</p>
+               
+               <pre><code class="language-go">func ParseFS(fsys fs.FS, patterns ...string) (*Template, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ParseFS" data-name="ParseFS">
+               <h3>
+                  ParseFS 
                   <span class="badge method-badge">method</span>
                   
                   <a href="#ParseFS" class="anchor" title="Link to ParseFS">#</a>
@@ -1644,20 +1660,24 @@ It accepts a list of glob patterns (see [path.Match]).
                <pre><code class="language-go">func (t *Template) ParseFS(fsys fs.FS, patterns ...string) (*Template, error)</code></pre>
             </article>
             
-            <article class="function symbol-anchor" id="ParseFS" data-name="ParseFS">
+            <article class="function symbol-anchor" id="ParseFiles" data-name="ParseFiles">
                <h3>
-                  ParseFS 
+                  ParseFiles 
                   <span class="badge">function</span>
                   
-                  <a href="#ParseFS" class="anchor" title="Link to ParseFS">#</a>
+                  <a href="#ParseFiles" class="anchor" title="Link to ParseFiles">#</a>
                </h3>
                
-               <p>ParseFS is like [Template.ParseFiles] or [Template.ParseGlob] but reads from the file system fsys
-instead of the host operating system's file system.
-It accepts a list of glob patterns (see [path.Match]).
-(Note that most file names serve as glob patterns matching only themselves.)</p>
+               <p>ParseFiles creates a new [Template] and parses the template definitions from
+the named files. The returned template's name will have the base name and
+parsed contents of the first file. There must be at least one file.
+If an error occurs, parsing stops and the returned *Template is nil.
+When parsing multiple files with the same name in different directories,
+the last one mentioned will be the one that results.
+For instance, ParseFiles("a/foo", "b/foo") stores "b/foo" as the template
+named "foo", while "a/foo" is unavailable.</p>
                
-               <pre><code class="language-go">func ParseFS(fsys fs.FS, patterns ...string) (*Template, error)</code></pre>
+               <pre><code class="language-go">func ParseFiles(filenames ...string) (*Template, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ParseFiles" data-name="ParseFiles">
@@ -1682,24 +1702,23 @@ the last one mentioned will be the one that results.</p>
                <pre><code class="language-go">func (t *Template) ParseFiles(filenames ...string) (*Template, error)</code></pre>
             </article>
             
-            <article class="function symbol-anchor" id="ParseFiles" data-name="ParseFiles">
+            <article class="function symbol-anchor" id="ParseGlob" data-name="ParseGlob">
                <h3>
-                  ParseFiles 
-                  <span class="badge">function</span>
+                  ParseGlob 
+                  <span class="badge method-badge">method</span>
                   
-                  <a href="#ParseFiles" class="anchor" title="Link to ParseFiles">#</a>
+                  <a href="#ParseGlob" class="anchor" title="Link to ParseGlob">#</a>
                </h3>
                
-               <p>ParseFiles creates a new [Template] and parses the template definitions from
-the named files. The returned template's name will have the base name and
-parsed contents of the first file. There must be at least one file.
-If an error occurs, parsing stops and the returned *Template is nil.
+               <p>ParseGlob parses the template definitions in the files identified by the
+pattern and associates the resulting templates with t. The files are matched
+according to the semantics of [filepath.Match], and the pattern must match at
+least one file. ParseGlob is equivalent to calling [Template.ParseFiles] with
+the list of files matched by the pattern.
 When parsing multiple files with the same name in different directories,
-the last one mentioned will be the one that results.
-For instance, ParseFiles("a/foo", "b/foo") stores "b/foo" as the template
-named "foo", while "a/foo" is unavailable.</p>
+the last one mentioned will be the one that results.</p>
                
-               <pre><code class="language-go">func ParseFiles(filenames ...string) (*Template, error)</code></pre>
+               <pre><code class="language-go">func (t *Template) ParseGlob(pattern string) (*Template, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ParseGlob" data-name="ParseGlob">
@@ -1720,25 +1739,6 @@ When parsing multiple files with the same name in different directories,
 the last one mentioned will be the one that results.</p>
                
                <pre><code class="language-go">func ParseGlob(pattern string) (*Template, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="ParseGlob" data-name="ParseGlob">
-               <h3>
-                  ParseGlob 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#ParseGlob" class="anchor" title="Link to ParseGlob">#</a>
-               </h3>
-               
-               <p>ParseGlob parses the template definitions in the files identified by the
-pattern and associates the resulting templates with t. The files are matched
-according to the semantics of [filepath.Match], and the pattern must match at
-least one file. ParseGlob is equivalent to calling [Template.ParseFiles] with
-the list of files matched by the pattern.
-When parsing multiple files with the same name in different directories,
-the last one mentioned will be the one that results.</p>
-               
-               <pre><code class="language-go">func (t *Template) ParseGlob(pattern string) (*Template, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Templates" data-name="Templates">
@@ -2895,6 +2895,8 @@ are identical in behavior except that 'with' sets dot.</p>
             
          </section>
          
+         <hr />
+         <p style="color:grey; font-size:smaller">Generated with <a href="https://github.com/navid-m/arrow" target="_blank" style="color:rgb(187, 186, 186)">Arrow</a></p>
       </main>
 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
@@ -3051,7 +3053,6 @@ are identical in behavior except that 'with' sets dot.</p>
 
                if (window.Prism) Prism.highlightElement(codeBlock);
 
-   
                if (toggles.fields) {
                   toggles.fields.addEventListener("change", () => {
                      const show = toggles.fields.checked;

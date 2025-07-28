@@ -6,7 +6,7 @@
          name="viewport"
          content="width=device-width, initial-scale=1.0"
       />
-      <title>Docs - dwarf</title>
+      <title>dwarf - Documentation</title>
       <link
          href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
          rel="stylesheet"
@@ -604,24 +604,24 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"errors"
+               <pre><code class="language-go">"strconv"
+"strconv"
+"encoding/binary"
+"errors"
+"fmt"
+"strconv"
+"errors"
 "fmt"
 "io"
 "path"
 "strings"
 "encoding/binary"
 "errors"
-"strconv"
 "sort"
-"strconv"
 "strconv"
 "bytes"
 "encoding/binary"
 "strconv"
-"strconv"
-"encoding/binary"
-"errors"
-"fmt"
 "strconv"
 "strconv"
 "fmt"
@@ -6953,7 +6953,7 @@ change.</p>
                   <a href="#GoString" class="anchor" title="Link to GoString">#</a>
                </h3>
                
-               <pre><code class="language-go">func (a Attr) GoString() string</code></pre>
+               <pre><code class="language-go">func (t Tag) GoString() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="GoString" data-name="GoString">
@@ -6964,7 +6964,7 @@ change.</p>
                   <a href="#GoString" class="anchor" title="Link to GoString">#</a>
                </h3>
                
-               <pre><code class="language-go">func (t Tag) GoString() string</code></pre>
+               <pre><code class="language-go">func (a Attr) GoString() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="LineReader" data-name="LineReader">
@@ -7009,13 +7009,9 @@ the ".debug_abbrev" section.</p>
                   <a href="#Next" class="anchor" title="Link to Next">#</a>
                </h3>
                
-               <p>Next sets *entry to the next row in this line table and moves to
-the next row. If there are no more entries and the line table is
-properly terminated, it returns [io.EOF].
-Rows are always in order of increasing entry.Address, but
-entry.Line may go forward or backward.</p>
+               <p>Next reads the next [Entry] from the type unit.</p>
                
-               <pre><code class="language-go">func (r *LineReader) Next(entry *LineEntry) error</code></pre>
+               <pre><code class="language-go">func (tur *typeUnitReader) Next() (*Entry, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Next" data-name="Next">
@@ -7042,9 +7038,13 @@ offset cannot be decoded as a valid [Entry].</p>
                   <a href="#Next" class="anchor" title="Link to Next">#</a>
                </h3>
                
-               <p>Next reads the next [Entry] from the type unit.</p>
+               <p>Next sets *entry to the next row in this line table and moves to
+the next row. If there are no more entries and the line table is
+properly terminated, it returns [io.EOF].
+Rows are always in order of increasing entry.Address, but
+entry.Line may go forward or backward.</p>
                
-               <pre><code class="language-go">func (tur *typeUnitReader) Next() (*Entry, error)</code></pre>
+               <pre><code class="language-go">func (r *LineReader) Next(entry *LineEntry) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Ranges" data-name="Ranges">
@@ -7098,10 +7098,9 @@ line table.</p>
                   <a href="#Seek" class="anchor" title="Link to Seek">#</a>
                </h3>
                
-               <p>Seek positions the [Reader] at offset off in the encoded entry stream.
-Offset 0 can be used to denote the first entry.</p>
+               <p>Seek to a new position in the type unit.</p>
                
-               <pre><code class="language-go">func (r *Reader) Seek(off Offset)</code></pre>
+               <pre><code class="language-go">func (tur *typeUnitReader) Seek(off Offset)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Seek" data-name="Seek">
@@ -7127,9 +7126,10 @@ line table.</p>
                   <a href="#Seek" class="anchor" title="Link to Seek">#</a>
                </h3>
                
-               <p>Seek to a new position in the type unit.</p>
+               <p>Seek positions the [Reader] at offset off in the encoded entry stream.
+Offset 0 can be used to denote the first entry.</p>
                
-               <pre><code class="language-go">func (tur *typeUnitReader) Seek(off Offset)</code></pre>
+               <pre><code class="language-go">func (r *Reader) Seek(off Offset)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="SeekPC" data-name="SeekPC">
@@ -7196,17 +7196,6 @@ an appropriate index using the Ranges method.</p>
                   <a href="#Size" class="anchor" title="Link to Size">#</a>
                </h3>
                
-               <pre><code class="language-go">func (t *ArrayType) Size() int64</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Size" data-name="Size">
-               <h3>
-                  Size 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Size" class="anchor" title="Link to Size">#</a>
-               </h3>
-               
                <pre><code class="language-go">func (c *CommonType) Size() int64</code></pre>
             </article>
             
@@ -7219,6 +7208,17 @@ an appropriate index using the Ranges method.</p>
                </h3>
                
                <pre><code class="language-go">func (t *QualType) Size() int64</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Size" data-name="Size">
+               <h3>
+                  Size 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Size" class="anchor" title="Link to Size">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (t *ArrayType) Size() int64</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="SkipChildren" data-name="SkipChildren">
@@ -7244,84 +7244,7 @@ children or [Reader.Next] has not been called, SkipChildren is a no-op.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code class="language-go">func (t *UnsupportedType) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (t *BasicType) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (i Tag) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (i Attr) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (t *StructType) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (t *TypedefType) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (t *VoidType) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (t *PtrType) String() string</code></pre>
+               <pre><code class="language-go">func (t *QualType) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -7343,18 +7266,7 @@ children or [Reader.Next] has not been called, SkipChildren is a no-op.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code class="language-go">func (t *FuncType) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (t *QualType) String() string</code></pre>
+               <pre><code class="language-go">func (i Attr) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -7376,7 +7288,29 @@ children or [Reader.Next] has not been called, SkipChildren is a no-op.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code class="language-go">func (t *DotDotDotType) String() string</code></pre>
+               <pre><code class="language-go">func (i Tag) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (t *BasicType) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (t *StructType) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -7388,6 +7322,72 @@ children or [Reader.Next] has not been called, SkipChildren is a no-op.</p>
                </h3>
                
                <pre><code class="language-go">func (t *EnumType) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (t *FuncType) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (t *PtrType) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (t *VoidType) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (t *DotDotDotType) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (t *UnsupportedType) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (t *TypedefType) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Tell" data-name="Tell">
@@ -7487,7 +7487,7 @@ v, ok := e.Val(AttrSibling).(int64)</p>
                   <a href="#addrsize" class="anchor" title="Link to addrsize">#</a>
                </h3>
                
-               <pre><code class="language-go">func (u *unit) addrsize() int</code></pre>
+               <pre><code class="language-go">func (u unknownFormat) addrsize() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="addrsize" data-name="addrsize">
@@ -7498,7 +7498,7 @@ v, ok := e.Val(AttrSibling).(int64)</p>
                   <a href="#addrsize" class="anchor" title="Link to addrsize">#</a>
                </h3>
                
-               <pre><code class="language-go">func (u unknownFormat) addrsize() int</code></pre>
+               <pre><code class="language-go">func (u *unit) addrsize() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="advancePC" data-name="advancePC">
@@ -7750,9 +7750,10 @@ depending on the attribute.</p>
                   <a href="#offset" class="anchor" title="Link to offset">#</a>
                </h3>
                
-               <p>offset returns the current offset.</p>
+               <p>offset returns the current buffer offset. This is used by the
+typeReader interface.</p>
                
-               <pre><code class="language-go">func (tur *typeUnitReader) offset() Offset</code></pre>
+               <pre><code class="language-go">func (r *Reader) offset() Offset</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="offset" data-name="offset">
@@ -7763,10 +7764,9 @@ depending on the attribute.</p>
                   <a href="#offset" class="anchor" title="Link to offset">#</a>
                </h3>
                
-               <p>offset returns the current buffer offset. This is used by the
-typeReader interface.</p>
+               <p>offset returns the current offset.</p>
                
-               <pre><code class="language-go">func (r *Reader) offset() Offset</code></pre>
+               <pre><code class="language-go">func (tur *typeUnitReader) offset() Offset</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="offsetToUnit" data-name="offsetToUnit">
@@ -8127,7 +8127,7 @@ the 0x80 bit means read another byte.</p>
                   <a href="#version" class="anchor" title="Link to version">#</a>
                </h3>
                
-               <pre><code class="language-go">func (u unknownFormat) version() int</code></pre>
+               <pre><code class="language-go">func (u *unit) version() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="version" data-name="version">
@@ -8138,7 +8138,7 @@ the 0x80 bit means read another byte.</p>
                   <a href="#version" class="anchor" title="Link to version">#</a>
                </h3>
                
-               <pre><code class="language-go">func (u *unit) version() int</code></pre>
+               <pre><code class="language-go">func (u unknownFormat) version() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="zeroArray" data-name="zeroArray">
@@ -8154,6 +8154,8 @@ the 0x80 bit means read another byte.</p>
             
          </section>
          
+         <hr />
+         <p style="color:grey; font-size:smaller">Generated with <a href="https://github.com/navid-m/arrow" target="_blank" style="color:rgb(187, 186, 186)">Arrow</a></p>
       </main>
 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
@@ -8310,7 +8312,6 @@ the 0x80 bit means read another byte.</p>
 
                if (window.Prism) Prism.highlightElement(codeBlock);
 
-   
                if (toggles.fields) {
                   toggles.fields.addEventListener("change", () => {
                      const show = toggles.fields.checked;

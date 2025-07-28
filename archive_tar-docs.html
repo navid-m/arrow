@@ -6,7 +6,7 @@
          name="viewport"
          content="width=device-width, initial-scale=1.0"
       />
-      <title>Docs - tar</title>
+      <title>tar - Documentation</title>
       <link
          href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
          rel="stylesheet"
@@ -604,13 +604,7 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"io/fs"
-"os/user"
-"runtime"
-"strconv"
-"sync"
-"syscall"
-"bytes"
+               <pre><code class="language-go">"bytes"
 "fmt"
 "strconv"
 "strings"
@@ -646,6 +640,12 @@
 "time"
 "syscall"
 "time"
+"io/fs"
+"os/user"
+"runtime"
+"strconv"
+"sync"
+"syscall"
 </code></pre>
             </article>
          </section>
@@ -2439,16 +2439,7 @@ the [ErrInsecurePath] error and use the returned header.</p>
                   <a href="#Read" class="anchor" title="Link to Read">#</a>
                </h3>
                
-               <p>Read reads from the current file in the tar archive.
-It returns (0, io.EOF) when it reaches the end of that file,
-until [Next] is called to advance to the next file.
-If the current file is sparse, then the regions marked as a hole
-are read back as NUL-bytes.
-Calling Read on special types like [TypeLink], [TypeSymlink], [TypeChar],
-[TypeBlock], [TypeDir], and [TypeFifo] returns (0, [io.EOF]) regardless of what
-the [Header.Size] claims.</p>
-               
-               <pre><code class="language-go">func (tr *Reader) Read(b []byte) (int, error)</code></pre>
+               <pre><code class="language-go">func (fr *regFileReader) Read(b []byte) (n int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Read" data-name="Read">
@@ -2459,7 +2450,7 @@ the [Header.Size] claims.</p>
                   <a href="#Read" class="anchor" title="Link to Read">#</a>
                </h3>
                
-               <pre><code class="language-go">func (fr *regFileReader) Read(b []byte) (n int, err error)</code></pre>
+               <pre><code class="language-go">func (sr *sparseFileReader) Read(b []byte) (n int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Read" data-name="Read">
@@ -2481,18 +2472,16 @@ the [Header.Size] claims.</p>
                   <a href="#Read" class="anchor" title="Link to Read">#</a>
                </h3>
                
-               <pre><code class="language-go">func (sr *sparseFileReader) Read(b []byte) (n int, err error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="ReadFrom" data-name="ReadFrom">
-               <h3>
-                  ReadFrom 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#ReadFrom" class="anchor" title="Link to ReadFrom">#</a>
-               </h3>
+               <p>Read reads from the current file in the tar archive.
+It returns (0, io.EOF) when it reaches the end of that file,
+until [Next] is called to advance to the next file.
+If the current file is sparse, then the regions marked as a hole
+are read back as NUL-bytes.
+Calling Read on special types like [TypeLink], [TypeSymlink], [TypeChar],
+[TypeBlock], [TypeDir], and [TypeFifo] returns (0, [io.EOF]) regardless of what
+the [Header.Size] claims.</p>
                
-               <pre><code class="language-go">func (sw *sparseFileWriter) ReadFrom(r io.Reader) (n int64, err error)</code></pre>
+               <pre><code class="language-go">func (tr *Reader) Read(b []byte) (int, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ReadFrom" data-name="ReadFrom">
@@ -2504,6 +2493,17 @@ the [Header.Size] claims.</p>
                </h3>
                
                <pre><code class="language-go">func (fw *regFileWriter) ReadFrom(r io.Reader) (int64, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ReadFrom" data-name="ReadFrom">
+               <h3>
+                  ReadFrom 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#ReadFrom" class="anchor" title="Link to ReadFrom">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (sw *sparseFileWriter) ReadFrom(r io.Reader) (n int64, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Size" data-name="Size">
@@ -2558,6 +2558,17 @@ the [Header.Size] claims.</p>
                   <a href="#Write" class="anchor" title="Link to Write">#</a>
                </h3>
                
+               <pre><code class="language-go">func (fw *regFileWriter) Write(b []byte) (n int, err error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Write" data-name="Write">
+               <h3>
+                  Write 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Write" class="anchor" title="Link to Write">#</a>
+               </h3>
+               
                <pre><code class="language-go">func (zeroWriter) Write(b []byte) (int, error)</code></pre>
             </article>
             
@@ -2588,17 +2599,6 @@ Calling Write on special types like [TypeLink], [TypeSymlink], [TypeChar],
 of what the [Header.Size] claims.</p>
                
                <pre><code class="language-go">func (tw *Writer) Write(b []byte) (int, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Write" data-name="Write">
-               <h3>
-                  Write 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Write" class="anchor" title="Link to Write">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (fw *regFileWriter) Write(b []byte) (n int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="WriteHeader" data-name="WriteHeader">
@@ -2647,7 +2647,7 @@ This implicitly flushes any padding necessary before writing the header.</p>
                   <a href="#accessTime" class="anchor" title="Link to accessTime">#</a>
                </h3>
                
-               <pre><code class="language-go">func (h *headerGNU) accessTime() []byte</code></pre>
+               <pre><code class="language-go">func (h *headerSTAR) accessTime() []byte</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="accessTime" data-name="accessTime">
@@ -2658,7 +2658,7 @@ This implicitly flushes any padding necessary before writing the header.</p>
                   <a href="#accessTime" class="anchor" title="Link to accessTime">#</a>
                </h3>
                
-               <pre><code class="language-go">func (h *headerSTAR) accessTime() []byte</code></pre>
+               <pre><code class="language-go">func (h *headerGNU) accessTime() []byte</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="alignSparseEntries" data-name="alignSparseEntries">
@@ -2769,6 +2769,17 @@ We compute and return both.</p>
                   <a href="#devMajor" class="anchor" title="Link to devMajor">#</a>
                </h3>
                
+               <pre><code class="language-go">func (h *headerUSTAR) devMajor() []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="devMajor" data-name="devMajor">
+               <h3>
+                  devMajor 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#devMajor" class="anchor" title="Link to devMajor">#</a>
+               </h3>
+               
                <pre><code class="language-go">func (h *headerGNU) devMajor() []byte</code></pre>
             </article>
             
@@ -2783,15 +2794,15 @@ We compute and return both.</p>
                <pre><code class="language-go">func (h *headerSTAR) devMajor() []byte</code></pre>
             </article>
             
-            <article class="function symbol-anchor" id="devMajor" data-name="devMajor">
+            <article class="function symbol-anchor" id="devMinor" data-name="devMinor">
                <h3>
-                  devMajor 
+                  devMinor 
                   <span class="badge method-badge">method</span>
                   
-                  <a href="#devMajor" class="anchor" title="Link to devMajor">#</a>
+                  <a href="#devMinor" class="anchor" title="Link to devMinor">#</a>
                </h3>
                
-               <pre><code class="language-go">func (h *headerUSTAR) devMajor() []byte</code></pre>
+               <pre><code class="language-go">func (h *headerUSTAR) devMinor() []byte</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="devMinor" data-name="devMinor">
@@ -2814,17 +2825,6 @@ We compute and return both.</p>
                </h3>
                
                <pre><code class="language-go">func (h *headerSTAR) devMinor() []byte</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="devMinor" data-name="devMinor">
-               <h3>
-                  devMinor 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#devMinor" class="anchor" title="Link to devMinor">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (h *headerUSTAR) devMinor() []byte</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="discard" data-name="discard">
@@ -3007,6 +3007,17 @@ If the checksum fails, then FormatUnknown is returned.</p>
                   <a href="#groupName" class="anchor" title="Link to groupName">#</a>
                </h3>
                
+               <pre><code class="language-go">func (h *headerUSTAR) groupName() []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="groupName" data-name="groupName">
+               <h3>
+                  groupName 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#groupName" class="anchor" title="Link to groupName">#</a>
+               </h3>
+               
                <pre><code class="language-go">func (h *headerGNU) groupName() []byte</code></pre>
             </article>
             
@@ -3019,17 +3030,6 @@ If the checksum fails, then FormatUnknown is returned.</p>
                </h3>
                
                <pre><code class="language-go">func (h *headerSTAR) groupName() []byte</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="groupName" data-name="groupName">
-               <h3>
-                  groupName 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#groupName" class="anchor" title="Link to groupName">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (h *headerUSTAR) groupName() []byte</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="handleRegularFile" data-name="handleRegularFile">
@@ -3183,17 +3183,6 @@ data section even if a size is specified.</p>
                   <a href="#logicalRemaining" class="anchor" title="Link to logicalRemaining">#</a>
                </h3>
                
-               <pre><code class="language-go">func (sr sparseFileReader) logicalRemaining() int64</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="logicalRemaining" data-name="logicalRemaining">
-               <h3>
-                  logicalRemaining 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#logicalRemaining" class="anchor" title="Link to logicalRemaining">#</a>
-               </h3>
-               
                <pre><code class="language-go">func (sw sparseFileWriter) logicalRemaining() int64</code></pre>
             </article>
             
@@ -3223,6 +3212,17 @@ data section even if a size is specified.</p>
                <pre><code class="language-go">func (fr regFileReader) logicalRemaining() int64</code></pre>
             </article>
             
+            <article class="function symbol-anchor" id="logicalRemaining" data-name="logicalRemaining">
+               <h3>
+                  logicalRemaining 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#logicalRemaining" class="anchor" title="Link to logicalRemaining">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (sr sparseFileReader) logicalRemaining() int64</code></pre>
+            </article>
+            
             <article class="function symbol-anchor" id="magic" data-name="magic">
                <h3>
                   magic 
@@ -3242,7 +3242,7 @@ data section even if a size is specified.</p>
                   <a href="#magic" class="anchor" title="Link to magic">#</a>
                </h3>
                
-               <pre><code class="language-go">func (h *headerSTAR) magic() []byte</code></pre>
+               <pre><code class="language-go">func (h *headerUSTAR) magic() []byte</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="magic" data-name="magic">
@@ -3253,7 +3253,7 @@ data section even if a size is specified.</p>
                   <a href="#magic" class="anchor" title="Link to magic">#</a>
                </h3>
                
-               <pre><code class="language-go">func (h *headerUSTAR) magic() []byte</code></pre>
+               <pre><code class="language-go">func (h *headerSTAR) magic() []byte</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="maxEntries" data-name="maxEntries">
@@ -3474,6 +3474,17 @@ If a NUL byte is not found then the whole slice is returned as a string.</p>
                   <a href="#physicalRemaining" class="anchor" title="Link to physicalRemaining">#</a>
                </h3>
                
+               <pre><code class="language-go">func (sr sparseFileReader) physicalRemaining() int64</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="physicalRemaining" data-name="physicalRemaining">
+               <h3>
+                  physicalRemaining 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#physicalRemaining" class="anchor" title="Link to physicalRemaining">#</a>
+               </h3>
+               
                <p>physicalRemaining implements fileState.physicalRemaining.</p>
                
                <pre><code class="language-go">func (fr regFileReader) physicalRemaining() int64</code></pre>
@@ -3487,31 +3498,20 @@ If a NUL byte is not found then the whole slice is returned as a string.</p>
                   <a href="#physicalRemaining" class="anchor" title="Link to physicalRemaining">#</a>
                </h3>
                
+               <pre><code class="language-go">func (sw sparseFileWriter) physicalRemaining() int64</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="physicalRemaining" data-name="physicalRemaining">
+               <h3>
+                  physicalRemaining 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#physicalRemaining" class="anchor" title="Link to physicalRemaining">#</a>
+               </h3>
+               
                <p>physicalRemaining implements fileState.physicalRemaining.</p>
                
                <pre><code class="language-go">func (fw regFileWriter) physicalRemaining() int64</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="physicalRemaining" data-name="physicalRemaining">
-               <h3>
-                  physicalRemaining 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#physicalRemaining" class="anchor" title="Link to physicalRemaining">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (sr sparseFileReader) physicalRemaining() int64</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="physicalRemaining" data-name="physicalRemaining">
-               <h3>
-                  physicalRemaining 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#physicalRemaining" class="anchor" title="Link to physicalRemaining">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (sw sparseFileWriter) physicalRemaining() int64</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="prefix" data-name="prefix">
@@ -3942,7 +3942,7 @@ io.EOF when it is hit before len(b) bytes are read.</p>
                   <a href="#userName" class="anchor" title="Link to userName">#</a>
                </h3>
                
-               <pre><code class="language-go">func (h *headerGNU) userName() []byte</code></pre>
+               <pre><code class="language-go">func (h *headerUSTAR) userName() []byte</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="userName" data-name="userName">
@@ -3953,18 +3953,7 @@ io.EOF when it is hit before len(b) bytes are read.</p>
                   <a href="#userName" class="anchor" title="Link to userName">#</a>
                </h3>
                
-               <pre><code class="language-go">func (h *headerUSTAR) userName() []byte</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="v7" data-name="v7">
-               <h3>
-                  v7 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#v7" class="anchor" title="Link to v7">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (h *headerGNU) v7() *headerV7</code></pre>
+               <pre><code class="language-go">func (h *headerGNU) userName() []byte</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="v7" data-name="v7">
@@ -3976,6 +3965,17 @@ io.EOF when it is hit before len(b) bytes are read.</p>
                </h3>
                
                <pre><code class="language-go">func (h *headerUSTAR) v7() *headerV7</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="v7" data-name="v7">
+               <h3>
+                  v7 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#v7" class="anchor" title="Link to v7">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (h *headerGNU) v7() *headerV7</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="v7" data-name="v7">
@@ -4031,6 +4031,17 @@ It does not matter whether sp represents data fragments or hole fragments.</p>
                   <a href="#version" class="anchor" title="Link to version">#</a>
                </h3>
                
+               <pre><code class="language-go">func (h *headerGNU) version() []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="version" data-name="version">
+               <h3>
+                  version 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#version" class="anchor" title="Link to version">#</a>
+               </h3>
+               
                <pre><code class="language-go">func (h *headerUSTAR) version() []byte</code></pre>
             </article>
             
@@ -4043,17 +4054,6 @@ It does not matter whether sp represents data fragments or hole fragments.</p>
                </h3>
                
                <pre><code class="language-go">func (h *headerSTAR) version() []byte</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="version" data-name="version">
-               <h3>
-                  version 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#version" class="anchor" title="Link to version">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (h *headerGNU) version() []byte</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="writeGNUHeader" data-name="writeGNUHeader">
@@ -4141,6 +4141,8 @@ See https://golang.org/issue/22735</p>
             
          </section>
          
+         <hr />
+         <p style="color:grey; font-size:smaller">Generated with <a href="https://github.com/navid-m/arrow" target="_blank" style="color:rgb(187, 186, 186)">Arrow</a></p>
       </main>
 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
@@ -4297,7 +4299,6 @@ See https://golang.org/issue/22735</p>
 
                if (window.Prism) Prism.highlightElement(codeBlock);
 
-   
                if (toggles.fields) {
                   toggles.fields.addEventListener("change", () => {
                      const show = toggles.fields.checked;

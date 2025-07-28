@@ -6,7 +6,7 @@
          name="viewport"
          content="width=device-width, initial-scale=1.0"
       />
-      <title>Docs - types</title>
+      <title>types - Documentation</title>
       <link
          href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
          rel="stylesheet"
@@ -610,6 +610,13 @@
 "cmd/internal/src"
 "internal/types/errors"
 "cmd/compile/internal/base"
+"cmd/internal/obj"
+"strings"
+"unicode"
+"unicode/utf8"
+"cmd/compile/internal/base"
+"strconv"
+"cmd/compile/internal/base"
 "cmd/internal/objabi"
 "cmd/internal/src"
 "fmt"
@@ -617,16 +624,8 @@
 "internal/buildcfg"
 "internal/types/errors"
 "sync"
-"strconv"
-"cmd/compile/internal/base"
-"cmd/internal/obj"
-"strings"
-"unicode"
-"unicode/utf8"
 "cmd/compile/internal/base"
 "cmd/internal/src"
-"cmd/compile/internal/base"
-"strconv"
 "bytes"
 "encoding/binary"
 "fmt"
@@ -640,6 +639,7 @@
 "log"
 "strconv"
 "cmd/compile/internal/base"
+"strconv"
 "cmd/internal/obj"
 "cmd/internal/objabi"
 "fmt"
@@ -3351,15 +3351,13 @@ a struct type t.</p>
                   <a href="#Format" class="anchor" title="Link to Format">#</a>
                </h3>
                
-               <p>Format implements formatting for a Type.
+               <p>Format implements formatting for a Sym.
 The valid formats are:
-%v	Go syntax
-%+v	Debug syntax: Go syntax with a KIND- prefix for all but builtins.
-%L	Go syntax for underlying type if t is named
-%S	short Go syntax: drop leading "func" in function type
-%-S	special case for method receiver symbol</p>
+%v	Go syntax: Name for symbols in the local package, PkgName.Name for imported symbols.
+%+v	Debug syntax: always include PkgName. prefix even for local names.
+%S	Short syntax: Name only, no matter what.</p>
                
-               <pre><code class="language-go">func (t *Type) Format(s fmt.State, verb rune)</code></pre>
+               <pre><code class="language-go">func (s *Sym) Format(f fmt.State, verb rune)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Format" data-name="Format">
@@ -3370,13 +3368,15 @@ The valid formats are:
                   <a href="#Format" class="anchor" title="Link to Format">#</a>
                </h3>
                
-               <p>Format implements formatting for a Sym.
+               <p>Format implements formatting for a Type.
 The valid formats are:
-%v	Go syntax: Name for symbols in the local package, PkgName.Name for imported symbols.
-%+v	Debug syntax: always include PkgName. prefix even for local names.
-%S	Short syntax: Name only, no matter what.</p>
+%v	Go syntax
+%+v	Debug syntax: Go syntax with a KIND- prefix for all but builtins.
+%L	Go syntax for underlying type if t is named
+%S	short Go syntax: drop leading "func" in function type
+%-S	special case for method receiver symbol</p>
                
-               <pre><code class="language-go">func (s *Sym) Format(f fmt.State, verb rune)</code></pre>
+               <pre><code class="language-go">func (t *Type) Format(s fmt.State, verb rune)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Func" data-name="Func">
@@ -5202,7 +5202,7 @@ suffix, if any.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code class="language-go">func (i AlgKind) String() string</code></pre>
+               <pre><code class="language-go">func (s *Sym) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -5237,7 +5237,7 @@ suffix, if any.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code class="language-go">func (s *Sym) String() string</code></pre>
+               <pre><code class="language-go">func (i AlgKind) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="StructType" data-name="StructType">
@@ -5917,6 +5917,8 @@ This is where t was declared or where it appeared as a type expression.</p>
             
          </section>
          
+         <hr />
+         <p style="color:grey; font-size:smaller">Generated with <a href="https://github.com/navid-m/arrow" target="_blank" style="color:rgb(187, 186, 186)">Arrow</a></p>
       </main>
 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
@@ -6073,7 +6075,6 @@ This is where t was declared or where it appeared as a type expression.</p>
 
                if (window.Prism) Prism.highlightElement(codeBlock);
 
-   
                if (toggles.fields) {
                   toggles.fields.addEventListener("change", () => {
                      const show = toggles.fields.checked;

@@ -6,7 +6,7 @@
          name="viewport"
          content="width=device-width, initial-scale=1.0"
       />
-      <title>Docs - ecdh</title>
+      <title>ecdh - Documentation</title>
       <link
          href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
          rel="stylesheet"
@@ -602,7 +602,13 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"crypto"
+               <pre><code class="language-go">"bytes"
+"crypto/internal/fips140/edwards25519/field"
+"crypto/internal/fips140only"
+"crypto/internal/randutil"
+"errors"
+"io"
+"crypto"
 "crypto/internal/boring"
 "crypto/internal/fips140/ecdh"
 "crypto/subtle"
@@ -612,12 +618,6 @@
 "crypto/internal/boring"
 "crypto/internal/fips140/ecdh"
 "crypto/internal/fips140only"
-"errors"
-"io"
-"bytes"
-"crypto/internal/fips140/edwards25519/field"
-"crypto/internal/fips140only"
-"crypto/internal/randutil"
 "errors"
 "io"
 </code></pre>
@@ -821,9 +821,9 @@ sharedSecret func(*ecdh.PrivateKey, *ecdh.PublicKey) (sharedSecret []byte, err e
                   <a href="#Bytes" class="anchor" title="Link to Bytes">#</a>
                </h3>
                
-               <p>Bytes returns a copy of the encoding of the private key.</p>
+               <p>Bytes returns a copy of the encoding of the public key.</p>
                
-               <pre><code class="language-go">func (k *PrivateKey) Bytes() []byte</code></pre>
+               <pre><code class="language-go">func (k *PublicKey) Bytes() []byte</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Bytes" data-name="Bytes">
@@ -834,20 +834,9 @@ sharedSecret func(*ecdh.PrivateKey, *ecdh.PublicKey) (sharedSecret []byte, err e
                   <a href="#Bytes" class="anchor" title="Link to Bytes">#</a>
                </h3>
                
-               <p>Bytes returns a copy of the encoding of the public key.</p>
+               <p>Bytes returns a copy of the encoding of the private key.</p>
                
-               <pre><code class="language-go">func (k *PublicKey) Bytes() []byte</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Curve" data-name="Curve">
-               <h3>
-                  Curve 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Curve" class="anchor" title="Link to Curve">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (k *PublicKey) Curve() Curve</code></pre>
+               <pre><code class="language-go">func (k *PrivateKey) Bytes() []byte</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Curve" data-name="Curve">
@@ -859,6 +848,17 @@ sharedSecret func(*ecdh.PrivateKey, *ecdh.PublicKey) (sharedSecret []byte, err e
                </h3>
                
                <pre><code class="language-go">func (k *PrivateKey) Curve() Curve</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Curve" data-name="Curve">
+               <h3>
+                  Curve 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Curve" class="anchor" title="Link to Curve">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (k *PublicKey) Curve() Curve</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ECDH" data-name="ECDH">
@@ -890,13 +890,13 @@ the result is the all-zero value, ECDH returns an error.</p>
                   <a href="#Equal" class="anchor" title="Link to Equal">#</a>
                </h3>
                
-               <p>Equal returns whether x represents the same public key as k.
-Note that there can be equivalent public keys with different encodings which
-would return false from this check but behave the same way as inputs to ECDH.
+               <p>Equal returns whether x represents the same private key as k.
+Note that there can be equivalent private keys with different encodings which
+would return false from this check but behave the same way as inputs to [ECDH].
 This check is performed in constant time as long as the key types and their
 curve match.</p>
                
-               <pre><code class="language-go">func (k *PublicKey) Equal(x crypto.PublicKey) bool</code></pre>
+               <pre><code class="language-go">func (k *PrivateKey) Equal(x crypto.PrivateKey) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Equal" data-name="Equal">
@@ -907,24 +907,13 @@ curve match.</p>
                   <a href="#Equal" class="anchor" title="Link to Equal">#</a>
                </h3>
                
-               <p>Equal returns whether x represents the same private key as k.
-Note that there can be equivalent private keys with different encodings which
-would return false from this check but behave the same way as inputs to [ECDH].
+               <p>Equal returns whether x represents the same public key as k.
+Note that there can be equivalent public keys with different encodings which
+would return false from this check but behave the same way as inputs to ECDH.
 This check is performed in constant time as long as the key types and their
 curve match.</p>
                
-               <pre><code class="language-go">func (k *PrivateKey) Equal(x crypto.PrivateKey) bool</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="GenerateKey" data-name="GenerateKey">
-               <h3>
-                  GenerateKey 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#GenerateKey" class="anchor" title="Link to GenerateKey">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (c *x25519Curve) GenerateKey(rand io.Reader) (*PrivateKey, error)</code></pre>
+               <pre><code class="language-go">func (k *PublicKey) Equal(x crypto.PublicKey) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="GenerateKey" data-name="GenerateKey">
@@ -938,15 +927,15 @@ curve match.</p>
                <pre><code class="language-go">func (c *nistCurve) GenerateKey(rand io.Reader) (*PrivateKey, error)</code></pre>
             </article>
             
-            <article class="function symbol-anchor" id="NewPrivateKey" data-name="NewPrivateKey">
+            <article class="function symbol-anchor" id="GenerateKey" data-name="GenerateKey">
                <h3>
-                  NewPrivateKey 
+                  GenerateKey 
                   <span class="badge method-badge">method</span>
                   
-                  <a href="#NewPrivateKey" class="anchor" title="Link to NewPrivateKey">#</a>
+                  <a href="#GenerateKey" class="anchor" title="Link to GenerateKey">#</a>
                </h3>
                
-               <pre><code class="language-go">func (c *nistCurve) NewPrivateKey(key []byte) (*PrivateKey, error)</code></pre>
+               <pre><code class="language-go">func (c *x25519Curve) GenerateKey(rand io.Reader) (*PrivateKey, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="NewPrivateKey" data-name="NewPrivateKey">
@@ -958,6 +947,17 @@ curve match.</p>
                </h3>
                
                <pre><code class="language-go">func (c *x25519Curve) NewPrivateKey(key []byte) (*PrivateKey, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="NewPrivateKey" data-name="NewPrivateKey">
+               <h3>
+                  NewPrivateKey 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#NewPrivateKey" class="anchor" title="Link to NewPrivateKey">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (c *nistCurve) NewPrivateKey(key []byte) (*PrivateKey, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="NewPublicKey" data-name="NewPublicKey">
@@ -1063,7 +1063,7 @@ keys. See the docs of [crypto.PrivateKey].</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code class="language-go">func (c *nistCurve) String() string</code></pre>
+               <pre><code class="language-go">func (c *x25519Curve) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -1074,7 +1074,7 @@ keys. See the docs of [crypto.PrivateKey].</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code class="language-go">func (c *x25519Curve) String() string</code></pre>
+               <pre><code class="language-go">func (c *nistCurve) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="X25519" data-name="X25519">
@@ -1141,6 +1141,8 @@ be used for equality checks and switch statements.</p>
             
          </section>
          
+         <hr />
+         <p style="color:grey; font-size:smaller">Generated with <a href="https://github.com/navid-m/arrow" target="_blank" style="color:rgb(187, 186, 186)">Arrow</a></p>
       </main>
 
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/components/prism-core.min.js"></script>
@@ -1297,7 +1299,6 @@ be used for equality checks and switch statements.</p>
 
                if (window.Prism) Prism.highlightElement(codeBlock);
 
-   
                if (toggles.fields) {
                   toggles.fields.addEventListener("change", () => {
                      const show = toggles.fields.checked;
