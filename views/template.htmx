@@ -723,24 +723,21 @@
          document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('p').forEach(el => {
                const raw = el.textContent;
-               const re = /[^.]+?(?<=\w)(?<!(\.\w))\.(?=\s|$)/g;
-               const sentences = raw.match(re) || [raw];
-
+               const parts = raw.split(/(?<=\w)(?<!(?:\.\w))\.(?=\s|$)/);
+               const sentences = parts.map((frag, i) => {
+               return (i < parts.length - 1 ? frag + '.' : frag).trim();
+               }).filter(s => s.length > 0);
                let html = '';
                sentences.forEach((sent, idx) => {
                html += sent;
-               if ((idx + 1) % 2 === 0) {
-                  html += '<br />';
-               } else {
-                  html += ' ';
-               }
+               html += ((idx + 1) % 2 === 0) ? '<br/>' : ' ';
                });
-
                if (sentences.length > 1) {
                el.innerHTML = html.trim();
                }
             });
          });
+         
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
