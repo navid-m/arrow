@@ -33,9 +33,11 @@ func findImmediateSubpackages(srcPath, relPath string) []models.IndexEntry {
 			continue
 		}
 
-		subPkgPath := filepath.Join(relPath, item.Name())
-		subPkgFullPath := filepath.Join(srcPath, subPkgPath)
-		goFiles, err := filepath.Glob(filepath.Join(subPkgFullPath, "*.go"))
+		var (
+			subPkgPath     = filepath.Join(relPath, item.Name())
+			subPkgFullPath = filepath.Join(srcPath, subPkgPath)
+			goFiles, err   = filepath.Glob(filepath.Join(subPkgFullPath, "*.go"))
+		)
 		if err != nil {
 			continue
 		}
