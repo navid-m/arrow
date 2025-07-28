@@ -521,7 +521,13 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"fmt"
+               <pre><code>"bytes"
+"io"
+"runtime"
+"strconv"
+"sync"
+"unicode/utf8"
+"fmt"
 "runtime"
 "golang.org/x/sys/plan9"
 "golang.org/x/sys/unix"
@@ -531,12 +537,6 @@
 "runtime"
 "os"
 "golang.org/x/sys/windows"
-"bytes"
-"io"
-"runtime"
-"strconv"
-"sync"
-"unicode/utf8"
 </code></pre>
             </article>
          </section>
@@ -579,7 +579,7 @@ interpret pasted data more literally than typed data.</p>
                   <a href="#ioctlReadTermios" class="anchor" title="Link to ioctlReadTermios">#</a>
                </h3>
                
-               <pre><code>const ioctlReadTermios = unix.TCGETS</code></pre>
+               <pre><code>const ioctlReadTermios = unix.TIOCGETA</code></pre>
             </article>
             
             <article class="global symbol-anchor" id="ioctlReadTermios" data-name="ioctlReadTermios">
@@ -590,18 +590,7 @@ interpret pasted data more literally than typed data.</p>
                   <a href="#ioctlReadTermios" class="anchor" title="Link to ioctlReadTermios">#</a>
                </h3>
                
-               <pre><code>const ioctlReadTermios = unix.TIOCGETA</code></pre>
-            </article>
-            
-            <article class="global symbol-anchor" id="ioctlWriteTermios" data-name="ioctlWriteTermios">
-               <h3>
-                  ioctlWriteTermios 
-                  <span class="badge const-badge">const</span>
-                  
-                  <a href="#ioctlWriteTermios" class="anchor" title="Link to ioctlWriteTermios">#</a>
-               </h3>
-               
-               <pre><code>const ioctlWriteTermios = unix.TIOCSETA</code></pre>
+               <pre><code>const ioctlReadTermios = unix.TCGETS</code></pre>
             </article>
             
             <article class="global symbol-anchor" id="ioctlWriteTermios" data-name="ioctlWriteTermios">
@@ -613,6 +602,17 @@ interpret pasted data more literally than typed data.</p>
                </h3>
                
                <pre><code>const ioctlWriteTermios = unix.TCSETS</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="ioctlWriteTermios" data-name="ioctlWriteTermios">
+               <h3>
+                  ioctlWriteTermios 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#ioctlWriteTermios" class="anchor" title="Link to ioctlWriteTermios">#</a>
+               </h3>
+               
+               <pre><code>const ioctlWriteTermios = unix.TIOCSETA</code></pre>
             </article>
             
             <article class="global symbol-anchor" id="keyAltLeft" data-name="keyAltLeft">
@@ -1220,6 +1220,20 @@ false.</p>
             <article class="function symbol-anchor" id="ReadPassword" data-name="ReadPassword">
                <h3>
                   ReadPassword 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#ReadPassword" class="anchor" title="Link to ReadPassword">#</a>
+               </h3>
+               
+               <p>ReadPassword temporarily changes the prompt and reads a password, without
+echo, from the terminal.</p>
+               
+               <pre><code>func (t *Terminal) ReadPassword(prompt string) (line string, err error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ReadPassword" data-name="ReadPassword">
+               <h3>
+                  ReadPassword 
                   <span class="badge">function</span>
                   
                   <a href="#ReadPassword" class="anchor" title="Link to ReadPassword">#</a>
@@ -1230,20 +1244,6 @@ is commonly used for inputting passwords and other sensitive data. The slice
 returned does not include the \n.</p>
                
                <pre><code>func ReadPassword(fd int) ([]byte, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="ReadPassword" data-name="ReadPassword">
-               <h3>
-                  ReadPassword 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#ReadPassword" class="anchor" title="Link to ReadPassword">#</a>
-               </h3>
-               
-               <p>ReadPassword temporarily changes the prompt and reads a password, without
-echo, from the terminal.</p>
-               
-               <pre><code>func (t *Terminal) ReadPassword(prompt string) (line string, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Restore" data-name="Restore">
@@ -1970,8 +1970,10 @@ reads until it finds \r and ignores any \n it finds during processing.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

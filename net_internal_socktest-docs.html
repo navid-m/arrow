@@ -521,13 +521,13 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"syscall"
-"syscall"
-"internal/syscall/windows"
+               <pre><code>"internal/syscall/windows"
 "syscall"
 "fmt"
 "sync"
 "fmt"
+"syscall"
+"syscall"
 "syscall"
 "syscall"
 </code></pre>
@@ -866,9 +866,9 @@ stats stats
                   <a href="#Connect" class="anchor" title="Link to Connect">#</a>
                </h3>
                
-               <p>Connect wraps syscall.Connect.</p>
+               <p>Connect wraps [syscall.Connect].</p>
                
-               <pre><code>func (sw *Switch) Connect(s int, sa syscall.Sockaddr) (err error)</code></pre>
+               <pre><code>func (sw *Switch) Connect(s syscall.Handle, sa syscall.Sockaddr) (err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Connect" data-name="Connect">
@@ -879,9 +879,9 @@ stats stats
                   <a href="#Connect" class="anchor" title="Link to Connect">#</a>
                </h3>
                
-               <p>Connect wraps [syscall.Connect].</p>
+               <p>Connect wraps syscall.Connect.</p>
                
-               <pre><code>func (sw *Switch) Connect(s syscall.Handle, sa syscall.Sockaddr) (err error)</code></pre>
+               <pre><code>func (sw *Switch) Connect(s int, sa syscall.Sockaddr) (err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ConnectEx" data-name="ConnectEx">
@@ -1022,7 +1022,7 @@ stats stats
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code>func (so Status) String() string</code></pre>
+               <pre><code>func (st Stat) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -1033,7 +1033,7 @@ stats stats
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code>func (st Stat) String() string</code></pre>
+               <pre><code>func (so Status) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Type" data-name="Type">
@@ -1073,7 +1073,7 @@ stats stats
                <p>addLocked returns a new Status without locking.
 sw.smu must be held before call.</p>
                
-               <pre><code>func (sw *Switch) addLocked(s syscall.Handle, family int, sotype int, proto int) *Status</code></pre>
+               <pre><code>func (sw *Switch) addLocked(s int, family int, sotype int, proto int) *Status</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="addLocked" data-name="addLocked">
@@ -1087,7 +1087,7 @@ sw.smu must be held before call.</p>
                <p>addLocked returns a new Status without locking.
 sw.smu must be held before call.</p>
                
-               <pre><code>func (sw *Switch) addLocked(s int, family int, sotype int, proto int) *Status</code></pre>
+               <pre><code>func (sw *Switch) addLocked(s syscall.Handle, family int, sotype int, proto int) *Status</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="apply" data-name="apply">
@@ -1197,7 +1197,7 @@ sw.smu must be held before call.</p>
                   <a href="#sockso" class="anchor" title="Link to sockso">#</a>
                </h3>
                
-               <pre><code>func (sw *Switch) sockso(s int) *Status</code></pre>
+               <pre><code>func (sw *Switch) sockso(s syscall.Handle) *Status</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="sockso" data-name="sockso">
@@ -1208,7 +1208,7 @@ sw.smu must be held before call.</p>
                   <a href="#sockso" class="anchor" title="Link to sockso">#</a>
                </h3>
                
-               <pre><code>func (sw *Switch) sockso(s syscall.Handle) *Status</code></pre>
+               <pre><code>func (sw *Switch) sockso(s int) *Status</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="typeString" data-name="typeString">
@@ -1388,8 +1388,10 @@ sw.smu must be held before call.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

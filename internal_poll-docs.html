@@ -521,60 +521,39 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"syscall"
+               <pre><code>"internal/syscall/unix"
 "syscall"
-"errors"
 "errors"
 "internal/syscall/unix"
 "syscall"
-"syscall"
+"errors"
+"internal/stringslite"
+"io"
+"sync"
 "syscall"
 "time"
-"syscall"
+"io"
+"runtime"
 "syscall"
 "internal/itoa"
 "runtime"
 "sync"
 "syscall"
-"errors"
-"sync"
-"syscall"
-"time"
-_ "unsafe"
 "internal/byteorder"
 "sync/atomic"
 "syscall"
 "unsafe"
-"syscall"
-"unsafe"
-"io"
-"runtime"
-"syscall"
-"io"
-"syscall"
-"syscall"
-"syscall"
-_ "unsafe"
-"internal/syscall/unix"
-"syscall"
-"syscall"
-"syscall"
-"syscall"
 "internal/syscall/unix"
 "runtime"
 "sync"
 "syscall"
 "unsafe"
 "syscall"
+_ "unsafe"
+"syscall"
+"syscall"
 "internal/syscall/unix"
-"syscall"
-"syscall"
-"sync/atomic"
-"syscall"
-"syscall"
-"syscall"
-"io"
-"runtime"
+"sync"
 "syscall"
 "io"
 "syscall"
@@ -588,25 +567,46 @@ _ "unsafe"
 "unicode/utf8"
 "unsafe"
 "syscall"
-_ "unsafe"
-"internal/syscall/unix"
-"sync"
 "syscall"
 "internal/syscall/unix"
+"sync/atomic"
+"errors"
+"sync"
+"syscall"
+"time"
+_ "unsafe"
 "internal/itoa"
 "internal/syscall/unix"
 "io"
 "sync/atomic"
 "syscall"
 "syscall"
-"errors"
-"internal/stringslite"
+"syscall"
+"syscall"
+"syscall"
+"syscall"
+"unsafe"
 "io"
-"sync"
+"syscall"
+"syscall"
+"syscall"
 "syscall"
 "time"
 "syscall"
+"io"
+"runtime"
+"syscall"
+"syscall"
+"errors"
+"syscall"
+"syscall"
 "unsafe"
+"internal/syscall/unix"
+"syscall"
+"syscall"
+"syscall"
+"syscall"
+_ "unsafe"
 "syscall"
 </code></pre>
             </article>
@@ -664,7 +664,7 @@ _ "unsafe"
                
                <p>CloseFunc is used to hook the close call.</p>
                
-               <pre><code>var CloseFunc func(syscall.Handle) error = syscall.Closesocket</code></pre>
+               <pre><code>var CloseFunc func(int) error = syscall.Close</code></pre>
             </article>
             
             <article class="global symbol-anchor" id="CloseFunc" data-name="CloseFunc">
@@ -677,7 +677,7 @@ _ "unsafe"
                
                <p>CloseFunc is used to hook the close call.</p>
                
-               <pre><code>var CloseFunc func(int) error = syscall.Close</code></pre>
+               <pre><code>var CloseFunc func(syscall.Handle) error = syscall.Closesocket</code></pre>
             </article>
             
             <article class="global symbol-anchor" id="ConnectExFunc" data-name="ConnectExFunc">
@@ -1418,6 +1418,38 @@ external codebase.</p>
                   <a href="#FD" class="anchor" title="Link to FD">#</a>
                </h3>
                
+               <p>FD is a file descriptor. The net and os packages embed this type in
+a larger type representing a network connection or OS file.</p>
+               
+               <pre
+                  class="fields-block"
+               ><code class="fields-code">type FD struct {
+fdmu fdMutex
+Sysfd syscall.Handle
+rop operation
+wop operation
+pd pollDesc
+l sync.Mutex
+lastbits []byte
+readuint16 []uint16
+readbyte []byte
+readbyteOffset int
+csema uint32
+skipSyncNotif bool
+IsStream bool
+ZeroReadIsEOF bool
+isFile bool
+kind fileKind
+}</code></pre>
+            </article>
+            
+            <article class="struct symbol-anchor" id="FD" data-name="FD">
+               <h3>
+                  FD
+                  <span class="badge">struct</span>
+                  <a href="#FD" class="anchor" title="Link to FD">#</a>
+               </h3>
+               
                <pre
                   class="fields-block"
                ><code class="fields-code">type FD struct {
@@ -1460,38 +1492,6 @@ isFile bool
 }</code></pre>
             </article>
             
-            <article class="struct symbol-anchor" id="FD" data-name="FD">
-               <h3>
-                  FD
-                  <span class="badge">struct</span>
-                  <a href="#FD" class="anchor" title="Link to FD">#</a>
-               </h3>
-               
-               <p>FD is a file descriptor. The net and os packages embed this type in
-a larger type representing a network connection or OS file.</p>
-               
-               <pre
-                  class="fields-block"
-               ><code class="fields-code">type FD struct {
-fdmu fdMutex
-Sysfd syscall.Handle
-rop operation
-wop operation
-pd pollDesc
-l sync.Mutex
-lastbits []byte
-readuint16 []uint16
-readbyte []byte
-readbyteOffset int
-csema uint32
-skipSyncNotif bool
-IsStream bool
-ZeroReadIsEOF bool
-isFile bool
-kind fileKind
-}</code></pre>
-            </article>
-            
             <article class="struct symbol-anchor" id="FDMutex" data-name="FDMutex">
                <h3>
                   FDMutex
@@ -1518,11 +1518,7 @@ fdmu fdMutex
                <pre
                   class="fields-block"
                ><code class="fields-code">type SysFile struct {
-RefCountPtr *int32
-RefCount int32
-Filetype uint32
-Dircookie uint64
-Path string
+iovecs *[]syscall.Iovec
 }</code></pre>
             </article>
             
@@ -1536,7 +1532,11 @@ Path string
                <pre
                   class="fields-block"
                ><code class="fields-code">type SysFile struct {
-iovecs *[]syscall.Iovec
+RefCountPtr *int32
+RefCount int32
+Filetype uint32
+Dircookie uint64
+Path string
 }</code></pre>
             </article>
             
@@ -1637,7 +1637,8 @@ bufs []syscall.WSABuf
                <pre
                   class="fields-block"
                ><code class="fields-code">type pollDesc struct {
-runtimeCtx uintptr
+fd *FD
+closing bool
 }</code></pre>
             </article>
             
@@ -1651,8 +1652,7 @@ runtimeCtx uintptr
                <pre
                   class="fields-block"
                ><code class="fields-code">type pollDesc struct {
-fd *FD
-closing bool
+runtimeCtx uintptr
 }</code></pre>
             </article>
             
@@ -1717,9 +1717,10 @@ data int
                   <a href="#Accept" class="anchor" title="Link to Accept">#</a>
                </h3>
                
-               <p>Accept wraps the accept network call.</p>
+               <p>Accept handles accepting a socket. The sysSocket parameter is used
+to allocate the net socket.</p>
                
-               <pre><code>func (fd *FD) Accept() (int, syscall.Sockaddr, string, error)</code></pre>
+               <pre><code>func (fd *FD) Accept(sysSocket func() (syscall.Handle, error)) (syscall.Handle, []syscall.RawSockaddrAny, uint32, string, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Accept" data-name="Accept">
@@ -1730,10 +1731,9 @@ data int
                   <a href="#Accept" class="anchor" title="Link to Accept">#</a>
                </h3>
                
-               <p>Accept handles accepting a socket. The sysSocket parameter is used
-to allocate the net socket.</p>
+               <p>Accept wraps the accept network call.</p>
                
-               <pre><code>func (fd *FD) Accept(sysSocket func() (syscall.Handle, error)) (syscall.Handle, []syscall.RawSockaddrAny, uint32, string, error)</code></pre>
+               <pre><code>func (fd *FD) Accept() (int, syscall.Sockaddr, string, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Cancel" data-name="Cancel">
@@ -1883,47 +1883,31 @@ the copy_file_range system call. dst and src must refer to regular files.</p>
                   <a href="#DupCloseOnExec" class="anchor" title="Link to DupCloseOnExec">#</a>
                </h3>
                
-               <pre><code>func DupCloseOnExec(fd int) (int, string, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="DupCloseOnExec" data-name="DupCloseOnExec">
-               <h3>
-                  DupCloseOnExec 
-                  <span class="badge">function</span>
-                  
-                  <a href="#DupCloseOnExec" class="anchor" title="Link to DupCloseOnExec">#</a>
-               </h3>
-               
-               <pre><code>func DupCloseOnExec(fd int) (int, string, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="DupCloseOnExec" data-name="DupCloseOnExec">
-               <h3>
-                  DupCloseOnExec 
-                  <span class="badge">function</span>
-                  
-                  <a href="#DupCloseOnExec" class="anchor" title="Link to DupCloseOnExec">#</a>
-               </h3>
-               
                <p>DupCloseOnExec dups fd and marks it close-on-exec.</p>
                
                <pre><code>func DupCloseOnExec(fd int) (int, string, error)</code></pre>
             </article>
             
-            <article class="function symbol-anchor" id="Error" data-name="Error">
+            <article class="function symbol-anchor" id="DupCloseOnExec" data-name="DupCloseOnExec">
                <h3>
-                  Error 
-                  <span class="badge method-badge">method</span>
+                  DupCloseOnExec 
+                  <span class="badge">function</span>
                   
-                  <a href="#Error" class="anchor" title="Link to Error">#</a>
+                  <a href="#DupCloseOnExec" class="anchor" title="Link to DupCloseOnExec">#</a>
                </h3>
                
-               <p>Error returns the error message for ErrNetClosing.
-Keep this string consistent because of issue #4373:
-since historically programs have not been able to detect
-this error, they look for the string.</p>
+               <pre><code>func DupCloseOnExec(fd int) (int, string, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="DupCloseOnExec" data-name="DupCloseOnExec">
+               <h3>
+                  DupCloseOnExec 
+                  <span class="badge">function</span>
+                  
+                  <a href="#DupCloseOnExec" class="anchor" title="Link to DupCloseOnExec">#</a>
+               </h3>
                
-               <pre><code>func (e errNetClosing) Error() string</code></pre>
+               <pre><code>func DupCloseOnExec(fd int) (int, string, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Error" data-name="Error">
@@ -1940,6 +1924,22 @@ by earlier Go versions. Changing it may break programs that
 match on error strings.</p>
                
                <pre><code>func (e *DeadlineExceededError) Error() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Error" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Error" class="anchor" title="Link to Error">#</a>
+               </h3>
+               
+               <p>Error returns the error message for ErrNetClosing.
+Keep this string consistent because of issue #4373:
+since historically programs have not been able to detect
+this error, they look for the string.</p>
+               
+               <pre><code>func (e errNetClosing) Error() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Fchdir" data-name="Fchdir">
@@ -2054,7 +2054,9 @@ match on error strings.</p>
                   <a href="#Fsync" class="anchor" title="Link to Fsync">#</a>
                </h3>
                
-               <p>Fsync wraps syscall.Fsync.</p>
+               <p>Fsync invokes SYS_FCNTL with SYS_FULLFSYNC because
+on OS X, SYS_FSYNC doesn't fully flush contents to disk.
+See Issue #26650 as well as the man page for fsync on OS X.</p>
                
                <pre><code>func (fd *FD) Fsync() error</code></pre>
             </article>
@@ -2067,9 +2069,7 @@ match on error strings.</p>
                   <a href="#Fsync" class="anchor" title="Link to Fsync">#</a>
                </h3>
                
-               <p>Fsync invokes SYS_FCNTL with SYS_FULLFSYNC because
-on OS X, SYS_FSYNC doesn't fully flush contents to disk.
-See Issue #26650 as well as the man page for fsync on OS X.</p>
+               <p>Fsync wraps syscall.Fsync.</p>
                
                <pre><code>func (fd *FD) Fsync() error</code></pre>
             </article>
@@ -2159,10 +2159,10 @@ See Issue #26650 as well as the man page for fsync on OS X.</p>
                <p>Init initializes the FD. The Sysfd field should already be set.
 This can be called multiple times on a single FD.
 The net argument is a network name from the net package (e.g., "tcp"),
-or "file" or "console" or "dir".
+or "file".
 Set pollable to true if fd should be managed by runtime netpoll.</p>
                
-               <pre><code>func (fd *FD) Init(net string, pollable bool) (string, error)</code></pre>
+               <pre><code>func (fd *FD) Init(net string, pollable bool) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Init" data-name="Init">
@@ -2176,10 +2176,10 @@ Set pollable to true if fd should be managed by runtime netpoll.</p>
                <p>Init initializes the FD. The Sysfd field should already be set.
 This can be called multiple times on a single FD.
 The net argument is a network name from the net package (e.g., "tcp"),
-or "file".
+or "file" or "console" or "dir".
 Set pollable to true if fd should be managed by runtime netpoll.</p>
                
-               <pre><code>func (fd *FD) Init(net string, pollable bool) error</code></pre>
+               <pre><code>func (fd *FD) Init(net string, pollable bool) (string, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="InitBuf" data-name="InitBuf">
@@ -2287,9 +2287,9 @@ syscall is returned along with a syscall.Errno.</p>
                   <a href="#Pread" class="anchor" title="Link to Pread">#</a>
                </h3>
                
-               <p>Pread wraps the pread system call.</p>
+               <p>Pread emulates the Unix pread system call.</p>
                
-               <pre><code>func (fd *FD) Pread(p []byte, off int64) (int, error)</code></pre>
+               <pre><code>func (fd *FD) Pread(b []byte, off int64) (int, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Pread" data-name="Pread">
@@ -2300,9 +2300,9 @@ syscall is returned along with a syscall.Errno.</p>
                   <a href="#Pread" class="anchor" title="Link to Pread">#</a>
                </h3>
                
-               <p>Pread emulates the Unix pread system call.</p>
+               <p>Pread wraps the pread system call.</p>
                
-               <pre><code>func (fd *FD) Pread(b []byte, off int64) (int, error)</code></pre>
+               <pre><code>func (fd *FD) Pread(p []byte, off int64) (int, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Pwrite" data-name="Pwrite">
@@ -2499,10 +2499,6 @@ that tries to fill the buffer.</p>
                   <a href="#ReadDirent" class="anchor" title="Link to ReadDirent">#</a>
                </h3>
                
-               <p>ReadDirent wraps syscall.ReadDirent.
-We treat this like an ordinary system call rather than a call
-that tries to fill the buffer.</p>
-               
                <pre><code>func (fd *FD) ReadDirent(buf []byte) (int, error)</code></pre>
             </article>
             
@@ -2513,6 +2509,10 @@ that tries to fill the buffer.</p>
                   
                   <a href="#ReadDirent" class="anchor" title="Link to ReadDirent">#</a>
                </h3>
+               
+               <p>ReadDirent wraps syscall.ReadDirent.
+We treat this like an ordinary system call rather than a call
+that tries to fill the buffer.</p>
                
                <pre><code>func (fd *FD) ReadDirent(buf []byte) (int, error)</code></pre>
             </article>
@@ -2553,7 +2553,7 @@ that tries to fill the buffer.</p>
                
                <p>ReadFromInet4 wraps the recvfrom network call for IPv4.</p>
                
-               <pre><code>func (fd *FD) ReadFromInet4(p []byte, from *syscall.SockaddrInet4) (int, error)</code></pre>
+               <pre><code>func (fd *FD) ReadFromInet4(buf []byte, sa4 *syscall.SockaddrInet4) (int, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ReadFromInet4" data-name="ReadFromInet4">
@@ -2566,20 +2566,7 @@ that tries to fill the buffer.</p>
                
                <p>ReadFromInet4 wraps the recvfrom network call for IPv4.</p>
                
-               <pre><code>func (fd *FD) ReadFromInet4(buf []byte, sa4 *syscall.SockaddrInet4) (int, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="ReadFromInet6" data-name="ReadFromInet6">
-               <h3>
-                  ReadFromInet6 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#ReadFromInet6" class="anchor" title="Link to ReadFromInet6">#</a>
-               </h3>
-               
-               <p>ReadFromInet6 wraps the recvfrom network call for IPv6.</p>
-               
-               <pre><code>func (fd *FD) ReadFromInet6(buf []byte, sa6 *syscall.SockaddrInet6) (int, error)</code></pre>
+               <pre><code>func (fd *FD) ReadFromInet4(p []byte, from *syscall.SockaddrInet4) (int, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ReadFromInet6" data-name="ReadFromInet6">
@@ -2595,15 +2582,17 @@ that tries to fill the buffer.</p>
                <pre><code>func (fd *FD) ReadFromInet6(p []byte, from *syscall.SockaddrInet6) (int, error)</code></pre>
             </article>
             
-            <article class="function symbol-anchor" id="ReadLock" data-name="ReadLock">
+            <article class="function symbol-anchor" id="ReadFromInet6" data-name="ReadFromInet6">
                <h3>
-                  ReadLock 
+                  ReadFromInet6 
                   <span class="badge method-badge">method</span>
                   
-                  <a href="#ReadLock" class="anchor" title="Link to ReadLock">#</a>
+                  <a href="#ReadFromInet6" class="anchor" title="Link to ReadFromInet6">#</a>
                </h3>
                
-               <pre><code>func (fdmu *FDMutex) ReadLock() bool</code></pre>
+               <p>ReadFromInet6 wraps the recvfrom network call for IPv6.</p>
+               
+               <pre><code>func (fd *FD) ReadFromInet6(buf []byte, sa6 *syscall.SockaddrInet6) (int, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ReadLock" data-name="ReadLock">
@@ -2619,6 +2608,17 @@ that tries to fill the buffer.</p>
                <pre><code>func (fd *FD) ReadLock() error</code></pre>
             </article>
             
+            <article class="function symbol-anchor" id="ReadLock" data-name="ReadLock">
+               <h3>
+                  ReadLock 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#ReadLock" class="anchor" title="Link to ReadLock">#</a>
+               </h3>
+               
+               <pre><code>func (fdmu *FDMutex) ReadLock() bool</code></pre>
+            </article>
+            
             <article class="function symbol-anchor" id="ReadMsg" data-name="ReadMsg">
                <h3>
                   ReadMsg 
@@ -2627,7 +2627,7 @@ that tries to fill the buffer.</p>
                   <a href="#ReadMsg" class="anchor" title="Link to ReadMsg">#</a>
                </h3>
                
-               <p>ReadMsg wraps the recvmsg network call.</p>
+               <p>ReadMsg wraps the WSARecvMsg network call.</p>
                
                <pre><code>func (fd *FD) ReadMsg(p []byte, oob []byte, flags int) (int, int, int, syscall.Sockaddr, error)</code></pre>
             </article>
@@ -2640,7 +2640,7 @@ that tries to fill the buffer.</p>
                   <a href="#ReadMsg" class="anchor" title="Link to ReadMsg">#</a>
                </h3>
                
-               <p>ReadMsg wraps the WSARecvMsg network call.</p>
+               <p>ReadMsg wraps the recvmsg network call.</p>
                
                <pre><code>func (fd *FD) ReadMsg(p []byte, oob []byte, flags int) (int, int, int, syscall.Sockaddr, error)</code></pre>
             </article>
@@ -2679,7 +2679,7 @@ that tries to fill the buffer.</p>
                   <a href="#ReadMsgInet6" class="anchor" title="Link to ReadMsgInet6">#</a>
                </h3>
                
-               <p>ReadMsgInet6 is ReadMsg, but specialized to return a syscall.SockaddrInet6.</p>
+               <p>ReadMsgInet6 is ReadMsg, but specialized for syscall.SockaddrInet6.</p>
                
                <pre><code>func (fd *FD) ReadMsgInet6(p []byte, oob []byte, flags int, sa6 *syscall.SockaddrInet6) (int, int, int, error)</code></pre>
             </article>
@@ -2692,7 +2692,7 @@ that tries to fill the buffer.</p>
                   <a href="#ReadMsgInet6" class="anchor" title="Link to ReadMsgInet6">#</a>
                </h3>
                
-               <p>ReadMsgInet6 is ReadMsg, but specialized for syscall.SockaddrInet6.</p>
+               <p>ReadMsgInet6 is ReadMsg, but specialized to return a syscall.SockaddrInet6.</p>
                
                <pre><code>func (fd *FD) ReadMsgInet6(p []byte, oob []byte, flags int, sa6 *syscall.SockaddrInet6) (int, int, int, error)</code></pre>
             </article>
@@ -2768,19 +2768,6 @@ that tries to fill the buffer.</p>
                   <a href="#SendFile" class="anchor" title="Link to SendFile">#</a>
                </h3>
                
-               <p>SendFile wraps the TransmitFile call.</p>
-               
-               <pre><code>func SendFile(fd *FD, src syscall.Handle, n int64) (written int64, err error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="SendFile" data-name="SendFile">
-               <h3>
-                  SendFile 
-                  <span class="badge">function</span>
-                  
-                  <a href="#SendFile" class="anchor" title="Link to SendFile">#</a>
-               </h3>
-               
                <p>SendFile wraps the sendfile system call.
 It copies data from src (a file descriptor) to dstFD,
 starting at the current position of src.
@@ -2795,6 +2782,19 @@ has not modified the source or destination,
 and the caller should perform the copy using a fallback implementation.</p>
                
                <pre><code>func SendFile(dstFD *FD, src int, size int64) (n int64, err error, handled bool)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="SendFile" data-name="SendFile">
+               <h3>
+                  SendFile 
+                  <span class="badge">function</span>
+                  
+                  <a href="#SendFile" class="anchor" title="Link to SendFile">#</a>
+               </h3>
+               
+               <p>SendFile wraps the TransmitFile call.</p>
+               
+               <pre><code>func SendFile(fd *FD, src syscall.Handle, n int64) (written int64, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="SetBlocking" data-name="SetBlocking">
@@ -3140,7 +3140,7 @@ src and dst must both be stream-oriented sockets.</p>
                
                <p>Write implements io.Writer.</p>
                
-               <pre><code>func (fd *FD) Write(fn func([]byte) (int, error), b []byte) (int, error)</code></pre>
+               <pre><code>func (fd *FD) Write(buf []byte) (int, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Write" data-name="Write">
@@ -3166,7 +3166,7 @@ src and dst must both be stream-oriented sockets.</p>
                
                <p>Write implements io.Writer.</p>
                
-               <pre><code>func (fd *FD) Write(buf []byte) (int, error)</code></pre>
+               <pre><code>func (fd *FD) Write(fn func([]byte) (int, error), b []byte) (int, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="WriteLock" data-name="WriteLock">
@@ -3188,7 +3188,7 @@ src and dst must both be stream-oriented sockets.</p>
                   <a href="#WriteMsg" class="anchor" title="Link to WriteMsg">#</a>
                </h3>
                
-               <p>WriteMsg wraps the sendmsg network call.</p>
+               <p>WriteMsg wraps the WSASendMsg network call.</p>
                
                <pre><code>func (fd *FD) WriteMsg(p []byte, oob []byte, sa syscall.Sockaddr) (int, int, error)</code></pre>
             </article>
@@ -3201,7 +3201,7 @@ src and dst must both be stream-oriented sockets.</p>
                   <a href="#WriteMsg" class="anchor" title="Link to WriteMsg">#</a>
                </h3>
                
-               <p>WriteMsg wraps the WSASendMsg network call.</p>
+               <p>WriteMsg wraps the sendmsg network call.</p>
                
                <pre><code>func (fd *FD) WriteMsg(p []byte, oob []byte, sa syscall.Sockaddr) (int, int, error)</code></pre>
             </article>
@@ -3368,9 +3368,9 @@ src and dst must both be stream-oriented sockets.</p>
                   <a href="#Writev" class="anchor" title="Link to Writev">#</a>
                </h3>
                
-               <p>Writev emulates the Unix writev system call.</p>
+               <p>Writev wraps the writev system call.</p>
                
-               <pre><code>func (fd *FD) Writev(buf *[][]byte) (int64, error)</code></pre>
+               <pre><code>func (fd *FD) Writev(v *[][]byte) (int64, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Writev" data-name="Writev">
@@ -3381,9 +3381,9 @@ src and dst must both be stream-oriented sockets.</p>
                   <a href="#Writev" class="anchor" title="Link to Writev">#</a>
                </h3>
                
-               <p>Writev wraps the writev system call.</p>
+               <p>Writev emulates the Unix writev system call.</p>
                
-               <pre><code>func (fd *FD) Writev(v *[][]byte) (int64, error)</code></pre>
+               <pre><code>func (fd *FD) Writev(buf *[][]byte) (int64, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="accept" data-name="accept">
@@ -3551,7 +3551,32 @@ It reports whether there is no remaining reference.</p>
                   <a href="#destroy" class="anchor" title="Link to destroy">#</a>
                </h3>
                
+               <p>Destroy closes the file descriptor. This is called when there are
+no remaining references.</p>
+               
+               <pre><code>func (fd *FD) destroy() error</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="destroy" data-name="destroy">
+               <h3>
+                  destroy 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#destroy" class="anchor" title="Link to destroy">#</a>
+               </h3>
+               
                <pre><code>func (s *SysFile) destroy(fd int) error</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="destroy" data-name="destroy">
+               <h3>
+                  destroy 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#destroy" class="anchor" title="Link to destroy">#</a>
+               </h3>
+               
+               <pre><code>func (fd *FD) destroy() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="destroy" data-name="destroy">
@@ -3577,32 +3602,7 @@ it uses os.File's.</p>
                   <a href="#destroy" class="anchor" title="Link to destroy">#</a>
                </h3>
                
-               <pre><code>func (fd *FD) destroy() error</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="destroy" data-name="destroy">
-               <h3>
-                  destroy 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#destroy" class="anchor" title="Link to destroy">#</a>
-               </h3>
-               
                <pre><code>func (s *SysFile) destroy(fd int) error</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="destroy" data-name="destroy">
-               <h3>
-                  destroy 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#destroy" class="anchor" title="Link to destroy">#</a>
-               </h3>
-               
-               <p>Destroy closes the file descriptor. This is called when there are
-no remaining references.</p>
-               
-               <pre><code>func (fd *FD) destroy() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="destroyPipe" data-name="destroyPipe">
@@ -3876,10 +3876,10 @@ an EINTR loop.</p>
                   <a href="#incref" class="anchor" title="Link to incref">#</a>
                </h3>
                
-               <p>incref adds a reference to fd.
-It returns an error when fd cannot be used.</p>
+               <p>incref adds a reference to mu.
+It reports whether mu is available for reading or writing.</p>
                
-               <pre><code>func (fd *FD) incref() error</code></pre>
+               <pre><code>func (mu *fdMutex) incref() bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="incref" data-name="incref">
@@ -3890,10 +3890,10 @@ It returns an error when fd cannot be used.</p>
                   <a href="#incref" class="anchor" title="Link to incref">#</a>
                </h3>
                
-               <p>incref adds a reference to mu.
-It reports whether mu is available for reading or writing.</p>
+               <p>incref adds a reference to fd.
+It returns an error when fd cannot be used.</p>
                
-               <pre><code>func (mu *fdMutex) incref() bool</code></pre>
+               <pre><code>func (fd *FD) incref() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="increfAndClose" data-name="increfAndClose">
@@ -3918,17 +3918,6 @@ It returns false if the file was already closed.</p>
                   <a href="#init" class="anchor" title="Link to init">#</a>
                </h3>
                
-               <pre><code>func (pd *pollDesc) init(fd *FD) error</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="init" data-name="init">
-               <h3>
-                  init 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#init" class="anchor" title="Link to init">#</a>
-               </h3>
-               
                <pre><code>func (s *SysFile) init()</code></pre>
             </article>
             
@@ -3952,6 +3941,17 @@ It returns false if the file was already closed.</p>
                </h3>
                
                <pre><code>func (s *SysFile) init()</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="init" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#init" class="anchor" title="Link to init">#</a>
+               </h3>
+               
+               <pre><code>func (pd *pollDesc) init(fd *FD) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="isHangup" data-name="isHangup">
@@ -4906,8 +4906,10 @@ is no remaining reference.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

@@ -521,24 +521,28 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"cmd/compile/internal/base"
+               <pre><code>"cmd/compile/internal/ir"
+"cmd/compile/internal/typecheck"
+"cmd/compile/internal/types"
+"fmt"
+"cmd/compile/internal/base"
 "cmd/compile/internal/ir"
 "cmd/compile/internal/logopt"
-"cmd/internal/src"
-"fmt"
-"strings"
-"cmd/compile/internal/base"
-"cmd/compile/internal/ir"
-"fmt"
-"cmd/compile/internal/base"
-"cmd/compile/internal/ir"
+"cmd/compile/internal/typecheck"
 "cmd/compile/internal/types"
+"cmd/internal/src"
 "cmd/compile/internal/base"
 "math"
 "strings"
+"cmd/compile/internal/base"
 "cmd/compile/internal/ir"
-"cmd/compile/internal/typecheck"
-"cmd/compile/internal/types"
+"cmd/compile/internal/logopt"
+"cmd/internal/src"
+"fmt"
+"strings"
+"cmd/compile/internal/base"
+"cmd/compile/internal/ir"
+"fmt"
 "cmd/compile/internal/base"
 "cmd/compile/internal/ir"
 "cmd/compile/internal/base"
@@ -547,13 +551,9 @@
 "cmd/compile/internal/types"
 "cmd/internal/src"
 "strings"
-"fmt"
 "cmd/compile/internal/base"
 "cmd/compile/internal/ir"
-"cmd/compile/internal/logopt"
-"cmd/compile/internal/typecheck"
 "cmd/compile/internal/types"
-"cmd/internal/src"
 "cmd/compile/internal/base"
 "cmd/compile/internal/ir"
 "cmd/compile/internal/logopt"
@@ -1167,7 +1167,10 @@ Result returns -1.</p>
                   <a href="#addr" class="anchor" title="Link to addr">#</a>
                </h3>
                
-               <pre><code>func (k hole) addr(where ir.Node, why string) hole</code></pre>
+               <p>addr evaluates an addressable expression n and returns a hole
+that represents storing into the represented location.</p>
+               
+               <pre><code>func (e *escape) addr(n ir.Node) hole</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="addr" data-name="addr">
@@ -1178,10 +1181,7 @@ Result returns -1.</p>
                   <a href="#addr" class="anchor" title="Link to addr">#</a>
                </h3>
                
-               <p>addr evaluates an addressable expression n and returns a hole
-that represents storing into the represented location.</p>
-               
-               <pre><code>func (e *escape) addr(n ir.Node) hole</code></pre>
+               <pre><code>func (k hole) addr(where ir.Node, why string) hole</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="addrs" data-name="addrs">
@@ -2079,8 +2079,10 @@ all other locations.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

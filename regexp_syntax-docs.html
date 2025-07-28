@@ -521,7 +521,13 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"strconv"
+               <pre><code>"unicode"
+"strconv"
+"sort"
+"strings"
+"unicode"
+"unicode/utf8"
+"strconv"
 "strings"
 "unicode"
 "unicode/utf8"
@@ -529,12 +535,6 @@
 "strconv"
 "strings"
 "unicode"
-"unicode"
-"strconv"
-"sort"
-"strings"
-"unicode"
-"unicode/utf8"
 </code></pre>
             </article>
          </section>
@@ -2329,29 +2329,7 @@ be true in any match. It returns ^EmptyOp(0) if no matches are possible.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code>func (i InstOp) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <pre><code>func (i *Inst) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <pre><code>func (i Op) String() string</code></pre>
+               <pre><code>func (e ErrorCode) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -2373,7 +2351,29 @@ be true in any match. It returns ^EmptyOp(0) if no matches are possible.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code>func (e ErrorCode) String() string</code></pre>
+               <pre><code>func (i InstOp) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <pre><code>func (i Op) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <pre><code>func (i *Inst) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -3121,10 +3121,9 @@ It assumes the class r is already clean.</p>
                   <a href="#op" class="anchor" title="Link to op">#</a>
                </h3>
                
-               <p>op pushes a regexp with the given op onto the stack
-and returns that regexp.</p>
+               <p>op returns i.Op but merges all the Rune special cases into InstRune</p>
                
-               <pre><code>func (p *parser) op(op Op) *Regexp</code></pre>
+               <pre><code>func (i *Inst) op() InstOp</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="op" data-name="op">
@@ -3135,9 +3134,10 @@ and returns that regexp.</p>
                   <a href="#op" class="anchor" title="Link to op">#</a>
                </h3>
                
-               <p>op returns i.Op but merges all the Rune special cases into InstRune</p>
+               <p>op pushes a regexp with the given op onto the stack
+and returns that regexp.</p>
                
-               <pre><code>func (i *Inst) op() InstOp</code></pre>
+               <pre><code>func (p *parser) op(op Op) *Regexp</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="parse" data-name="parse">
@@ -3708,8 +3708,10 @@ and the table of additional fold-equivalent code points.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

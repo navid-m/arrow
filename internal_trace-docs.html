@@ -533,7 +533,18 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"cmp"
+               <pre><code>"errors"
+"fmt"
+"internal/trace/event"
+"internal/trace/event/go122"
+"internal/trace/internal/oldtrace"
+"io"
+"fmt"
+"cmp"
+"slices"
+"strings"
+"time"
+"cmp"
 "encoding/binary"
 "fmt"
 "internal/trace/event"
@@ -551,15 +562,6 @@
 "sort"
 "strings"
 "time"
-"cmp"
-"math"
-"slices"
-"errors"
-"fmt"
-"internal/trace/event"
-"internal/trace/event/go122"
-"internal/trace/internal/oldtrace"
-"io"
 "bufio"
 "bytes"
 "cmp"
@@ -584,11 +586,6 @@
 "internal/trace/internal/oldtrace"
 "internal/trace/version"
 "fmt"
-"cmp"
-"slices"
-"strings"
-"time"
-"fmt"
 "fmt"
 "math"
 "strings"
@@ -601,6 +598,9 @@
 "io"
 "internal/trace/event"
 "internal/trace/event/go122"
+"cmp"
+"math"
+"slices"
 </code></pre>
             </article>
          </section>
@@ -3917,10 +3917,10 @@ and the transitive closure of all of its children.</p>
                   <a href="#Executing" class="anchor" title="Link to Executing">#</a>
                </h3>
                
-               <p>Executing returns true if the state indicates that the proc is executing
+               <p>Executing returns true if the state indicates that the goroutine is executing
 and bound to its thread.</p>
                
-               <pre><code>func (s ProcState) Executing() bool</code></pre>
+               <pre><code>func (s GoState) Executing() bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Executing" data-name="Executing">
@@ -3931,10 +3931,10 @@ and bound to its thread.</p>
                   <a href="#Executing" class="anchor" title="Link to Executing">#</a>
                </h3>
                
-               <p>Executing returns true if the state indicates that the goroutine is executing
+               <p>Executing returns true if the state indicates that the proc is executing
 and bound to its thread.</p>
                
-               <pre><code>func (s GoState) Executing() bool</code></pre>
+               <pre><code>func (s ProcState) Executing() bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Experimental" data-name="Experimental">
@@ -3986,10 +3986,13 @@ It cleans up any remaining state and returns the full summary.</p>
                   <a href="#Goroutine" class="anchor" title="Link to Goroutine">#</a>
                </h3>
                
-               <p>Goroutine obtains a GoID from the resource ID.
-r.Kind must be ResourceGoroutine or this function will panic.</p>
+               <p>Goroutine returns the state transition for a goroutine.
+Transitions to and from states that are Executing are special in that
+they change the future execution context. In other words, future events
+on the same thread will feature the same goroutine until it stops running.
+Panics if d.Resource.Kind is not ResourceGoroutine.</p>
                
-               <pre><code>func (r ResourceID) Goroutine() GoID</code></pre>
+               <pre><code>func (d StateTransition) Goroutine() (from GoState, to GoState)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Goroutine" data-name="Goroutine">
@@ -4000,13 +4003,10 @@ r.Kind must be ResourceGoroutine or this function will panic.</p>
                   <a href="#Goroutine" class="anchor" title="Link to Goroutine">#</a>
                </h3>
                
-               <p>Goroutine returns the state transition for a goroutine.
-Transitions to and from states that are Executing are special in that
-they change the future execution context. In other words, future events
-on the same thread will feature the same goroutine until it stops running.
-Panics if d.Resource.Kind is not ResourceGoroutine.</p>
+               <p>Goroutine obtains a GoID from the resource ID.
+r.Kind must be ResourceGoroutine or this function will panic.</p>
                
-               <pre><code>func (d StateTransition) Goroutine() (from GoState, to GoState)</code></pre>
+               <pre><code>func (r ResourceID) Goroutine() GoID</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Goroutine" data-name="Goroutine">
@@ -4317,6 +4317,20 @@ function.</p>
                   <a href="#Proc" class="anchor" title="Link to Proc">#</a>
                </h3>
                
+               <p>Proc obtains a ProcID from the resource ID.
+r.Kind must be ResourceProc or this function will panic.</p>
+               
+               <pre><code>func (r ResourceID) Proc() ProcID</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Proc" data-name="Proc">
+               <h3>
+                  Proc 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Proc" class="anchor" title="Link to Proc">#</a>
+               </h3>
+               
                <p>Proc returns the state transition for a proc.
 Transitions to and from states that are Executing are special in that
 they change the future execution context. In other words, future events
@@ -4342,18 +4356,15 @@ starting to run on this thread, then this will return NoProc.</p>
                <pre><code>func (e Event) Proc() ProcID</code></pre>
             </article>
             
-            <article class="function symbol-anchor" id="Proc" data-name="Proc">
+            <article class="function symbol-anchor" id="Push" data-name="Push">
                <h3>
-                  Proc 
+                  Push 
                   <span class="badge method-badge">method</span>
                   
-                  <a href="#Proc" class="anchor" title="Link to Proc">#</a>
+                  <a href="#Push" class="anchor" title="Link to Push">#</a>
                </h3>
                
-               <p>Proc obtains a ProcID from the resource ID.
-r.Kind must be ResourceProc or this function will panic.</p>
-               
-               <pre><code>func (r ResourceID) Proc() ProcID</code></pre>
+               <pre><code>func (h *bandUtilHeap) Push(x any)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Push" data-name="Push">
@@ -4365,17 +4376,6 @@ r.Kind must be ResourceProc or this function will panic.</p>
                </h3>
                
                <pre><code>func (h *utilHeap) Push(x any)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Push" data-name="Push">
-               <h3>
-                  Push 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Push" class="anchor" title="Link to Push">#</a>
-               </h3>
-               
-               <pre><code>func (h *bandUtilHeap) Push(x any)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Range" data-name="Range">
@@ -4487,37 +4487,23 @@ Panics if Kind != EventStateTransition.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <p>String returns a human-readable representation of a ResourceKind.
-The format of the returned string is for debugging purposes and is subject to change.</p>
-               
-               <pre><code>func (r ResourceKind) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <p>String returns a human-readable representation of a ProcState.
-The format of the returned string is for debugging purposes and is subject to change.</p>
-               
-               <pre><code>func (s ProcState) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
                <p>String returns a string form of the EventKind.</p>
                
                <pre><code>func (e EventKind) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <p>String returns the event as a human-readable string.
+The format of the string is intended for debugging and is subject to change.</p>
+               
+               <pre><code>func (e Event) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -4542,10 +4528,10 @@ The format of the returned string is for debugging purposes and is subject to ch
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <p>String returns a human-readable string representation of the ResourceID.
-This representation is subject to change and is intended primarily for debugging.</p>
+               <p>String returns a human-readable representation of a ProcState.
+The format of the returned string is for debugging purposes and is subject to change.</p>
                
-               <pre><code>func (r ResourceID) String() string</code></pre>
+               <pre><code>func (s ProcState) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -4556,10 +4542,24 @@ This representation is subject to change and is intended primarily for debugging
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <p>String returns the event as a human-readable string.
-The format of the string is intended for debugging and is subject to change.</p>
+               <p>String returns a human-readable representation of a ResourceKind.
+The format of the returned string is for debugging purposes and is subject to change.</p>
                
-               <pre><code>func (e Event) String() string</code></pre>
+               <pre><code>func (r ResourceKind) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <p>String returns a human-readable string representation of the ResourceID.
+This representation is subject to change and is intended primarily for debugging.</p>
+               
+               <pre><code>func (r ResourceID) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -4620,7 +4620,7 @@ The format of the string is intended for debugging and is subject to change.</p>
                   <a href="#Swap" class="anchor" title="Link to Swap">#</a>
                </h3>
                
-               <pre><code>func (h bandUtilHeap) Swap(i int, j int)</code></pre>
+               <pre><code>func (h utilHeap) Swap(i int, j int)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Swap" data-name="Swap">
@@ -4631,7 +4631,7 @@ The format of the string is intended for debugging and is subject to change.</p>
                   <a href="#Swap" class="anchor" title="Link to Swap">#</a>
                </h3>
                
-               <pre><code>func (h utilHeap) Swap(i int, j int)</code></pre>
+               <pre><code>func (h bandUtilHeap) Swap(i int, j int)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Task" data-name="Task">
@@ -4656,20 +4656,6 @@ Panics if Kind != EventTaskBegin and Kind != EventTaskEnd.</p>
                   <a href="#Thread" class="anchor" title="Link to Thread">#</a>
                </h3>
                
-               <p>Thread obtains a ThreadID from the resource ID.
-r.Kind must be ResourceThread or this function will panic.</p>
-               
-               <pre><code>func (r ResourceID) Thread() ThreadID</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Thread" data-name="Thread">
-               <h3>
-                  Thread 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Thread" class="anchor" title="Link to Thread">#</a>
-               </h3>
-               
                <p>Thread returns the ID of the thread this event pertains to.
 Note that for thread state transitions this always refers to the
 state before the transition. For example, if a thread is just
@@ -4680,6 +4666,20 @@ may be tracked in the future, and callers must be robust to this
 possibility.</p>
                
                <pre><code>func (e Event) Thread() ThreadID</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Thread" data-name="Thread">
+               <h3>
+                  Thread 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Thread" class="anchor" title="Link to Thread">#</a>
+               </h3>
+               
+               <p>Thread obtains a ThreadID from the resource ID.
+r.Kind must be ResourceThread or this function will panic.</p>
+               
+               <pre><code>func (r ResourceID) Thread() ThreadID</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Time" data-name="Time">
@@ -6293,8 +6293,10 @@ string values in the future.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

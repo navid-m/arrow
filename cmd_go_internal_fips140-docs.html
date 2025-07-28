@@ -6,7 +6,7 @@
          name="viewport"
          content="width=device-width, initial-scale=1.0"
       />
-      <title>Docs - main</title>
+      <title>Docs - fips140</title>
       <link
          href="https://cdn.jsdelivr.net/npm/@picocss/pico@1/css/pico.min.css"
          rel="stylesheet"
@@ -506,7 +506,7 @@
       </aside>
 
       <main>
-         <h1>main</h1>
+         <h1>fips140</h1>
          <div class="section-divider"></div>
 
          
@@ -517,18 +517,18 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"archive/zip"
-"bytes"
-"flag"
-"fmt"
-"io"
-"log"
+               <pre><code>"cmd/go/internal/base"
+"cmd/go/internal/cfg"
+"cmd/go/internal/fsys"
+"cmd/go/internal/modfetch"
+"cmd/go/internal/str"
+"context"
 "os"
+"path"
 "path/filepath"
-"regexp"
 "strings"
 "golang.org/x/mod/module"
-modzip "golang.org/x/mod/zip"
+"golang.org/x/mod/semver"
 </code></pre>
             </article>
          </section>
@@ -536,15 +536,37 @@ modzip "golang.org/x/mod/zip"
          <section id="globals">
             <h2>Constants & Variables</h2>
             
-            <article class="global symbol-anchor" id="flagBranch" data-name="flagBranch">
+            <article class="global symbol-anchor" id="dir" data-name="dir">
                <h3>
-                  flagBranch 
+                  dir 
                   <span class="badge var-badge">var</span>
                   
-                  <a href="#flagBranch" class="anchor" title="Link to flagBranch">#</a>
+                  <a href="#dir" class="anchor" title="Link to dir">#</a>
                </h3>
                
-               <pre><code>var flagBranch = *ast.CallExpr</code></pre>
+               <pre><code>var dir string</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="initDone" data-name="initDone">
+               <h3>
+                  initDone 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#initDone" class="anchor" title="Link to initDone">#</a>
+               </h3>
+               
+               <pre><code>var initDone bool</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="version" data-name="version">
+               <h3>
+                  version 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#version" class="anchor" title="Link to version">#</a>
+               </h3>
+               
+               <pre><code>var version string</code></pre>
             </article>
             
          </section>
@@ -552,26 +574,135 @@ modzip "golang.org/x/mod/zip"
          <section id="functions">
             <h2>Functions</h2>
             
-            <article class="function symbol-anchor" id="main" data-name="main">
+            <article class="function symbol-anchor" id="Dir" data-name="Dir">
                <h3>
-                  main 
+                  Dir 
                   <span class="badge">function</span>
                   
-                  <a href="#main" class="anchor" title="Link to main">#</a>
+                  <a href="#Dir" class="anchor" title="Link to Dir">#</a>
                </h3>
                
-               <pre><code>func main()</code></pre>
+               <p>Dir reports the directory containing the crypto/internal/fips140 source code.
+If Snapshot() is false, Dir returns GOROOT/src/crypto/internal/fips140.
+Otherwise Dir ensures that the snapshot has been unpacked into the
+module cache and then returns the directory in the module cache
+corresponding to the crypto/internal/fips140 directory.</p>
+               
+               <pre><code>func Dir() string</code></pre>
             </article>
             
-            <article class="function symbol-anchor" id="usage" data-name="usage">
+            <article class="function symbol-anchor" id="Enabled" data-name="Enabled">
                <h3>
-                  usage 
+                  Enabled 
                   <span class="badge">function</span>
                   
-                  <a href="#usage" class="anchor" title="Link to usage">#</a>
+                  <a href="#Enabled" class="anchor" title="Link to Enabled">#</a>
                </h3>
                
-               <pre><code>func usage()</code></pre>
+               <p>Enabled reports whether FIPS mode is enabled at all.
+That is, it reports whether GOFIPS140 is set to something besides "off".</p>
+               
+               <pre><code>func Enabled() bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Init" data-name="Init">
+               <h3>
+                  Init 
+                  <span class="badge">function</span>
+                  
+                  <a href="#Init" class="anchor" title="Link to Init">#</a>
+               </h3>
+               
+               <p>Init initializes the FIPS settings.
+It must be called before using any other functions in this package.
+If initialization fails, Init calls base.Fatalf.</p>
+               
+               <pre><code>func Init()</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ResolveImport" data-name="ResolveImport">
+               <h3>
+                  ResolveImport 
+                  <span class="badge">function</span>
+                  
+                  <a href="#ResolveImport" class="anchor" title="Link to ResolveImport">#</a>
+               </h3>
+               
+               <p>ResolveImport resolves the import path imp.
+If it is of the form crypto/internal/fips140/foo
+(not crypto/internal/fips140/v1.2.3/foo)
+and we are using a snapshot, then LookupImport
+rewrites the path to crypto/internal/fips140/v1.2.3/foo
+and returns that path and its location in the unpacked
+FIPS snapshot.</p>
+               
+               <pre><code>func ResolveImport(imp string) (newPath string, dir string, ok bool)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Snapshot" data-name="Snapshot">
+               <h3>
+                  Snapshot 
+                  <span class="badge">function</span>
+                  
+                  <a href="#Snapshot" class="anchor" title="Link to Snapshot">#</a>
+               </h3>
+               
+               <p>Snapshot reports whether FIPS mode is using a source snapshot
+rather than $GOROOT/src/crypto/internal/fips140.
+That is, it reports whether GOFIPS140 is set to something besides "latest" or "off".</p>
+               
+               <pre><code>func Snapshot() bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Version" data-name="Version">
+               <h3>
+                  Version 
+                  <span class="badge">function</span>
+                  
+                  <a href="#Version" class="anchor" title="Link to Version">#</a>
+               </h3>
+               
+               <p>Version reports the GOFIPS140 version in use,
+which is either "off", "latest", or a version like "v1.2.3".
+If GOFIPS140 is set to an alias like "inprocess" or "certified",
+Version returns the underlying version.</p>
+               
+               <pre><code>func Version() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="checkInit" data-name="checkInit">
+               <h3>
+                  checkInit 
+                  <span class="badge">function</span>
+                  
+                  <a href="#checkInit" class="anchor" title="Link to checkInit">#</a>
+               </h3>
+               
+               <p>checkInit panics if Init has not been called.</p>
+               
+               <pre><code>func checkInit()</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="initDir" data-name="initDir">
+               <h3>
+                  initDir 
+                  <span class="badge">function</span>
+                  
+                  <a href="#initDir" class="anchor" title="Link to initDir">#</a>
+               </h3>
+               
+               <pre><code>func initDir()</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="initVersion" data-name="initVersion">
+               <h3>
+                  initVersion 
+                  <span class="badge">function</span>
+                  
+                  <a href="#initVersion" class="anchor" title="Link to initVersion">#</a>
+               </h3>
+               
+               <pre><code>func initVersion()</code></pre>
             </article>
             
          </section>
@@ -729,8 +860,10 @@ modzip "golang.org/x/mod/zip"
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

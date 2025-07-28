@@ -520,18 +520,6 @@
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
                <pre><code>"crypto/internal/boring"
-"crypto/internal/boring/bbig"
-"crypto/internal/boring/bcache"
-"math/big"
-"crypto"
-"crypto/internal/boring"
-"crypto/internal/fips140/rsa"
-"crypto/internal/fips140hash"
-"crypto/internal/fips140only"
-"errors"
-"hash"
-"io"
-"crypto/internal/boring"
 "crypto/internal/boring"
 "crypto/internal/fips140/rsa"
 "crypto/internal/fips140only"
@@ -554,6 +542,18 @@
 "io"
 "math"
 "math/big"
+"crypto/internal/boring"
+"crypto/internal/boring/bbig"
+"crypto/internal/boring/bcache"
+"math/big"
+"crypto"
+"crypto/internal/boring"
+"crypto/internal/fips140/rsa"
+"crypto/internal/fips140hash"
+"crypto/internal/fips140only"
+"errors"
+"hash"
+"io"
 </code></pre>
             </article>
          </section>
@@ -1001,10 +1001,9 @@ session keys is dangerous. Use RSA OAEP in new protocols.</p>
                   <a href="#Equal" class="anchor" title="Link to Equal">#</a>
                </h3>
                
-               <p>Equal reports whether priv and x have equivalent values. It ignores
-Precomputed values.</p>
+               <p>Equal reports whether pub and x have the same value.</p>
                
-               <pre><code>func (priv *PrivateKey) Equal(x crypto.PrivateKey) bool</code></pre>
+               <pre><code>func (pub *PublicKey) Equal(x crypto.PublicKey) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Equal" data-name="Equal">
@@ -1015,9 +1014,10 @@ Precomputed values.</p>
                   <a href="#Equal" class="anchor" title="Link to Equal">#</a>
                </h3>
                
-               <p>Equal reports whether pub and x have the same value.</p>
+               <p>Equal reports whether priv and x have equivalent values. It ignores
+Precomputed values.</p>
                
-               <pre><code>func (pub *PublicKey) Equal(x crypto.PublicKey) bool</code></pre>
+               <pre><code>func (priv *PrivateKey) Equal(x crypto.PrivateKey) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="GenerateKey" data-name="GenerateKey">
@@ -1276,7 +1276,7 @@ through timing side-channels.</p>
                   <a href="#boringPublicKey" class="anchor" title="Link to boringPublicKey">#</a>
                </h3>
                
-               <pre><code>func boringPublicKey(pub *PublicKey) (*boring.PublicKeyRSA, error)</code></pre>
+               <pre><code>func boringPublicKey(*PublicKey) (*boring.PublicKeyRSA, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="boringPublicKey" data-name="boringPublicKey">
@@ -1287,7 +1287,7 @@ through timing side-channels.</p>
                   <a href="#boringPublicKey" class="anchor" title="Link to boringPublicKey">#</a>
                </h3>
                
-               <pre><code>func boringPublicKey(*PublicKey) (*boring.PublicKeyRSA, error)</code></pre>
+               <pre><code>func boringPublicKey(pub *PublicKey) (*boring.PublicKeyRSA, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="checkFIPS140OnlyPrivateKey" data-name="checkFIPS140OnlyPrivateKey">
@@ -1663,8 +1663,10 @@ the original message in em, to allow constant time padding removal.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

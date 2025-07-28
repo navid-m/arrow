@@ -519,11 +519,41 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"io/fs"
+               <pre><code>"cmd/go/internal/base"
+"fmt"
+"internal/godebug"
+"os"
+"os/exec"
+"runtime"
+"syscall"
+"cmd/go/internal/base"
+"io/fs"
+"io/fs"
 "os"
 "path/filepath"
 "strings"
 "sync"
+"cmd/go/internal/gover"
+"context"
+"fmt"
+"os"
+"path/filepath"
+"sort"
+"strings"
+"cmd/go/internal/base"
+"cmd/go/internal/cfg"
+"cmd/go/internal/gover"
+"cmd/go/internal/modfetch"
+"cmd/internal/telemetry/counter"
+"io/fs"
+"os"
+"path/filepath"
+"cmd/go/internal/gover"
+"internal/syscall/unix"
+"io/fs"
+"os"
+"path/filepath"
+"syscall"
 "cmd/go/internal/gover"
 "bytes"
 "context"
@@ -550,39 +580,9 @@
 "cmd/internal/pathcache"
 "cmd/internal/telemetry/counter"
 "golang.org/x/mod/module"
-"context"
-"fmt"
-"os"
-"path/filepath"
-"sort"
-"strings"
-"cmd/go/internal/base"
-"cmd/go/internal/cfg"
-"cmd/go/internal/gover"
-"cmd/go/internal/modfetch"
-"cmd/internal/telemetry/counter"
 "io/fs"
-"io/fs"
-"os"
-"path/filepath"
-"cmd/go/internal/gover"
 "io/fs"
 "syscall"
-"cmd/go/internal/base"
-"fmt"
-"internal/godebug"
-"os"
-"os/exec"
-"runtime"
-"syscall"
-"cmd/go/internal/base"
-"io/fs"
-"internal/syscall/unix"
-"io/fs"
-"os"
-"path/filepath"
-"syscall"
-"cmd/go/internal/gover"
 </code></pre>
             </article>
          </section>
@@ -1222,9 +1222,6 @@ Both go commands can do this simultaneously and will write the same thing
                   <a href="#sysWriteBits" class="anchor" title="Link to sysWriteBits">#</a>
                </h3>
                
-               <p>sysWriteBits determines which bits to OR into the mode to make a directory writable.
-It must be called when there are no other file system operations happening.</p>
-               
                <pre><code>func sysWriteBits() fs.FileMode</code></pre>
             </article>
             
@@ -1235,6 +1232,9 @@ It must be called when there are no other file system operations happening.</p>
                   
                   <a href="#sysWriteBits" class="anchor" title="Link to sysWriteBits">#</a>
                </h3>
+               
+               <p>sysWriteBits determines which bits to OR into the mode to make a directory writable.
+It must be called when there are no other file system operations happening.</p>
                
                <pre><code>func sysWriteBits() fs.FileMode</code></pre>
             </article>
@@ -1394,8 +1394,10 @@ It must be called when there are no other file system operations happening.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

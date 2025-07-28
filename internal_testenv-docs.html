@@ -517,7 +517,12 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"context"
+               <pre><code>"errors"
+"os"
+"path/filepath"
+"sync"
+"syscall"
+"context"
 "errors"
 "fmt"
 "os"
@@ -554,11 +559,6 @@
 "errors"
 "io/fs"
 "syscall"
-"errors"
-"os"
-"path/filepath"
-"sync"
-"syscall"
 </code></pre>
             </article>
          </section>
@@ -575,9 +575,9 @@
                </h3>
                
                <p>Sigquit is the signal to send to kill a hanging subprocess.
-Send SIGQUIT to get a stack trace.</p>
+On Unix we send SIGQUIT, but on non-Unix we only have os.Kill.</p>
                
-               <pre><code>var Sigquit = syscall.SIGQUIT</code></pre>
+               <pre><code>var Sigquit = os.Kill</code></pre>
             </article>
             
             <article class="global symbol-anchor" id="Sigquit" data-name="Sigquit">
@@ -589,9 +589,9 @@ Send SIGQUIT to get a stack trace.</p>
                </h3>
                
                <p>Sigquit is the signal to send to kill a hanging subprocess.
-On Unix we send SIGQUIT, but on non-Unix we only have os.Kill.</p>
+Send SIGQUIT to get a stack trace.</p>
                
-               <pre><code>var Sigquit = os.Kill</code></pre>
+               <pre><code>var Sigquit = syscall.SIGQUIT</code></pre>
             </article>
             
             <article class="global symbol-anchor" id="exePath" data-name="exePath">
@@ -1485,8 +1485,10 @@ so it may also be a list of Go source files all in the same directory.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

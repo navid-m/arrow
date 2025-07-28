@@ -523,30 +523,22 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"bytes"
-"encoding/binary"
+               <pre><code>"cmd/compile/internal/base"
+"cmd/internal/obj"
+"strings"
+"unicode"
+"unicode/utf8"
+"strconv"
+"cmd/internal/obj"
+"cmd/internal/objabi"
 "fmt"
 "strconv"
 "sync"
-"cmd/compile/internal/base"
-"cmd/internal/hash"
-"fmt"
-"internal/goversion"
-"internal/lazyregexp"
-"log"
-"strconv"
-"cmd/compile/internal/base"
-"strconv"
 "math"
 "slices"
 "cmd/compile/internal/base"
 "cmd/internal/src"
 "internal/types/errors"
-"cmd/compile/internal/base"
-"cmd/internal/obj"
-"strings"
-"unicode"
-"unicode/utf8"
 "cmd/compile/internal/base"
 "cmd/internal/objabi"
 "cmd/internal/src"
@@ -559,11 +551,19 @@
 "cmd/internal/src"
 "cmd/compile/internal/base"
 "strconv"
-"cmd/internal/obj"
-"cmd/internal/objabi"
+"bytes"
+"encoding/binary"
 "fmt"
 "strconv"
 "sync"
+"cmd/compile/internal/base"
+"cmd/internal/hash"
+"fmt"
+"internal/goversion"
+"internal/lazyregexp"
+"log"
+"strconv"
+"cmd/compile/internal/base"
 </code></pre>
             </article>
          </section>
@@ -3270,13 +3270,15 @@ a struct type t.</p>
                   <a href="#Format" class="anchor" title="Link to Format">#</a>
                </h3>
                
-               <p>Format implements formatting for a Sym.
+               <p>Format implements formatting for a Type.
 The valid formats are:
-%v	Go syntax: Name for symbols in the local package, PkgName.Name for imported symbols.
-%+v	Debug syntax: always include PkgName. prefix even for local names.
-%S	Short syntax: Name only, no matter what.</p>
+%v	Go syntax
+%+v	Debug syntax: Go syntax with a KIND- prefix for all but builtins.
+%L	Go syntax for underlying type if t is named
+%S	short Go syntax: drop leading "func" in function type
+%-S	special case for method receiver symbol</p>
                
-               <pre><code>func (s *Sym) Format(f fmt.State, verb rune)</code></pre>
+               <pre><code>func (t *Type) Format(s fmt.State, verb rune)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Format" data-name="Format">
@@ -3287,15 +3289,13 @@ The valid formats are:
                   <a href="#Format" class="anchor" title="Link to Format">#</a>
                </h3>
                
-               <p>Format implements formatting for a Type.
+               <p>Format implements formatting for a Sym.
 The valid formats are:
-%v	Go syntax
-%+v	Debug syntax: Go syntax with a KIND- prefix for all but builtins.
-%L	Go syntax for underlying type if t is named
-%S	short Go syntax: drop leading "func" in function type
-%-S	special case for method receiver symbol</p>
+%v	Go syntax: Name for symbols in the local package, PkgName.Name for imported symbols.
+%+v	Debug syntax: always include PkgName. prefix even for local names.
+%S	Short syntax: Name only, no matter what.</p>
                
-               <pre><code>func (t *Type) Format(s fmt.State, verb rune)</code></pre>
+               <pre><code>func (s *Sym) Format(f fmt.State, verb rune)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Func" data-name="Func">
@@ -5121,17 +5121,6 @@ suffix, if any.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code>func (i Kind) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
                <p>String returns the Go syntax for the type t.</p>
                
                <pre><code>func (t *Type) String() string</code></pre>
@@ -5145,7 +5134,7 @@ suffix, if any.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code>func (s *Sym) String() string</code></pre>
+               <pre><code>func (i Kind) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -5157,6 +5146,17 @@ suffix, if any.</p>
                </h3>
                
                <pre><code>func (i AlgKind) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <pre><code>func (s *Sym) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="StructType" data-name="StructType">
@@ -5989,8 +5989,10 @@ This is where t was declared or where it appeared as a type expression.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

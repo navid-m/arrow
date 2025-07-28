@@ -519,15 +519,7 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"bufio"
-"fmt"
-"go/token"
-"go/types"
-"internal/exportdata"
-"internal/pkgbits"
-"io"
-"os"
-"fmt"
+               <pre><code>"fmt"
 "go/token"
 "internal/pkgbits"
 "sync"
@@ -537,6 +529,14 @@
 "internal/pkgbits"
 "slices"
 "strings"
+"bufio"
+"fmt"
+"go/token"
+"go/types"
+"internal/exportdata"
+"internal/pkgbits"
+"io"
+"os"
 </code></pre>
             </article>
          </section>
@@ -957,7 +957,7 @@ TODO(mdempsky): Remove after x/tools can depend on Go 1.19.</p>
                   <a href="#pos" class="anchor" title="Link to pos">#</a>
                </h3>
                
-               <pre><code>func (s *fakeFileSet) pos(file string, line int, column int) token.Pos</code></pre>
+               <pre><code>func (r *reader) pos() token.Pos</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="pos" data-name="pos">
@@ -968,7 +968,7 @@ TODO(mdempsky): Remove after x/tools can depend on Go 1.19.</p>
                   <a href="#pos" class="anchor" title="Link to pos">#</a>
                </h3>
                
-               <pre><code>func (r *reader) pos() token.Pos</code></pre>
+               <pre><code>func (s *fakeFileSet) pos(file string, line int, column int) token.Pos</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="posBase" data-name="posBase">
@@ -1307,8 +1307,10 @@ unified IR export data decoder.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

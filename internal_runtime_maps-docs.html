@@ -522,26 +522,10 @@
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
                <pre><code>"internal/abi"
+"unsafe"
+"internal/abi"
 "internal/goarch"
 "internal/runtime/sys"
-"unsafe"
-"internal/abi"
-"internal/race"
-"internal/runtime/sys"
-"unsafe"
-"internal/abi"
-"internal/race"
-"internal/runtime/sys"
-"unsafe"
-"internal/abi"
-"unsafe"
-"internal/abi"
-"internal/asan"
-"internal/msan"
-"internal/race"
-"internal/runtime/sys"
-"unsafe"
-"internal/abi"
 "unsafe"
 "internal/abi"
 "internal/goarch"
@@ -551,7 +535,23 @@
 "internal/abi"
 "unsafe"
 "internal/abi"
+"internal/race"
+"internal/runtime/sys"
+"unsafe"
+"internal/abi"
+"internal/race"
+"internal/runtime/sys"
+"unsafe"
+"internal/abi"
 "internal/goarch"
+"internal/race"
+"internal/runtime/sys"
+"unsafe"
+"internal/abi"
+"unsafe"
+"internal/abi"
+"internal/asan"
+"internal/msan"
 "internal/race"
 "internal/runtime/sys"
 "unsafe"
@@ -951,7 +951,7 @@ groups groupsReference
                
                <p>Clear deletes all entries from the map resulting in an empty map.</p>
                
-               <pre><code>func (t *table) Clear(typ *abi.SwissMapType)</code></pre>
+               <pre><code>func (m *Map) Clear(typ *abi.SwissMapType)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Clear" data-name="Clear">
@@ -964,18 +964,7 @@ groups groupsReference
                
                <p>Clear deletes all entries from the map resulting in an empty map.</p>
                
-               <pre><code>func (m *Map) Clear(typ *abi.SwissMapType)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Delete" data-name="Delete">
-               <h3>
-                  Delete 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Delete" class="anchor" title="Link to Delete">#</a>
-               </h3>
-               
-               <pre><code>func (t *table) Delete(typ *abi.SwissMapType, m *Map, hash uintptr, key unsafe.Pointer)</code></pre>
+               <pre><code>func (t *table) Clear(typ *abi.SwissMapType)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Delete" data-name="Delete">
@@ -987,6 +976,17 @@ groups groupsReference
                </h3>
                
                <pre><code>func (m *Map) Delete(typ *abi.SwissMapType, key unsafe.Pointer)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Delete" data-name="Delete">
+               <h3>
+                  Delete 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Delete" class="anchor" title="Link to Delete">#</a>
+               </h3>
+               
+               <pre><code>func (t *table) Delete(typ *abi.SwissMapType, m *Map, hash uintptr, key unsafe.Pointer)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Elem" data-name="Elem">
@@ -1157,12 +1157,10 @@ Init must be called prior to Next.</p>
                </h3>
                
                <p>PutSlot returns a pointer to the element slot where an inserted element
-should be written, and ok if it returned a valid slot.
-PutSlot returns ok false if the table was split and the Map needs to find
-the new table.
-hash must be the hash of key.</p>
+should be written.
+PutSlot never returns nil.</p>
                
-               <pre><code>func (t *table) PutSlot(typ *abi.SwissMapType, m *Map, hash uintptr, key unsafe.Pointer) (unsafe.Pointer, bool)</code></pre>
+               <pre><code>func (m *Map) PutSlot(typ *abi.SwissMapType, key unsafe.Pointer) unsafe.Pointer</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="PutSlot" data-name="PutSlot">
@@ -1174,21 +1172,12 @@ hash must be the hash of key.</p>
                </h3>
                
                <p>PutSlot returns a pointer to the element slot where an inserted element
-should be written.
-PutSlot never returns nil.</p>
+should be written, and ok if it returned a valid slot.
+PutSlot returns ok false if the table was split and the Map needs to find
+the new table.
+hash must be the hash of key.</p>
                
-               <pre><code>func (m *Map) PutSlot(typ *abi.SwissMapType, key unsafe.Pointer) unsafe.Pointer</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Used" data-name="Used">
-               <h3>
-                  Used 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Used" class="anchor" title="Link to Used">#</a>
-               </h3>
-               
-               <pre><code>func (m *Map) Used() uint64</code></pre>
+               <pre><code>func (t *table) PutSlot(typ *abi.SwissMapType, m *Map, hash uintptr, key unsafe.Pointer) (unsafe.Pointer, bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Used" data-name="Used">
@@ -1200,6 +1189,17 @@ PutSlot never returns nil.</p>
                </h3>
                
                <pre><code>func (t *table) Used() uint64</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Used" data-name="Used">
+               <h3>
+                  Used 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Used" class="anchor" title="Link to Used">#</a>
+               </h3>
+               
+               <pre><code>func (m *Map) Used() uint64</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="alignUp" data-name="alignUp">
@@ -1758,7 +1758,7 @@ bitset regardless of whether they are set.</p>
                   <a href="#mapKeyError" class="anchor" title="Link to mapKeyError">#</a>
                </h3>
                
-               <p>For testing, we don't ever need key errors.</p>
+               <p>go:linkname mapKeyError</p>
                
                <pre><code>func mapKeyError(typ *abi.SwissMapType, p unsafe.Pointer) error</code></pre>
             </article>
@@ -1771,7 +1771,7 @@ bitset regardless of whether they are set.</p>
                   <a href="#mapKeyError" class="anchor" title="Link to mapKeyError">#</a>
                </h3>
                
-               <p>go:linkname mapKeyError</p>
+               <p>For testing, we don't ever need key errors.</p>
                
                <pre><code>func mapKeyError(typ *abi.SwissMapType, p unsafe.Pointer) error</code></pre>
             </article>
@@ -2564,8 +2564,10 @@ map).</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

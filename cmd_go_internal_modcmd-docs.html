@@ -523,6 +523,33 @@
                </h3>
                <pre><code>"bytes"
 "context"
+"errors"
+"fmt"
+"io/fs"
+"os"
+"runtime"
+"cmd/go/internal/base"
+"cmd/go/internal/gover"
+"cmd/go/internal/modfetch"
+"cmd/go/internal/modload"
+"golang.org/x/mod/module"
+"golang.org/x/mod/sumdb/dirhash"
+"context"
+"encoding/json"
+"errors"
+"os"
+"runtime"
+"sync"
+"cmd/go/internal/base"
+"cmd/go/internal/cfg"
+"cmd/go/internal/gover"
+"cmd/go/internal/modfetch"
+"cmd/go/internal/modfetch/codehost"
+"cmd/go/internal/modload"
+"cmd/go/internal/toolchain"
+"golang.org/x/mod/module"
+"bytes"
+"context"
 "encoding/json"
 "errors"
 "fmt"
@@ -547,6 +574,13 @@
 "cmd/go/internal/base"
 "cmd/go/internal/modload"
 "context"
+"context"
+"fmt"
+"strings"
+"cmd/go/internal/base"
+"cmd/go/internal/imports"
+"cmd/go/internal/modload"
+"cmd/go/internal/base"
 "cmd/go/internal/base"
 "cmd/go/internal/cfg"
 "cmd/go/internal/gover"
@@ -577,40 +611,6 @@
 "cmd/go/internal/modload"
 "cmd/go/internal/str"
 "golang.org/x/mod/module"
-"bytes"
-"context"
-"errors"
-"fmt"
-"io/fs"
-"os"
-"runtime"
-"cmd/go/internal/base"
-"cmd/go/internal/gover"
-"cmd/go/internal/modfetch"
-"cmd/go/internal/modload"
-"golang.org/x/mod/module"
-"golang.org/x/mod/sumdb/dirhash"
-"context"
-"encoding/json"
-"errors"
-"os"
-"runtime"
-"sync"
-"cmd/go/internal/base"
-"cmd/go/internal/cfg"
-"cmd/go/internal/gover"
-"cmd/go/internal/modfetch"
-"cmd/go/internal/modfetch/codehost"
-"cmd/go/internal/modload"
-"cmd/go/internal/toolchain"
-"golang.org/x/mod/module"
-"cmd/go/internal/base"
-"context"
-"fmt"
-"strings"
-"cmd/go/internal/base"
-"cmd/go/internal/imports"
-"cmd/go/internal/modload"
 </code></pre>
             </article>
          </section>
@@ -1195,7 +1195,7 @@ leaving the results (including any error) in m itself.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code>func (f *goVersionFlag) String() string</code></pre>
+               <pre><code>func (f flagFunc) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -1206,7 +1206,7 @@ leaving the results (including any error) in m itself.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code>func (f flagFunc) String() string</code></pre>
+               <pre><code>func (f *goVersionFlag) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="allowedVersionArg" data-name="allowedVersionArg">
@@ -1884,8 +1884,10 @@ Low and High are set.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

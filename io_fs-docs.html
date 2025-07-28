@@ -523,19 +523,19 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"io"
-"errors"
-"path"
-"errors"
-"path"
-"time"
-"internal/oserror"
+               <pre><code>"internal/oserror"
 "time"
 "unicode/utf8"
 "path"
 "errors"
 "internal/bytealg"
 "slices"
+"io"
+"errors"
+"path"
+"errors"
+"path"
+"time"
 </code></pre>
             </article>
          </section>
@@ -1331,10 +1331,7 @@ and look for matches for the pattern.</p>
                   <a href="#IsDir" class="anchor" title="Link to IsDir">#</a>
                </h3>
                
-               <p>IsDir reports whether m describes a directory.
-That is, it tests for the [ModeDir] bit being set in m.</p>
-               
-               <pre><code>func (m FileMode) IsDir() bool</code></pre>
+               <pre><code>func (di dirInfo) IsDir() bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="IsDir" data-name="IsDir">
@@ -1345,7 +1342,10 @@ That is, it tests for the [ModeDir] bit being set in m.</p>
                   <a href="#IsDir" class="anchor" title="Link to IsDir">#</a>
                </h3>
                
-               <pre><code>func (di dirInfo) IsDir() bool</code></pre>
+               <p>IsDir reports whether m describes a directory.
+That is, it tests for the [ModeDir] bit being set in m.</p>
+               
+               <pre><code>func (m FileMode) IsDir() bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="IsRegular" data-name="IsRegular">
@@ -1478,7 +1478,7 @@ Otherwise, Stat opens the [File] to stat it.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code>func (di dirInfo) String() string</code></pre>
+               <pre><code>func (m FileMode) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -1489,18 +1489,7 @@ Otherwise, Stat opens the [File] to stat it.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code>func (m FileMode) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Sub" data-name="Sub">
-               <h3>
-                  Sub 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Sub" class="anchor" title="Link to Sub">#</a>
-               </h3>
-               
-               <pre><code>func (f *subFS) Sub(dir string) (FS, error)</code></pre>
+               <pre><code>func (di dirInfo) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Sub" data-name="Sub">
@@ -1527,6 +1516,17 @@ chroot-style security mechanism, and Sub does not change that fact.</p>
                <pre><code>func Sub(fsys FS, dir string) (FS, error)</code></pre>
             </article>
             
+            <article class="function symbol-anchor" id="Sub" data-name="Sub">
+               <h3>
+                  Sub 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Sub" class="anchor" title="Link to Sub">#</a>
+               </h3>
+               
+               <pre><code>func (f *subFS) Sub(dir string) (FS, error)</code></pre>
+            </article>
+            
             <article class="function symbol-anchor" id="Timeout" data-name="Timeout">
                <h3>
                   Timeout 
@@ -1548,7 +1548,9 @@ chroot-style security mechanism, and Sub does not change that fact.</p>
                   <a href="#Type" class="anchor" title="Link to Type">#</a>
                </h3>
                
-               <pre><code>func (di dirInfo) Type() FileMode</code></pre>
+               <p>Type returns type bits in m (m & [ModeType]).</p>
+               
+               <pre><code>func (m FileMode) Type() FileMode</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Type" data-name="Type">
@@ -1559,9 +1561,7 @@ chroot-style security mechanism, and Sub does not change that fact.</p>
                   <a href="#Type" class="anchor" title="Link to Type">#</a>
                </h3>
                
-               <p>Type returns type bits in m (m & [ModeType]).</p>
-               
-               <pre><code>func (m FileMode) Type() FileMode</code></pre>
+               <pre><code>func (di dirInfo) Type() FileMode</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Unwrap" data-name="Unwrap">
@@ -1935,8 +1935,10 @@ recognized by path.Match.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

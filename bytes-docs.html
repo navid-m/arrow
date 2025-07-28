@@ -521,20 +521,20 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"internal/bytealg"
+               <pre><code>"iter"
+"unicode"
+"unicode/utf8"
+"errors"
+"io"
+"unicode/utf8"
+"errors"
+"io"
+"unicode/utf8"
+"internal/bytealg"
 "math/bits"
 "unicode"
 "unicode/utf8"
 _ "unsafe"
-"iter"
-"unicode"
-"unicode/utf8"
-"errors"
-"io"
-"unicode/utf8"
-"errors"
-"io"
-"unicode/utf8"
 </code></pre>
             </article>
          </section>
@@ -1301,10 +1301,10 @@ code point satisfying f(c), or -1 if none do.</p>
                   <a href="#Len" class="anchor" title="Link to Len">#</a>
                </h3>
                
-               <p>Len returns the number of bytes of the unread portion of the
-slice.</p>
+               <p>Len returns the number of bytes of the unread portion of the buffer;
+b.Len() == len(b.Bytes()).</p>
                
-               <pre><code>func (r *Reader) Len() int</code></pre>
+               <pre><code>func (b *Buffer) Len() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Len" data-name="Len">
@@ -1315,10 +1315,10 @@ slice.</p>
                   <a href="#Len" class="anchor" title="Link to Len">#</a>
                </h3>
                
-               <p>Len returns the number of bytes of the unread portion of the buffer;
-b.Len() == len(b.Bytes()).</p>
+               <p>Len returns the number of bytes of the unread portion of the
+slice.</p>
                
-               <pre><code>func (b *Buffer) Len() int</code></pre>
+               <pre><code>func (r *Reader) Len() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Lines" data-name="Lines">
@@ -1428,12 +1428,9 @@ The slice is only valid until the next call to a read or write method.</p>
                   <a href="#Read" class="anchor" title="Link to Read">#</a>
                </h3>
                
-               <p>Read reads the next len(p) bytes from the buffer or until the buffer
-is drained. The return value n is the number of bytes read. If the
-buffer has no data to return, err is [io.EOF] (unless len(p) is zero);
-otherwise it is nil.</p>
+               <p>Read implements the [io.Reader] interface.</p>
                
-               <pre><code>func (b *Buffer) Read(p []byte) (n int, err error)</code></pre>
+               <pre><code>func (r *Reader) Read(b []byte) (n int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Read" data-name="Read">
@@ -1444,9 +1441,12 @@ otherwise it is nil.</p>
                   <a href="#Read" class="anchor" title="Link to Read">#</a>
                </h3>
                
-               <p>Read implements the [io.Reader] interface.</p>
+               <p>Read reads the next len(p) bytes from the buffer or until the buffer
+is drained. The return value n is the number of bytes read. If the
+buffer has no data to return, err is [io.EOF] (unless len(p) is zero);
+otherwise it is nil.</p>
                
-               <pre><code>func (r *Reader) Read(b []byte) (n int, err error)</code></pre>
+               <pre><code>func (b *Buffer) Read(p []byte) (n int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ReadAt" data-name="ReadAt">
@@ -1531,9 +1531,13 @@ buffer becomes too large, ReadFrom will panic with [ErrTooLarge].</p>
                   <a href="#ReadRune" class="anchor" title="Link to ReadRune">#</a>
                </h3>
                
-               <p>ReadRune implements the [io.RuneReader] interface.</p>
+               <p>ReadRune reads and returns the next UTF-8-encoded
+Unicode code point from the buffer.
+If no bytes are available, the error returned is io.EOF.
+If the bytes are an erroneous UTF-8 encoding, it
+consumes one byte and returns U+FFFD, 1.</p>
                
-               <pre><code>func (r *Reader) ReadRune() (ch rune, size int, err error)</code></pre>
+               <pre><code>func (b *Buffer) ReadRune() (r rune, size int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ReadRune" data-name="ReadRune">
@@ -1544,13 +1548,9 @@ buffer becomes too large, ReadFrom will panic with [ErrTooLarge].</p>
                   <a href="#ReadRune" class="anchor" title="Link to ReadRune">#</a>
                </h3>
                
-               <p>ReadRune reads and returns the next UTF-8-encoded
-Unicode code point from the buffer.
-If no bytes are available, the error returned is io.EOF.
-If the bytes are an erroneous UTF-8 encoding, it
-consumes one byte and returns U+FFFD, 1.</p>
+               <p>ReadRune implements the [io.RuneReader] interface.</p>
                
-               <pre><code>func (b *Buffer) ReadRune() (r rune, size int, err error)</code></pre>
+               <pre><code>func (r *Reader) ReadRune() (ch rune, size int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ReadString" data-name="ReadString">
@@ -2072,12 +2072,9 @@ It panics if n is negative or greater than the length of the buffer.</p>
                   <a href="#UnreadByte" class="anchor" title="Link to UnreadByte">#</a>
                </h3>
                
-               <p>UnreadByte unreads the last byte returned by the most recent successful
-read operation that read at least one byte. If a write has happened since
-the last read, if the last read returned an error, or if the read read zero
-bytes, UnreadByte returns an error.</p>
+               <p>UnreadByte complements [Reader.ReadByte] in implementing the [io.ByteScanner] interface.</p>
                
-               <pre><code>func (b *Buffer) UnreadByte() error</code></pre>
+               <pre><code>func (r *Reader) UnreadByte() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="UnreadByte" data-name="UnreadByte">
@@ -2088,9 +2085,12 @@ bytes, UnreadByte returns an error.</p>
                   <a href="#UnreadByte" class="anchor" title="Link to UnreadByte">#</a>
                </h3>
                
-               <p>UnreadByte complements [Reader.ReadByte] in implementing the [io.ByteScanner] interface.</p>
+               <p>UnreadByte unreads the last byte returned by the most recent successful
+read operation that read at least one byte. If a write has happened since
+the last read, if the last read returned an error, or if the read read zero
+bytes, UnreadByte returns an error.</p>
                
-               <pre><code>func (r *Reader) UnreadByte() error</code></pre>
+               <pre><code>func (b *Buffer) UnreadByte() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="UnreadRune" data-name="UnreadRune">
@@ -2193,12 +2193,9 @@ buffer becomes too large, WriteString will panic with [ErrTooLarge].</p>
                   <a href="#WriteTo" class="anchor" title="Link to WriteTo">#</a>
                </h3>
                
-               <p>WriteTo writes data to w until the buffer is drained or an error occurs.
-The return value n is the number of bytes written; it always fits into an
-int, but it is int64 to match the [io.WriterTo] interface. Any error
-encountered during the write is also returned.</p>
+               <p>WriteTo implements the [io.WriterTo] interface.</p>
                
-               <pre><code>func (b *Buffer) WriteTo(w io.Writer) (n int64, err error)</code></pre>
+               <pre><code>func (r *Reader) WriteTo(w io.Writer) (n int64, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="WriteTo" data-name="WriteTo">
@@ -2209,9 +2206,12 @@ encountered during the write is also returned.</p>
                   <a href="#WriteTo" class="anchor" title="Link to WriteTo">#</a>
                </h3>
                
-               <p>WriteTo implements the [io.WriterTo] interface.</p>
+               <p>WriteTo writes data to w until the buffer is drained or an error occurs.
+The return value n is the number of bytes written; it always fits into an
+int, but it is int64 to match the [io.WriterTo] interface. Any error
+encountered during the write is also returned.</p>
                
-               <pre><code>func (r *Reader) WriteTo(w io.Writer) (n int64, err error)</code></pre>
+               <pre><code>func (b *Buffer) WriteTo(w io.Writer) (n int64, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="contains" data-name="contains">
@@ -2657,8 +2657,10 @@ It returns the index where bytes should be written and whether it succeeded.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

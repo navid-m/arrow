@@ -523,7 +523,11 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"strings"
+               <pre><code>"golang.org/x/text/internal/language/compact"
+"fmt"
+"sort"
+"golang.org/x/text/internal/language"
+"strings"
 "golang.org/x/text/internal/language"
 "golang.org/x/text/internal/language/compact"
 "errors"
@@ -533,10 +537,6 @@
 "sort"
 "strconv"
 "strings"
-"golang.org/x/text/internal/language"
-"golang.org/x/text/internal/language/compact"
-"fmt"
-"sort"
 "golang.org/x/text/internal/language"
 </code></pre>
             </article>
@@ -2679,10 +2679,10 @@ It uses a variant of CLDR's Add Likely Subtags algorithm. This is subject to cha
                   <a href="#BaseLanguages" class="anchor" title="Link to BaseLanguages">#</a>
                </h3>
                
-               <p>BaseLanguages returns the result from calling s.bases if it is specified or
-otherwise derives the set of supported base languages from tags.</p>
+               <p>BaseLanguages returns the list of all supported base languages. It generates
+the list by traversing the internal structures.</p>
                
-               <pre><code>func (s *coverage) BaseLanguages() []Base</code></pre>
+               <pre><code>func (s allSubtags) BaseLanguages() []Base</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="BaseLanguages" data-name="BaseLanguages">
@@ -2693,10 +2693,10 @@ otherwise derives the set of supported base languages from tags.</p>
                   <a href="#BaseLanguages" class="anchor" title="Link to BaseLanguages">#</a>
                </h3>
                
-               <p>BaseLanguages returns the list of all supported base languages. It generates
-the list by traversing the internal structures.</p>
+               <p>BaseLanguages returns the result from calling s.bases if it is specified or
+otherwise derives the set of supported base languages from tags.</p>
                
-               <pre><code>func (s allSubtags) BaseLanguages() []Base</code></pre>
+               <pre><code>func (s *coverage) BaseLanguages() []Base</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Canonicalize" data-name="Canonicalize">
@@ -2866,9 +2866,11 @@ extension will be invalid in this case.</p>
                   <a href="#ISO3" class="anchor" title="Link to ISO3">#</a>
                </h3>
                
-               <p>ISO3 returns the ISO 639-3 language code.</p>
+               <p>ISO3 returns the 3-letter ISO code of r.
+Note that not all regions have a 3-letter ISO code.
+In such cases this method returns "ZZZ".</p>
                
-               <pre><code>func (b Base) ISO3() string</code></pre>
+               <pre><code>func (r Region) ISO3() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ISO3" data-name="ISO3">
@@ -2879,11 +2881,9 @@ extension will be invalid in this case.</p>
                   <a href="#ISO3" class="anchor" title="Link to ISO3">#</a>
                </h3>
                
-               <p>ISO3 returns the 3-letter ISO code of r.
-Note that not all regions have a 3-letter ISO code.
-In such cases this method returns "ZZZ".</p>
+               <p>ISO3 returns the ISO 639-3 language code.</p>
                
-               <pre><code>func (r Region) ISO3() string</code></pre>
+               <pre><code>func (b Base) ISO3() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="IsCountry" data-name="IsCountry">
@@ -2922,9 +2922,9 @@ includes non-standard definitions from CLDR.</p>
                   <a href="#IsPrivateUse" class="anchor" title="Link to IsPrivateUse">#</a>
                </h3>
                
-               <p>IsPrivateUse reports whether this script code is reserved for private use.</p>
+               <p>IsPrivateUse reports whether this language code is reserved for private use.</p>
                
-               <pre><code>func (s Script) IsPrivateUse() bool</code></pre>
+               <pre><code>func (b Base) IsPrivateUse() bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="IsPrivateUse" data-name="IsPrivateUse">
@@ -2935,9 +2935,9 @@ includes non-standard definitions from CLDR.</p>
                   <a href="#IsPrivateUse" class="anchor" title="Link to IsPrivateUse">#</a>
                </h3>
                
-               <p>IsPrivateUse reports whether this language code is reserved for private use.</p>
+               <p>IsPrivateUse reports whether this script code is reserved for private use.</p>
                
-               <pre><code>func (b Base) IsPrivateUse() bool</code></pre>
+               <pre><code>func (s Script) IsPrivateUse() bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="IsPrivateUse" data-name="IsPrivateUse">
@@ -2976,7 +2976,7 @@ implementation. So IsPrivateUse and IsCountry can be simultaneously true.</p>
                   <a href="#Len" class="anchor" title="Link to Len">#</a>
                </h3>
                
-               <pre><code>func (b bases) Len() int</code></pre>
+               <pre><code>func (s *tagSort) Len() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Len" data-name="Len">
@@ -2987,7 +2987,7 @@ implementation. So IsPrivateUse and IsCountry can be simultaneously true.</p>
                   <a href="#Len" class="anchor" title="Link to Len">#</a>
                </h3>
                
-               <pre><code>func (s *tagSort) Len() int</code></pre>
+               <pre><code>func (b bases) Len() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Less" data-name="Less">
@@ -3029,20 +3029,6 @@ is not defined for r.</p>
             <article class="function symbol-anchor" id="Make" data-name="Make">
                <h3>
                   Make 
-                  <span class="badge">function</span>
-                  
-                  <a href="#Make" class="anchor" title="Link to Make">#</a>
-               </h3>
-               
-               <p>Make is a convenience wrapper for Parse that omits the error.
-In case of an error, a sensible default is returned.</p>
-               
-               <pre><code>func Make(s string) Tag</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Make" data-name="Make">
-               <h3>
-                  Make 
                   <span class="badge method-badge">method</span>
                   
                   <a href="#Make" class="anchor" title="Link to Make">#</a>
@@ -3052,6 +3038,20 @@ In case of an error, a sensible default is returned.</p>
 In case of an error, a sensible default is returned.</p>
                
                <pre><code>func (c CanonType) Make(s string) Tag</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Make" data-name="Make">
+               <h3>
+                  Make 
+                  <span class="badge">function</span>
+                  
+                  <a href="#Make" class="anchor" title="Link to Make">#</a>
+               </h3>
+               
+               <p>Make is a convenience wrapper for Parse that omits the error.
+In case of an error, a sensible default is returned.</p>
+               
+               <pre><code>func Make(s string) Tag</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="MarshalText" data-name="MarshalText">
@@ -3228,26 +3228,6 @@ is "zh-Hant", and the parent of "zh-Hant" is "und".</p>
             <article class="function symbol-anchor" id="Parse" data-name="Parse">
                <h3>
                   Parse 
-                  <span class="badge">function</span>
-                  
-                  <a href="#Parse" class="anchor" title="Link to Parse">#</a>
-               </h3>
-               
-               <p>Parse parses the given BCP 47 string and returns a valid Tag. If parsing
-failed it returns an error and any part of the tag that could be parsed.
-If parsing succeeded but an unknown value was found, it returns
-ValueError. The Tag returned in this case is just stripped of the unknown
-value. All other values are preserved. It accepts tags in the BCP 47 format
-and extensions to this standard defined in
-https://www.unicode.org/reports/tr35/#Unicode_Language_and_Locale_Identifiers.
-The resulting tag is canonicalized using the default canonicalization type.</p>
-               
-               <pre><code>func Parse(s string) (t Tag, err error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Parse" data-name="Parse">
-               <h3>
-                  Parse 
                   <span class="badge method-badge">method</span>
                   
                   <a href="#Parse" class="anchor" title="Link to Parse">#</a>
@@ -3263,6 +3243,26 @@ https://www.unicode.org/reports/tr35/#Unicode_Language_and_Locale_Identifiers.
 The resulting tag is canonicalized using the canonicalization type c.</p>
                
                <pre><code>func (c CanonType) Parse(s string) (t Tag, err error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Parse" data-name="Parse">
+               <h3>
+                  Parse 
+                  <span class="badge">function</span>
+                  
+                  <a href="#Parse" class="anchor" title="Link to Parse">#</a>
+               </h3>
+               
+               <p>Parse parses the given BCP 47 string and returns a valid Tag. If parsing
+failed it returns an error and any part of the tag that could be parsed.
+If parsing succeeded but an unknown value was found, it returns
+ValueError. The Tag returned in this case is just stripped of the unknown
+value. All other values are preserved. It accepts tags in the BCP 47 format
+and extensions to this standard defined in
+https://www.unicode.org/reports/tr35/#Unicode_Language_and_Locale_Identifiers.
+The resulting tag is canonicalized using the default canonicalization type.</p>
+               
+               <pre><code>func Parse(s string) (t Tag, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ParseAcceptLanguage" data-name="ParseAcceptLanguage">
@@ -3408,7 +3408,11 @@ It uses a variant of CLDR's Add Likely Subtags algorithm. This is subject to cha
                   <a href="#Regions" class="anchor" title="Link to Regions">#</a>
                </h3>
                
-               <pre><code>func (s *coverage) Regions() []Region</code></pre>
+               <p>Regions returns the list of supported regions. As all regions are in a
+consecutive range, it simply returns a slice of numbers in increasing order.
+The "undefined" region is not returned.</p>
+               
+               <pre><code>func (s allSubtags) Regions() []Region</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Regions" data-name="Regions">
@@ -3419,11 +3423,7 @@ It uses a variant of CLDR's Add Likely Subtags algorithm. This is subject to cha
                   <a href="#Regions" class="anchor" title="Link to Regions">#</a>
                </h3>
                
-               <p>Regions returns the list of supported regions. As all regions are in a
-consecutive range, it simply returns a slice of numbers in increasing order.
-The "undefined" region is not returned.</p>
-               
-               <pre><code>func (s allSubtags) Regions() []Region</code></pre>
+               <pre><code>func (s *coverage) Regions() []Region</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Script" data-name="Script">
@@ -3460,11 +3460,7 @@ It uses a variant of CLDR's Add Likely Subtags algorithm. This is subject to cha
                   <a href="#Scripts" class="anchor" title="Link to Scripts">#</a>
                </h3>
                
-               <p>Scripts returns the list of supported scripts. As all scripts are in a
-consecutive range, it simply returns a slice of numbers in increasing order.
-The "undefined" script is not returned.</p>
-               
-               <pre><code>func (s allSubtags) Scripts() []Script</code></pre>
+               <pre><code>func (s *coverage) Scripts() []Script</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Scripts" data-name="Scripts">
@@ -3475,7 +3471,11 @@ The "undefined" script is not returned.</p>
                   <a href="#Scripts" class="anchor" title="Link to Scripts">#</a>
                </h3>
                
-               <pre><code>func (s *coverage) Scripts() []Script</code></pre>
+               <p>Scripts returns the list of supported scripts. As all scripts are in a
+consecutive range, it simply returns a slice of numbers in increasing order.
+The "undefined" script is not returned.</p>
+               
+               <pre><code>func (s allSubtags) Scripts() []Script</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="SetTypeForKey" data-name="SetTypeForKey">
@@ -3502,7 +3502,47 @@ An empty value removes an existing pair with the same key.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
+               <p>String returns the string representation of the variant.</p>
+               
+               <pre><code>func (v Variant) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <p>String returns the canonical string representation of the language tag.</p>
+               
+               <pre><code>func (t Tag) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
                <pre><code>func (c Confidence) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <p>String returns the string representation of the extension, including the
+type tag.</p>
+               
+               <pre><code>func (e Extension) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -3540,50 +3580,10 @@ It returns "Zzzz" for an unspecified script.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <p>String returns the canonical string representation of the language tag.</p>
-               
-               <pre><code>func (t Tag) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <p>String returns the string representation of the variant.</p>
-               
-               <pre><code>func (v Variant) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
                <p>String returns the BCP 47 representation for the region.
 It returns "ZZ" for an unspecified region.</p>
                
                <pre><code>func (r Region) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <p>String returns the string representation of the extension, including the
-type tag.</p>
-               
-               <pre><code>func (e Extension) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Swap" data-name="Swap">
@@ -4191,8 +4191,10 @@ be false.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

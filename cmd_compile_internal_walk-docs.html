@@ -522,29 +522,17 @@
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
                <pre><code>"fmt"
+"go/constant"
+"go/token"
 "internal/abi"
 "internal/buildcfg"
+"strings"
 "cmd/compile/internal/base"
-"cmd/compile/internal/ir"
-"cmd/compile/internal/reflectdata"
-"cmd/compile/internal/rttype"
-"cmd/compile/internal/ssagen"
-"cmd/compile/internal/typecheck"
-"cmd/compile/internal/types"
-"cmd/internal/src"
-"go/constant"
-"internal/abi"
-"cmd/compile/internal/base"
+"cmd/compile/internal/escape"
 "cmd/compile/internal/ir"
 "cmd/compile/internal/reflectdata"
 "cmd/compile/internal/typecheck"
 "cmd/compile/internal/types"
-"cmd/internal/src"
-"cmd/compile/internal/base"
-"cmd/compile/internal/ir"
-"cmd/compile/internal/typecheck"
-"cmd/compile/internal/types"
-"cmd/internal/src"
 "encoding/binary"
 "fmt"
 "go/constant"
@@ -557,14 +545,21 @@
 "cmd/compile/internal/ssagen"
 "cmd/compile/internal/typecheck"
 "cmd/compile/internal/types"
+"fmt"
+"go/constant"
+"internal/abi"
+"internal/buildcfg"
+"strings"
 "cmd/compile/internal/base"
 "cmd/compile/internal/ir"
-"cmd/compile/internal/ssa"
+"cmd/compile/internal/objw"
+"cmd/compile/internal/reflectdata"
+"cmd/compile/internal/rttype"
 "cmd/compile/internal/staticdata"
-"cmd/compile/internal/staticinit"
 "cmd/compile/internal/typecheck"
 "cmd/compile/internal/types"
 "cmd/internal/obj"
+"cmd/internal/objabi"
 "fmt"
 "go/constant"
 "internal/buildcfg"
@@ -577,18 +572,6 @@
 "cmd/compile/internal/types"
 "cmd/internal/objabi"
 "cmd/internal/src"
-"internal/buildcfg"
-"unicode/utf8"
-"cmd/compile/internal/base"
-"cmd/compile/internal/ir"
-"cmd/compile/internal/reflectdata"
-"cmd/compile/internal/ssagen"
-"cmd/compile/internal/typecheck"
-"cmd/compile/internal/types"
-"cmd/internal/src"
-"cmd/internal/sys"
-"cmd/compile/internal/base"
-"cmd/compile/internal/ir"
 "cmp"
 "fmt"
 "go/constant"
@@ -607,18 +590,19 @@
 "cmd/compile/internal/types"
 "cmd/internal/obj"
 "cmd/internal/src"
-"fmt"
-"go/constant"
-"go/token"
-"internal/abi"
-"internal/buildcfg"
-"strings"
 "cmd/compile/internal/base"
-"cmd/compile/internal/escape"
 "cmd/compile/internal/ir"
-"cmd/compile/internal/reflectdata"
 "cmd/compile/internal/typecheck"
 "cmd/compile/internal/types"
+"cmd/internal/src"
+"cmd/compile/internal/base"
+"cmd/compile/internal/ir"
+"cmd/compile/internal/ssa"
+"cmd/compile/internal/staticdata"
+"cmd/compile/internal/staticinit"
+"cmd/compile/internal/typecheck"
+"cmd/compile/internal/types"
+"cmd/internal/obj"
 "encoding/binary"
 "go/constant"
 "cmd/compile/internal/base"
@@ -628,21 +612,16 @@
 "cmd/compile/internal/typecheck"
 "cmd/compile/internal/types"
 "cmd/internal/sys"
-"fmt"
-"go/constant"
-"internal/abi"
 "internal/buildcfg"
-"strings"
+"unicode/utf8"
 "cmd/compile/internal/base"
 "cmd/compile/internal/ir"
-"cmd/compile/internal/objw"
 "cmd/compile/internal/reflectdata"
-"cmd/compile/internal/rttype"
-"cmd/compile/internal/staticdata"
+"cmd/compile/internal/ssagen"
 "cmd/compile/internal/typecheck"
 "cmd/compile/internal/types"
-"cmd/internal/obj"
-"cmd/internal/objabi"
+"cmd/internal/src"
+"cmd/internal/sys"
 "cmd/compile/internal/base"
 "cmd/compile/internal/ir"
 "cmd/compile/internal/typecheck"
@@ -650,8 +629,29 @@
 "cmd/internal/src"
 "cmd/compile/internal/base"
 "cmd/compile/internal/ir"
+"cmd/compile/internal/base"
+"cmd/compile/internal/ir"
 "cmd/compile/internal/typecheck"
 "cmd/compile/internal/types"
+"fmt"
+"internal/abi"
+"internal/buildcfg"
+"cmd/compile/internal/base"
+"cmd/compile/internal/ir"
+"cmd/compile/internal/reflectdata"
+"cmd/compile/internal/rttype"
+"cmd/compile/internal/ssagen"
+"cmd/compile/internal/typecheck"
+"cmd/compile/internal/types"
+"cmd/internal/src"
+"go/constant"
+"internal/abi"
+"cmd/compile/internal/base"
+"cmd/compile/internal/ir"
+"cmd/compile/internal/reflectdata"
+"cmd/compile/internal/typecheck"
+"cmd/compile/internal/types"
+"cmd/internal/src"
 </code></pre>
             </article>
          </section>
@@ -1564,6 +1564,20 @@ n.Op is OCALLFUNC/OCALLINTER or a builtin like OCOPY.</p>
             <article class="function symbol-anchor" id="cheapExpr" data-name="cheapExpr">
                <h3>
                   cheapExpr 
+                  <span class="badge">function</span>
+                  
+                  <a href="#cheapExpr" class="anchor" title="Link to cheapExpr">#</a>
+               </h3>
+               
+               <p>return side-effect free and cheap n, appending side effects to init.
+result may not be assignable.</p>
+               
+               <pre><code>func cheapExpr(n ir.Node, init *ir.Nodes) ir.Node</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="cheapExpr" data-name="cheapExpr">
+               <h3>
+                  cheapExpr 
                   <span class="badge method-badge">method</span>
                   
                   <a href="#cheapExpr" class="anchor" title="Link to cheapExpr">#</a>
@@ -1575,20 +1589,6 @@ If not, cheapExpr allocates a new tmp, emits tmp = n,
 and then returns tmp.</p>
                
                <pre><code>func (o *orderState) cheapExpr(n ir.Node) ir.Node</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="cheapExpr" data-name="cheapExpr">
-               <h3>
-                  cheapExpr 
-                  <span class="badge">function</span>
-                  
-                  <a href="#cheapExpr" class="anchor" title="Link to cheapExpr">#</a>
-               </h3>
-               
-               <p>return side-effect free and cheap n, appending side effects to init.
-result may not be assignable.</p>
-               
-               <pre><code>func cheapExpr(n ir.Node, init *ir.Nodes) ir.Node</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="closureArgs" data-name="closureArgs">
@@ -1622,6 +1622,17 @@ OADDR-of-ONAME node (if not).</p>
             <article class="function symbol-anchor" id="copyExpr" data-name="copyExpr">
                <h3>
                   copyExpr 
+                  <span class="badge">function</span>
+                  
+                  <a href="#copyExpr" class="anchor" title="Link to copyExpr">#</a>
+               </h3>
+               
+               <pre><code>func copyExpr(n ir.Node, t *types.Type, init *ir.Nodes) ir.Node</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="copyExpr" data-name="copyExpr">
+               <h3>
+                  copyExpr 
                   <span class="badge method-badge">method</span>
                   
                   <a href="#copyExpr" class="anchor" title="Link to copyExpr">#</a>
@@ -1631,17 +1642,6 @@ OADDR-of-ONAME node (if not).</p>
 code to initialize the temporary to the value n.</p>
                
                <pre><code>func (o *orderState) copyExpr(n ir.Node) *ir.Name</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="copyExpr" data-name="copyExpr">
-               <h3>
-                  copyExpr 
-                  <span class="badge">function</span>
-                  
-                  <a href="#copyExpr" class="anchor" title="Link to copyExpr">#</a>
-               </h3>
-               
-               <pre><code>func copyExpr(n ir.Node, t *types.Type, init *ir.Nodes) ir.Node</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="copyExpr1" data-name="copyExpr1">
@@ -2587,20 +2587,6 @@ If no such function is necessary, it returns (Txxx, Txxx).</p>
             <article class="function symbol-anchor" id="safeExpr" data-name="safeExpr">
                <h3>
                   safeExpr 
-                  <span class="badge">function</span>
-                  
-                  <a href="#safeExpr" class="anchor" title="Link to safeExpr">#</a>
-               </h3>
-               
-               <p>return side effect-free n, appending side effects to init.
-result is assignable if n is.</p>
-               
-               <pre><code>func safeExpr(n ir.Node, init *ir.Nodes) ir.Node</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="safeExpr" data-name="safeExpr">
-               <h3>
-                  safeExpr 
                   <span class="badge method-badge">method</span>
                   
                   <a href="#safeExpr" class="anchor" title="Link to safeExpr">#</a>
@@ -2614,6 +2600,20 @@ as assigning to the original n.
 The intended use is to apply to x when rewriting x += y into x = x + y.</p>
                
                <pre><code>func (o *orderState) safeExpr(n ir.Node) ir.Node</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="safeExpr" data-name="safeExpr">
+               <h3>
+                  safeExpr 
+                  <span class="badge">function</span>
+                  
+                  <a href="#safeExpr" class="anchor" title="Link to safeExpr">#</a>
+               </h3>
+               
+               <p>return side effect-free n, appending side effects to init.
+result is assignable if n is.</p>
+               
+               <pre><code>func safeExpr(n ir.Node, init *ir.Nodes) ir.Node</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="safeMapRHS" data-name="safeMapRHS">
@@ -3997,8 +3997,10 @@ type switch.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

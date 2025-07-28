@@ -517,25 +517,25 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"internal/byteorder"
-"internal/chacha8rand"
-"io"
-"os"
+               <pre><code>"os"
 "sync"
-"syscall"
-"internal/syscall/windows"
+"sync/atomic"
+"time"
+_ "unsafe"
 "errors"
 "internal/syscall/unix"
 "math"
 "runtime"
 "syscall"
+"internal/syscall/unix"
+"syscall"
+"internal/syscall/unix"
+"internal/byteorder"
+"internal/chacha8rand"
+"io"
 "os"
 "sync"
-"sync/atomic"
-"time"
-_ "unsafe"
-"internal/syscall/unix"
-"internal/syscall/unix"
+"internal/syscall/windows"
 </code></pre>
             </article>
          </section>
@@ -786,6 +786,9 @@ all supported macOS versions.</p>
                   <a href="#read" class="anchor" title="Link to read">#</a>
                </h3>
                
+               <p>read calls the JavaScript Crypto.getRandomValues() method.
+See https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues.</p>
+               
                <pre><code>func read(b []byte) error</code></pre>
             </article>
             
@@ -796,9 +799,6 @@ all supported macOS versions.</p>
                   
                   <a href="#read" class="anchor" title="Link to read">#</a>
                </h3>
-               
-               <p>read calls the JavaScript Crypto.getRandomValues() method.
-See https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues.</p>
                
                <pre><code>func read(b []byte) error</code></pre>
             </article>
@@ -991,8 +991,10 @@ See https://developer.mozilla.org/en-US/docs/Web/API/Crypto/getRandomValues.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

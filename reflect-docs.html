@@ -523,19 +523,18 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"arena"
-"internal/abi"
+               <pre><code>"internal/abi"
+"internal/goarch"
 "unsafe"
-_ "unsafe"
-"internal/abi"
+"arena"
 "unsafe"
 "internal/abi"
 "internal/goarch"
 "unsafe"
+"internal/bytealg"
+"unsafe"
+"iter"
 "internal/abi"
-"internal/race"
-"internal/runtime/maps"
-"internal/runtime/sys"
 "unsafe"
 "internal/abi"
 "internal/goarch"
@@ -553,16 +552,17 @@ _ "unsafe"
 "math"
 "runtime"
 "unsafe"
-"internal/bytealg"
+"internal/abi"
 "unsafe"
-"iter"
+_ "unsafe"
+"internal/abi"
+"internal/race"
+"internal/runtime/maps"
+"internal/runtime/sys"
+"unsafe"
 "internal/abi"
 "internal/goarch"
 "internal/unsafeheader"
-"unsafe"
-"internal/abi"
-"internal/goarch"
-"unsafe"
 "unsafe"
 </code></pre>
             </article>
@@ -1676,7 +1676,7 @@ See [Value.MapRange].</p>
                   class="fields-block"
                ><code class="fields-code">type MapIter struct {
 m Value
-hiter hiter
+hiter maps.Iter
 }</code></pre>
             </article>
             
@@ -1694,7 +1694,7 @@ See [Value.MapRange].</p>
                   class="fields-block"
                ><code class="fields-code">type MapIter struct {
 m Value
-hiter maps.Iter
+hiter hiter
 }</code></pre>
             </article>
             
@@ -2916,20 +2916,6 @@ and the type is not comparable, Equal will panic.</p>
                   <a href="#Field" class="anchor" title="Link to Field">#</a>
                </h3>
                
-               <p>Field returns the i'th field of the struct v.
-It panics if v's Kind is not [Struct] or i is out of range.</p>
-               
-               <pre><code>func (v Value) Field(i int) Value</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Field" data-name="Field">
-               <h3>
-                  Field 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Field" class="anchor" title="Link to Field">#</a>
-               </h3>
-               
                <pre><code>func (t *rtype) Field(i int) StructField</code></pre>
             </article>
             
@@ -2944,6 +2930,20 @@ It panics if v's Kind is not [Struct] or i is out of range.</p>
                <p>Field returns the i'th struct field.</p>
                
                <pre><code>func (t *structType) Field(i int) (f StructField)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Field" data-name="Field">
+               <h3>
+                  Field 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Field" class="anchor" title="Link to Field">#</a>
+               </h3>
+               
+               <p>Field returns the i'th field of the struct v.
+It panics if v's Kind is not [Struct] or i is out of range.</p>
+               
+               <pre><code>func (v Value) Field(i int) Value</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="FieldAlign" data-name="FieldAlign">
@@ -2965,9 +2965,11 @@ It panics if v's Kind is not [Struct] or i is out of range.</p>
                   <a href="#FieldByIndex" class="anchor" title="Link to FieldByIndex">#</a>
                </h3>
                
-               <p>FieldByIndex returns the nested field corresponding to index.</p>
+               <p>FieldByIndex returns the nested field corresponding to index.
+It panics if evaluation requires stepping through a nil
+pointer or a field that is not a struct.</p>
                
-               <pre><code>func (t *structType) FieldByIndex(index []int) (f StructField)</code></pre>
+               <pre><code>func (v Value) FieldByIndex(index []int) Value</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="FieldByIndex" data-name="FieldByIndex">
@@ -2978,11 +2980,9 @@ It panics if v's Kind is not [Struct] or i is out of range.</p>
                   <a href="#FieldByIndex" class="anchor" title="Link to FieldByIndex">#</a>
                </h3>
                
-               <p>FieldByIndex returns the nested field corresponding to index.
-It panics if evaluation requires stepping through a nil
-pointer or a field that is not a struct.</p>
+               <p>FieldByIndex returns the nested field corresponding to index.</p>
                
-               <pre><code>func (v Value) FieldByIndex(index []int) Value</code></pre>
+               <pre><code>func (t *structType) FieldByIndex(index []int) (f StructField)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="FieldByIndex" data-name="FieldByIndex">
@@ -3020,10 +3020,7 @@ is not a struct.</p>
                   <a href="#FieldByName" class="anchor" title="Link to FieldByName">#</a>
                </h3>
                
-               <p>FieldByName returns the struct field with the given name
-and a boolean to indicate if the field was found.</p>
-               
-               <pre><code>func (t *structType) FieldByName(name string) (f StructField, present bool)</code></pre>
+               <pre><code>func (t *rtype) FieldByName(name string) (StructField, bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="FieldByName" data-name="FieldByName">
@@ -3034,7 +3031,10 @@ and a boolean to indicate if the field was found.</p>
                   <a href="#FieldByName" class="anchor" title="Link to FieldByName">#</a>
                </h3>
                
-               <pre><code>func (t *rtype) FieldByName(name string) (StructField, bool)</code></pre>
+               <p>FieldByName returns the struct field with the given name
+and a boolean to indicate if the field was found.</p>
+               
+               <pre><code>func (t *structType) FieldByName(name string) (f StructField, present bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="FieldByName" data-name="FieldByName">
@@ -3060,7 +3060,12 @@ It panics if v's Kind is not [Struct].</p>
                   <a href="#FieldByNameFunc" class="anchor" title="Link to FieldByNameFunc">#</a>
                </h3>
                
-               <pre><code>func (t *rtype) FieldByNameFunc(match func(string) bool) (StructField, bool)</code></pre>
+               <p>FieldByNameFunc returns the struct field with a name
+that satisfies the match function.
+It panics if v's Kind is not [Struct].
+It returns the zero Value if no field was found.</p>
+               
+               <pre><code>func (v Value) FieldByNameFunc(match func(string) bool) Value</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="FieldByNameFunc" data-name="FieldByNameFunc">
@@ -3085,12 +3090,7 @@ match function and a boolean to indicate if the field was found.</p>
                   <a href="#FieldByNameFunc" class="anchor" title="Link to FieldByNameFunc">#</a>
                </h3>
                
-               <p>FieldByNameFunc returns the struct field with a name
-that satisfies the match function.
-It panics if v's Kind is not [Struct].
-It returns the zero Value if no field was found.</p>
-               
-               <pre><code>func (v Value) FieldByNameFunc(match func(string) bool) Value</code></pre>
+               <pre><code>func (t *rtype) FieldByNameFunc(match func(string) bool) (StructField, bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Float" data-name="Float">
@@ -3268,9 +3268,9 @@ compatible with InterfaceData.</p>
                   <a href="#IsExported" class="anchor" title="Link to IsExported">#</a>
                </h3>
                
-               <p>IsExported reports whether the field is exported.</p>
+               <p>IsExported reports whether the method is exported.</p>
                
-               <pre><code>func (f StructField) IsExported() bool</code></pre>
+               <pre><code>func (m Method) IsExported() bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="IsExported" data-name="IsExported">
@@ -3281,9 +3281,9 @@ compatible with InterfaceData.</p>
                   <a href="#IsExported" class="anchor" title="Link to IsExported">#</a>
                </h3>
                
-               <p>IsExported reports whether the method is exported.</p>
+               <p>IsExported reports whether the field is exported.</p>
                
-               <pre><code>func (m Method) IsExported() bool</code></pre>
+               <pre><code>func (f StructField) IsExported() bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="IsNil" data-name="IsNil">
@@ -3379,7 +3379,9 @@ It panics if the argument is invalid.</p>
                   <a href="#Key" class="anchor" title="Link to Key">#</a>
                </h3>
                
-               <pre><code>func (t *rtype) Key() Type</code></pre>
+               <p>Key returns the key of iter's current map entry.</p>
+               
+               <pre><code>func (iter *MapIter) Key() Value</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Key" data-name="Key">
@@ -3390,9 +3392,7 @@ It panics if the argument is invalid.</p>
                   <a href="#Key" class="anchor" title="Link to Key">#</a>
                </h3>
                
-               <p>Key returns the key of iter's current map entry.</p>
-               
-               <pre><code>func (iter *MapIter) Key() Value</code></pre>
+               <pre><code>func (t *rtype) Key() Type</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Kind" data-name="Kind">
@@ -3428,7 +3428,10 @@ If v is the zero Value ([Value.IsValid] returns false), Kind returns Invalid.</p
                   <a href="#Len" class="anchor" title="Link to Len">#</a>
                </h3>
                
-               <pre><code>func (t *rtype) Len() int</code></pre>
+               <p>Len returns v's length.
+It panics if v's Kind is not [Array], [Chan], [Map], [Slice], [String], or pointer to [Array].</p>
+               
+               <pre><code>func (v Value) Len() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Len" data-name="Len">
@@ -3439,10 +3442,7 @@ If v is the zero Value ([Value.IsValid] returns false), Kind returns Invalid.</p
                   <a href="#Len" class="anchor" title="Link to Len">#</a>
                </h3>
                
-               <p>Len returns v's length.
-It panics if v's Kind is not [Array], [Chan], [Map], [Slice], [String], or pointer to [Array].</p>
-               
-               <pre><code>func (v Value) Len() int</code></pre>
+               <pre><code>func (t *rtype) Len() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Lookup" data-name="Lookup">
@@ -3700,12 +3700,7 @@ v := iter.Value()
                   <a href="#Method" class="anchor" title="Link to Method">#</a>
                </h3>
                
-               <p>Method returns a function value corresponding to v's i'th method.
-The arguments to a Call on the returned function should not include
-a receiver; the returned function will always use v as the receiver.
-Method panics if i is out of range or if v is a nil interface value.</p>
-               
-               <pre><code>func (v Value) Method(i int) Value</code></pre>
+               <pre><code>func (t *rtype) Method(i int) (m Method)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Method" data-name="Method">
@@ -3716,7 +3711,12 @@ Method panics if i is out of range or if v is a nil interface value.</p>
                   <a href="#Method" class="anchor" title="Link to Method">#</a>
                </h3>
                
-               <pre><code>func (t *rtype) Method(i int) (m Method)</code></pre>
+               <p>Method returns a function value corresponding to v's i'th method.
+The arguments to a Call on the returned function should not include
+a receiver; the returned function will always use v as the receiver.
+Method panics if i is out of range or if v is a nil interface value.</p>
+               
+               <pre><code>func (v Value) Method(i int) Value</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Method" data-name="Method">
@@ -3740,9 +3740,7 @@ Method panics if i is out of range or if v is a nil interface value.</p>
                   <a href="#MethodByName" class="anchor" title="Link to MethodByName">#</a>
                </h3>
                
-               <p>MethodByName method with the given name in the type's method set.</p>
-               
-               <pre><code>func (t *interfaceType) MethodByName(name string) (m Method, ok bool)</code></pre>
+               <pre><code>func (t *rtype) MethodByName(name string) (m Method, ok bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="MethodByName" data-name="MethodByName">
@@ -3753,7 +3751,9 @@ Method panics if i is out of range or if v is a nil interface value.</p>
                   <a href="#MethodByName" class="anchor" title="Link to MethodByName">#</a>
                </h3>
                
-               <pre><code>func (t *rtype) MethodByName(name string) (m Method, ok bool)</code></pre>
+               <p>MethodByName method with the given name in the type's method set.</p>
+               
+               <pre><code>func (t *interfaceType) MethodByName(name string) (m Method, ok bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="MethodByName" data-name="MethodByName">
@@ -3850,7 +3850,10 @@ calls to [MapIter.Key], [MapIter.Value], or [MapIter.Next] will panic.</p>
                   <a href="#NumField" class="anchor" title="Link to NumField">#</a>
                </h3>
                
-               <pre><code>func (t *rtype) NumField() int</code></pre>
+               <p>NumField returns the number of fields in the struct v.
+It panics if v's Kind is not [Struct].</p>
+               
+               <pre><code>func (v Value) NumField() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="NumField" data-name="NumField">
@@ -3861,10 +3864,7 @@ calls to [MapIter.Key], [MapIter.Value], or [MapIter.Next] will panic.</p>
                   <a href="#NumField" class="anchor" title="Link to NumField">#</a>
                </h3>
                
-               <p>NumField returns the number of fields in the struct v.
-It panics if v's Kind is not [Struct].</p>
-               
-               <pre><code>func (v Value) NumField() int</code></pre>
+               <pre><code>func (t *rtype) NumField() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="NumIn" data-name="NumIn">
@@ -3886,7 +3886,11 @@ It panics if v's Kind is not [Struct].</p>
                   <a href="#NumMethod" class="anchor" title="Link to NumMethod">#</a>
                </h3>
                
-               <pre><code>func (t *rtype) NumMethod() int</code></pre>
+               <p>NumMethod returns the number of methods in the value's method set.
+For a non-interface type, it returns the number of exported methods.
+For an interface type, it returns the number of exported and unexported methods.</p>
+               
+               <pre><code>func (v Value) NumMethod() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="NumMethod" data-name="NumMethod">
@@ -3910,11 +3914,7 @@ It panics if v's Kind is not [Struct].</p>
                   <a href="#NumMethod" class="anchor" title="Link to NumMethod">#</a>
                </h3>
                
-               <p>NumMethod returns the number of methods in the value's method set.
-For a non-interface type, it returns the number of exported methods.
-For an interface type, it returns the number of exported and unexported methods.</p>
-               
-               <pre><code>func (v Value) NumMethod() int</code></pre>
+               <pre><code>func (t *rtype) NumMethod() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="NumOut" data-name="NumOut">
@@ -3947,10 +3947,7 @@ For an interface type, it returns the number of exported and unexported methods.
                   <a href="#OverflowComplex" class="anchor" title="Link to OverflowComplex">#</a>
                </h3>
                
-               <p>OverflowComplex reports whether the complex128 x cannot be represented by v's type.
-It panics if v's Kind is not [Complex64] or [Complex128].</p>
-               
-               <pre><code>func (v Value) OverflowComplex(x complex128) bool</code></pre>
+               <pre><code>func (t *rtype) OverflowComplex(x complex128) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="OverflowComplex" data-name="OverflowComplex">
@@ -3961,7 +3958,10 @@ It panics if v's Kind is not [Complex64] or [Complex128].</p>
                   <a href="#OverflowComplex" class="anchor" title="Link to OverflowComplex">#</a>
                </h3>
                
-               <pre><code>func (t *rtype) OverflowComplex(x complex128) bool</code></pre>
+               <p>OverflowComplex reports whether the complex128 x cannot be represented by v's type.
+It panics if v's Kind is not [Complex64] or [Complex128].</p>
+               
+               <pre><code>func (v Value) OverflowComplex(x complex128) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="OverflowFloat" data-name="OverflowFloat">
@@ -3997,7 +3997,10 @@ It panics if v's Kind is not [Float32] or [Float64].</p>
                   <a href="#OverflowInt" class="anchor" title="Link to OverflowInt">#</a>
                </h3>
                
-               <pre><code>func (t *rtype) OverflowInt(x int64) bool</code></pre>
+               <p>OverflowInt reports whether the int64 x cannot be represented by v's type.
+It panics if v's Kind is not [Int], [Int8], [Int16], [Int32], or [Int64].</p>
+               
+               <pre><code>func (v Value) OverflowInt(x int64) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="OverflowInt" data-name="OverflowInt">
@@ -4008,10 +4011,7 @@ It panics if v's Kind is not [Float32] or [Float64].</p>
                   <a href="#OverflowInt" class="anchor" title="Link to OverflowInt">#</a>
                </h3>
                
-               <p>OverflowInt reports whether the int64 x cannot be represented by v's type.
-It panics if v's Kind is not [Int], [Int8], [Int16], [Int32], or [Int64].</p>
-               
-               <pre><code>func (v Value) OverflowInt(x int64) bool</code></pre>
+               <pre><code>func (t *rtype) OverflowInt(x int64) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="OverflowUint" data-name="OverflowUint">
@@ -4587,18 +4587,9 @@ For example, if t represents int, SliceOf(t) represents []int.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code>func (t *rtype) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
+               <p>String returns the name of k.</p>
                
-               <pre><code>func (d ChanDir) String() string</code></pre>
+               <pre><code>func (k Kind) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -4627,9 +4618,18 @@ method implicitly but instead prints the concrete values they hold.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <p>String returns the name of k.</p>
+               <pre><code>func (d ChanDir) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
                
-               <pre><code>func (k Kind) String() string</code></pre>
+               <pre><code>func (t *rtype) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="StructOf" data-name="StructOf">
@@ -5595,6 +5595,17 @@ target must be initialized memory (or nil).</p>
             <article class="function symbol-anchor" id="call" data-name="call">
                <h3>
                   call 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#call" class="anchor" title="Link to call">#</a>
+               </h3>
+               
+               <pre><code>func (v Value) call(op string, in []Value) []Value</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="call" data-name="call">
+               <h3>
+                  call 
                   <span class="badge">function</span>
                   
                   <a href="#call" class="anchor" title="Link to call">#</a>
@@ -5623,17 +5634,6 @@ go:noescape
 go:linkname call runtime.reflectcall</p>
                
                <pre><code>func call(stackArgsType *abi.Type, f unsafe.Pointer, stackArgs unsafe.Pointer, stackArgsSize uint32, stackRetOffset uint32, frameSize uint32, regArgs *abi.RegArgs)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="call" data-name="call">
-               <h3>
-                  call 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#call" class="anchor" title="Link to call">#</a>
-               </h3>
-               
-               <pre><code>func (v Value) call(op string, in []Value) []Value</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="callMethod" data-name="callMethod">
@@ -5811,7 +5811,7 @@ go:noescape</p>
                   <a href="#common" class="anchor" title="Link to common">#</a>
                </h3>
                
-               <pre><code>func (t *interfaceType) common() *abi.Type</code></pre>
+               <pre><code>func (t *rtype) common() *abi.Type</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="common" data-name="common">
@@ -5822,7 +5822,7 @@ go:noescape</p>
                   <a href="#common" class="anchor" title="Link to common">#</a>
                </h3>
                
-               <pre><code>func (t *rtype) common() *abi.Type</code></pre>
+               <pre><code>func (t *interfaceType) common() *abi.Type</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="contentEscapes" data-name="contentEscapes">
@@ -7116,7 +7116,7 @@ an unexported field.</p>
                   <a href="#nameOff" class="anchor" title="Link to nameOff">#</a>
                </h3>
                
-               <pre><code>func (t *rtype) nameOff(off aNameOff) abi.Name</code></pre>
+               <pre><code>func (t *interfaceType) nameOff(off aNameOff) abi.Name</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="nameOff" data-name="nameOff">
@@ -7127,7 +7127,7 @@ an unexported field.</p>
                   <a href="#nameOff" class="anchor" title="Link to nameOff">#</a>
                </h3>
                
-               <pre><code>func (t *interfaceType) nameOff(off aNameOff) abi.Name</code></pre>
+               <pre><code>func (t *rtype) nameOff(off aNameOff) abi.Name</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="nameOffFor" data-name="nameOffFor">
@@ -7283,23 +7283,23 @@ if v.Kind() == Pointer, the base type must not be not-in-heap.</p>
             <article class="function symbol-anchor" id="ptrTo" data-name="ptrTo">
                <h3>
                   ptrTo 
-                  <span class="badge">function</span>
-                  
-                  <a href="#ptrTo" class="anchor" title="Link to ptrTo">#</a>
-               </h3>
-               
-               <pre><code>func ptrTo(t *abi.Type) *abi.Type</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="ptrTo" data-name="ptrTo">
-               <h3>
-                  ptrTo 
                   <span class="badge method-badge">method</span>
                   
                   <a href="#ptrTo" class="anchor" title="Link to ptrTo">#</a>
                </h3>
                
                <pre><code>func (t *rtype) ptrTo() *abi.Type</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ptrTo" data-name="ptrTo">
+               <h3>
+                  ptrTo 
+                  <span class="badge">function</span>
+                  
+                  <a href="#ptrTo" class="anchor" title="Link to ptrTo">#</a>
+               </h3>
+               
+               <pre><code>func ptrTo(t *abi.Type) *abi.Type</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="rangeNum" data-name="rangeNum">
@@ -7934,7 +7934,7 @@ go:linkname typesByString</p>
                   <a href="#uncommon" class="anchor" title="Link to uncommon">#</a>
                </h3>
                
-               <pre><code>func (t *rtype) uncommon() *abi.UncommonType</code></pre>
+               <pre><code>func (t *interfaceType) uncommon() *abi.UncommonType</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="uncommon" data-name="uncommon">
@@ -7945,7 +7945,7 @@ go:linkname typesByString</p>
                   <a href="#uncommon" class="anchor" title="Link to uncommon">#</a>
                </h3>
                
-               <pre><code>func (t *interfaceType) uncommon() *abi.UncommonType</code></pre>
+               <pre><code>func (t *rtype) uncommon() *abi.UncommonType</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="unpackEface" data-name="unpackEface">
@@ -8223,8 +8223,10 @@ Name field cleared.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

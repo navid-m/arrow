@@ -523,8 +523,7 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"fmt"
-"encoding/binary"
+               <pre><code>"encoding/binary"
 "errors"
 "fmt"
 "go/constant"
@@ -535,9 +534,6 @@
 "runtime"
 "strings"
 "fmt"
-"runtime"
-"strings"
-"strconv"
 "bytes"
 "crypto/sha256"
 "encoding/binary"
@@ -546,6 +542,10 @@
 "math/big"
 "runtime"
 "strings"
+"fmt"
+"runtime"
+"strings"
+"strconv"
 </code></pre>
             </article>
          </section>
@@ -2232,19 +2232,6 @@ pair.</p>
                   <a href="#Bool" class="anchor" title="Link to Bool">#</a>
                </h3>
                
-               <p>Bool decodes and returns a bool value from the element bitstream.</p>
-               
-               <pre><code>func (r *Decoder) Bool() bool</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Bool" data-name="Bool">
-               <h3>
-                  Bool 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Bool" class="anchor" title="Link to Bool">#</a>
-               </h3>
-               
                <p>Bool encodes and writes a bool value into the element bitstream,
 and then returns the bool value.
 For simple, 2-alternative encodings, the idiomatic way to call Bool
@@ -2257,6 +2244,19 @@ if w.Bool(x != 0) {
 For multi-alternative encodings, use Code instead.</p>
                
                <pre><code>func (w *Encoder) Bool(b bool) bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Bool" data-name="Bool">
+               <h3>
+                  Bool 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Bool" class="anchor" title="Link to Bool">#</a>
+               </h3>
+               
+               <p>Bool decodes and returns a bool value from the element bitstream.</p>
+               
+               <pre><code>func (r *Decoder) Bool() bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Code" data-name="Code">
@@ -2365,9 +2365,9 @@ package fingerprint.</p>
                   <a href="#Int" class="anchor" title="Link to Int">#</a>
                </h3>
                
-               <p>Int decodes and returns an int value from the element bitstream.</p>
+               <p>Int encodes and writes an int value into the element bitstream.</p>
                
-               <pre><code>func (r *Decoder) Int() int</code></pre>
+               <pre><code>func (w *Encoder) Int(x int)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Int" data-name="Int">
@@ -2378,9 +2378,9 @@ package fingerprint.</p>
                   <a href="#Int" class="anchor" title="Link to Int">#</a>
                </h3>
                
-               <p>Int encodes and writes an int value into the element bitstream.</p>
+               <p>Int decodes and returns an int value from the element bitstream.</p>
                
-               <pre><code>func (w *Encoder) Int(x int)</code></pre>
+               <pre><code>func (r *Decoder) Int() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Int64" data-name="Int64">
@@ -2443,7 +2443,7 @@ package fingerprint.</p>
                   <a href="#Marker" class="anchor" title="Link to Marker">#</a>
                </h3>
                
-               <pre><code>func (c CodeObj) Marker() SyncMarker</code></pre>
+               <pre><code>func (c CodeVal) Marker() SyncMarker</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Marker" data-name="Marker">
@@ -2465,7 +2465,7 @@ package fingerprint.</p>
                   <a href="#Marker" class="anchor" title="Link to Marker">#</a>
                </h3>
                
-               <pre><code>func (c CodeVal) Marker() SyncMarker</code></pre>
+               <pre><code>func (c CodeObj) Marker() SyncMarker</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="NewDecoder" data-name="NewDecoder">
@@ -2664,7 +2664,13 @@ bitstream and returns an index to the referenced element.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code>func (i SyncMarker) String() string</code></pre>
+               <p>String encodes and writes a string value into the element
+bitstream.
+Internally, strings are deduplicated by adding them to the strings
+section (if not already present), and then writing a relocation
+into the element bitstream.</p>
+               
+               <pre><code>func (w *Encoder) String(s string)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -2675,13 +2681,7 @@ bitstream and returns an index to the referenced element.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <p>String encodes and writes a string value into the element
-bitstream.
-Internally, strings are deduplicated by adding them to the strings
-section (if not already present), and then writing a relocation
-into the element bitstream.</p>
-               
-               <pre><code>func (w *Encoder) String(s string)</code></pre>
+               <pre><code>func (i SyncMarker) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -2775,11 +2775,7 @@ the element bitstream.</p>
                   <a href="#Sync" class="anchor" title="Link to Sync">#</a>
                </h3>
                
-               <p>Sync decodes a sync marker from the element bitstream and asserts
-that it matches the expected marker.
-If EnableSync is false, then Sync is a no-op.</p>
-               
-               <pre><code>func (r *Decoder) Sync(mWant SyncMarker)</code></pre>
+               <pre><code>func (w *Encoder) Sync(m SyncMarker)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Sync" data-name="Sync">
@@ -2790,7 +2786,11 @@ If EnableSync is false, then Sync is a no-op.</p>
                   <a href="#Sync" class="anchor" title="Link to Sync">#</a>
                </h3>
                
-               <pre><code>func (w *Encoder) Sync(m SyncMarker)</code></pre>
+               <p>Sync decodes a sync marker from the element bitstream and asserts
+that it matches the expected marker.
+If EnableSync is false, then Sync is a no-op.</p>
+               
+               <pre><code>func (r *Decoder) Sync(mWant SyncMarker)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="SyncMarkers" data-name="SyncMarkers">
@@ -2919,7 +2919,21 @@ needed, this will avoid heap allocations.</p>
                   <a href="#Value" class="anchor" title="Link to Value">#</a>
                </h3>
                
-               <pre><code>func (c CodeVal) Value() int</code></pre>
+               <pre><code>func (c CodeObj) Value() int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Value" data-name="Value">
+               <h3>
+                  Value 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Value" class="anchor" title="Link to Value">#</a>
+               </h3>
+               
+               <p>Value encodes and writes a constant.Value into the element
+bitstream.</p>
+               
+               <pre><code>func (w *Encoder) Value(val constant.Value)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Value" data-name="Value">
@@ -2944,7 +2958,7 @@ bitstream.</p>
                   <a href="#Value" class="anchor" title="Link to Value">#</a>
                </h3>
                
-               <pre><code>func (c CodeObj) Value() int</code></pre>
+               <pre><code>func (c CodeVal) Value() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Value" data-name="Value">
@@ -2958,18 +2972,17 @@ bitstream.</p>
                <pre><code>func (c CodeType) Value() int</code></pre>
             </article>
             
-            <article class="function symbol-anchor" id="Value" data-name="Value">
+            <article class="function symbol-anchor" id="Version" data-name="Version">
                <h3>
-                  Value 
+                  Version 
                   <span class="badge method-badge">method</span>
                   
-                  <a href="#Value" class="anchor" title="Link to Value">#</a>
+                  <a href="#Version" class="anchor" title="Link to Version">#</a>
                </h3>
                
-               <p>Value encodes and writes a constant.Value into the element
-bitstream.</p>
+               <p>Version reports the version of the bitstream.</p>
                
-               <pre><code>func (w *Encoder) Value(val constant.Value)</code></pre>
+               <pre><code>func (w *Encoder) Version() Version</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Version" data-name="Version">
@@ -2983,19 +2996,6 @@ bitstream.</p>
                <p>Version reports the version of the bitstream.</p>
                
                <pre><code>func (w *Decoder) Version() Version</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Version" data-name="Version">
-               <h3>
-                  Version 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Version" class="anchor" title="Link to Version">#</a>
-               </h3>
-               
-               <p>Version reports the version of the bitstream.</p>
-               
-               <pre><code>func (w *Encoder) Version() Version</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="_" data-name="_">
@@ -3050,7 +3050,7 @@ bitstream.</p>
                   <a href="#bigInt" class="anchor" title="Link to bigInt">#</a>
                </h3>
                
-               <pre><code>func (w *Encoder) bigInt(v *big.Int)</code></pre>
+               <pre><code>func (r *Decoder) bigInt() *big.Int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="bigInt" data-name="bigInt">
@@ -3061,7 +3061,7 @@ bitstream.</p>
                   <a href="#bigInt" class="anchor" title="Link to bigInt">#</a>
                </h3>
                
-               <pre><code>func (r *Decoder) bigInt() *big.Int</code></pre>
+               <pre><code>func (w *Encoder) bigInt(v *big.Int)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="checkErr" data-name="checkErr">
@@ -3382,8 +3382,10 @@ pcs should be a slice of PCs, as returned by runtime.Callers.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

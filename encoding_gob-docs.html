@@ -525,14 +525,14 @@
 "go/format"
 "log"
 "os"
-"encoding/gob"
-"fmt"
-"os"
 "bytes"
 "flag"
 "fmt"
 "go/format"
 "log"
+"os"
+"encoding/gob"
+"fmt"
 "os"
 </code></pre>
             </article>
@@ -540,6 +540,25 @@
           
          <section id="globals">
             <h2>Constants & Variables</h2>
+            
+            <article class="global symbol-anchor" id="arrayHelper" data-name="arrayHelper">
+               <h3>
+                  arrayHelper 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#arrayHelper" class="anchor" title="Link to arrayHelper">#</a>
+               </h3>
+               
+               <pre><code>const arrayHelper = `
+func enc%[2]sArray(state *encoderState, v reflect.Value) bool {
+	// Can only slice if it is addressable.
+	if !v.CanAddr() {
+		return false
+	}
+	return enc%[2]sSlice(state, v.Slice(0, v.Len()))
+}
+`</code></pre>
+            </article>
             
             <article class="global symbol-anchor" id="arrayHelper" data-name="arrayHelper">
                <h3>
@@ -560,22 +579,25 @@ func dec%[2]sArray(state *decoderState, v reflect.Value, length int, ovfl error)
 `</code></pre>
             </article>
             
-            <article class="global symbol-anchor" id="arrayHelper" data-name="arrayHelper">
+            <article class="global symbol-anchor" id="header" data-name="header">
                <h3>
-                  arrayHelper 
+                  header 
                   <span class="badge const-badge">const</span>
                   
-                  <a href="#arrayHelper" class="anchor" title="Link to arrayHelper">#</a>
+                  <a href="#header" class="anchor" title="Link to header">#</a>
                </h3>
                
-               <pre><code>const arrayHelper = `
-func enc%[2]sArray(state *encoderState, v reflect.Value) bool {
-	// Can only slice if it is addressable.
-	if !v.CanAddr() {
-		return false
-	}
-	return enc%[2]sSlice(state, v.Slice(0, v.Len()))
-}
+               <pre><code>const header = `
+// Copyright 2014 The Go Authors. All rights reserved.
+// Use of this source code is governed by a BSD-style
+// license that can be found in the LICENSE file.
+
+package gob
+
+import (
+	"reflect"
+)
+
 `</code></pre>
             </article>
             
@@ -602,48 +624,51 @@ import (
 `</code></pre>
             </article>
             
-            <article class="global symbol-anchor" id="header" data-name="header">
+            <article class="global symbol-anchor" id="output" data-name="output">
                <h3>
-                  header 
+                  output 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#output" class="anchor" title="Link to output">#</a>
+               </h3>
+               
+               <pre><code>var output = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="output" data-name="output">
+               <h3>
+                  output 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#output" class="anchor" title="Link to output">#</a>
+               </h3>
+               
+               <pre><code>var output = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="sliceHelper" data-name="sliceHelper">
+               <h3>
+                  sliceHelper 
                   <span class="badge const-badge">const</span>
                   
-                  <a href="#header" class="anchor" title="Link to header">#</a>
+                  <a href="#sliceHelper" class="anchor" title="Link to sliceHelper">#</a>
                </h3>
                
-               <pre><code>const header = `
-// Copyright 2014 The Go Authors. All rights reserved.
-// Use of this source code is governed by a BSD-style
-// license that can be found in the LICENSE file.
-
-package gob
-
-import (
-	"reflect"
-)
-
+               <pre><code>const sliceHelper = `
+func enc%[2]sSlice(state *encoderState, v reflect.Value) bool {
+	slice, ok := v.Interface().([]%[1]s)
+	if !ok {
+		// It is kind %[1]s but not type %[1]s. TODO: We can handle this unsafely.
+		return false
+	}
+	for _, x := range slice {
+		if x != %[3]s || state.sendZero {
+			%[4]s
+		}
+	}
+	return true
+}
 `</code></pre>
-            </article>
-            
-            <article class="global symbol-anchor" id="output" data-name="output">
-               <h3>
-                  output 
-                  <span class="badge var-badge">var</span>
-                  
-                  <a href="#output" class="anchor" title="Link to output">#</a>
-               </h3>
-               
-               <pre><code>var output = *ast.CallExpr</code></pre>
-            </article>
-            
-            <article class="global symbol-anchor" id="output" data-name="output">
-               <h3>
-                  output 
-                  <span class="badge var-badge">var</span>
-                  
-                  <a href="#output" class="anchor" title="Link to output">#</a>
-               </h3>
-               
-               <pre><code>var output = *ast.CallExpr</code></pre>
             </article>
             
             <article class="global symbol-anchor" id="sliceHelper" data-name="sliceHelper">
@@ -670,31 +695,6 @@ func dec%[2]sSlice(state *decoderState, v reflect.Value, length int, ovfl error)
 			growSlice(v, &slice, length)
 		}
 		%[3]s
-	}
-	return true
-}
-`</code></pre>
-            </article>
-            
-            <article class="global symbol-anchor" id="sliceHelper" data-name="sliceHelper">
-               <h3>
-                  sliceHelper 
-                  <span class="badge const-badge">const</span>
-                  
-                  <a href="#sliceHelper" class="anchor" title="Link to sliceHelper">#</a>
-               </h3>
-               
-               <pre><code>const sliceHelper = `
-func enc%[2]sSlice(state *encoderState, v reflect.Value) bool {
-	slice, ok := v.Interface().([]%[1]s)
-	if !ok {
-		// It is kind %[1]s but not type %[1]s. TODO: We can handle this unsafely.
-		return false
-	}
-	for _, x := range slice {
-		if x != %[3]s || state.sendZero {
-			%[4]s
-		}
 	}
 	return true
 }
@@ -766,7 +766,8 @@ func growSlice[E any](v reflect.Value, ps *[]E, length int) {
                ><code class="fields-code">type Type struct {
 lower string
 upper string
-decoder string
+zero string
+encoder string
 }</code></pre>
             </article>
             
@@ -782,8 +783,7 @@ decoder string
                ><code class="fields-code">type Type struct {
 lower string
 upper string
-zero string
-encoder string
+decoder string
 }</code></pre>
             </article>
             
@@ -1002,8 +1002,10 @@ encoder string
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

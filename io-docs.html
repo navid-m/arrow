@@ -687,20 +687,6 @@ middle of reading a fixed-size block or data structure.</p>
                   <a href="#_" class="anchor" title="Link to _">#</a>
                </h3>
                
-               <p>discard implements ReaderFrom as an optimization so Copy to
-io.Discard can avoid doing unnecessary work.</p>
-               
-               <pre><code>var _ ReaderFrom = discard{...}</code></pre>
-            </article>
-            
-            <article class="global symbol-anchor" id="_" data-name="_">
-               <h3>
-                  _ 
-                  <span class="badge var-badge">var</span>
-                  
-                  <a href="#_" class="anchor" title="Link to _">#</a>
-               </h3>
-               
                <pre><code>var _ WriterTo = *ast.CallExpr</code></pre>
             </article>
             
@@ -713,6 +699,20 @@ io.Discard can avoid doing unnecessary work.</p>
                </h3>
                
                <pre><code>var _ StringWriter = *ast.CallExpr</code></pre>
+            </article>
+            
+            <article class="global symbol-anchor" id="_" data-name="_">
+               <h3>
+                  _ 
+                  <span class="badge var-badge">var</span>
+                  
+                  <a href="#_" class="anchor" title="Link to _">#</a>
+               </h3>
+               
+               <p>discard implements ReaderFrom as an optimization so Copy to
+io.Discard can avoid doing unnecessary work.</p>
+               
+               <pre><code>var _ ReaderFrom = discard{...}</code></pre>
             </article>
             
             <article class="global symbol-anchor" id="blackHolePool" data-name="blackHolePool">
@@ -1480,10 +1480,7 @@ w Writer
                   <a href="#Close" class="anchor" title="Link to Close">#</a>
                </h3>
                
-               <p>Close closes the reader; subsequent writes to the
-write half of the pipe will return the error [ErrClosedPipe].</p>
-               
-               <pre><code>func (r *PipeReader) Close() error</code></pre>
+               <pre><code>func (nopCloserWriterTo) Close() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Close" data-name="Close">
@@ -1494,10 +1491,10 @@ write half of the pipe will return the error [ErrClosedPipe].</p>
                   <a href="#Close" class="anchor" title="Link to Close">#</a>
                </h3>
                
-               <p>Close closes the writer; subsequent reads from the
-read half of the pipe will return no bytes and EOF.</p>
+               <p>Close closes the reader; subsequent writes to the
+write half of the pipe will return the error [ErrClosedPipe].</p>
                
-               <pre><code>func (w *PipeWriter) Close() error</code></pre>
+               <pre><code>func (r *PipeReader) Close() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Close" data-name="Close">
@@ -1519,7 +1516,10 @@ read half of the pipe will return no bytes and EOF.</p>
                   <a href="#Close" class="anchor" title="Link to Close">#</a>
                </h3>
                
-               <pre><code>func (nopCloserWriterTo) Close() error</code></pre>
+               <p>Close closes the writer; subsequent reads from the
+read half of the pipe will return no bytes and EOF.</p>
+               
+               <pre><code>func (w *PipeWriter) Close() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="CloseWithError" data-name="CloseWithError">
@@ -1763,6 +1763,23 @@ the individual calls will be gated sequentially.</p>
                   <a href="#Read" class="anchor" title="Link to Read">#</a>
                </h3>
                
+               <p>Read implements the standard Read interface:
+it reads data from the pipe, blocking until a writer
+arrives or the write end is closed.
+If the write end is closed with an error, that error is
+returned as err; otherwise err is EOF.</p>
+               
+               <pre><code>func (r *PipeReader) Read(data []byte) (n int, err error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Read" data-name="Read">
+               <h3>
+                  Read 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Read" class="anchor" title="Link to Read">#</a>
+               </h3>
+               
                <pre><code>func (eofReader) Read([]byte) (int, error)</code></pre>
             </article>
             
@@ -1774,7 +1791,7 @@ the individual calls will be gated sequentially.</p>
                   <a href="#Read" class="anchor" title="Link to Read">#</a>
                </h3>
                
-               <pre><code>func (mr *multiReader) Read(p []byte) (n int, err error)</code></pre>
+               <pre><code>func (l *LimitedReader) Read(p []byte) (n int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Read" data-name="Read">
@@ -1796,23 +1813,6 @@ the individual calls will be gated sequentially.</p>
                   <a href="#Read" class="anchor" title="Link to Read">#</a>
                </h3>
                
-               <p>Read implements the standard Read interface:
-it reads data from the pipe, blocking until a writer
-arrives or the write end is closed.
-If the write end is closed with an error, that error is
-returned as err; otherwise err is EOF.</p>
-               
-               <pre><code>func (r *PipeReader) Read(data []byte) (n int, err error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Read" data-name="Read">
-               <h3>
-                  Read 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Read" class="anchor" title="Link to Read">#</a>
-               </h3>
-               
                <pre><code>func (s *SectionReader) Read(p []byte) (n int, err error)</code></pre>
             </article>
             
@@ -1824,7 +1824,7 @@ returned as err; otherwise err is EOF.</p>
                   <a href="#Read" class="anchor" title="Link to Read">#</a>
                </h3>
                
-               <pre><code>func (l *LimitedReader) Read(p []byte) (n int, err error)</code></pre>
+               <pre><code>func (mr *multiReader) Read(p []byte) (n int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ReadAll" data-name="ReadAll">
@@ -1975,7 +1975,7 @@ Any error encountered while writing is reported as a read error.</p>
                   <a href="#Write" class="anchor" title="Link to Write">#</a>
                </h3>
                
-               <pre><code>func (t *multiWriter) Write(p []byte) (n int, err error)</code></pre>
+               <pre><code>func (o *OffsetWriter) Write(p []byte) (n int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Write" data-name="Write">
@@ -2014,7 +2014,7 @@ returned as err; otherwise err is [ErrClosedPipe].</p>
                   <a href="#Write" class="anchor" title="Link to Write">#</a>
                </h3>
                
-               <pre><code>func (o *OffsetWriter) Write(p []byte) (n int, err error)</code></pre>
+               <pre><code>func (t *multiWriter) Write(p []byte) (n int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="WriteAt" data-name="WriteAt">
@@ -2026,6 +2026,21 @@ returned as err; otherwise err is [ErrClosedPipe].</p>
                </h3>
                
                <pre><code>func (o *OffsetWriter) WriteAt(p []byte, off int64) (n int, err error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="WriteString" data-name="WriteString">
+               <h3>
+                  WriteString 
+                  <span class="badge">function</span>
+                  
+                  <a href="#WriteString" class="anchor" title="Link to WriteString">#</a>
+               </h3>
+               
+               <p>WriteString writes the contents of the string s to w, which accepts a slice of bytes.
+If w implements [StringWriter], [StringWriter.WriteString] is invoked directly.
+Otherwise, [Writer.Write] is called exactly once.</p>
+               
+               <pre><code>func WriteString(w Writer, s string) (n int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="WriteString" data-name="WriteString">
@@ -2050,19 +2065,15 @@ returned as err; otherwise err is [ErrClosedPipe].</p>
                <pre><code>func (discard) WriteString(s string) (int, error)</code></pre>
             </article>
             
-            <article class="function symbol-anchor" id="WriteString" data-name="WriteString">
+            <article class="function symbol-anchor" id="WriteTo" data-name="WriteTo">
                <h3>
-                  WriteString 
-                  <span class="badge">function</span>
+                  WriteTo 
+                  <span class="badge method-badge">method</span>
                   
-                  <a href="#WriteString" class="anchor" title="Link to WriteString">#</a>
+                  <a href="#WriteTo" class="anchor" title="Link to WriteTo">#</a>
                </h3>
                
-               <p>WriteString writes the contents of the string s to w, which accepts a slice of bytes.
-If w implements [StringWriter], [StringWriter.WriteString] is invoked directly.
-Otherwise, [Writer.Write] is called exactly once.</p>
-               
-               <pre><code>func WriteString(w Writer, s string) (n int, err error)</code></pre>
+               <pre><code>func (mr *multiReader) WriteTo(w Writer) (sum int64, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="WriteTo" data-name="WriteTo">
@@ -2074,17 +2085,6 @@ Otherwise, [Writer.Write] is called exactly once.</p>
                </h3>
                
                <pre><code>func (c nopCloserWriterTo) WriteTo(w Writer) (n int64, err error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="WriteTo" data-name="WriteTo">
-               <h3>
-                  WriteTo 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#WriteTo" class="anchor" title="Link to WriteTo">#</a>
-               </h3>
-               
-               <pre><code>func (mr *multiReader) WriteTo(w Writer) (sum int64, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="closeRead" data-name="closeRead">
@@ -2337,8 +2337,10 @@ if buf is nil, one is allocated.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

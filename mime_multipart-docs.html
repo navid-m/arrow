@@ -521,7 +521,15 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"bufio"
+               <pre><code>"bytes"
+"errors"
+"internal/godebug"
+"io"
+"math"
+"net/textproto"
+"os"
+"strconv"
+"bufio"
 "bytes"
 "fmt"
 "internal/godebug"
@@ -543,14 +551,6 @@ _ "unsafe"
 "net/textproto"
 "slices"
 "strings"
-"bytes"
-"errors"
-"internal/godebug"
-"io"
-"math"
-"net/textproto"
-"os"
-"strconv"
 </code></pre>
             </article>
          </section>
@@ -1096,7 +1096,10 @@ Unlike [Reader.NextPart], it does not have special handling for
                   <a href="#Read" class="anchor" title="Link to Read">#</a>
                </h3>
                
-               <pre><code>func (r *stickyErrorReader) Read(p []byte) (n int, _ error)</code></pre>
+               <p>Read reads the body of a part, after its headers and before the
+next part (if any) begins.</p>
+               
+               <pre><code>func (p *Part) Read(d []byte) (n int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Read" data-name="Read">
@@ -1118,10 +1121,7 @@ Unlike [Reader.NextPart], it does not have special handling for
                   <a href="#Read" class="anchor" title="Link to Read">#</a>
                </h3>
                
-               <p>Read reads the body of a part, after its headers and before the
-next part (if any) begins.</p>
-               
-               <pre><code>func (p *Part) Read(d []byte) (n int, err error)</code></pre>
+               <pre><code>func (r *stickyErrorReader) Read(p []byte) (n int, _ error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ReadForm" data-name="ReadForm">
@@ -1562,8 +1562,10 @@ LWSP-char = SPACE / HTAB</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

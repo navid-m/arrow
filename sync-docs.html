@@ -527,27 +527,27 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>isync "internal/sync"
-"sync/atomic"
-"sync/atomic"
+               <pre><code>"sync/atomic"
 "sync/atomic"
 "unsafe"
 "unsafe"
-"internal/race"
-"sync/atomic"
 "unsafe"
 "internal/race"
 "sync/atomic"
 "unsafe"
 "sync/atomic"
 "unsafe"
-isync "internal/sync"
+"sync/atomic"
 "internal/race"
 "runtime"
 "sync/atomic"
 "unsafe"
 "unsafe"
+"internal/race"
+"sync/atomic"
 "unsafe"
+isync "internal/sync"
+isync "internal/sync"
 </code></pre>
             </article>
          </section>
@@ -1069,6 +1069,8 @@ agree.</p>
                ><code class="fields-code">type notifyList struct {
 wait uint32
 notify uint32
+rank int
+pad int
 lock uintptr
 head unsafe.Pointer
 tail unsafe.Pointer
@@ -1090,8 +1092,6 @@ agree.</p>
                ><code class="fields-code">type notifyList struct {
 wait uint32
 notify uint32
-rank int
-pad int
 lock uintptr
 head unsafe.Pointer
 tail unsafe.Pointer
@@ -1519,11 +1519,11 @@ The loaded result is true if the value was loaded, false if stored.</p>
                   <a href="#Lock" class="anchor" title="Link to Lock">#</a>
                </h3>
                
-               <p>Lock locks m.
-If the lock is already in use, the calling goroutine
-blocks until the mutex is available.</p>
+               <p>Lock locks rw for writing.
+If the lock is already locked for reading or writing,
+Lock blocks until the lock is available.</p>
                
-               <pre><code>func (m *Mutex) Lock()</code></pre>
+               <pre><code>func (rw *RWMutex) Lock()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Lock" data-name="Lock">
@@ -1545,9 +1545,11 @@ blocks until the mutex is available.</p>
                   <a href="#Lock" class="anchor" title="Link to Lock">#</a>
                </h3>
                
-               <p>Lock is a no-op used by -copylocks checker from `go vet`.</p>
+               <p>Lock locks m.
+If the lock is already in use, the calling goroutine
+blocks until the mutex is available.</p>
                
-               <pre><code>func (*noCopy) Lock()</code></pre>
+               <pre><code>func (m *Mutex) Lock()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Lock" data-name="Lock">
@@ -1558,11 +1560,9 @@ blocks until the mutex is available.</p>
                   <a href="#Lock" class="anchor" title="Link to Lock">#</a>
                </h3>
                
-               <p>Lock locks rw for writing.
-If the lock is already locked for reading or writing,
-Lock blocks until the lock is available.</p>
+               <p>Lock is a no-op used by -copylocks checker from `go vet`.</p>
                
-               <pre><code>func (rw *RWMutex) Lock()</code></pre>
+               <pre><code>func (*noCopy) Lock()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="NewCond" data-name="NewCond">
@@ -1851,35 +1851,7 @@ in a particular use of mutexes.</p>
                   <a href="#Unlock" class="anchor" title="Link to Unlock">#</a>
                </h3>
                
-               <pre><code>func (*noCopy) Unlock()</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Unlock" data-name="Unlock">
-               <h3>
-                  Unlock 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Unlock" class="anchor" title="Link to Unlock">#</a>
-               </h3>
-               
                <pre><code>func (r *rlocker) Unlock()</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Unlock" data-name="Unlock">
-               <h3>
-                  Unlock 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Unlock" class="anchor" title="Link to Unlock">#</a>
-               </h3>
-               
-               <p>Unlock unlocks rw for writing. It is a run-time error if rw is
-not locked for writing on entry to Unlock.
-As with Mutexes, a locked [RWMutex] is not associated with a particular
-goroutine. One goroutine may [RWMutex.RLock] ([RWMutex.Lock]) a RWMutex and then
-arrange for another goroutine to [RWMutex.RUnlock] ([RWMutex.Unlock]) it.</p>
-               
-               <pre><code>func (rw *RWMutex) Unlock()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Unlock" data-name="Unlock">
@@ -1899,17 +1871,32 @@ arrange for another goroutine to unlock it.</p>
                <pre><code>func (m *Mutex) Unlock()</code></pre>
             </article>
             
-            <article class="function symbol-anchor" id="Wait" data-name="Wait">
+            <article class="function symbol-anchor" id="Unlock" data-name="Unlock">
                <h3>
-                  Wait 
+                  Unlock 
                   <span class="badge method-badge">method</span>
                   
-                  <a href="#Wait" class="anchor" title="Link to Wait">#</a>
+                  <a href="#Unlock" class="anchor" title="Link to Unlock">#</a>
                </h3>
                
-               <p>Wait blocks until the [WaitGroup] counter is zero.</p>
+               <pre><code>func (*noCopy) Unlock()</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Unlock" data-name="Unlock">
+               <h3>
+                  Unlock 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Unlock" class="anchor" title="Link to Unlock">#</a>
+               </h3>
                
-               <pre><code>func (wg *WaitGroup) Wait()</code></pre>
+               <p>Unlock unlocks rw for writing. It is a run-time error if rw is
+not locked for writing on entry to Unlock.
+As with Mutexes, a locked [RWMutex] is not associated with a particular
+goroutine. One goroutine may [RWMutex.RLock] ([RWMutex.Lock]) a RWMutex and then
+arrange for another goroutine to [RWMutex.RUnlock] ([RWMutex.Unlock]) it.</p>
+               
+               <pre><code>func (rw *RWMutex) Unlock()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Wait" data-name="Wait">
@@ -1935,6 +1922,19 @@ c.Wait()
 c.L.Unlock()</p>
                
                <pre><code>func (c *Cond) Wait()</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Wait" data-name="Wait">
+               <h3>
+                  Wait 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Wait" class="anchor" title="Link to Wait">#</a>
+               </h3>
+               
+               <p>Wait blocks until the [WaitGroup] counter is zero.</p>
+               
+               <pre><code>func (wg *WaitGroup) Wait()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="check" data-name="check">
@@ -2162,7 +2162,11 @@ See discussion on golang.org/cl/31589.</p>
                   <a href="#popHead" class="anchor" title="Link to popHead">#</a>
                </h3>
                
-               <pre><code>func (c *poolChain) popHead() (any, bool)</code></pre>
+               <p>popHead removes and returns the element at the head of the queue.
+It returns false if the queue is empty. It must only be called by a
+single producer.</p>
+               
+               <pre><code>func (d *poolDequeue) popHead() (any, bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="popHead" data-name="popHead">
@@ -2173,22 +2177,7 @@ See discussion on golang.org/cl/31589.</p>
                   <a href="#popHead" class="anchor" title="Link to popHead">#</a>
                </h3>
                
-               <p>popHead removes and returns the element at the head of the queue.
-It returns false if the queue is empty. It must only be called by a
-single producer.</p>
-               
-               <pre><code>func (d *poolDequeue) popHead() (any, bool)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="popTail" data-name="popTail">
-               <h3>
-                  popTail 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#popTail" class="anchor" title="Link to popTail">#</a>
-               </h3>
-               
-               <pre><code>func (c *poolChain) popTail() (any, bool)</code></pre>
+               <pre><code>func (c *poolChain) popHead() (any, bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="popTail" data-name="popTail">
@@ -2206,15 +2195,15 @@ number of consumers.</p>
                <pre><code>func (d *poolDequeue) popTail() (any, bool)</code></pre>
             </article>
             
-            <article class="function symbol-anchor" id="pushHead" data-name="pushHead">
+            <article class="function symbol-anchor" id="popTail" data-name="popTail">
                <h3>
-                  pushHead 
+                  popTail 
                   <span class="badge method-badge">method</span>
                   
-                  <a href="#pushHead" class="anchor" title="Link to pushHead">#</a>
+                  <a href="#popTail" class="anchor" title="Link to popTail">#</a>
                </h3>
                
-               <pre><code>func (c *poolChain) pushHead(val any)</code></pre>
+               <pre><code>func (c *poolChain) popTail() (any, bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="pushHead" data-name="pushHead">
@@ -2229,6 +2218,17 @@ number of consumers.</p>
 queue is full. It must only be called by a single producer.</p>
                
                <pre><code>func (d *poolDequeue) pushHead(val any) bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="pushHead" data-name="pushHead">
+               <h3>
+                  pushHead 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#pushHead" class="anchor" title="Link to pushHead">#</a>
+               </h3>
+               
+               <pre><code>func (c *poolChain) pushHead(val any)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="rUnlockSlow" data-name="rUnlockSlow">
@@ -2744,8 +2744,10 @@ before m.mu is unlocked.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

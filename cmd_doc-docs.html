@@ -521,7 +521,24 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"bytes"
+               <pre><code>"bufio"
+"bytes"
+"fmt"
+"go/ast"
+"go/build"
+"go/doc"
+"go/format"
+"go/parser"
+"go/printer"
+"go/token"
+"io"
+"io/fs"
+"log"
+"path/filepath"
+"strings"
+"unicode"
+"unicode/utf8"
+"bytes"
 "fmt"
 "log"
 "os"
@@ -543,23 +560,6 @@
 "path/filepath"
 "strings"
 "cmd/internal/telemetry/counter"
-"bufio"
-"bytes"
-"fmt"
-"go/ast"
-"go/build"
-"go/doc"
-"go/format"
-"go/parser"
-"go/printer"
-"go/token"
-"io"
-"io/fs"
-"log"
-"path/filepath"
-"strings"
-"unicode"
-"unicode/utf8"
 </code></pre>
             </article>
          </section>
@@ -1381,9 +1381,7 @@ The depth specifies the maximum depth when traversing the AST.</p>
                   <a href="#packageClause" class="anchor" title="Link to packageClause">#</a>
                </h3>
                
-               <p>packageClause prints the package clause.</p>
-               
-               <pre><code>func (pkg *Package) packageClause()</code></pre>
+               <pre><code>func (pb *pkgBuffer) packageClause()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="packageClause" data-name="packageClause">
@@ -1394,7 +1392,9 @@ The depth specifies the maximum depth when traversing the AST.</p>
                   <a href="#packageClause" class="anchor" title="Link to packageClause">#</a>
                </h3>
                
-               <pre><code>func (pb *pkgBuffer) packageClause()</code></pre>
+               <p>packageClause prints the package clause.</p>
+               
+               <pre><code>func (pkg *Package) packageClause()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="packageDoc" data-name="packageDoc">
@@ -1888,8 +1888,10 @@ Inspired by setDefaultBuildMod in modload/init.go</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

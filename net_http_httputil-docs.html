@@ -523,7 +523,17 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"io"
+               <pre><code>"bufio"
+"bytes"
+"errors"
+"fmt"
+"io"
+"net"
+"net/http"
+"net/url"
+"strings"
+"time"
+"io"
 "net/http/internal"
 "bufio"
 "errors"
@@ -548,16 +558,6 @@
 "sync"
 "time"
 "golang.org/x/net/http/httpguts"
-"bufio"
-"bytes"
-"errors"
-"fmt"
-"io"
-"net"
-"net/http"
-"net/url"
-"strings"
-"time"
 </code></pre>
             </article>
          </section>
@@ -947,6 +947,19 @@ backend io.ReadWriter
                   <a href="#Close" class="anchor" title="Link to Close">#</a>
                </h3>
                
+               <p>Close calls [ClientConn.Hijack] and then also closes the underlying connection.</p>
+               
+               <pre><code>func (cc *ClientConn) Close() error</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Close" data-name="Close">
+               <h3>
+                  Close 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Close" class="anchor" title="Link to Close">#</a>
+               </h3>
+               
                <pre><code>func (c *dumpConn) Close() error</code></pre>
             </article>
             
@@ -959,19 +972,6 @@ backend io.ReadWriter
                </h3>
                
                <pre><code>func (failureToReadBody) Close() error</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Close" data-name="Close">
-               <h3>
-                  Close 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Close" class="anchor" title="Link to Close">#</a>
-               </h3>
-               
-               <p>Close calls [ClientConn.Hijack] and then also closes the underlying connection.</p>
-               
-               <pre><code>func (cc *ClientConn) Close() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Close" data-name="Close">
@@ -1265,7 +1265,12 @@ concurrently with [ClientConn.Write], but not with another Read.</p>
                   <a href="#Read" class="anchor" title="Link to Read">#</a>
                </h3>
                
-               <pre><code>func (failureToReadBody) Read([]byte) (int, error)</code></pre>
+               <p>Read returns the next request on the wire. An [ErrPersistEOF] is returned if
+it is gracefully determined that there are no more requests (e.g. after the
+first request on an HTTP/1.0 connection, or after a Connection:close on a
+HTTP/1.1 connection).</p>
+               
+               <pre><code>func (sc *ServerConn) Read() (*http.Request, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Read" data-name="Read">
@@ -1276,12 +1281,7 @@ concurrently with [ClientConn.Write], but not with another Read.</p>
                   <a href="#Read" class="anchor" title="Link to Read">#</a>
                </h3>
                
-               <p>Read returns the next request on the wire. An [ErrPersistEOF] is returned if
-it is gracefully determined that there are no more requests (e.g. after the
-first request on an HTTP/1.0 connection, or after a Connection:close on a
-HTTP/1.1 connection).</p>
-               
-               <pre><code>func (sc *ServerConn) Read() (*http.Request, error)</code></pre>
+               <pre><code>func (b neverEnding) Read(p []byte) (n int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Read" data-name="Read">
@@ -1303,7 +1303,7 @@ HTTP/1.1 connection).</p>
                   <a href="#Read" class="anchor" title="Link to Read">#</a>
                </h3>
                
-               <pre><code>func (b neverEnding) Read(p []byte) (n int, err error)</code></pre>
+               <pre><code>func (failureToReadBody) Read([]byte) (int, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="RemoteAddr" data-name="RemoteAddr">
@@ -1430,11 +1430,13 @@ r.SetXForwarded()
                   <a href="#Write" class="anchor" title="Link to Write">#</a>
                </h3>
                
-               <p>Write writes resp in response to req. To close the connection gracefully, set the
-Response.Close field to true. Write should be considered operational until
-it returns an error, regardless of any errors returned on the [ServerConn.Read] side.</p>
+               <p>Write writes a request. An [ErrPersistEOF] error is returned if the connection
+has been closed in an HTTP keep-alive sense. If req.Close equals true, the
+keep-alive connection is logically closed after this request and the opposing
+server is informed. An ErrUnexpectedEOF indicates the remote closed the
+underlying TCP connection, which is usually considered as graceful close.</p>
                
-               <pre><code>func (sc *ServerConn) Write(req *http.Request, resp *http.Response) error</code></pre>
+               <pre><code>func (cc *ClientConn) Write(req *http.Request) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Write" data-name="Write">
@@ -1445,13 +1447,11 @@ it returns an error, regardless of any errors returned on the [ServerConn.Read] 
                   <a href="#Write" class="anchor" title="Link to Write">#</a>
                </h3>
                
-               <p>Write writes a request. An [ErrPersistEOF] error is returned if the connection
-has been closed in an HTTP keep-alive sense. If req.Close equals true, the
-keep-alive connection is logically closed after this request and the opposing
-server is informed. An ErrUnexpectedEOF indicates the remote closed the
-underlying TCP connection, which is usually considered as graceful close.</p>
+               <p>Write writes resp in response to req. To close the connection gracefully, set the
+Response.Close field to true. Write should be considered operational until
+it returns an error, regardless of any errors returned on the [ServerConn.Read] side.</p>
                
-               <pre><code>func (cc *ClientConn) Write(req *http.Request) error</code></pre>
+               <pre><code>func (sc *ServerConn) Write(req *http.Request, resp *http.Response) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="cleanQueryParams" data-name="cleanQueryParams">
@@ -1900,8 +1900,10 @@ running under the HTTP server.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

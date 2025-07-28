@@ -521,72 +521,62 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"bytes"
-"fmt"
-"os"
-"os/exec"
-"regexp"
+               <pre><code>"os"
 "runtime"
-"strconv"
+"sync"
+"time"
+"bytes"
+"fmt"
+"runtime"
 "strings"
+"runtime"
 "syscall"
+"os"
+"time"
+"runtime"
+"runtime/debug"
+"sync/atomic"
 "internal/syscall/windows"
 "runtime"
 "sync"
 "syscall"
 "unsafe"
-_ "unsafe"
 "fmt"
 "os"
 "runtime"
-"runtime"
-"runtime"
-"sync"
+"fmt"
 "runtime"
 "runtime/debug"
-"sync/atomic"
-"errors"
-"runtime"
-"syscall"
 "time"
-"os"
-"time"
+"unsafe"
+"strings"
 "runtime"
 "time"
 "unsafe"
-"os"
-"runtime"
-"sync"
-"time"
-"syscall"
-"strings"
 "bytes"
 "fmt"
 "os"
 "runtime"
 "runtime/pprof"
-"fmt"
-"runtime"
-"runtime/debug"
-"time"
-"fmt"
-"os"
-"runtime/pprof"
-"time"
 "bytes"
 "fmt"
-"runtime"
-"strings"
+"internal/testenv"
+"io"
+"os"
+"syscall"
 "fmt"
 "os"
 "runtime/pprof"
 "time"
+"fmt"
+"os"
+"runtime/pprof"
+"time"
+"fmt"
+"iter"
 "runtime"
-"runtime/debug"
-"unsafe"
 "fmt"
 "runtime"
-"unsafe"
 "fmt"
 "math"
 "os"
@@ -597,18 +587,28 @@ _ "unsafe"
 "sync/atomic"
 "time"
 "unsafe"
-"syscall"
 "bytes"
 "fmt"
-"internal/testenv"
-"io"
 "os"
-"syscall"
-"unsafe"
-"fmt"
-"iter"
+"os/exec"
+"regexp"
 "runtime"
+"strconv"
+"strings"
+"syscall"
+"syscall"
+"syscall"
+"time"
+_ "unsafe"
+"runtime"
+"runtime/debug"
+"unsafe"
 "os"
+"errors"
+"unsafe"
+"runtime"
+"runtime"
+"sync"
 </code></pre>
             </article>
          </section>
@@ -1409,7 +1409,7 @@ See issue 30150.</p>
                   <a href="#Error" class="anchor" title="Link to Error">#</a>
                </h3>
                
-               <pre><code>func (e examplePanicError) Error() string</code></pre>
+               <pre><code>func (*panicError) Error() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Error" data-name="Error">
@@ -1421,17 +1421,6 @@ See issue 30150.</p>
                </h3>
                
                <pre><code>func (errorThatPrint) Error() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Error" data-name="Error">
-               <h3>
-                  Error 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Error" class="anchor" title="Link to Error">#</a>
-               </h3>
-               
-               <pre><code>func (*panicError) Error() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Error" data-name="Error">
@@ -1454,6 +1443,17 @@ See issue 30150.</p>
                </h3>
                
                <pre><code>func (e exampleError) Error() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Error" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Error" class="anchor" title="Link to Error">#</a>
+               </h3>
+               
+               <pre><code>func (e examplePanicError) Error() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Error" data-name="Error">
@@ -1997,7 +1997,7 @@ another defer to be processed.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code>func (s examplePanicStringer) String() string</code></pre>
+               <pre><code>func (s exampleStringer) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -2008,7 +2008,7 @@ another defer to be processed.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code>func (s exampleStringer) String() string</code></pre>
+               <pre><code>func (s examplePanicStringer) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -3357,8 +3357,10 @@ consistent testing environment to help avoid flakiness.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

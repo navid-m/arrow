@@ -521,7 +521,44 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"cmd/internal/cov/covcmd"
+               <pre><code>"bytes"
+"cmd/internal/obj"
+"cmd/internal/src"
+"fmt"
+"internal/bisect"
+"io"
+"os"
+"path/filepath"
+"strconv"
+"strings"
+"sync"
+"cmd/internal/obj"
+"internal/unsafeheader"
+"os"
+"runtime"
+"syscall"
+"unsafe"
+"io"
+"os"
+"fmt"
+"internal/buildcfg"
+"internal/types/errors"
+"os"
+"runtime/debug"
+"sort"
+"strings"
+"cmd/internal/src"
+"cmd/internal/telemetry/counter"
+"fmt"
+"io"
+"strings"
+"time"
+"fmt"
+"os"
+"runtime"
+"runtime/debug"
+"runtime/metrics"
+"cmd/internal/cov/covcmd"
 "cmd/internal/telemetry/counter"
 "encoding/json"
 "flag"
@@ -536,43 +573,6 @@
 "cmd/internal/obj"
 "cmd/internal/objabi"
 "cmd/internal/sys"
-"bytes"
-"cmd/internal/obj"
-"cmd/internal/src"
-"fmt"
-"internal/bisect"
-"io"
-"os"
-"path/filepath"
-"strconv"
-"strings"
-"sync"
-"cmd/internal/obj"
-"io"
-"os"
-"fmt"
-"io"
-"strings"
-"time"
-"fmt"
-"os"
-"runtime"
-"runtime/debug"
-"runtime/metrics"
-"internal/unsafeheader"
-"os"
-"runtime"
-"syscall"
-"unsafe"
-"fmt"
-"internal/buildcfg"
-"internal/types/errors"
-"os"
-"runtime/debug"
-"sort"
-"strings"
-"cmd/internal/src"
-"cmd/internal/telemetry/counter"
 </code></pre>
             </article>
          </section>
@@ -602,7 +602,7 @@
                <p>CompilerBootstrap reports whether the current compiler binary was
 built with -tags=compiler_bootstrap.</p>
                
-               <pre><code>const CompilerBootstrap = true</code></pre>
+               <pre><code>const CompilerBootstrap = false</code></pre>
             </article>
             
             <article class="global symbol-anchor" id="CompilerBootstrap" data-name="CompilerBootstrap">
@@ -616,7 +616,7 @@ built with -tags=compiler_bootstrap.</p>
                <p>CompilerBootstrap reports whether the current compiler binary was
 built with -tags=compiler_bootstrap.</p>
                
-               <pre><code>const CompilerBootstrap = false</code></pre>
+               <pre><code>const CompilerBootstrap = true</code></pre>
             </article>
             
             <article class="global symbol-anchor" id="Ctxt" data-name="Ctxt">
@@ -1551,9 +1551,6 @@ appear within a //go:linkname directive.</p>
                   <a href="#MapFile" class="anchor" title="Link to MapFile">#</a>
                </h3>
                
-               <p>MapFile returns length bytes from the file starting at the
-specified offset as a string.</p>
-               
                <pre><code>func MapFile(f *os.File, offset int64, length int64) (string, error)</code></pre>
             </article>
             
@@ -1564,6 +1561,9 @@ specified offset as a string.</p>
                   
                   <a href="#MapFile" class="anchor" title="Link to MapFile">#</a>
                </h3>
+               
+               <p>MapFile returns length bytes from the file starting at the
+specified offset as a string.</p>
                
                <pre><code>func MapFile(f *os.File, offset int64, length int64) (string, error)</code></pre>
             </article>
@@ -2346,8 +2346,10 @@ just the final path element.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

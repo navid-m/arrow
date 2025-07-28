@@ -523,19 +523,32 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"os"
-"os/signal"
-"sync"
-"os"
-"syscall"
+               <pre><code>"context"
+"flag"
 "fmt"
-"go/build"
+"log"
+"os"
+"os/exec"
+"reflect"
+"slices"
+"strings"
+"sync"
+"time"
+"cmd/go/internal/cfg"
+"cmd/go/internal/str"
+"cmd/go/internal/cfg"
+"fmt"
 "os"
 "path/filepath"
-"cmd/go/internal/cfg"
-"cmd/internal/par"
+"runtime"
 "errors"
 "syscall"
+"fmt"
+"internal/godebug"
+"runtime"
+"strconv"
+"sync"
+"os"
 "flag"
 "fmt"
 "cmd/go/internal/cfg"
@@ -555,29 +568,16 @@
 "strings"
 "sync"
 "os"
-"context"
-"flag"
-"fmt"
-"log"
-"os"
-"os/exec"
-"reflect"
-"slices"
-"strings"
+"os/signal"
 "sync"
-"time"
-"cmd/go/internal/cfg"
-"cmd/go/internal/str"
-"cmd/go/internal/cfg"
+"os"
+"syscall"
 "fmt"
+"go/build"
 "os"
 "path/filepath"
-"runtime"
-"fmt"
-"internal/godebug"
-"runtime"
-"strconv"
-"sync"
+"cmd/go/internal/cfg"
+"cmd/internal/par"
 </code></pre>
             </article>
          </section>
@@ -629,9 +629,9 @@
                </h3>
                
                <p>SignalTrace is the signal to send to make a Go program
-crash with a stack trace (no such signal in this case).</p>
+crash with a stack trace.</p>
                
-               <pre><code>var SignalTrace os.Signal = nil</code></pre>
+               <pre><code>var SignalTrace os.Signal = syscall.SIGQUIT</code></pre>
             </article>
             
             <article class="global symbol-anchor" id="SignalTrace" data-name="SignalTrace">
@@ -643,9 +643,9 @@ crash with a stack trace (no such signal in this case).</p>
                </h3>
                
                <p>SignalTrace is the signal to send to make a Go program
-crash with a stack trace.</p>
+crash with a stack trace (no such signal in this case).</p>
                
-               <pre><code>var SignalTrace os.Signal = syscall.SIGQUIT</code></pre>
+               <pre><code>var SignalTrace os.Signal = nil</code></pre>
             </article>
             
             <article class="global symbol-anchor" id="Usage" data-name="Usage">
@@ -1682,8 +1682,10 @@ flag.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

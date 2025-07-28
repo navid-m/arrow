@@ -524,17 +524,19 @@
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
                <pre><code>"strconv"
-"bytes"
-"encoding/binary"
-"strconv"
-"strconv"
 "encoding/binary"
 "errors"
 "fmt"
 "strconv"
 "strconv"
 "strconv"
+"fmt"
+"strconv"
 "sort"
+"strconv"
+"bytes"
+"encoding/binary"
+"strconv"
 "strconv"
 "errors"
 "fmt"
@@ -543,8 +545,6 @@
 "strings"
 "encoding/binary"
 "errors"
-"fmt"
-"strconv"
 </code></pre>
             </article>
          </section>
@@ -6741,9 +6741,10 @@ and serves to distinguish one .debug_types section from another.</p>
                   <a href="#AddressSize" class="anchor" title="Link to AddressSize">#</a>
                </h3>
                
-               <p>AddressSize returns the size in bytes of addresses in the current type unit.</p>
+               <p>AddressSize returns the size in bytes of addresses in the current compilation
+unit.</p>
                
-               <pre><code>func (tur *typeUnitReader) AddressSize() int</code></pre>
+               <pre><code>func (r *Reader) AddressSize() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="AddressSize" data-name="AddressSize">
@@ -6754,10 +6755,9 @@ and serves to distinguish one .debug_types section from another.</p>
                   <a href="#AddressSize" class="anchor" title="Link to AddressSize">#</a>
                </h3>
                
-               <p>AddressSize returns the size in bytes of addresses in the current compilation
-unit.</p>
+               <p>AddressSize returns the size in bytes of addresses in the current type unit.</p>
                
-               <pre><code>func (r *Reader) AddressSize() int</code></pre>
+               <pre><code>func (tur *typeUnitReader) AddressSize() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="AttrField" data-name="AttrField">
@@ -6861,6 +6861,17 @@ change.</p>
                   <a href="#GoString" class="anchor" title="Link to GoString">#</a>
                </h3>
                
+               <pre><code>func (i Class) GoString() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="GoString" data-name="GoString">
+               <h3>
+                  GoString 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#GoString" class="anchor" title="Link to GoString">#</a>
+               </h3>
+               
                <pre><code>func (a Attr) GoString() string</code></pre>
             </article>
             
@@ -6873,17 +6884,6 @@ change.</p>
                </h3>
                
                <pre><code>func (t Tag) GoString() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="GoString" data-name="GoString">
-               <h3>
-                  GoString 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#GoString" class="anchor" title="Link to GoString">#</a>
-               </h3>
-               
-               <pre><code>func (i Class) GoString() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="LineReader" data-name="LineReader">
@@ -7017,6 +7017,21 @@ line table.</p>
                   <a href="#Seek" class="anchor" title="Link to Seek">#</a>
                </h3>
                
+               <p>Seek restores the line table reader to a position returned by [LineReader.Tell].
+The argument pos must have been returned by a call to [LineReader.Tell] on this
+line table.</p>
+               
+               <pre><code>func (r *LineReader) Seek(pos LineReaderPos)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Seek" data-name="Seek">
+               <h3>
+                  Seek 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Seek" class="anchor" title="Link to Seek">#</a>
+               </h3>
+               
                <p>Seek to a new position in the type unit.</p>
                
                <pre><code>func (tur *typeUnitReader) Seek(off Offset)</code></pre>
@@ -7034,43 +7049,6 @@ line table.</p>
 Offset 0 can be used to denote the first entry.</p>
                
                <pre><code>func (r *Reader) Seek(off Offset)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Seek" data-name="Seek">
-               <h3>
-                  Seek 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Seek" class="anchor" title="Link to Seek">#</a>
-               </h3>
-               
-               <p>Seek restores the line table reader to a position returned by [LineReader.Tell].
-The argument pos must have been returned by a call to [LineReader.Tell] on this
-line table.</p>
-               
-               <pre><code>func (r *LineReader) Seek(pos LineReaderPos)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="SeekPC" data-name="SeekPC">
-               <h3>
-                  SeekPC 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#SeekPC" class="anchor" title="Link to SeekPC">#</a>
-               </h3>
-               
-               <p>SeekPC sets *entry to the [LineEntry] that includes pc and positions
-the reader on the next entry in the line table. If necessary, this
-will seek backwards to find pc.
-If pc is not covered by any entry in this line table, SeekPC
-returns [ErrUnknownPC]. In this case, *entry and the final seek
-position are unspecified.
-Note that DWARF line tables only permit sequential, forward scans.
-Hence, in the worst case, this takes time linear in the size of the
-line table. If the caller wishes to do repeated fast PC lookups, it
-should build an appropriate index of the line table.</p>
-               
-               <pre><code>func (r *LineReader) SeekPC(pc uint64, entry *LineEntry) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="SeekPC" data-name="SeekPC">
@@ -7096,15 +7074,26 @@ an appropriate index using the Ranges method.</p>
                <pre><code>func (r *Reader) SeekPC(pc uint64) (*Entry, error)</code></pre>
             </article>
             
-            <article class="function symbol-anchor" id="Size" data-name="Size">
+            <article class="function symbol-anchor" id="SeekPC" data-name="SeekPC">
                <h3>
-                  Size 
+                  SeekPC 
                   <span class="badge method-badge">method</span>
                   
-                  <a href="#Size" class="anchor" title="Link to Size">#</a>
+                  <a href="#SeekPC" class="anchor" title="Link to SeekPC">#</a>
                </h3>
                
-               <pre><code>func (t *QualType) Size() int64</code></pre>
+               <p>SeekPC sets *entry to the [LineEntry] that includes pc and positions
+the reader on the next entry in the line table. If necessary, this
+will seek backwards to find pc.
+If pc is not covered by any entry in this line table, SeekPC
+returns [ErrUnknownPC]. In this case, *entry and the final seek
+position are unspecified.
+Note that DWARF line tables only permit sequential, forward scans.
+Hence, in the worst case, this takes time linear in the size of the
+line table. If the caller wishes to do repeated fast PC lookups, it
+should build an appropriate index of the line table.</p>
+               
+               <pre><code>func (r *LineReader) SeekPC(pc uint64, entry *LineEntry) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Size" data-name="Size">
@@ -7115,7 +7104,18 @@ an appropriate index using the Ranges method.</p>
                   <a href="#Size" class="anchor" title="Link to Size">#</a>
                </h3>
                
-               <pre><code>func (t *TypedefType) Size() int64</code></pre>
+               <pre><code>func (t *ArrayType) Size() int64</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Size" data-name="Size">
+               <h3>
+                  Size 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Size" class="anchor" title="Link to Size">#</a>
+               </h3>
+               
+               <pre><code>func (t *QualType) Size() int64</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Size" data-name="Size">
@@ -7137,7 +7137,7 @@ an appropriate index using the Ranges method.</p>
                   <a href="#Size" class="anchor" title="Link to Size">#</a>
                </h3>
                
-               <pre><code>func (t *ArrayType) Size() int64</code></pre>
+               <pre><code>func (t *TypedefType) Size() int64</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="SkipChildren" data-name="SkipChildren">
@@ -7163,73 +7163,7 @@ children or [Reader.Next] has not been called, SkipChildren is a no-op.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code>func (i Class) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <pre><code>func (t *UnsupportedType) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <pre><code>func (t *PtrType) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <pre><code>func (i Attr) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <pre><code>func (t *EnumType) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <pre><code>func (t *QualType) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <pre><code>func (t *DotDotDotType) String() string</code></pre>
+               <pre><code>func (t *StructType) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -7251,29 +7185,18 @@ children or [Reader.Next] has not been called, SkipChildren is a no-op.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code>func (t *StructType) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <pre><code>func (t *BasicType) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
                <pre><code>func (t *ArrayType) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <pre><code>func (i Class) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -7295,7 +7218,51 @@ children or [Reader.Next] has not been called, SkipChildren is a no-op.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code>func (t *TypedefType) String() string</code></pre>
+               <pre><code>func (t *PtrType) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <pre><code>func (t *UnsupportedType) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <pre><code>func (t *QualType) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <pre><code>func (t *BasicType) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <pre><code>func (t *EnumType) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -7307,6 +7274,39 @@ children or [Reader.Next] has not been called, SkipChildren is a no-op.</p>
                </h3>
                
                <pre><code>func (t *FuncType) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <pre><code>func (t *DotDotDotType) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <pre><code>func (t *TypedefType) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <pre><code>func (i Attr) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Tell" data-name="Tell">
@@ -7557,7 +7557,7 @@ interface.</p>
                   <a href="#dwarf64" class="anchor" title="Link to dwarf64">#</a>
                </h3>
                
-               <pre><code>func (u unknownFormat) dwarf64() (bool, bool)</code></pre>
+               <pre><code>func (u *unit) dwarf64() (bool, bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="dwarf64" data-name="dwarf64">
@@ -7568,7 +7568,7 @@ interface.</p>
                   <a href="#dwarf64" class="anchor" title="Link to dwarf64">#</a>
                </h3>
                
-               <pre><code>func (u *unit) dwarf64() (bool, bool)</code></pre>
+               <pre><code>func (u unknownFormat) dwarf64() (bool, bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="entry" data-name="entry">
@@ -8226,8 +8226,10 @@ the 0x80 bit means read another byte.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

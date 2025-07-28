@@ -521,7 +521,29 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"bufio"
+               <pre><code>"bytes"
+"cmd/internal/cov/covcmd"
+"cmp"
+"encoding/json"
+"flag"
+"fmt"
+"go/ast"
+"go/parser"
+"go/token"
+"internal/coverage"
+"internal/coverage/encodemeta"
+"internal/coverage/slicewriter"
+"io"
+"log"
+"os"
+"path/filepath"
+"slices"
+"strconv"
+"strings"
+"cmd/internal/edit"
+"cmd/internal/objabi"
+"cmd/internal/telemetry/counter"
+"bufio"
 "bytes"
 "encoding/json"
 "errors"
@@ -548,28 +570,6 @@
 "path/filepath"
 "strings"
 "golang.org/x/tools/cover"
-"bytes"
-"cmd/internal/cov/covcmd"
-"cmp"
-"encoding/json"
-"flag"
-"fmt"
-"go/ast"
-"go/parser"
-"go/token"
-"internal/coverage"
-"internal/coverage/encodemeta"
-"internal/coverage/slicewriter"
-"io"
-"log"
-"os"
-"path/filepath"
-"slices"
-"strconv"
-"strings"
-"cmd/internal/edit"
-"cmd/internal/objabi"
-"cmd/internal/telemetry/counter"
 </code></pre>
             </article>
          </section>
@@ -1156,7 +1156,9 @@ a problem.</p>
                   <a href="#Visit" class="anchor" title="Link to Visit">#</a>
                </h3>
                
-               <pre><code>func (f *funcLitFinder) Visit(node ast.Node) (w ast.Visitor)</code></pre>
+               <p>Visit implements the ast.Visitor interface.</p>
+               
+               <pre><code>func (f *File) Visit(node ast.Node) ast.Visitor</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Visit" data-name="Visit">
@@ -1180,9 +1182,7 @@ a problem.</p>
                   <a href="#Visit" class="anchor" title="Link to Visit">#</a>
                </h3>
                
-               <p>Visit implements the ast.Visitor interface.</p>
-               
-               <pre><code>func (f *File) Visit(node ast.Node) ast.Visitor</code></pre>
+               <pre><code>func (f *funcLitFinder) Visit(node ast.Node) (w ast.Visitor)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="addCounters" data-name="addCounters">
@@ -1882,8 +1882,10 @@ block in the source.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

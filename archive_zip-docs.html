@@ -523,7 +523,11 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"io/fs"
+               <pre><code>"compress/flate"
+"errors"
+"io"
+"sync"
+"io/fs"
 "path"
 "time"
 "bufio"
@@ -550,10 +554,6 @@
 "strings"
 "sync"
 "time"
-"compress/flate"
-"errors"
-"io"
-"sync"
 </code></pre>
             </article>
          </section>
@@ -1618,7 +1618,7 @@ adding each file to the zip using deflate while maintaining the directory struct
                   <a href="#Close" class="anchor" title="Link to Close">#</a>
                </h3>
                
-               <pre><code>func (r *checksumReader) Close() error</code></pre>
+               <pre><code>func (d *openDir) Close() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Close" data-name="Close">
@@ -1629,7 +1629,7 @@ adding each file to the zip using deflate while maintaining the directory struct
                   <a href="#Close" class="anchor" title="Link to Close">#</a>
                </h3>
                
-               <pre><code>func (r *dirReader) Close() error</code></pre>
+               <pre><code>func (w *pooledFlateWriter) Close() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Close" data-name="Close">
@@ -1654,20 +1654,7 @@ It does not close the underlying writer.</p>
                   <a href="#Close" class="anchor" title="Link to Close">#</a>
                </h3>
                
-               <p>Close closes the Zip file, rendering it unusable for I/O.</p>
-               
-               <pre><code>func (rc *ReadCloser) Close() error</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Close" data-name="Close">
-               <h3>
-                  Close 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Close" class="anchor" title="Link to Close">#</a>
-               </h3>
-               
-               <pre><code>func (d *openDir) Close() error</code></pre>
+               <pre><code>func (w nopCloser) Close() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Close" data-name="Close">
@@ -1689,7 +1676,7 @@ It does not close the underlying writer.</p>
                   <a href="#Close" class="anchor" title="Link to Close">#</a>
                </h3>
                
-               <pre><code>func (w *pooledFlateWriter) Close() error</code></pre>
+               <pre><code>func (r *dirReader) Close() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Close" data-name="Close">
@@ -1700,7 +1687,20 @@ It does not close the underlying writer.</p>
                   <a href="#Close" class="anchor" title="Link to Close">#</a>
                </h3>
                
-               <pre><code>func (w nopCloser) Close() error</code></pre>
+               <p>Close closes the Zip file, rendering it unusable for I/O.</p>
+               
+               <pre><code>func (rc *ReadCloser) Close() error</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Close" data-name="Close">
+               <h3>
+                  Close 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Close" class="anchor" title="Link to Close">#</a>
+               </h3>
+               
+               <pre><code>func (r *checksumReader) Close() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Copy" data-name="Copy">
@@ -1869,7 +1869,7 @@ Calling Flush is not normally necessary; calling Close is sufficient.</p>
                   <a href="#IsDir" class="anchor" title="Link to IsDir">#</a>
                </h3>
                
-               <pre><code>func (f *fileListEntry) IsDir() bool</code></pre>
+               <pre><code>func (fi headerFileInfo) IsDir() bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="IsDir" data-name="IsDir">
@@ -1880,7 +1880,18 @@ Calling Flush is not normally necessary; calling Close is sufficient.</p>
                   <a href="#IsDir" class="anchor" title="Link to IsDir">#</a>
                </h3>
                
-               <pre><code>func (fi headerFileInfo) IsDir() bool</code></pre>
+               <pre><code>func (f *fileListEntry) IsDir() bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ModTime" data-name="ModTime">
+               <h3>
+                  ModTime 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#ModTime" class="anchor" title="Link to ModTime">#</a>
+               </h3>
+               
+               <pre><code>func (fi headerFileInfo) ModTime() time.Time</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ModTime" data-name="ModTime">
@@ -1909,17 +1920,6 @@ Deprecated: Use [Modified] instead.</p>
                <pre><code>func (f *fileListEntry) ModTime() time.Time</code></pre>
             </article>
             
-            <article class="function symbol-anchor" id="ModTime" data-name="ModTime">
-               <h3>
-                  ModTime 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#ModTime" class="anchor" title="Link to ModTime">#</a>
-               </h3>
-               
-               <pre><code>func (fi headerFileInfo) ModTime() time.Time</code></pre>
-            </article>
-            
             <article class="function symbol-anchor" id="Mode" data-name="Mode">
                <h3>
                   Mode 
@@ -1939,7 +1939,9 @@ Deprecated: Use [Modified] instead.</p>
                   <a href="#Mode" class="anchor" title="Link to Mode">#</a>
                </h3>
                
-               <pre><code>func (fi headerFileInfo) Mode() fs.FileMode</code></pre>
+               <p>Mode returns the permission and mode bits for the [FileHeader].</p>
+               
+               <pre><code>func (h *FileHeader) Mode() (mode fs.FileMode)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Mode" data-name="Mode">
@@ -1950,9 +1952,7 @@ Deprecated: Use [Modified] instead.</p>
                   <a href="#Mode" class="anchor" title="Link to Mode">#</a>
                </h3>
                
-               <p>Mode returns the permission and mode bits for the [FileHeader].</p>
-               
-               <pre><code>func (h *FileHeader) Mode() (mode fs.FileMode)</code></pre>
+               <pre><code>func (fi headerFileInfo) Mode() fs.FileMode</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Name" data-name="Name">
@@ -2021,10 +2021,12 @@ the [ErrInsecurePath] error and use the returned reader.</p>
                   <a href="#Open" class="anchor" title="Link to Open">#</a>
                </h3>
                
-               <p>Open returns a [ReadCloser] that provides access to the [File]'s contents.
-Multiple files may be read concurrently.</p>
+               <p>Open opens the named file in the ZIP archive,
+using the semantics of fs.FS.Open:
+paths are always slash separated, with no
+leading / or ../ elements.</p>
                
-               <pre><code>func (f *File) Open() (io.ReadCloser, error)</code></pre>
+               <pre><code>func (r *Reader) Open(name string) (fs.File, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Open" data-name="Open">
@@ -2035,12 +2037,10 @@ Multiple files may be read concurrently.</p>
                   <a href="#Open" class="anchor" title="Link to Open">#</a>
                </h3>
                
-               <p>Open opens the named file in the ZIP archive,
-using the semantics of fs.FS.Open:
-paths are always slash separated, with no
-leading / or ../ elements.</p>
+               <p>Open returns a [ReadCloser] that provides access to the [File]'s contents.
+Multiple files may be read concurrently.</p>
                
-               <pre><code>func (r *Reader) Open(name string) (fs.File, error)</code></pre>
+               <pre><code>func (f *File) Open() (io.ReadCloser, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="OpenRaw" data-name="OpenRaw">
@@ -2085,6 +2085,17 @@ the ErrInsecurePath error and use the returned reader.</p>
                   <a href="#Read" class="anchor" title="Link to Read">#</a>
                </h3>
                
+               <pre><code>func (r *pooledFlateReader) Read(p []byte) (n int, err error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Read" data-name="Read">
+               <h3>
+                  Read 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Read" class="anchor" title="Link to Read">#</a>
+               </h3>
+               
                <pre><code>func (r *dirReader) Read([]byte) (int, error)</code></pre>
             </article>
             
@@ -2108,17 +2119,6 @@ the ErrInsecurePath error and use the returned reader.</p>
                </h3>
                
                <pre><code>func (d *openDir) Read([]byte) (int, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Read" data-name="Read">
-               <h3>
-                  Read 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Read" class="anchor" title="Link to Read">#</a>
-               </h3>
-               
-               <pre><code>func (r *pooledFlateReader) Read(p []byte) (n int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ReadDir" data-name="ReadDir">
@@ -2256,7 +2256,7 @@ It must be called before any data is written.</p>
                   <a href="#Size" class="anchor" title="Link to Size">#</a>
                </h3>
                
-               <pre><code>func (f *fileListEntry) Size() int64</code></pre>
+               <pre><code>func (fi headerFileInfo) Size() int64</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Size" data-name="Size">
@@ -2267,18 +2267,7 @@ It must be called before any data is written.</p>
                   <a href="#Size" class="anchor" title="Link to Size">#</a>
                </h3>
                
-               <pre><code>func (fi headerFileInfo) Size() int64</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Stat" data-name="Stat">
-               <h3>
-                  Stat 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Stat" class="anchor" title="Link to Stat">#</a>
-               </h3>
-               
-               <pre><code>func (d *openDir) Stat() (fs.FileInfo, error)</code></pre>
+               <pre><code>func (f *fileListEntry) Size() int64</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Stat" data-name="Stat">
@@ -2292,15 +2281,15 @@ It must be called before any data is written.</p>
                <pre><code>func (r *checksumReader) Stat() (fs.FileInfo, error)</code></pre>
             </article>
             
-            <article class="function symbol-anchor" id="String" data-name="String">
+            <article class="function symbol-anchor" id="Stat" data-name="Stat">
                <h3>
-                  String 
+                  Stat 
                   <span class="badge method-badge">method</span>
                   
-                  <a href="#String" class="anchor" title="Link to String">#</a>
+                  <a href="#Stat" class="anchor" title="Link to Stat">#</a>
                </h3>
                
-               <pre><code>func (fi headerFileInfo) String() string</code></pre>
+               <pre><code>func (d *openDir) Stat() (fs.FileInfo, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -2312,6 +2301,17 @@ It must be called before any data is written.</p>
                </h3>
                
                <pre><code>func (f *fileListEntry) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <pre><code>func (fi headerFileInfo) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Sys" data-name="Sys">
@@ -2344,7 +2344,7 @@ It must be called before any data is written.</p>
                   <a href="#Type" class="anchor" title="Link to Type">#</a>
                </h3>
                
-               <pre><code>func (f *fileListEntry) Type() fs.FileMode</code></pre>
+               <pre><code>func (fi headerFileInfo) Type() fs.FileMode</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Type" data-name="Type">
@@ -2355,7 +2355,7 @@ It must be called before any data is written.</p>
                   <a href="#Type" class="anchor" title="Link to Type">#</a>
                </h3>
                
-               <pre><code>func (fi headerFileInfo) Type() fs.FileMode</code></pre>
+               <pre><code>func (f *fileListEntry) Type() fs.FileMode</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Write" data-name="Write">
@@ -2367,6 +2367,17 @@ It must be called before any data is written.</p>
                </h3>
                
                <pre><code>func (dirWriter) Write(b []byte) (int, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Write" data-name="Write">
+               <h3>
+                  Write 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Write" class="anchor" title="Link to Write">#</a>
+               </h3>
+               
+               <pre><code>func (w *countWriter) Write(p []byte) (int, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Write" data-name="Write">
@@ -2389,17 +2400,6 @@ It must be called before any data is written.</p>
                </h3>
                
                <pre><code>func (w *pooledFlateWriter) Write(p []byte) (n int, err error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Write" data-name="Write">
-               <h3>
-                  Write 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Write" class="anchor" title="Link to Write">#</a>
-               </h3>
-               
-               <pre><code>func (w *countWriter) Write(p []byte) (int, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="close" data-name="close">
@@ -2438,23 +2438,23 @@ It must be called before any data is written.</p>
             <article class="function symbol-anchor" id="decompressor" data-name="decompressor">
                <h3>
                   decompressor 
-                  <span class="badge">function</span>
-                  
-                  <a href="#decompressor" class="anchor" title="Link to decompressor">#</a>
-               </h3>
-               
-               <pre><code>func decompressor(method uint16) Decompressor</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="decompressor" data-name="decompressor">
-               <h3>
-                  decompressor 
                   <span class="badge method-badge">method</span>
                   
                   <a href="#decompressor" class="anchor" title="Link to decompressor">#</a>
                </h3>
                
                <pre><code>func (r *Reader) decompressor(method uint16) Decompressor</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="decompressor" data-name="decompressor">
+               <h3>
+                  decompressor 
+                  <span class="badge">function</span>
+                  
+                  <a href="#decompressor" class="anchor" title="Link to decompressor">#</a>
+               </h3>
+               
+               <pre><code>func decompressor(method uint16) Decompressor</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="detectUTF8" data-name="detectUTF8">
@@ -2548,23 +2548,23 @@ found.</p>
             <article class="function symbol-anchor" id="init" data-name="init">
                <h3>
                   init 
-                  <span class="badge">function</span>
-                  
-                  <a href="#init" class="anchor" title="Link to init">#</a>
-               </h3>
-               
-               <pre><code>func init()</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="init" data-name="init">
-               <h3>
-                  init 
                   <span class="badge method-badge">method</span>
                   
                   <a href="#init" class="anchor" title="Link to init">#</a>
                </h3>
                
                <pre><code>func (r *Reader) init(rdr io.ReaderAt, size int64) error</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="init" data-name="init">
+               <h3>
+                  init 
+                  <span class="badge">function</span>
+                  
+                  <a href="#init" class="anchor" title="Link to init">#</a>
+               </h3>
+               
+               <pre><code>func init()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="initFileList" data-name="initFileList">
@@ -2853,7 +2853,7 @@ If the offset is non-sensible, then this uses an offset of zero.</p>
                   <a href="#uint64" class="anchor" title="Link to uint64">#</a>
                </h3>
                
-               <pre><code>func (b *writeBuf) uint64(v uint64)</code></pre>
+               <pre><code>func (b *readBuf) uint64() uint64</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="uint64" data-name="uint64">
@@ -2864,7 +2864,7 @@ If the offset is non-sensible, then this uses an offset of zero.</p>
                   <a href="#uint64" class="anchor" title="Link to uint64">#</a>
                </h3>
                
-               <pre><code>func (b *readBuf) uint64() uint64</code></pre>
+               <pre><code>func (b *writeBuf) uint64(v uint64)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="uint8" data-name="uint8">
@@ -3077,8 +3077,10 @@ If the offset is non-sensible, then this uses an offset of zero.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

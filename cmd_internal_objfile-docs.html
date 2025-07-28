@@ -521,28 +521,7 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"cmd/internal/archive"
-"cmp"
-"debug/dwarf"
-"debug/gosym"
-"fmt"
-"io"
-"os"
-"slices"
-"debug/dwarf"
-"debug/pe"
-"fmt"
-"io"
-"slices"
-"sort"
-"debug/dwarf"
-"debug/plan9obj"
-"errors"
-"fmt"
-"io"
-"slices"
-"sort"
-"debug/dwarf"
+               <pre><code>"debug/dwarf"
 "fmt"
 "internal/xcoff"
 "io"
@@ -564,6 +543,27 @@
 "os"
 "debug/dwarf"
 "debug/macho"
+"fmt"
+"io"
+"slices"
+"sort"
+"cmd/internal/archive"
+"cmp"
+"debug/dwarf"
+"debug/gosym"
+"fmt"
+"io"
+"os"
+"slices"
+"debug/dwarf"
+"debug/pe"
+"fmt"
+"io"
+"slices"
+"sort"
+"debug/dwarf"
+"debug/plan9obj"
+"errors"
 "fmt"
 "io"
 "slices"
@@ -863,7 +863,10 @@ xcoff *xcoff.File
                   <a href="#DWARF" class="anchor" title="Link to DWARF">#</a>
                </h3>
                
-               <pre><code>func (f *File) DWARF() (*dwarf.Data, error)</code></pre>
+               <p>DWARF returns DWARF debug data for the file, if any.
+This is for cmd/pprof to locate cgo functions.</p>
+               
+               <pre><code>func (e *Entry) DWARF() (*dwarf.Data, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="DWARF" data-name="DWARF">
@@ -874,10 +877,7 @@ xcoff *xcoff.File
                   <a href="#DWARF" class="anchor" title="Link to DWARF">#</a>
                </h3>
                
-               <p>DWARF returns DWARF debug data for the file, if any.
-This is for cmd/pprof to locate cgo functions.</p>
-               
-               <pre><code>func (e *Entry) DWARF() (*dwarf.Data, error)</code></pre>
+               <pre><code>func (f *File) DWARF() (*dwarf.Data, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Entries" data-name="Entries">
@@ -899,7 +899,7 @@ This is for cmd/pprof to locate cgo functions.</p>
                   <a href="#GOARCH" class="anchor" title="Link to GOARCH">#</a>
                </h3>
                
-               <pre><code>func (e *Entry) GOARCH() string</code></pre>
+               <pre><code>func (f *File) GOARCH() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="GOARCH" data-name="GOARCH">
@@ -910,7 +910,18 @@ This is for cmd/pprof to locate cgo functions.</p>
                   <a href="#GOARCH" class="anchor" title="Link to GOARCH">#</a>
                </h3>
                
-               <pre><code>func (f *File) GOARCH() string</code></pre>
+               <pre><code>func (e *Entry) GOARCH() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="LoadAddress" data-name="LoadAddress">
+               <h3>
+                  LoadAddress 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#LoadAddress" class="anchor" title="Link to LoadAddress">#</a>
+               </h3>
+               
+               <pre><code>func (f *File) LoadAddress() (uint64, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="LoadAddress" data-name="LoadAddress">
@@ -926,17 +937,6 @@ This differs from the actual load address for a position-independent
 executable.</p>
                
                <pre><code>func (e *Entry) LoadAddress() (uint64, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="LoadAddress" data-name="LoadAddress">
-               <h3>
-                  LoadAddress 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#LoadAddress" class="anchor" title="Link to LoadAddress">#</a>
-               </h3>
-               
-               <pre><code>func (f *File) LoadAddress() (uint64, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Name" data-name="Name">
@@ -972,7 +972,7 @@ The caller must call f.Close when the file is no longer needed.</p>
                   <a href="#PCLineTable" class="anchor" title="Link to PCLineTable">#</a>
                </h3>
                
-               <pre><code>func (f *File) PCLineTable() (Liner, error)</code></pre>
+               <pre><code>func (e *Entry) PCLineTable() (Liner, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="PCLineTable" data-name="PCLineTable">
@@ -983,7 +983,7 @@ The caller must call f.Close when the file is no longer needed.</p>
                   <a href="#PCLineTable" class="anchor" title="Link to PCLineTable">#</a>
                </h3>
                
-               <pre><code>func (e *Entry) PCLineTable() (Liner, error)</code></pre>
+               <pre><code>func (f *File) PCLineTable() (Liner, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="PCToLine" data-name="PCToLine">
@@ -1020,7 +1020,7 @@ This function implements the Liner interface in preference to pcln() above.</p>
                   <a href="#Symbols" class="anchor" title="Link to Symbols">#</a>
                </h3>
                
-               <pre><code>func (e *Entry) Symbols() ([]Sym, error)</code></pre>
+               <pre><code>func (f *File) Symbols() ([]Sym, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Symbols" data-name="Symbols">
@@ -1031,7 +1031,7 @@ This function implements the Liner interface in preference to pcln() above.</p>
                   <a href="#Symbols" class="anchor" title="Link to Symbols">#</a>
                </h3>
                
-               <pre><code>func (f *File) Symbols() ([]Sym, error)</code></pre>
+               <pre><code>func (e *Entry) Symbols() ([]Sym, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Text" data-name="Text">
@@ -1064,29 +1064,7 @@ This function implements the Liner interface in preference to pcln() above.</p>
                   <a href="#dwarf" class="anchor" title="Link to dwarf">#</a>
                </h3>
                
-               <pre><code>func (f *machoFile) dwarf() (*dwarf.Data, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="dwarf" data-name="dwarf">
-               <h3>
-                  dwarf 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#dwarf" class="anchor" title="Link to dwarf">#</a>
-               </h3>
-               
-               <pre><code>func (f *goobjFile) dwarf() (*dwarf.Data, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="dwarf" data-name="dwarf">
-               <h3>
-                  dwarf 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#dwarf" class="anchor" title="Link to dwarf">#</a>
-               </h3>
-               
-               <pre><code>func (f *xcoffFile) dwarf() (*dwarf.Data, error)</code></pre>
+               <pre><code>func (f *peFile) dwarf() (*dwarf.Data, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="dwarf" data-name="dwarf">
@@ -1108,6 +1086,28 @@ This function implements the Liner interface in preference to pcln() above.</p>
                   <a href="#dwarf" class="anchor" title="Link to dwarf">#</a>
                </h3>
                
+               <pre><code>func (f *xcoffFile) dwarf() (*dwarf.Data, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="dwarf" data-name="dwarf">
+               <h3>
+                  dwarf 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#dwarf" class="anchor" title="Link to dwarf">#</a>
+               </h3>
+               
+               <pre><code>func (f *machoFile) dwarf() (*dwarf.Data, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="dwarf" data-name="dwarf">
+               <h3>
+                  dwarf 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#dwarf" class="anchor" title="Link to dwarf">#</a>
+               </h3>
+               
                <pre><code>func (f *plan9File) dwarf() (*dwarf.Data, error)</code></pre>
             </article>
             
@@ -1119,7 +1119,7 @@ This function implements the Liner interface in preference to pcln() above.</p>
                   <a href="#dwarf" class="anchor" title="Link to dwarf">#</a>
                </h3>
                
-               <pre><code>func (f *peFile) dwarf() (*dwarf.Data, error)</code></pre>
+               <pre><code>func (f *goobjFile) dwarf() (*dwarf.Data, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="findPESymbol" data-name="findPESymbol">
@@ -1163,40 +1163,18 @@ This function implements the Liner interface in preference to pcln() above.</p>
                   <a href="#goarch" class="anchor" title="Link to goarch">#</a>
                </h3>
                
-               <pre><code>func (f *goobjFile) goarch() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="goarch" data-name="goarch">
-               <h3>
-                  goarch 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#goarch" class="anchor" title="Link to goarch">#</a>
-               </h3>
-               
-               <pre><code>func (f *xcoffFile) goarch() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="goarch" data-name="goarch">
-               <h3>
-                  goarch 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#goarch" class="anchor" title="Link to goarch">#</a>
-               </h3>
-               
-               <pre><code>func (f *peFile) goarch() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="goarch" data-name="goarch">
-               <h3>
-                  goarch 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#goarch" class="anchor" title="Link to goarch">#</a>
-               </h3>
-               
                <pre><code>func (f *machoFile) goarch() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="goarch" data-name="goarch">
+               <h3>
+                  goarch 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#goarch" class="anchor" title="Link to goarch">#</a>
+               </h3>
+               
+               <pre><code>func (f *goobjFile) goarch() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="goarch" data-name="goarch">
@@ -1219,6 +1197,28 @@ This function implements the Liner interface in preference to pcln() above.</p>
                </h3>
                
                <pre><code>func (f *plan9File) goarch() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="goarch" data-name="goarch">
+               <h3>
+                  goarch 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#goarch" class="anchor" title="Link to goarch">#</a>
+               </h3>
+               
+               <pre><code>func (f *xcoffFile) goarch() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="goarch" data-name="goarch">
+               <h3>
+                  goarch 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#goarch" class="anchor" title="Link to goarch">#</a>
+               </h3>
+               
+               <pre><code>func (f *peFile) goarch() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="goobjName" data-name="goobjName">
@@ -1251,17 +1251,6 @@ This function implements the Liner interface in preference to pcln() above.</p>
                   <a href="#loadAddress" class="anchor" title="Link to loadAddress">#</a>
                </h3>
                
-               <pre><code>func (f *plan9File) loadAddress() (uint64, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="loadAddress" data-name="loadAddress">
-               <h3>
-                  loadAddress 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#loadAddress" class="anchor" title="Link to loadAddress">#</a>
-               </h3>
-               
                <pre><code>func (f *machoFile) loadAddress() (uint64, error)</code></pre>
             </article>
             
@@ -1273,7 +1262,7 @@ This function implements the Liner interface in preference to pcln() above.</p>
                   <a href="#loadAddress" class="anchor" title="Link to loadAddress">#</a>
                </h3>
                
-               <pre><code>func (f *peFile) loadAddress() (uint64, error)</code></pre>
+               <pre><code>func (f *plan9File) loadAddress() (uint64, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="loadAddress" data-name="loadAddress">
@@ -1296,6 +1285,17 @@ This function implements the Liner interface in preference to pcln() above.</p>
                </h3>
                
                <pre><code>func (f *goobjFile) loadAddress() (uint64, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="loadAddress" data-name="loadAddress">
+               <h3>
+                  loadAddress 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#loadAddress" class="anchor" title="Link to loadAddress">#</a>
+               </h3>
+               
+               <pre><code>func (f *peFile) loadAddress() (uint64, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="loadAddress" data-name="loadAddress">
@@ -1430,6 +1430,28 @@ offset of the pc from the entry point.</p>
                   <a href="#pcln" class="anchor" title="Link to pcln">#</a>
                </h3>
                
+               <pre><code>func (f *goobjFile) pcln() (textStart uint64, symtab []byte, pclntab []byte, err error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="pcln" data-name="pcln">
+               <h3>
+                  pcln 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#pcln" class="anchor" title="Link to pcln">#</a>
+               </h3>
+               
+               <pre><code>func (f *plan9File) pcln() (textStart uint64, symtab []byte, pclntab []byte, err error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="pcln" data-name="pcln">
+               <h3>
+                  pcln 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#pcln" class="anchor" title="Link to pcln">#</a>
+               </h3>
+               
                <pre><code>func (f *xcoffFile) pcln() (textStart uint64, symtab []byte, pclntab []byte, err error)</code></pre>
             </article>
             
@@ -1464,28 +1486,6 @@ offset of the pc from the entry point.</p>
                </h3>
                
                <pre><code>func (f *machoFile) pcln() (textStart uint64, symtab []byte, pclntab []byte, err error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="pcln" data-name="pcln">
-               <h3>
-                  pcln 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#pcln" class="anchor" title="Link to pcln">#</a>
-               </h3>
-               
-               <pre><code>func (f *goobjFile) pcln() (textStart uint64, symtab []byte, pclntab []byte, err error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="pcln" data-name="pcln">
-               <h3>
-                  pcln 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#pcln" class="anchor" title="Link to pcln">#</a>
-               </h3>
-               
-               <pre><code>func (f *plan9File) pcln() (textStart uint64, symtab []byte, pclntab []byte, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="readvarint" data-name="readvarint">
@@ -1533,7 +1533,29 @@ offset of the pc from the entry point.</p>
                   <a href="#symbols" class="anchor" title="Link to symbols">#</a>
                </h3>
                
-               <pre><code>func (f *elfFile) symbols() ([]Sym, error)</code></pre>
+               <pre><code>func (f *goobjFile) symbols() ([]Sym, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="symbols" data-name="symbols">
+               <h3>
+                  symbols 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#symbols" class="anchor" title="Link to symbols">#</a>
+               </h3>
+               
+               <pre><code>func (f *machoFile) symbols() ([]Sym, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="symbols" data-name="symbols">
+               <h3>
+                  symbols 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#symbols" class="anchor" title="Link to symbols">#</a>
+               </h3>
+               
+               <pre><code>func (f *peFile) symbols() ([]Sym, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="symbols" data-name="symbols">
@@ -1566,29 +1588,40 @@ offset of the pc from the entry point.</p>
                   <a href="#symbols" class="anchor" title="Link to symbols">#</a>
                </h3>
                
-               <pre><code>func (f *machoFile) symbols() ([]Sym, error)</code></pre>
+               <pre><code>func (f *elfFile) symbols() ([]Sym, error)</code></pre>
             </article>
             
-            <article class="function symbol-anchor" id="symbols" data-name="symbols">
+            <article class="function symbol-anchor" id="text" data-name="text">
                <h3>
-                  symbols 
+                  text 
                   <span class="badge method-badge">method</span>
                   
-                  <a href="#symbols" class="anchor" title="Link to symbols">#</a>
+                  <a href="#text" class="anchor" title="Link to text">#</a>
                </h3>
                
-               <pre><code>func (f *goobjFile) symbols() ([]Sym, error)</code></pre>
+               <pre><code>func (f *peFile) text() (textStart uint64, text []byte, err error)</code></pre>
             </article>
             
-            <article class="function symbol-anchor" id="symbols" data-name="symbols">
+            <article class="function symbol-anchor" id="text" data-name="text">
                <h3>
-                  symbols 
+                  text 
                   <span class="badge method-badge">method</span>
                   
-                  <a href="#symbols" class="anchor" title="Link to symbols">#</a>
+                  <a href="#text" class="anchor" title="Link to text">#</a>
                </h3>
                
-               <pre><code>func (f *peFile) symbols() ([]Sym, error)</code></pre>
+               <pre><code>func (f *xcoffFile) text() (textStart uint64, text []byte, err error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="text" data-name="text">
+               <h3>
+                  text 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#text" class="anchor" title="Link to text">#</a>
+               </h3>
+               
+               <pre><code>func (f *plan9File) text() (textStart uint64, text []byte, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="text" data-name="text">
@@ -1612,40 +1645,7 @@ offset of the pc from the entry point.</p>
                   <a href="#text" class="anchor" title="Link to text">#</a>
                </h3>
                
-               <pre><code>func (f *plan9File) text() (textStart uint64, text []byte, err error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="text" data-name="text">
-               <h3>
-                  text 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#text" class="anchor" title="Link to text">#</a>
-               </h3>
-               
-               <pre><code>func (f *xcoffFile) text() (textStart uint64, text []byte, err error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="text" data-name="text">
-               <h3>
-                  text 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#text" class="anchor" title="Link to text">#</a>
-               </h3>
-               
                <pre><code>func (f *machoFile) text() (textStart uint64, text []byte, err error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="text" data-name="text">
-               <h3>
-                  text 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#text" class="anchor" title="Link to text">#</a>
-               </h3>
-               
-               <pre><code>func (f *peFile) text() (textStart uint64, text []byte, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="text" data-name="text">
@@ -1814,8 +1814,10 @@ offset of the pc from the entry point.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

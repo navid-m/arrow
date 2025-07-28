@@ -521,7 +521,13 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"context"
+               <pre><code>"bufio"
+"bytes"
+"encoding/binary"
+"errors"
+"io"
+"sync"
+"context"
 "errors"
 "fmt"
 "io"
@@ -531,12 +537,6 @@
 "os"
 "strings"
 "time"
-"bufio"
-"bytes"
-"encoding/binary"
-"errors"
-"io"
-"sync"
 </code></pre>
             </article>
          </section>
@@ -1061,7 +1061,7 @@ reqId uint16
                   <a href="#Close" class="anchor" title="Link to Close">#</a>
                </h3>
                
-               <pre><code>func (w *streamWriter) Close() error</code></pre>
+               <pre><code>func (r *response) Close() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Close" data-name="Close">
@@ -1083,9 +1083,7 @@ reqId uint16
                   <a href="#Close" class="anchor" title="Link to Close">#</a>
                </h3>
                
-               <p>Close closes the conn if it is not already closed.</p>
-               
-               <pre><code>func (c *conn) Close() error</code></pre>
+               <pre><code>func (w *streamWriter) Close() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Close" data-name="Close">
@@ -1096,7 +1094,9 @@ reqId uint16
                   <a href="#Close" class="anchor" title="Link to Close">#</a>
                </h3>
                
-               <pre><code>func (r *response) Close() error</code></pre>
+               <p>Close closes the conn if it is not already closed.</p>
+               
+               <pre><code>func (c *conn) Close() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Flush" data-name="Flush">
@@ -1163,7 +1163,7 @@ If handler is nil, [http.DefaultServeMux] is used.</p>
                   <a href="#Write" class="anchor" title="Link to Write">#</a>
                </h3>
                
-               <pre><code>func (w *streamWriter) Write(p []byte) (int, error)</code></pre>
+               <pre><code>func (r *response) Write(p []byte) (n int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Write" data-name="Write">
@@ -1174,7 +1174,7 @@ If handler is nil, [http.DefaultServeMux] is used.</p>
                   <a href="#Write" class="anchor" title="Link to Write">#</a>
                </h3>
                
-               <pre><code>func (r *response) Write(p []byte) (n int, err error)</code></pre>
+               <pre><code>func (w *streamWriter) Write(p []byte) (int, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="WriteHeader" data-name="WriteHeader">
@@ -1611,8 +1611,10 @@ set explicitly.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

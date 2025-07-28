@@ -523,11 +523,7 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"path/filepath"
-"strings"
-"cmd/go/internal/search"
-"cmd/internal/pkgpattern"
-"bytes"
+               <pre><code>"bytes"
 "context"
 "errors"
 "fmt"
@@ -614,6 +610,10 @@ pathpkg "path"
 "os"
 "strings"
 "sync"
+"path/filepath"
+"strings"
+"cmd/go/internal/search"
+"cmd/internal/pkgpattern"
 </code></pre>
             </article>
          </section>
@@ -1776,6 +1776,17 @@ function only called when using legacy coverage test/build
                   <a href="#Error" class="anchor" title="Link to Error">#</a>
                </h3>
                
+               <pre><code>func (e *EmbedError) Error() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Error" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Error" class="anchor" title="Link to Error">#</a>
+               </h3>
+               
                <pre><code>func (e *NoGoError) Error() string</code></pre>
             </article>
             
@@ -1787,7 +1798,7 @@ function only called when using legacy coverage test/build
                   <a href="#Error" class="anchor" title="Link to Error">#</a>
                </h3>
                
-               <pre><code>func (e *EmbedError) Error() string</code></pre>
+               <pre><code>func (p *PackageError) Error() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Error" data-name="Error">
@@ -1810,17 +1821,6 @@ function only called when using legacy coverage test/build
                </h3>
                
                <pre><code>func (e *mainPackageError) Error() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Error" data-name="Error">
-               <h3>
-                  Error 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Error" class="anchor" title="Link to Error">#</a>
-               </h3>
-               
-               <pre><code>func (p *PackageError) Error() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Errorf" data-name="Errorf">
@@ -1911,7 +1911,10 @@ package p or named after the first Go file for package main.</p>
                   <a href="#ImportPath" class="anchor" title="Link to ImportPath">#</a>
                </h3>
                
-               <pre><code>func (e *importError) ImportPath() string</code></pre>
+               <p>ImportPath returns the import path of the package being tested, if it is within GOPATH.
+This is printed by the testing package when running benchmarks.</p>
+               
+               <pre><code>func (t *testFuncs) ImportPath() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ImportPath" data-name="ImportPath">
@@ -1933,10 +1936,7 @@ package p or named after the first Go file for package main.</p>
                   <a href="#ImportPath" class="anchor" title="Link to ImportPath">#</a>
                </h3>
                
-               <p>ImportPath returns the import path of the package being tested, if it is within GOPATH.
-This is printed by the testing package when running benchmarks.</p>
-               
-               <pre><code>func (t *testFuncs) ImportPath() string</code></pre>
+               <pre><code>func (e *importError) ImportPath() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="InstallTargetDir" data-name="InstallTargetDir">
@@ -2271,7 +2271,7 @@ appropriate, and possibly adding additional deps where needed.</p>
                   <a href="#Printf" class="anchor" title="Link to Printf">#</a>
                </h3>
                
-               <pre><code>func (p *JSONPrinter) Printf(pkg *Package, format string, args ...any)</code></pre>
+               <pre><code>func (p *TextPrinter) Printf(_ *Package, format string, args ...any)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Printf" data-name="Printf">
@@ -2282,7 +2282,7 @@ appropriate, and possibly adding additional deps where needed.</p>
                   <a href="#Printf" class="anchor" title="Link to Printf">#</a>
                </h3>
                
-               <pre><code>func (p *TextPrinter) Printf(_ *Package, format string, args ...any)</code></pre>
+               <pre><code>func (p *JSONPrinter) Printf(pkg *Package, format string, args ...any)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Push" data-name="Push">
@@ -2427,7 +2427,7 @@ There is a copy of this function in cmd/compile/internal/gc/noder.go.</p>
                   <a href="#Unwrap" class="anchor" title="Link to Unwrap">#</a>
                </h3>
                
-               <pre><code>func (p *PackageError) Unwrap() error</code></pre>
+               <pre><code>func (e *EmbedError) Unwrap() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Unwrap" data-name="Unwrap">
@@ -2449,7 +2449,7 @@ There is a copy of this function in cmd/compile/internal/gc/noder.go.</p>
                   <a href="#Unwrap" class="anchor" title="Link to Unwrap">#</a>
                </h3>
                
-               <pre><code>func (e *EmbedError) Unwrap() error</code></pre>
+               <pre><code>func (p *PackageError) Unwrap() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="UsesCgo" data-name="UsesCgo">
@@ -3404,8 +3404,10 @@ vendoredImportPath returns the expanded path or, if no expansion is found, the o
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

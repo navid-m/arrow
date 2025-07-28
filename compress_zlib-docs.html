@@ -521,16 +521,16 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"bufio"
-"compress/flate"
+               <pre><code>"compress/flate"
 "encoding/binary"
-"errors"
+"fmt"
 "hash"
 "hash/adler32"
 "io"
+"bufio"
 "compress/flate"
 "encoding/binary"
-"fmt"
+"errors"
 "hash"
 "hash/adler32"
 "io"
@@ -755,10 +755,11 @@ scratch [4]byte
                   <a href="#Close" class="anchor" title="Link to Close">#</a>
                </h3>
                
-               <p>Close closes the Writer, flushing any unwritten data to the underlying
-io.Writer, but does not close the underlying io.Writer.</p>
+               <p>Calling Close does not close the wrapped [io.Reader] originally passed to [NewReader].
+In order for the ZLIB checksum to be verified, the reader must be
+fully consumed until the [io.EOF].</p>
                
-               <pre><code>func (z *Writer) Close() error</code></pre>
+               <pre><code>func (z *reader) Close() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Close" data-name="Close">
@@ -769,11 +770,10 @@ io.Writer, but does not close the underlying io.Writer.</p>
                   <a href="#Close" class="anchor" title="Link to Close">#</a>
                </h3>
                
-               <p>Calling Close does not close the wrapped [io.Reader] originally passed to [NewReader].
-In order for the ZLIB checksum to be verified, the reader must be
-fully consumed until the [io.EOF].</p>
+               <p>Close closes the Writer, flushing any unwritten data to the underlying
+io.Writer, but does not close the underlying io.Writer.</p>
                
-               <pre><code>func (z *reader) Close() error</code></pre>
+               <pre><code>func (z *Writer) Close() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Flush" data-name="Flush">
@@ -1092,8 +1092,10 @@ explicitly flushed.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

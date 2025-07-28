@@ -519,12 +519,7 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"encoding/binary"
-"strconv"
-"strings"
-"internal/trace/event"
-"internal/trace/version"
-"bufio"
+               <pre><code>"bufio"
 "encoding/binary"
 "fmt"
 "io"
@@ -544,6 +539,11 @@
 "encoding/binary"
 "fmt"
 "io"
+"internal/trace/event"
+"internal/trace/version"
+"encoding/binary"
+"strconv"
+"strings"
 "internal/trace/event"
 "internal/trace/version"
 </code></pre>
@@ -748,9 +748,9 @@ specs []event.Spec
                   <a href="#ReadEvent" class="anchor" title="Link to ReadEvent">#</a>
                </h3>
                
-               <p>ReadEvent reads and returns the next trace event in the byte stream.</p>
+               <p>ReadEvent reads and returns the next trace event in the text stream.</p>
                
-               <pre><code>func (r *Reader) ReadEvent() (Event, error)</code></pre>
+               <pre><code>func (r *TextReader) ReadEvent() (Event, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ReadEvent" data-name="ReadEvent">
@@ -761,9 +761,9 @@ specs []event.Spec
                   <a href="#ReadEvent" class="anchor" title="Link to ReadEvent">#</a>
                </h3>
                
-               <p>ReadEvent reads and returns the next trace event in the text stream.</p>
+               <p>ReadEvent reads and returns the next trace event in the byte stream.</p>
                
-               <pre><code>func (r *TextReader) ReadEvent() (Event, error)</code></pre>
+               <pre><code>func (r *Reader) ReadEvent() (Event, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -815,9 +815,9 @@ and emitted by the TextWriter.</p>
                   <a href="#WriteEvent" class="anchor" title="Link to WriteEvent">#</a>
                </h3>
                
-               <p>WriteEvent writes a single event to the stream.</p>
+               <p>WriteEvent writes a single event to the trace wire format stream.</p>
                
-               <pre><code>func (w *TextWriter) WriteEvent(e Event) error</code></pre>
+               <pre><code>func (w *Writer) WriteEvent(e Event) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="WriteEvent" data-name="WriteEvent">
@@ -828,9 +828,9 @@ and emitted by the TextWriter.</p>
                   <a href="#WriteEvent" class="anchor" title="Link to WriteEvent">#</a>
                </h3>
                
-               <p>WriteEvent writes a single event to the trace wire format stream.</p>
+               <p>WriteEvent writes a single event to the stream.</p>
                
-               <pre><code>func (w *Writer) WriteEvent(e Event) error</code></pre>
+               <pre><code>func (w *TextWriter) WriteEvent(e Event) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="nextLine" data-name="nextLine">
@@ -1065,8 +1065,10 @@ and emitted by the TextWriter.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

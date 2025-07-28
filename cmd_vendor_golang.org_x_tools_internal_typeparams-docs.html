@@ -521,12 +521,7 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"go/ast"
-"go/token"
-"go/types"
-"fmt"
-"go/types"
-"go/types"
+               <pre><code>"go/types"
 "golang.org/x/tools/internal/aliases"
 "errors"
 "fmt"
@@ -535,6 +530,11 @@
 "strings"
 "bytes"
 "go/types"
+"go/types"
+"go/ast"
+"go/token"
+"go/types"
+"fmt"
 "go/types"
 </code></pre>
             </article>
@@ -996,9 +996,9 @@ x.typ and y.typ must not be nil.</p>
                   <a href="#equal" class="anchor" title="Link to equal">#</a>
                </h3>
                
-               <p>equal reports whether xl and yl represent the same type set.</p>
+               <p>equal reports whether x and y represent the same type set.</p>
                
-               <pre><code>func (xl termlist) equal(yl termlist) bool</code></pre>
+               <pre><code>func (x *term) equal(y *term) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="equal" data-name="equal">
@@ -1009,22 +1009,9 @@ x.typ and y.typ must not be nil.</p>
                   <a href="#equal" class="anchor" title="Link to equal">#</a>
                </h3>
                
-               <p>equal reports whether x and y represent the same type set.</p>
+               <p>equal reports whether xl and yl represent the same type set.</p>
                
-               <pre><code>func (x *term) equal(y *term) bool</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="includes" data-name="includes">
-               <h3>
-                  includes 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#includes" class="anchor" title="Link to includes">#</a>
-               </h3>
-               
-               <p>includes reports whether t ∈ xl.</p>
-               
-               <pre><code>func (xl termlist) includes(t types.Type) bool</code></pre>
+               <pre><code>func (xl termlist) equal(yl termlist) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="includes" data-name="includes">
@@ -1038,6 +1025,19 @@ x.typ and y.typ must not be nil.</p>
                <p>includes reports whether t ∈ x.</p>
                
                <pre><code>func (x *term) includes(t types.Type) bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="includes" data-name="includes">
+               <h3>
+                  includes 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#includes" class="anchor" title="Link to includes">#</a>
+               </h3>
+               
+               <p>includes reports whether t ∈ xl.</p>
+               
+               <pre><code>func (xl termlist) includes(t types.Type) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="indentf" data-name="indentf">
@@ -1059,9 +1059,9 @@ x.typ and y.typ must not be nil.</p>
                   <a href="#intersect" class="anchor" title="Link to intersect">#</a>
                </h3>
                
-               <p>intersect returns the intersection xl ∩ yl.</p>
+               <p>intersect returns the intersection x ∩ y.</p>
                
-               <pre><code>func (xl termlist) intersect(yl termlist) termlist</code></pre>
+               <pre><code>func (x *term) intersect(y *term) *term</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="intersect" data-name="intersect">
@@ -1072,9 +1072,9 @@ x.typ and y.typ must not be nil.</p>
                   <a href="#intersect" class="anchor" title="Link to intersect">#</a>
                </h3>
                
-               <p>intersect returns the intersection x ∩ y.</p>
+               <p>intersect returns the intersection xl ∩ yl.</p>
                
-               <pre><code>func (x *term) intersect(y *term) *term</code></pre>
+               <pre><code>func (xl termlist) intersect(yl termlist) termlist</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="isAll" data-name="isAll">
@@ -1124,9 +1124,9 @@ x.typ and y.typ must not be nil.</p>
                   <a href="#subsetOf" class="anchor" title="Link to subsetOf">#</a>
                </h3>
                
-               <p>subsetOf reports whether xl ⊆ yl.</p>
+               <p>subsetOf reports whether x ⊆ y.</p>
                
-               <pre><code>func (xl termlist) subsetOf(yl termlist) bool</code></pre>
+               <pre><code>func (x *term) subsetOf(y *term) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="subsetOf" data-name="subsetOf">
@@ -1137,9 +1137,9 @@ x.typ and y.typ must not be nil.</p>
                   <a href="#subsetOf" class="anchor" title="Link to subsetOf">#</a>
                </h3>
                
-               <p>subsetOf reports whether x ⊆ y.</p>
+               <p>subsetOf reports whether xl ⊆ yl.</p>
                
-               <pre><code>func (x *term) subsetOf(y *term) bool</code></pre>
+               <pre><code>func (xl termlist) subsetOf(yl termlist) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="supersetOf" data-name="supersetOf">
@@ -1350,8 +1350,10 @@ used by typeterm.go.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

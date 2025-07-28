@@ -519,13 +519,13 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"bytes"
+               <pre><code>"io"
+"log"
+"bytes"
 "errors"
 "fmt"
 "io"
 "io"
-"io"
-"log"
 </code></pre>
             </article>
          </section>
@@ -786,17 +786,6 @@ each non-empty Read by reading one byte from r.</p>
                   <a href="#Read" class="anchor" title="Link to Read">#</a>
                </h3>
                
-               <pre><code>func (r *smallByteReader) Read(p []byte) (int, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Read" data-name="Read">
-               <h3>
-                  Read 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Read" class="anchor" title="Link to Read">#</a>
-               </h3>
-               
                <pre><code>func (r *timeoutReader) Read(p []byte) (int, error)</code></pre>
             </article>
             
@@ -808,7 +797,7 @@ each non-empty Read by reading one byte from r.</p>
                   <a href="#Read" class="anchor" title="Link to Read">#</a>
                </h3>
                
-               <pre><code>func (r *errReader) Read(p []byte) (int, error)</code></pre>
+               <pre><code>func (l *readLogger) Read(p []byte) (n int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Read" data-name="Read">
@@ -841,7 +830,7 @@ each non-empty Read by reading one byte from r.</p>
                   <a href="#Read" class="anchor" title="Link to Read">#</a>
                </h3>
                
-               <pre><code>func (l *readLogger) Read(p []byte) (n int, err error)</code></pre>
+               <pre><code>func (r *halfReader) Read(p []byte) (int, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Read" data-name="Read">
@@ -852,7 +841,18 @@ each non-empty Read by reading one byte from r.</p>
                   <a href="#Read" class="anchor" title="Link to Read">#</a>
                </h3>
                
-               <pre><code>func (r *halfReader) Read(p []byte) (int, error)</code></pre>
+               <pre><code>func (r *errReader) Read(p []byte) (int, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Read" data-name="Read">
+               <h3>
+                  Read 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Read" class="anchor" title="Link to Read">#</a>
+               </h3>
+               
+               <pre><code>func (r *smallByteReader) Read(p []byte) (int, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="TimeoutReader" data-name="TimeoutReader">
@@ -891,7 +891,7 @@ but stops silently after n bytes.</p>
                   <a href="#Write" class="anchor" title="Link to Write">#</a>
                </h3>
                
-               <pre><code>func (t *truncateWriter) Write(p []byte) (n int, err error)</code></pre>
+               <pre><code>func (l *writeLogger) Write(p []byte) (n int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Write" data-name="Write">
@@ -902,7 +902,7 @@ but stops silently after n bytes.</p>
                   <a href="#Write" class="anchor" title="Link to Write">#</a>
                </h3>
                
-               <pre><code>func (l *writeLogger) Write(p []byte) (n int, err error)</code></pre>
+               <pre><code>func (t *truncateWriter) Write(p []byte) (n int, err error)</code></pre>
             </article>
             
          </section>
@@ -1060,8 +1060,10 @@ but stops silently after n bytes.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

@@ -522,13 +522,6 @@
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
                <pre><code>"bufio"
-"compress/lzw"
-"errors"
-"fmt"
-"image"
-"image/color"
-"io"
-"bufio"
 "bytes"
 "compress/lzw"
 "errors"
@@ -537,6 +530,13 @@
 "image/color/palette"
 "image/draw"
 "internal/byteorder"
+"io"
+"bufio"
+"compress/lzw"
+"errors"
+"fmt"
+"image"
+"image/color"
 "io"
 </code></pre>
             </article>
@@ -1164,17 +1164,6 @@ actually called.</p>
                   <a href="#close" class="anchor" title="Link to close">#</a>
                </h3>
                
-               <pre><code>func (b blockWriter) close()</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="close" data-name="close">
-               <h3>
-                  close 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#close" class="anchor" title="Link to close">#</a>
-               </h3>
-               
                <p>close primarily detects whether or not a block terminator was encountered
 after reading a sequence of data sub-blocks. It allows at most one trailing
 sub-block worth of data. I.e., if some number of bytes exist in one sub-block
@@ -1185,6 +1174,17 @@ These accommodations allow us to support GIFs created by less strict encoders.
 See https://golang.org/issue/16146.</p>
                
                <pre><code>func (b *blockReader) close() error</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="close" data-name="close">
+               <h3>
+                  close 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#close" class="anchor" title="Link to close">#</a>
+               </h3>
+               
+               <pre><code>func (b blockWriter) close()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="colorTablesMatch" data-name="colorTablesMatch">
@@ -1588,8 +1588,10 @@ See https://golang.org/issue/16146.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

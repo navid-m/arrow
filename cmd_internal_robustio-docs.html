@@ -518,9 +518,6 @@
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
                <pre><code>"errors"
-"internal/syscall/windows"
-"syscall"
-"errors"
 "syscall"
 "errors"
 "math/rand"
@@ -528,6 +525,9 @@
 "syscall"
 "time"
 "os"
+"errors"
+"internal/syscall/windows"
+"syscall"
 </code></pre>
             </article>
          </section>
@@ -554,7 +554,7 @@
                   <a href="#errFileNotFound" class="anchor" title="Link to errFileNotFound">#</a>
                </h3>
                
-               <pre><code>const errFileNotFound = syscall.ERROR_FILE_NOT_FOUND</code></pre>
+               <pre><code>const errFileNotFound = syscall.ENOENT</code></pre>
             </article>
             
             <article class="global symbol-anchor" id="errFileNotFound" data-name="errFileNotFound">
@@ -565,7 +565,7 @@
                   <a href="#errFileNotFound" class="anchor" title="Link to errFileNotFound">#</a>
                </h3>
                
-               <pre><code>const errFileNotFound = syscall.ENOENT</code></pre>
+               <pre><code>const errFileNotFound = syscall.ERROR_FILE_NOT_FOUND</code></pre>
             </article>
             
          </section>
@@ -683,6 +683,8 @@ file is concurrently read or overwritten.
                   <a href="#readFile" class="anchor" title="Link to readFile">#</a>
                </h3>
                
+               <p>readFile is like os.ReadFile, but retries ephemeral errors.</p>
+               
                <pre><code>func readFile(filename string) ([]byte, error)</code></pre>
             </article>
             
@@ -694,8 +696,6 @@ file is concurrently read or overwritten.
                   <a href="#readFile" class="anchor" title="Link to readFile">#</a>
                </h3>
                
-               <p>readFile is like os.ReadFile, but retries ephemeral errors.</p>
-               
                <pre><code>func readFile(filename string) ([]byte, error)</code></pre>
             </article>
             
@@ -719,17 +719,6 @@ file is concurrently read or overwritten.
                </h3>
                
                <pre><code>func removeAll(path string) error</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="rename" data-name="rename">
-               <h3>
-                  rename 
-                  <span class="badge">function</span>
-                  
-                  <a href="#rename" class="anchor" title="Link to rename">#</a>
-               </h3>
-               
-               <pre><code>func rename(oldpath string, newpath string) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="rename" data-name="rename">
@@ -750,6 +739,17 @@ Empirical error rates with MoveFileEx are lower under modest concurrency, so
 for now we're sticking with what the os package already provides.</p>
                
                <pre><code>func rename(oldpath string, newpath string) (err error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="rename" data-name="rename">
+               <h3>
+                  rename 
+                  <span class="badge">function</span>
+                  
+                  <a href="#rename" class="anchor" title="Link to rename">#</a>
+               </h3>
+               
+               <pre><code>func rename(oldpath string, newpath string) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="retry" data-name="retry">
@@ -921,8 +921,10 @@ to work around filesystem flakiness on Windows and Darwin.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];

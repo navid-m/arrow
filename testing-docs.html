@@ -535,55 +535,7 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code>"fmt"
-"internal/goexperiment"
-"os"
-_ "unsafe"
-"time"
-"runtime"
-"fmt"
-"internal/goexperiment"
-"os"
-"sync/atomic"
-"fmt"
-"io"
-"os"
-"strings"
-"time"
-"fmt"
-"io"
-"os"
-"strings"
-"time"
-"bytes"
-"context"
-"errors"
-"flag"
-"fmt"
-"internal/goexperiment"
-"internal/race"
-"io"
-"math/rand"
-"os"
-"path/filepath"
-"reflect"
-"runtime"
-"runtime/debug"
-"runtime/trace"
-"slices"
-"strconv"
-"strings"
-"sync"
-"sync/atomic"
-"time"
-"unicode"
-"unicode/utf8"
-"errors"
-"internal/syscall/windows"
-"math/bits"
-"syscall"
-"time"
-"context"
+               <pre><code>"context"
 "flag"
 "fmt"
 "internal/sysinfo"
@@ -615,10 +567,58 @@ _ "unsafe"
 "strings"
 "time"
 "fmt"
+"io"
+"os"
+"strings"
+"time"
+"bytes"
+"context"
+"errors"
+"flag"
+"fmt"
+"internal/goexperiment"
+"internal/race"
+"io"
+"math/rand"
+"os"
+"path/filepath"
+"reflect"
+"runtime"
+"runtime/debug"
+"runtime/trace"
+"slices"
+"strconv"
+"strings"
+"sync"
+"sync/atomic"
+"time"
+"unicode"
+"unicode/utf8"
+"time"
+"errors"
+"internal/syscall/windows"
+"math/bits"
+"syscall"
+"time"
+"runtime"
+"fmt"
+"internal/goexperiment"
+"os"
+"sync/atomic"
+"fmt"
 "os"
 "strconv"
 "strings"
 "sync"
+"fmt"
+"internal/goexperiment"
+"os"
+_ "unsafe"
+"fmt"
+"io"
+"os"
+"strings"
+"time"
 </code></pre>
             </article>
          </section>
@@ -2246,7 +2246,7 @@ also sets PWD environment variable for the duration of the test.
 Because Chdir affects the whole process, it cannot be used
 in parallel tests or tests with parallel ancestors.</p>
                
-               <pre><code>func (t *T) Chdir(dir string)</code></pre>
+               <pre><code>func (c *common) Chdir(dir string)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Chdir" data-name="Chdir">
@@ -2263,7 +2263,7 @@ also sets PWD environment variable for the duration of the test.
 Because Chdir affects the whole process, it cannot be used
 in parallel tests or tests with parallel ancestors.</p>
                
-               <pre><code>func (c *common) Chdir(dir string)</code></pre>
+               <pre><code>func (t *T) Chdir(dir string)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="CheckCorpus" data-name="CheckCorpus">
@@ -2912,12 +2912,9 @@ It does not affect whether the timer is running.</p>
                   <a href="#Run" class="anchor" title="Link to Run">#</a>
                </h3>
                
-               <p>Run benchmarks f as a subbenchmark with the given name. It reports
-whether there were any failures.
-A subbenchmark is like any other benchmark. A benchmark that calls Run at
-least once will not be measured itself and will be called once with N=1.</p>
+               <p>Run runs the tests. It returns an exit code to pass to os.Exit.</p>
                
-               <pre><code>func (b *B) Run(name string, f func(b *B)) bool</code></pre>
+               <pre><code>func (m *M) Run() (code int)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Run" data-name="Run">
@@ -2945,9 +2942,12 @@ must return before the outer test function for t returns.</p>
                   <a href="#Run" class="anchor" title="Link to Run">#</a>
                </h3>
                
-               <p>Run runs the tests. It returns an exit code to pass to os.Exit.</p>
+               <p>Run benchmarks f as a subbenchmark with the given name. It reports
+whether there were any failures.
+A subbenchmark is like any other benchmark. A benchmark that calls Run at
+least once will not be measured itself and will be called once with N=1.</p>
                
-               <pre><code>func (m *M) Run() (code int)</code></pre>
+               <pre><code>func (b *B) Run(name string, f func(b *B)) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="RunBenchmarks" data-name="RunBenchmarks">
@@ -3034,7 +3034,7 @@ it is part of the implementation of the "go test" command.</p>
                   <a href="#Set" class="anchor" title="Link to Set">#</a>
                </h3>
                
-               <pre><code>func (f *durationOrCountFlag) Set(s string) error</code></pre>
+               <pre><code>func (f *chattyFlag) Set(arg string) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Set" data-name="Set">
@@ -3045,7 +3045,7 @@ it is part of the implementation of the "go test" command.</p>
                   <a href="#Set" class="anchor" title="Link to Set">#</a>
                </h3>
                
-               <pre><code>func (f *chattyFlag) Set(arg string) error</code></pre>
+               <pre><code>func (f *durationOrCountFlag) Set(s string) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="SetBytes" data-name="SetBytes">
@@ -3191,7 +3191,7 @@ those other goroutines.</p>
                
                <p>Skipped reports whether the test was skipped.</p>
                
-               <pre><code>func (c *common) Skipped() bool</code></pre>
+               <pre><code>func (f *F) Skipped() bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Skipped" data-name="Skipped">
@@ -3204,7 +3204,7 @@ those other goroutines.</p>
                
                <p>Skipped reports whether the test was skipped.</p>
                
-               <pre><code>func (f *F) Skipped() bool</code></pre>
+               <pre><code>func (c *common) Skipped() bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="SnapshotCoverage" data-name="SnapshotCoverage">
@@ -3299,7 +3299,7 @@ while performing steps that you don't want to measure.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code>func (f *chattyFlag) String() string</code></pre>
+               <pre><code>func (r fuzzResult) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -3329,7 +3329,7 @@ by [BenchmarkResult.MemString].</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code>func (r fuzzResult) String() string</code></pre>
+               <pre><code>func (f *durationOrCountFlag) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -3340,7 +3340,7 @@ by [BenchmarkResult.MemString].</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code>func (f *durationOrCountFlag) String() string</code></pre>
+               <pre><code>func (f *chattyFlag) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="TempDir" data-name="TempDir">
@@ -3395,7 +3395,7 @@ The formatted message must include the test name itself.</p>
                   <a href="#Write" class="anchor" title="Link to Write">#</a>
                </h3>
                
-               <pre><code>func (discard) Write(b []byte) (n int, err error)</code></pre>
+               <pre><code>func (w indenter) Write(b []byte) (n int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Write" data-name="Write">
@@ -3406,7 +3406,7 @@ The formatted message must include the test name itself.</p>
                   <a href="#Write" class="anchor" title="Link to Write">#</a>
                </h3>
                
-               <pre><code>func (w indenter) Write(b []byte) (n int, err error)</code></pre>
+               <pre><code>func (discard) Write(b []byte) (n int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="WriteProfileTo" data-name="WriteProfileTo">
@@ -3896,7 +3896,7 @@ run1 must have been called on b.</p>
                   <a href="#matches" class="anchor" title="Link to matches">#</a>
                </h3>
                
-               <pre><code>func (m alternationMatch) matches(name []string, matchString func(pat string, str string) (bool, error)) (ok bool, partial bool)</code></pre>
+               <pre><code>func (m simpleMatch) matches(name []string, matchString func(pat string, str string) (bool, error)) (ok bool, partial bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="matches" data-name="matches">
@@ -3907,7 +3907,7 @@ run1 must have been called on b.</p>
                   <a href="#matches" class="anchor" title="Link to matches">#</a>
                </h3>
                
-               <pre><code>func (m simpleMatch) matches(name []string, matchString func(pat string, str string) (bool, error)) (ok bool, partial bool)</code></pre>
+               <pre><code>func (m alternationMatch) matches(name []string, matchString func(pat string, str string) (bool, error)) (ok bool, partial bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="mbPerSec" data-name="mbPerSec">
@@ -4152,7 +4152,7 @@ fixed the extra latency will go away.</p>
                   <a href="#report" class="anchor" title="Link to report">#</a>
                </h3>
                
-               <pre><code>func (t *T) report()</code></pre>
+               <pre><code>func (f *F) report()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="report" data-name="report">
@@ -4163,7 +4163,7 @@ fixed the extra latency will go away.</p>
                   <a href="#report" class="anchor" title="Link to report">#</a>
                </h3>
                
-               <pre><code>func (f *F) report()</code></pre>
+               <pre><code>func (t *T) report()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="resetRaces" data-name="resetRaces">
@@ -4507,7 +4507,7 @@ with one or more counts, if necessary.</p>
                   <a href="#verify" class="anchor" title="Link to verify">#</a>
                </h3>
                
-               <pre><code>func (m simpleMatch) verify(name string, matchString func(pat string, str string) (bool, error)) error</code></pre>
+               <pre><code>func (m alternationMatch) verify(name string, matchString func(pat string, str string) (bool, error)) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="verify" data-name="verify">
@@ -4518,7 +4518,7 @@ with one or more counts, if necessary.</p>
                   <a href="#verify" class="anchor" title="Link to verify">#</a>
                </h3>
                
-               <pre><code>func (m alternationMatch) verify(name string, matchString func(pat string, str string) (bool, error)) error</code></pre>
+               <pre><code>func (m simpleMatch) verify(name string, matchString func(pat string, str string) (bool, error)) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="waitParallel" data-name="waitParallel">
@@ -4698,8 +4698,10 @@ with one or more counts, if necessary.</p>
                         const nameMatch = trimmed.match(
                            /^([A-Za-z_][A-Za-z0-9_]*)/
                         );
-                        if (!nameMatch) {
+                        if (!nameMatch && !trimmed.endsWith("{") && trimmed != "}") {
                            return `<span class="method-line">${line}</span>`;
+                        } else {
+                           return ``;
                         }
 
                         const name = nameMatch[1];
