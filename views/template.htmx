@@ -117,7 +117,6 @@
          }
 
          p {
-            white-space: pre-wrap;
             word-wrap: break-word;
             line-height: 1.6;
             font-size: 14px;
@@ -724,18 +723,14 @@
          document.addEventListener('DOMContentLoaded', () => {
             document.querySelectorAll('p').forEach(el => {
                const raw = el.textContent;
-
-               const sentences = raw
-               .split('.')
-               .map(s => s.trim())
-               .filter(s => s.length > 0)
-               .map(s => s + '.');
+               const re = /[^.]+?(?<=\w)(?<!(\.\w))\.(?=\s|$)/g;
+               const sentences = raw.match(re) || [raw];
 
                let html = '';
                sentences.forEach((sent, idx) => {
                html += sent;
                if ((idx + 1) % 2 === 0) {
-                  html += '<br>';
+                  html += '<br />';
                } else {
                   html += ' ';
                }
@@ -746,7 +741,6 @@
                }
             });
          });
-
          function isPrivate(name) {
             return /^[a-z]/.test(name);
          }
