@@ -29,7 +29,7 @@
          }
 
          .sidebar {
-            width: 12%;
+            width: 14%;
             background: rgba(59, 56, 56, 0.15);
             padding: 1.5rem;
             box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
@@ -598,13 +598,13 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"internal/cpu"
-"unsafe"
-_ "unsafe"
+               <pre><code class="language-go">_ "unsafe"
 "unsafe"
 "internal/cpu"
-"internal/cpu"
+"unsafe"
 _ "unsafe"
+"internal/cpu"
+"internal/cpu"
 "internal/cpu"
 </code></pre>
             </article>
@@ -612,6 +612,20 @@ _ "unsafe"
           
          <section id="globals">
             <h2>Constants & Variables</h2>
+            
+            <article class="global symbol-anchor" id="MaxBruteForce" data-name="MaxBruteForce">
+               <h3>
+                  MaxBruteForce 
+                  <span class="badge const-badge">const</span>
+                  
+                  <a href="#MaxBruteForce" class="anchor" title="Link to MaxBruteForce">#</a>
+               </h3>
+               
+                  <p class="doc-comment">Empirical data shows that using Index can get better
+performance when len(s) <= 16.</p>
+               
+               <pre><code class="language-go">const MaxBruteForce = 16</code></pre>
+            </article>
             
             <article class="global symbol-anchor" id="MaxBruteForce" data-name="MaxBruteForce">
                <h3>
@@ -644,20 +658,6 @@ _ "unsafe"
                </h3>
                
                <pre><code class="language-go">const MaxBruteForce = 0</code></pre>
-            </article>
-            
-            <article class="global symbol-anchor" id="MaxBruteForce" data-name="MaxBruteForce">
-               <h3>
-                  MaxBruteForce 
-                  <span class="badge const-badge">const</span>
-                  
-                  <a href="#MaxBruteForce" class="anchor" title="Link to MaxBruteForce">#</a>
-               </h3>
-               
-                  <p class="doc-comment">Empirical data shows that using Index can get better
-performance when len(s) <= 16.</p>
-               
-               <pre><code class="language-go">const MaxBruteForce = 16</code></pre>
             </article>
             
             <article class="global symbol-anchor" id="MaxBruteForce" data-name="MaxBruteForce">
@@ -787,6 +787,8 @@ If MaxLen is not 0, make sure MaxLen >= 4.</p>
                   <a href="#Compare" class="anchor" title="Link to Compare">#</a>
                </h3>
                
+               <p>go:noescape</p>
+               
                <pre><code class="language-go">func Compare(a []byte, b []byte) int</code></pre>
             </article>
             
@@ -798,8 +800,6 @@ If MaxLen is not 0, make sure MaxLen >= 4.</p>
                   <a href="#Compare" class="anchor" title="Link to Compare">#</a>
                </h3>
                
-               <p>go:noescape</p>
-               
                <pre><code class="language-go">func Compare(a []byte, b []byte) int</code></pre>
             </article>
             
@@ -833,8 +833,6 @@ If MaxLen is not 0, make sure MaxLen >= 4.</p>
                   <a href="#Count" class="anchor" title="Link to Count">#</a>
                </h3>
                
-               <p>go:noescape</p>
-               
                <pre><code class="language-go">func Count(b []byte, c byte) int</code></pre>
             </article>
             
@@ -845,6 +843,8 @@ If MaxLen is not 0, make sure MaxLen >= 4.</p>
                   
                   <a href="#Count" class="anchor" title="Link to Count">#</a>
                </h3>
+               
+               <p>go:noescape</p>
                
                <pre><code class="language-go">func Count(b []byte, c byte) int</code></pre>
             </article>
@@ -1036,6 +1036,8 @@ go:noescape</p>
                   <a href="#IndexByte" class="anchor" title="Link to IndexByte">#</a>
                </h3>
                
+               <p>go:noescape</p>
+               
                <pre><code class="language-go">func IndexByte(b []byte, c byte) int</code></pre>
             </article>
             
@@ -1046,8 +1048,6 @@ go:noescape</p>
                   
                   <a href="#IndexByte" class="anchor" title="Link to IndexByte">#</a>
                </h3>
-               
-               <p>go:noescape</p>
                
                <pre><code class="language-go">func IndexByte(b []byte, c byte) int</code></pre>
             </article>
@@ -1099,7 +1099,8 @@ first occurrence of sep in s, or -1 if not present.</p>
                </h3>
                
                <p>IndexString returns the index of the first instance of b in a, or -1 if b is not present in a.
-Requires 2 <= len(b) <= MaxLen.</p>
+Requires 2 <= len(b) <= MaxLen.
+go:noescape</p>
                
                <pre><code class="language-go">func IndexString(a string, b string) int</code></pre>
             </article>
@@ -1113,8 +1114,7 @@ Requires 2 <= len(b) <= MaxLen.</p>
                </h3>
                
                <p>IndexString returns the index of the first instance of b in a, or -1 if b is not present in a.
-Requires 2 <= len(b) <= MaxLen.
-go:noescape</p>
+Requires 2 <= len(b) <= MaxLen.</p>
                
                <pre><code class="language-go">func IndexString(a string, b string) int</code></pre>
             </article>
@@ -1310,6 +1310,20 @@ go:linkname runtime_cmpstring runtime.cmpstring</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function deduplicateImports() {
+            const importsSection = document.querySelector('#imports-section code');
+            if (!importsSection) return;
+            
+            const lines = importsSection.textContent.split('\n');
+            var uniqueLines = [...new Set(lines.filter(line => line.trim()))];
+            uniqueLines.sort();
+            importsSection.textContent = uniqueLines.join('\n');
+            
+            if (window.Prism) {
+               Prism.highlightElement(importsSection);
+            }
+         }
+
          function updateSectionVisibility() {
             document.querySelectorAll("section").forEach(section => {
                const visibleArticles = section.querySelectorAll("article:not(.hidden)");
@@ -1523,7 +1537,9 @@ go:linkname runtime_cmpstring runtime.cmpstring</p>
             if (searchInput) {
                searchInput.addEventListener("input", () => {
                   const query = searchInput.value.trim().toLowerCase();
-
+                  const allMatches = [];
+                  const sectionOrder = ['imports', 'globals', 'types', 'interfaces', 'structs', 'functions'];
+                  
                   document.querySelectorAll("article").forEach((el) => {
                      const name = el.dataset.name;
                      if (!name) return;
@@ -1535,21 +1551,97 @@ go:linkname runtime_cmpstring runtime.cmpstring</p>
                            el.textContent.toLowerCase().includes(query));
 
                      if (matches) {
-                        const isPrivateEl =
-                           el.classList.contains("private");
-                        const shouldShowPrivate =
-                           getPrivateToggleState(el);
+                        const isPrivateEl = el.classList.contains("private");
+                        const shouldShowPrivate = getPrivateToggleState(el);
 
                         if (!isPrivateEl || shouldShowPrivate) {
                            el.classList.remove("hidden");
+                           
+                           const section = el.closest('section');
+                           if (section) {
+                              const sectionId = section.id;
+                              const sectionIndex = sectionOrder.indexOf(sectionId);
+                              const isExactMatch = name.toLowerCase() === query;
+                              
+                              allMatches.push({
+                                 element: el,
+                                 name: name,
+                                 isExact: isExactMatch,
+                                 sectionId: sectionId,
+                                 sectionIndex: sectionIndex >= 0 ? sectionIndex : 999
+                              });
+                           }
                         }
                      } else {
                         el.classList.add("hidden");
                      }
-                     updateSectionVisibility();
                   });
 
-                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                  allMatches.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     if (a.sectionIndex !== b.sectionIndex) return a.sectionIndex - b.sectionIndex;
+                     return a.name.localeCompare(b.name);
+                  });
+
+                  const sectionMatches = {};
+                  allMatches.forEach(match => {
+                     if (!sectionMatches[match.sectionId]) {
+                        sectionMatches[match.sectionId] = [];
+                     }
+                     sectionMatches[match.sectionId].push(match);
+                  });
+                  Object.keys(sectionMatches).forEach(sectionId => {
+                     const section = document.getElementById(sectionId);
+                     if (!section) return;
+                     
+                     sectionMatches[sectionId].forEach(match => {
+                        section.appendChild(match.element);
+                     });
+                  });
+                  if (query === "") {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     
+                     let insertAfter = firstDivider;
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (section) {
+                           insertAfter.insertAdjacentElement('afterend', section);
+                           insertAfter = section;
+                        }
+                     });
+                  } else {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     const sectionsWithExactMatches = [];
+                     const sectionsWithoutExactMatches = [];
+                     
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (!section || !sectionMatches[sectionId]) return;
+                        
+                        const hasExactMatch = sectionMatches[sectionId].some(match => match.isExact);
+                        if (hasExactMatch) {
+                           sectionsWithExactMatches.push(section);
+                        } else {
+                           sectionsWithoutExactMatches.push(section);
+                        }
+                     });
+                     let insertAfter = firstDivider;
+                     [...sectionsWithExactMatches, ...sectionsWithoutExactMatches].forEach(section => {
+                        insertAfter.insertAdjacentElement('afterend', section);
+                        insertAfter = section;
+                     });
+                  }
+
+                  updateSectionVisibility();
+                  const symbolItems = Array.from(document.querySelectorAll('#symbolIndex li'));
+                  const matchingSymbols = [];
+                  
+                  symbolItems.forEach(li => {
                      const link = li.querySelector('a');
                      if (link) {
                         const symbolName = link.textContent.toLowerCase();
@@ -1563,11 +1655,27 @@ go:linkname runtime_cmpstring runtime.cmpstring</p>
                            
                            if (!isPrivateSymbol || shouldShowPrivate) {
                               li.style.display = '';
+                              const isExactMatch = symbolName === query;
+                              matchingSymbols.push({
+                                 element: li,
+                                 name: symbolName,
+                                 isExact: isExactMatch
+                              });
                            }
                         } else {
                            li.style.display = 'none';
                         }
                      }
+                  });
+                  matchingSymbols.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     return a.name.localeCompare(b.name);
+                  });
+                  
+                  const symbolIndex = document.getElementById('symbolIndex');
+                  matchingSymbols.forEach(symbol => {
+                     symbolIndex.appendChild(symbol.element);
                   });
                });
             }
@@ -1590,6 +1698,7 @@ go:linkname runtime_cmpstring runtime.cmpstring</p>
             }
 
             buildSymbolIndex();
+            deduplicateImports();
 
             document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
                anchor.addEventListener("click", function (e) {

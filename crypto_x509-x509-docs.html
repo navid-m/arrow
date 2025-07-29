@@ -29,7 +29,7 @@
          }
 
          .sidebar {
-            width: 12%;
+            width: 14%;
             background: rgba(59, 56, 56, 0.15);
             padding: 1.5rem;
             box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
@@ -606,8 +606,13 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"internal/goos"
+               <pre><code class="language-go">macOS "crypto/x509/internal/macos"
+"errors"
+"fmt"
+"io/fs"
 "os"
+"path/filepath"
+"strings"
 "bytes"
 "crypto"
 "crypto/x509/pkix"
@@ -623,30 +628,6 @@
 "strings"
 "time"
 "unicode/utf8"
-"crypto/rsa"
-"encoding/asn1"
-"errors"
-"internal/godebug"
-"math/big"
-"internal/godebug"
-"sync"
-_ "unsafe"
-macOS "crypto/x509/internal/macos"
-"errors"
-"fmt"
-"bytes"
-"crypto/sha256"
-"encoding/pem"
-"sync"
-"crypto/aes"
-"crypto/cipher"
-"crypto/des"
-"crypto/md5"
-"encoding/hex"
-"encoding/pem"
-"errors"
-"io"
-"strings"
 "crypto/ecdh"
 "crypto/ecdsa"
 "crypto/ed25519"
@@ -660,6 +641,48 @@ macOS "crypto/x509/internal/macos"
 "strings"
 "syscall"
 "unsafe"
+"crypto/aes"
+"crypto/cipher"
+"crypto/des"
+"crypto/md5"
+"encoding/hex"
+"encoding/pem"
+"errors"
+"io"
+"strings"
+"internal/goos"
+"bytes"
+"crypto/sha256"
+"encoding/pem"
+"sync"
+"bytes"
+"crypto/dsa"
+"crypto/ecdh"
+"crypto/ecdsa"
+"crypto/ed25519"
+"crypto/elliptic"
+"crypto/rsa"
+"crypto/x509/pkix"
+"encoding/asn1"
+"errors"
+"fmt"
+"internal/godebug"
+"math/big"
+"net"
+"net/url"
+"strconv"
+"strings"
+"time"
+"unicode/utf16"
+"unicode/utf8"
+"golang.org/x/crypto/cryptobyte"
+cryptobyte_asn1 "golang.org/x/crypto/cryptobyte/asn1"
+"crypto/rsa"
+"encoding/asn1"
+"errors"
+"internal/godebug"
+"math/big"
+"os"
 "crypto/ecdh"
 "crypto/ecdsa"
 "crypto/elliptic"
@@ -694,10 +717,6 @@ _ "crypto/sha256"
 _ "crypto/sha512"
 "golang.org/x/crypto/cryptobyte"
 cryptobyte_asn1 "golang.org/x/crypto/cryptobyte/asn1"
-"io/fs"
-"os"
-"path/filepath"
-"strings"
 "bytes"
 "encoding/asn1"
 "errors"
@@ -706,28 +725,9 @@ cryptobyte_asn1 "golang.org/x/crypto/cryptobyte/asn1"
 "math/bits"
 "strconv"
 "strings"
-"bytes"
-"crypto/dsa"
-"crypto/ecdh"
-"crypto/ecdsa"
-"crypto/ed25519"
-"crypto/elliptic"
-"crypto/rsa"
-"crypto/x509/pkix"
-"encoding/asn1"
-"errors"
-"fmt"
 "internal/godebug"
-"math/big"
-"net"
-"net/url"
-"strconv"
-"strings"
-"time"
-"unicode/utf16"
-"unicode/utf8"
-"golang.org/x/crypto/cryptobyte"
-cryptobyte_asn1 "golang.org/x/crypto/cryptobyte/asn1"
+"sync"
+_ "unsafe"
 </code></pre>
             </article>
          </section>
@@ -4507,9 +4507,13 @@ Deprecated: Use [RevocationList.CheckSignatureFrom] instead.</p>
                   <a href="#CheckSignature" class="anchor" title="Link to CheckSignature">#</a>
                </h3>
                
-               <p>CheckSignature reports whether the signature on c is valid.</p>
+               <p>CheckSignature verifies that signature is a valid signature over signed from
+c's public key.
+This is a low-level API that performs no validity checks on the certificate.
+[MD5WithRSA] signatures are rejected, while [SHA1WithRSA] and [ECDSAWithSHA1]
+signatures are currently accepted.</p>
                
-               <pre><code class="language-go">func (c *CertificateRequest) CheckSignature() error</code></pre>
+               <pre><code class="language-go">func (c *Certificate) CheckSignature(algo SignatureAlgorithm, signed []byte, signature []byte) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="CheckSignature" data-name="CheckSignature">
@@ -4520,13 +4524,9 @@ Deprecated: Use [RevocationList.CheckSignatureFrom] instead.</p>
                   <a href="#CheckSignature" class="anchor" title="Link to CheckSignature">#</a>
                </h3>
                
-               <p>CheckSignature verifies that signature is a valid signature over signed from
-c's public key.
-This is a low-level API that performs no validity checks on the certificate.
-[MD5WithRSA] signatures are rejected, while [SHA1WithRSA] and [ECDSAWithSHA1]
-signatures are currently accepted.</p>
+               <p>CheckSignature reports whether the signature on c is valid.</p>
                
-               <pre><code class="language-go">func (c *Certificate) CheckSignature(algo SignatureAlgorithm, signed []byte, signature []byte) error</code></pre>
+               <pre><code class="language-go">func (c *CertificateRequest) CheckSignature() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="CheckSignatureFrom" data-name="CheckSignatureFrom">
@@ -4752,6 +4752,19 @@ padding oracle attacks that can let an attacker recover the plaintext.</p>
                   <a href="#Equal" class="anchor" title="Link to Equal">#</a>
                </h3>
                
+               <p>Equal returns true when oid and other represents the same Object Identifier.</p>
+               
+               <pre><code class="language-go">func (oid OID) Equal(other OID) bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Equal" data-name="Equal">
+               <h3>
+                  Equal 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Equal" class="anchor" title="Link to Equal">#</a>
+               </h3>
+               
                <p>Equal reports whether s and other are equal.</p>
                
                <pre><code class="language-go">func (s *CertPool) Equal(other *CertPool) bool</code></pre>
@@ -4766,19 +4779,6 @@ padding oracle attacks that can let an attacker recover the plaintext.</p>
                </h3>
                
                <pre><code class="language-go">func (c *Certificate) Equal(other *Certificate) bool</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Equal" data-name="Equal">
-               <h3>
-                  Equal 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Equal" class="anchor" title="Link to Equal">#</a>
-               </h3>
-               
-               <p>Equal returns true when oid and other represents the same Object Identifier.</p>
-               
-               <pre><code class="language-go">func (oid OID) Equal(other OID) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="EqualASN1OID" data-name="EqualASN1OID">
@@ -4815,29 +4815,7 @@ a component of OID requires more than 31 bits, it returns false.</p>
                   <a href="#Error" class="anchor" title="Link to Error">#</a>
                </h3>
                
-               <pre><code class="language-go">func (e InsecureAlgorithmError) Error() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Error" data-name="Error">
-               <h3>
-                  Error 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Error" class="anchor" title="Link to Error">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (e CertificateInvalidError) Error() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Error" data-name="Error">
-               <h3>
-                  Error 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Error" class="anchor" title="Link to Error">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (h HostnameError) Error() string</code></pre>
+               <pre><code class="language-go">func (se SystemRootsError) Error() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Error" data-name="Error">
@@ -4859,7 +4837,18 @@ a component of OID requires more than 31 bits, it returns false.</p>
                   <a href="#Error" class="anchor" title="Link to Error">#</a>
                </h3>
                
-               <pre><code class="language-go">func (se SystemRootsError) Error() string</code></pre>
+               <pre><code class="language-go">func (h HostnameError) Error() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Error" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Error" class="anchor" title="Link to Error">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (e CertificateInvalidError) Error() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Error" data-name="Error">
@@ -4871,6 +4860,17 @@ a component of OID requires more than 31 bits, it returns false.</p>
                </h3>
                
                <pre><code class="language-go">func (ConstraintViolationError) Error() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Error" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Error" class="anchor" title="Link to Error">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (e InsecureAlgorithmError) Error() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="IsEncryptedPEMBlock" data-name="IsEncryptedPEMBlock">
@@ -5253,9 +5253,7 @@ x509usefallbackroots=1 without calling SetFallbackRoots has no effect.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <p>Strings returns the string representation of the Object Identifier.</p>
-               
-               <pre><code class="language-go">func (oid OID) String() string</code></pre>
+               <pre><code class="language-go">func (algo SignatureAlgorithm) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -5266,7 +5264,9 @@ x509usefallbackroots=1 without calling SetFallbackRoots has no effect.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code class="language-go">func (algo SignatureAlgorithm) String() string</code></pre>
+               <p>Strings returns the string representation of the Object Identifier.</p>
+               
+               <pre><code class="language-go">func (oid OID) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Subjects" data-name="Subjects">
@@ -6888,6 +6888,20 @@ legacy values.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function deduplicateImports() {
+            const importsSection = document.querySelector('#imports-section code');
+            if (!importsSection) return;
+            
+            const lines = importsSection.textContent.split('\n');
+            var uniqueLines = [...new Set(lines.filter(line => line.trim()))];
+            uniqueLines.sort();
+            importsSection.textContent = uniqueLines.join('\n');
+            
+            if (window.Prism) {
+               Prism.highlightElement(importsSection);
+            }
+         }
+
          function updateSectionVisibility() {
             document.querySelectorAll("section").forEach(section => {
                const visibleArticles = section.querySelectorAll("article:not(.hidden)");
@@ -7101,7 +7115,9 @@ legacy values.</p>
             if (searchInput) {
                searchInput.addEventListener("input", () => {
                   const query = searchInput.value.trim().toLowerCase();
-
+                  const allMatches = [];
+                  const sectionOrder = ['imports', 'globals', 'types', 'interfaces', 'structs', 'functions'];
+                  
                   document.querySelectorAll("article").forEach((el) => {
                      const name = el.dataset.name;
                      if (!name) return;
@@ -7113,21 +7129,97 @@ legacy values.</p>
                            el.textContent.toLowerCase().includes(query));
 
                      if (matches) {
-                        const isPrivateEl =
-                           el.classList.contains("private");
-                        const shouldShowPrivate =
-                           getPrivateToggleState(el);
+                        const isPrivateEl = el.classList.contains("private");
+                        const shouldShowPrivate = getPrivateToggleState(el);
 
                         if (!isPrivateEl || shouldShowPrivate) {
                            el.classList.remove("hidden");
+                           
+                           const section = el.closest('section');
+                           if (section) {
+                              const sectionId = section.id;
+                              const sectionIndex = sectionOrder.indexOf(sectionId);
+                              const isExactMatch = name.toLowerCase() === query;
+                              
+                              allMatches.push({
+                                 element: el,
+                                 name: name,
+                                 isExact: isExactMatch,
+                                 sectionId: sectionId,
+                                 sectionIndex: sectionIndex >= 0 ? sectionIndex : 999
+                              });
+                           }
                         }
                      } else {
                         el.classList.add("hidden");
                      }
-                     updateSectionVisibility();
                   });
 
-                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                  allMatches.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     if (a.sectionIndex !== b.sectionIndex) return a.sectionIndex - b.sectionIndex;
+                     return a.name.localeCompare(b.name);
+                  });
+
+                  const sectionMatches = {};
+                  allMatches.forEach(match => {
+                     if (!sectionMatches[match.sectionId]) {
+                        sectionMatches[match.sectionId] = [];
+                     }
+                     sectionMatches[match.sectionId].push(match);
+                  });
+                  Object.keys(sectionMatches).forEach(sectionId => {
+                     const section = document.getElementById(sectionId);
+                     if (!section) return;
+                     
+                     sectionMatches[sectionId].forEach(match => {
+                        section.appendChild(match.element);
+                     });
+                  });
+                  if (query === "") {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     
+                     let insertAfter = firstDivider;
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (section) {
+                           insertAfter.insertAdjacentElement('afterend', section);
+                           insertAfter = section;
+                        }
+                     });
+                  } else {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     const sectionsWithExactMatches = [];
+                     const sectionsWithoutExactMatches = [];
+                     
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (!section || !sectionMatches[sectionId]) return;
+                        
+                        const hasExactMatch = sectionMatches[sectionId].some(match => match.isExact);
+                        if (hasExactMatch) {
+                           sectionsWithExactMatches.push(section);
+                        } else {
+                           sectionsWithoutExactMatches.push(section);
+                        }
+                     });
+                     let insertAfter = firstDivider;
+                     [...sectionsWithExactMatches, ...sectionsWithoutExactMatches].forEach(section => {
+                        insertAfter.insertAdjacentElement('afterend', section);
+                        insertAfter = section;
+                     });
+                  }
+
+                  updateSectionVisibility();
+                  const symbolItems = Array.from(document.querySelectorAll('#symbolIndex li'));
+                  const matchingSymbols = [];
+                  
+                  symbolItems.forEach(li => {
                      const link = li.querySelector('a');
                      if (link) {
                         const symbolName = link.textContent.toLowerCase();
@@ -7141,11 +7233,27 @@ legacy values.</p>
                            
                            if (!isPrivateSymbol || shouldShowPrivate) {
                               li.style.display = '';
+                              const isExactMatch = symbolName === query;
+                              matchingSymbols.push({
+                                 element: li,
+                                 name: symbolName,
+                                 isExact: isExactMatch
+                              });
                            }
                         } else {
                            li.style.display = 'none';
                         }
                      }
+                  });
+                  matchingSymbols.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     return a.name.localeCompare(b.name);
+                  });
+                  
+                  const symbolIndex = document.getElementById('symbolIndex');
+                  matchingSymbols.forEach(symbol => {
+                     symbolIndex.appendChild(symbol.element);
                   });
                });
             }
@@ -7168,6 +7276,7 @@ legacy values.</p>
             }
 
             buildSymbolIndex();
+            deduplicateImports();
 
             document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
                anchor.addEventListener("click", function (e) {

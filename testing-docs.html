@@ -29,7 +29,7 @@
          }
 
          .sidebar {
-            width: 12%;
+            width: 14%;
             background: rgba(59, 56, 56, 0.15);
             padding: 1.5rem;
             box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
@@ -616,7 +616,47 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"bytes"
+               <pre><code class="language-go">"context"
+"flag"
+"fmt"
+"internal/sysinfo"
+"io"
+"math"
+"os"
+"runtime"
+"slices"
+"strconv"
+"strings"
+"sync"
+"sync/atomic"
+"time"
+"unicode"
+"context"
+"errors"
+"flag"
+"fmt"
+"io"
+"os"
+"path/filepath"
+"reflect"
+"runtime"
+"strings"
+"time"
+"fmt"
+"internal/goexperiment"
+"os"
+_ "unsafe"
+"fmt"
+"io"
+"os"
+"strings"
+"time"
+"fmt"
+"io"
+"os"
+"strings"
+"time"
+"bytes"
 "context"
 "errors"
 "flag"
@@ -639,22 +679,6 @@
 "time"
 "unicode"
 "unicode/utf8"
-"context"
-"errors"
-"flag"
-"fmt"
-"io"
-"os"
-"path/filepath"
-"reflect"
-"runtime"
-"strings"
-"time"
-"fmt"
-"io"
-"os"
-"strings"
-"time"
 "time"
 "errors"
 "internal/syscall/windows"
@@ -662,21 +686,6 @@
 "syscall"
 "time"
 "runtime"
-"context"
-"flag"
-"fmt"
-"internal/sysinfo"
-"io"
-"math"
-"os"
-"runtime"
-"slices"
-"strconv"
-"strings"
-"sync"
-"sync/atomic"
-"time"
-"unicode"
 "fmt"
 "internal/goexperiment"
 "os"
@@ -691,15 +700,6 @@
 "strconv"
 "strings"
 "sync"
-"fmt"
-"internal/goexperiment"
-"os"
-_ "unsafe"
-"fmt"
-"io"
-"os"
-"strings"
-"time"
 </code></pre>
             </article>
          </section>
@@ -2158,16 +2158,13 @@ mode fuzzMode
                   <a href="#highPrecisionTime" class="anchor" title="Link to highPrecisionTime">#</a>
                </h3>
                
-               <p>highPrecisionTime represents a single point in time with query performance counter.
-time.Time on Windows has low system granularity, which is not suitable for
-measuring short time intervals.
-TODO: If Windows runtime implements high resolution timing then highPrecisionTime
-can be removed.</p>
+               <p>highPrecisionTime represents a single point in time.
+On all systems except Windows, using time.Time is fine.</p>
                
                <pre
                   class="fields-block"
                ><code class="fields-code language-go">type highPrecisionTime struct {
-now int64
+now time.Time
 }</code></pre>
             </article>
             
@@ -2178,13 +2175,16 @@ now int64
                   <a href="#highPrecisionTime" class="anchor" title="Link to highPrecisionTime">#</a>
                </h3>
                
-               <p>highPrecisionTime represents a single point in time.
-On all systems except Windows, using time.Time is fine.</p>
+               <p>highPrecisionTime represents a single point in time with query performance counter.
+time.Time on Windows has low system granularity, which is not suitable for
+measuring short time intervals.
+TODO: If Windows runtime implements high resolution timing then highPrecisionTime
+can be removed.</p>
                
                <pre
                   class="fields-block"
                ><code class="fields-code language-go">type highPrecisionTime struct {
-now time.Time
+now int64
 }</code></pre>
             </article>
             
@@ -2327,7 +2327,7 @@ also sets PWD environment variable for the duration of the test.
 Because Chdir affects the whole process, it cannot be used
 in parallel tests or tests with parallel ancestors.</p>
                
-               <pre><code class="language-go">func (c *common) Chdir(dir string)</code></pre>
+               <pre><code class="language-go">func (t *T) Chdir(dir string)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Chdir" data-name="Chdir">
@@ -2344,7 +2344,7 @@ also sets PWD environment variable for the duration of the test.
 Because Chdir affects the whole process, it cannot be used
 in parallel tests or tests with parallel ancestors.</p>
                
-               <pre><code class="language-go">func (t *T) Chdir(dir string)</code></pre>
+               <pre><code class="language-go">func (c *common) Chdir(dir string)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="CheckCorpus" data-name="CheckCorpus">
@@ -3006,12 +3006,13 @@ It does not affect whether the timer is running.</p>
                   <a href="#Run" class="anchor" title="Link to Run">#</a>
                </h3>
                
-               <p>Run benchmarks f as a subbenchmark with the given name. It reports
-whether there were any failures.
-A subbenchmark is like any other benchmark. A benchmark that calls Run at
-least once will not be measured itself and will be called once with N=1.</p>
+               <p>Run runs f as a subtest of t called name. It runs f in a separate goroutine
+and blocks until f returns or calls t.Parallel to become a parallel test.
+Run reports whether f succeeded (or at least did not fail before calling t.Parallel).
+Run may be called simultaneously from multiple goroutines, but all such calls
+must return before the outer test function for t returns.</p>
                
-               <pre><code class="language-go">func (b *B) Run(name string, f func(b *B)) bool</code></pre>
+               <pre><code class="language-go">func (t *T) Run(name string, f func(t *T)) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Run" data-name="Run">
@@ -3022,13 +3023,12 @@ least once will not be measured itself and will be called once with N=1.</p>
                   <a href="#Run" class="anchor" title="Link to Run">#</a>
                </h3>
                
-               <p>Run runs f as a subtest of t called name. It runs f in a separate goroutine
-and blocks until f returns or calls t.Parallel to become a parallel test.
-Run reports whether f succeeded (or at least did not fail before calling t.Parallel).
-Run may be called simultaneously from multiple goroutines, but all such calls
-must return before the outer test function for t returns.</p>
+               <p>Run benchmarks f as a subbenchmark with the given name. It reports
+whether there were any failures.
+A subbenchmark is like any other benchmark. A benchmark that calls Run at
+least once will not be measured itself and will be called once with N=1.</p>
                
-               <pre><code class="language-go">func (t *T) Run(name string, f func(t *T)) bool</code></pre>
+               <pre><code class="language-go">func (b *B) Run(name string, f func(b *B)) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="RunBenchmarks" data-name="RunBenchmarks">
@@ -3183,7 +3183,7 @@ after the test.
 Because Setenv affects the whole process, it cannot be used
 in parallel tests or tests with parallel ancestors.</p>
                
-               <pre><code class="language-go">func (t *T) Setenv(key string, value string)</code></pre>
+               <pre><code class="language-go">func (c *common) Setenv(key string, value string)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Setenv" data-name="Setenv">
@@ -3200,7 +3200,7 @@ after the test.
 Because Setenv affects the whole process, it cannot be used
 in parallel tests or tests with parallel ancestors.</p>
                
-               <pre><code class="language-go">func (c *common) Setenv(key string, value string)</code></pre>
+               <pre><code class="language-go">func (t *T) Setenv(key string, value string)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Short" data-name="Short">
@@ -3380,6 +3380,17 @@ while performing steps that you don't want to measure.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
+               <pre><code class="language-go">func (f *chattyFlag) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
                <pre><code class="language-go">func (f *durationOrCountFlag) String() string</code></pre>
             </article>
             
@@ -3411,17 +3422,6 @@ by [BenchmarkResult.MemString].</p>
                </h3>
                
                <pre><code class="language-go">func (r fuzzResult) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (f *chattyFlag) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="TempDir" data-name="TempDir">
@@ -3476,7 +3476,7 @@ The formatted message must include the test name itself.</p>
                   <a href="#Write" class="anchor" title="Link to Write">#</a>
                </h3>
                
-               <pre><code class="language-go">func (w indenter) Write(b []byte) (n int, err error)</code></pre>
+               <pre><code class="language-go">func (discard) Write(b []byte) (n int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Write" data-name="Write">
@@ -3487,7 +3487,7 @@ The formatted message must include the test name itself.</p>
                   <a href="#Write" class="anchor" title="Link to Write">#</a>
                </h3>
                
-               <pre><code class="language-go">func (discard) Write(b []byte) (n int, err error)</code></pre>
+               <pre><code class="language-go">func (w indenter) Write(b []byte) (n int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="WriteProfileTo" data-name="WriteProfileTo">
@@ -3977,7 +3977,7 @@ run1 must have been called on b.</p>
                   <a href="#matches" class="anchor" title="Link to matches">#</a>
                </h3>
                
-               <pre><code class="language-go">func (m alternationMatch) matches(name []string, matchString func(pat string, str string) (bool, error)) (ok bool, partial bool)</code></pre>
+               <pre><code class="language-go">func (m simpleMatch) matches(name []string, matchString func(pat string, str string) (bool, error)) (ok bool, partial bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="matches" data-name="matches">
@@ -3988,7 +3988,7 @@ run1 must have been called on b.</p>
                   <a href="#matches" class="anchor" title="Link to matches">#</a>
                </h3>
                
-               <pre><code class="language-go">func (m simpleMatch) matches(name []string, matchString func(pat string, str string) (bool, error)) (ok bool, partial bool)</code></pre>
+               <pre><code class="language-go">func (m alternationMatch) matches(name []string, matchString func(pat string, str string) (bool, error)) (ok bool, partial bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="mbPerSec" data-name="mbPerSec">
@@ -4105,12 +4105,7 @@ suffix (if present), and a prefix preceding that suffix (always).</p>
                   <a href="#prefix" class="anchor" title="Link to prefix">#</a>
                </h3>
                
-               <p>prefix is like chatty.prefix but using p.json instead of chatty.json.
-Using p.json allows tests to check the json behavior without modifying
-the global variable. For convenience, we allow p == nil and treat
-that as not in json mode (because it's not chatty at all).</p>
-               
-               <pre><code class="language-go">func (p *chattyPrinter) prefix() string</code></pre>
+               <pre><code class="language-go">func (f *chattyFlag) prefix() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="prefix" data-name="prefix">
@@ -4121,7 +4116,12 @@ that as not in json mode (because it's not chatty at all).</p>
                   <a href="#prefix" class="anchor" title="Link to prefix">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f *chattyFlag) prefix() string</code></pre>
+               <p>prefix is like chatty.prefix but using p.json instead of chatty.json.
+Using p.json allows tests to check the json behavior without modifying
+the global variable. For convenience, we allow p == nil and treat
+that as not in json mode (because it's not chatty at all).</p>
+               
+               <pre><code class="language-go">func (p *chattyPrinter) prefix() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="prettyPrint" data-name="prettyPrint">
@@ -4233,7 +4233,7 @@ fixed the extra latency will go away.</p>
                   <a href="#report" class="anchor" title="Link to report">#</a>
                </h3>
                
-               <pre><code class="language-go">func (t *T) report()</code></pre>
+               <pre><code class="language-go">func (f *F) report()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="report" data-name="report">
@@ -4244,7 +4244,7 @@ fixed the extra latency will go away.</p>
                   <a href="#report" class="anchor" title="Link to report">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f *F) report()</code></pre>
+               <pre><code class="language-go">func (t *T) report()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="resetRaces" data-name="resetRaces">
@@ -4634,6 +4634,20 @@ with one or more counts, if necessary.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function deduplicateImports() {
+            const importsSection = document.querySelector('#imports-section code');
+            if (!importsSection) return;
+            
+            const lines = importsSection.textContent.split('\n');
+            var uniqueLines = [...new Set(lines.filter(line => line.trim()))];
+            uniqueLines.sort();
+            importsSection.textContent = uniqueLines.join('\n');
+            
+            if (window.Prism) {
+               Prism.highlightElement(importsSection);
+            }
+         }
+
          function updateSectionVisibility() {
             document.querySelectorAll("section").forEach(section => {
                const visibleArticles = section.querySelectorAll("article:not(.hidden)");
@@ -4847,7 +4861,9 @@ with one or more counts, if necessary.</p>
             if (searchInput) {
                searchInput.addEventListener("input", () => {
                   const query = searchInput.value.trim().toLowerCase();
-
+                  const allMatches = [];
+                  const sectionOrder = ['imports', 'globals', 'types', 'interfaces', 'structs', 'functions'];
+                  
                   document.querySelectorAll("article").forEach((el) => {
                      const name = el.dataset.name;
                      if (!name) return;
@@ -4859,21 +4875,97 @@ with one or more counts, if necessary.</p>
                            el.textContent.toLowerCase().includes(query));
 
                      if (matches) {
-                        const isPrivateEl =
-                           el.classList.contains("private");
-                        const shouldShowPrivate =
-                           getPrivateToggleState(el);
+                        const isPrivateEl = el.classList.contains("private");
+                        const shouldShowPrivate = getPrivateToggleState(el);
 
                         if (!isPrivateEl || shouldShowPrivate) {
                            el.classList.remove("hidden");
+                           
+                           const section = el.closest('section');
+                           if (section) {
+                              const sectionId = section.id;
+                              const sectionIndex = sectionOrder.indexOf(sectionId);
+                              const isExactMatch = name.toLowerCase() === query;
+                              
+                              allMatches.push({
+                                 element: el,
+                                 name: name,
+                                 isExact: isExactMatch,
+                                 sectionId: sectionId,
+                                 sectionIndex: sectionIndex >= 0 ? sectionIndex : 999
+                              });
+                           }
                         }
                      } else {
                         el.classList.add("hidden");
                      }
-                     updateSectionVisibility();
                   });
 
-                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                  allMatches.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     if (a.sectionIndex !== b.sectionIndex) return a.sectionIndex - b.sectionIndex;
+                     return a.name.localeCompare(b.name);
+                  });
+
+                  const sectionMatches = {};
+                  allMatches.forEach(match => {
+                     if (!sectionMatches[match.sectionId]) {
+                        sectionMatches[match.sectionId] = [];
+                     }
+                     sectionMatches[match.sectionId].push(match);
+                  });
+                  Object.keys(sectionMatches).forEach(sectionId => {
+                     const section = document.getElementById(sectionId);
+                     if (!section) return;
+                     
+                     sectionMatches[sectionId].forEach(match => {
+                        section.appendChild(match.element);
+                     });
+                  });
+                  if (query === "") {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     
+                     let insertAfter = firstDivider;
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (section) {
+                           insertAfter.insertAdjacentElement('afterend', section);
+                           insertAfter = section;
+                        }
+                     });
+                  } else {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     const sectionsWithExactMatches = [];
+                     const sectionsWithoutExactMatches = [];
+                     
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (!section || !sectionMatches[sectionId]) return;
+                        
+                        const hasExactMatch = sectionMatches[sectionId].some(match => match.isExact);
+                        if (hasExactMatch) {
+                           sectionsWithExactMatches.push(section);
+                        } else {
+                           sectionsWithoutExactMatches.push(section);
+                        }
+                     });
+                     let insertAfter = firstDivider;
+                     [...sectionsWithExactMatches, ...sectionsWithoutExactMatches].forEach(section => {
+                        insertAfter.insertAdjacentElement('afterend', section);
+                        insertAfter = section;
+                     });
+                  }
+
+                  updateSectionVisibility();
+                  const symbolItems = Array.from(document.querySelectorAll('#symbolIndex li'));
+                  const matchingSymbols = [];
+                  
+                  symbolItems.forEach(li => {
                      const link = li.querySelector('a');
                      if (link) {
                         const symbolName = link.textContent.toLowerCase();
@@ -4887,11 +4979,27 @@ with one or more counts, if necessary.</p>
                            
                            if (!isPrivateSymbol || shouldShowPrivate) {
                               li.style.display = '';
+                              const isExactMatch = symbolName === query;
+                              matchingSymbols.push({
+                                 element: li,
+                                 name: symbolName,
+                                 isExact: isExactMatch
+                              });
                            }
                         } else {
                            li.style.display = 'none';
                         }
                      }
+                  });
+                  matchingSymbols.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     return a.name.localeCompare(b.name);
+                  });
+                  
+                  const symbolIndex = document.getElementById('symbolIndex');
+                  matchingSymbols.forEach(symbol => {
+                     symbolIndex.appendChild(symbol.element);
                   });
                });
             }
@@ -4914,6 +5022,7 @@ with one or more counts, if necessary.</p>
             }
 
             buildSymbolIndex();
+            deduplicateImports();
 
             document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
                anchor.addEventListener("click", function (e) {

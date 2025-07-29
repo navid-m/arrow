@@ -29,7 +29,7 @@
          }
 
          .sidebar {
-            width: 12%;
+            width: 14%;
             background: rgba(59, 56, 56, 0.15);
             padding: 1.5rem;
             box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
@@ -602,15 +602,103 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"encoding/json"
+               <pre><code class="language-go">"bytes"
 "fmt"
-"net/url"
+"io"
+"os"
+"os/exec"
+"runtime"
+"sort"
+"strings"
+"time"
+"github.com/google/pprof/internal/plugin"
+"github.com/google/pprof/internal/report"
+"regexp"
+"strings"
+"github.com/google/pprof/third_party/svgpan"
+"fmt"
 "os"
 "path/filepath"
+"sync"
+"fmt"
+"net/url"
+"reflect"
+"strconv"
+"strings"
+"sync"
+"fmt"
+"regexp"
+"strconv"
+"strings"
+"github.com/google/pprof/internal/measurement"
+"github.com/google/pprof/internal/plugin"
+"github.com/google/pprof/profile"
+"bytes"
+"fmt"
+"io"
+"net/http"
+"net/url"
+"os"
+"os/exec"
+"path/filepath"
+"runtime"
+"strconv"
+"strings"
+"sync"
+"time"
+"github.com/google/pprof/internal/measurement"
+"github.com/google/pprof/internal/plugin"
+"github.com/google/pprof/profile"
+"bufio"
+"fmt"
+"io"
+"os"
+"strings"
+"github.com/google/pprof/internal/binutils"
+"github.com/google/pprof/internal/plugin"
+"github.com/google/pprof/internal/symbolizer"
+"github.com/google/pprof/internal/transport"
+"errors"
+"fmt"
+"os"
+"github.com/google/pprof/internal/binutils"
+"github.com/google/pprof/internal/plugin"
+"fmt"
+"io"
+"regexp"
+"sort"
+"strconv"
+"strings"
+"github.com/google/pprof/internal/plugin"
+"github.com/google/pprof/internal/report"
+"github.com/google/pprof/profile"
 "encoding/json"
 "html/template"
 "net/http"
 "github.com/google/pprof/internal/measurement"
+"embed"
+"fmt"
+"html/template"
+"os"
+"sync"
+"github.com/google/pprof/internal/report"
+"bytes"
+"fmt"
+"io"
+"os"
+"path/filepath"
+"regexp"
+"strings"
+"github.com/google/pprof/internal/plugin"
+"github.com/google/pprof/internal/report"
+"github.com/google/pprof/profile"
+"flag"
+"strings"
+"encoding/json"
+"fmt"
+"net/url"
+"os"
+"path/filepath"
 "strings"
 "github.com/google/pprof/internal/measurement"
 "github.com/google/pprof/profile"
@@ -631,94 +719,6 @@ gourl "net/url"
 "github.com/google/pprof/internal/plugin"
 "github.com/google/pprof/internal/report"
 "github.com/google/pprof/profile"
-"errors"
-"fmt"
-"os"
-"github.com/google/pprof/internal/binutils"
-"github.com/google/pprof/internal/plugin"
-"bytes"
-"fmt"
-"io"
-"os"
-"path/filepath"
-"regexp"
-"strings"
-"github.com/google/pprof/internal/plugin"
-"github.com/google/pprof/internal/report"
-"github.com/google/pprof/profile"
-"fmt"
-"os"
-"path/filepath"
-"sync"
-"embed"
-"fmt"
-"html/template"
-"os"
-"sync"
-"github.com/google/pprof/internal/report"
-"bytes"
-"fmt"
-"io"
-"os"
-"os/exec"
-"runtime"
-"sort"
-"strings"
-"time"
-"github.com/google/pprof/internal/plugin"
-"github.com/google/pprof/internal/report"
-"fmt"
-"net/url"
-"reflect"
-"strconv"
-"strings"
-"sync"
-"fmt"
-"regexp"
-"strconv"
-"strings"
-"github.com/google/pprof/internal/measurement"
-"github.com/google/pprof/internal/plugin"
-"github.com/google/pprof/profile"
-"flag"
-"strings"
-"regexp"
-"strings"
-"github.com/google/pprof/third_party/svgpan"
-"bytes"
-"fmt"
-"io"
-"net/http"
-"net/url"
-"os"
-"os/exec"
-"path/filepath"
-"runtime"
-"strconv"
-"strings"
-"sync"
-"time"
-"github.com/google/pprof/internal/measurement"
-"github.com/google/pprof/internal/plugin"
-"github.com/google/pprof/profile"
-"fmt"
-"io"
-"regexp"
-"sort"
-"strconv"
-"strings"
-"github.com/google/pprof/internal/plugin"
-"github.com/google/pprof/internal/report"
-"github.com/google/pprof/profile"
-"bufio"
-"fmt"
-"io"
-"os"
-"strings"
-"github.com/google/pprof/internal/binutils"
-"github.com/google/pprof/internal/plugin"
-"github.com/google/pprof/internal/symbolizer"
-"github.com/google/pprof/internal/transport"
 </code></pre>
             </article>
          </section>
@@ -3175,6 +3175,20 @@ options.  if commandLine is set, the output reflect cli usage.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function deduplicateImports() {
+            const importsSection = document.querySelector('#imports-section code');
+            if (!importsSection) return;
+            
+            const lines = importsSection.textContent.split('\n');
+            var uniqueLines = [...new Set(lines.filter(line => line.trim()))];
+            uniqueLines.sort();
+            importsSection.textContent = uniqueLines.join('\n');
+            
+            if (window.Prism) {
+               Prism.highlightElement(importsSection);
+            }
+         }
+
          function updateSectionVisibility() {
             document.querySelectorAll("section").forEach(section => {
                const visibleArticles = section.querySelectorAll("article:not(.hidden)");
@@ -3388,7 +3402,9 @@ options.  if commandLine is set, the output reflect cli usage.</p>
             if (searchInput) {
                searchInput.addEventListener("input", () => {
                   const query = searchInput.value.trim().toLowerCase();
-
+                  const allMatches = [];
+                  const sectionOrder = ['imports', 'globals', 'types', 'interfaces', 'structs', 'functions'];
+                  
                   document.querySelectorAll("article").forEach((el) => {
                      const name = el.dataset.name;
                      if (!name) return;
@@ -3400,21 +3416,97 @@ options.  if commandLine is set, the output reflect cli usage.</p>
                            el.textContent.toLowerCase().includes(query));
 
                      if (matches) {
-                        const isPrivateEl =
-                           el.classList.contains("private");
-                        const shouldShowPrivate =
-                           getPrivateToggleState(el);
+                        const isPrivateEl = el.classList.contains("private");
+                        const shouldShowPrivate = getPrivateToggleState(el);
 
                         if (!isPrivateEl || shouldShowPrivate) {
                            el.classList.remove("hidden");
+                           
+                           const section = el.closest('section');
+                           if (section) {
+                              const sectionId = section.id;
+                              const sectionIndex = sectionOrder.indexOf(sectionId);
+                              const isExactMatch = name.toLowerCase() === query;
+                              
+                              allMatches.push({
+                                 element: el,
+                                 name: name,
+                                 isExact: isExactMatch,
+                                 sectionId: sectionId,
+                                 sectionIndex: sectionIndex >= 0 ? sectionIndex : 999
+                              });
+                           }
                         }
                      } else {
                         el.classList.add("hidden");
                      }
-                     updateSectionVisibility();
                   });
 
-                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                  allMatches.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     if (a.sectionIndex !== b.sectionIndex) return a.sectionIndex - b.sectionIndex;
+                     return a.name.localeCompare(b.name);
+                  });
+
+                  const sectionMatches = {};
+                  allMatches.forEach(match => {
+                     if (!sectionMatches[match.sectionId]) {
+                        sectionMatches[match.sectionId] = [];
+                     }
+                     sectionMatches[match.sectionId].push(match);
+                  });
+                  Object.keys(sectionMatches).forEach(sectionId => {
+                     const section = document.getElementById(sectionId);
+                     if (!section) return;
+                     
+                     sectionMatches[sectionId].forEach(match => {
+                        section.appendChild(match.element);
+                     });
+                  });
+                  if (query === "") {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     
+                     let insertAfter = firstDivider;
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (section) {
+                           insertAfter.insertAdjacentElement('afterend', section);
+                           insertAfter = section;
+                        }
+                     });
+                  } else {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     const sectionsWithExactMatches = [];
+                     const sectionsWithoutExactMatches = [];
+                     
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (!section || !sectionMatches[sectionId]) return;
+                        
+                        const hasExactMatch = sectionMatches[sectionId].some(match => match.isExact);
+                        if (hasExactMatch) {
+                           sectionsWithExactMatches.push(section);
+                        } else {
+                           sectionsWithoutExactMatches.push(section);
+                        }
+                     });
+                     let insertAfter = firstDivider;
+                     [...sectionsWithExactMatches, ...sectionsWithoutExactMatches].forEach(section => {
+                        insertAfter.insertAdjacentElement('afterend', section);
+                        insertAfter = section;
+                     });
+                  }
+
+                  updateSectionVisibility();
+                  const symbolItems = Array.from(document.querySelectorAll('#symbolIndex li'));
+                  const matchingSymbols = [];
+                  
+                  symbolItems.forEach(li => {
                      const link = li.querySelector('a');
                      if (link) {
                         const symbolName = link.textContent.toLowerCase();
@@ -3428,11 +3520,27 @@ options.  if commandLine is set, the output reflect cli usage.</p>
                            
                            if (!isPrivateSymbol || shouldShowPrivate) {
                               li.style.display = '';
+                              const isExactMatch = symbolName === query;
+                              matchingSymbols.push({
+                                 element: li,
+                                 name: symbolName,
+                                 isExact: isExactMatch
+                              });
                            }
                         } else {
                            li.style.display = 'none';
                         }
                      }
+                  });
+                  matchingSymbols.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     return a.name.localeCompare(b.name);
+                  });
+                  
+                  const symbolIndex = document.getElementById('symbolIndex');
+                  matchingSymbols.forEach(symbol => {
+                     symbolIndex.appendChild(symbol.element);
                   });
                });
             }
@@ -3455,6 +3563,7 @@ options.  if commandLine is set, the output reflect cli usage.</p>
             }
 
             buildSymbolIndex();
+            deduplicateImports();
 
             document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
                anchor.addEventListener("click", function (e) {

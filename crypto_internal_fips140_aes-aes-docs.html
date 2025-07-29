@@ -29,7 +29,7 @@
          }
 
          .sidebar {
-            width: 12%;
+            width: 14%;
             background: rgba(59, 56, 56, 0.15);
             padding: 1.5rem;
             box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
@@ -610,12 +610,6 @@
 "crypto/internal/fips140"
 _ "crypto/internal/fips140/check"
 "errors"
-"crypto/internal/fips140deps/cpu"
-"crypto/internal/fips140deps/godebug"
-"crypto/internal/impl"
-"crypto/internal/fips140/subtle"
-"crypto/internal/fips140deps/byteorder"
-"crypto/internal/fips140deps/byteorder"
 "crypto/internal/fips140"
 "crypto/internal/fips140/alias"
 "crypto/internal/fips140/subtle"
@@ -627,6 +621,12 @@ _ "crypto/internal/fips140/check"
 "crypto/internal/fips140"
 "crypto/internal/fips140/alias"
 "strconv"
+"crypto/internal/fips140/subtle"
+"crypto/internal/fips140deps/byteorder"
+"crypto/internal/fips140deps/cpu"
+"crypto/internal/fips140deps/godebug"
+"crypto/internal/impl"
+"crypto/internal/fips140deps/byteorder"
 "crypto/internal/fips140deps/cpu"
 "crypto/internal/impl"
 </code></pre>
@@ -1141,7 +1141,7 @@ It is used by the GCM implementation to invoke the KMA instruction.</p>
                   <a href="#BlockSize" class="anchor" title="Link to BlockSize">#</a>
                </h3>
                
-               <pre><code class="language-go">func (c *CBCDecrypter) BlockSize() int</code></pre>
+               <pre><code class="language-go">func (c *Block) BlockSize() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="BlockSize" data-name="BlockSize">
@@ -1163,7 +1163,7 @@ It is used by the GCM implementation to invoke the KMA instruction.</p>
                   <a href="#BlockSize" class="anchor" title="Link to BlockSize">#</a>
                </h3>
                
-               <pre><code class="language-go">func (c *Block) BlockSize() int</code></pre>
+               <pre><code class="language-go">func (c *CBCDecrypter) BlockSize() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="CryptBlocks" data-name="CryptBlocks">
@@ -1396,10 +1396,6 @@ to 16 EiB from the start.</p>
                   <a href="#checkGenericIsExpected" class="anchor" title="Link to checkGenericIsExpected">#</a>
                </h3>
                
-               <p>checkGenericIsExpected is called by the variable-time implementation to make
-sure it is not used when hardware support is available. It shouldn't happen,
-but this way it's more evidently correct.</p>
-               
                <pre><code class="language-go">func checkGenericIsExpected()</code></pre>
             </article>
             
@@ -1410,6 +1406,10 @@ but this way it's more evidently correct.</p>
                   
                   <a href="#checkGenericIsExpected" class="anchor" title="Link to checkGenericIsExpected">#</a>
                </h3>
+               
+               <p>checkGenericIsExpected is called by the variable-time implementation to make
+sure it is not used when hardware support is available. It shouldn't happen,
+but this way it's more evidently correct.</p>
                
                <pre><code class="language-go">func checkGenericIsExpected()</code></pre>
             </article>
@@ -2050,6 +2050,20 @@ go:noinline</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function deduplicateImports() {
+            const importsSection = document.querySelector('#imports-section code');
+            if (!importsSection) return;
+            
+            const lines = importsSection.textContent.split('\n');
+            var uniqueLines = [...new Set(lines.filter(line => line.trim()))];
+            uniqueLines.sort();
+            importsSection.textContent = uniqueLines.join('\n');
+            
+            if (window.Prism) {
+               Prism.highlightElement(importsSection);
+            }
+         }
+
          function updateSectionVisibility() {
             document.querySelectorAll("section").forEach(section => {
                const visibleArticles = section.querySelectorAll("article:not(.hidden)");
@@ -2263,7 +2277,9 @@ go:noinline</p>
             if (searchInput) {
                searchInput.addEventListener("input", () => {
                   const query = searchInput.value.trim().toLowerCase();
-
+                  const allMatches = [];
+                  const sectionOrder = ['imports', 'globals', 'types', 'interfaces', 'structs', 'functions'];
+                  
                   document.querySelectorAll("article").forEach((el) => {
                      const name = el.dataset.name;
                      if (!name) return;
@@ -2275,21 +2291,97 @@ go:noinline</p>
                            el.textContent.toLowerCase().includes(query));
 
                      if (matches) {
-                        const isPrivateEl =
-                           el.classList.contains("private");
-                        const shouldShowPrivate =
-                           getPrivateToggleState(el);
+                        const isPrivateEl = el.classList.contains("private");
+                        const shouldShowPrivate = getPrivateToggleState(el);
 
                         if (!isPrivateEl || shouldShowPrivate) {
                            el.classList.remove("hidden");
+                           
+                           const section = el.closest('section');
+                           if (section) {
+                              const sectionId = section.id;
+                              const sectionIndex = sectionOrder.indexOf(sectionId);
+                              const isExactMatch = name.toLowerCase() === query;
+                              
+                              allMatches.push({
+                                 element: el,
+                                 name: name,
+                                 isExact: isExactMatch,
+                                 sectionId: sectionId,
+                                 sectionIndex: sectionIndex >= 0 ? sectionIndex : 999
+                              });
+                           }
                         }
                      } else {
                         el.classList.add("hidden");
                      }
-                     updateSectionVisibility();
                   });
 
-                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                  allMatches.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     if (a.sectionIndex !== b.sectionIndex) return a.sectionIndex - b.sectionIndex;
+                     return a.name.localeCompare(b.name);
+                  });
+
+                  const sectionMatches = {};
+                  allMatches.forEach(match => {
+                     if (!sectionMatches[match.sectionId]) {
+                        sectionMatches[match.sectionId] = [];
+                     }
+                     sectionMatches[match.sectionId].push(match);
+                  });
+                  Object.keys(sectionMatches).forEach(sectionId => {
+                     const section = document.getElementById(sectionId);
+                     if (!section) return;
+                     
+                     sectionMatches[sectionId].forEach(match => {
+                        section.appendChild(match.element);
+                     });
+                  });
+                  if (query === "") {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     
+                     let insertAfter = firstDivider;
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (section) {
+                           insertAfter.insertAdjacentElement('afterend', section);
+                           insertAfter = section;
+                        }
+                     });
+                  } else {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     const sectionsWithExactMatches = [];
+                     const sectionsWithoutExactMatches = [];
+                     
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (!section || !sectionMatches[sectionId]) return;
+                        
+                        const hasExactMatch = sectionMatches[sectionId].some(match => match.isExact);
+                        if (hasExactMatch) {
+                           sectionsWithExactMatches.push(section);
+                        } else {
+                           sectionsWithoutExactMatches.push(section);
+                        }
+                     });
+                     let insertAfter = firstDivider;
+                     [...sectionsWithExactMatches, ...sectionsWithoutExactMatches].forEach(section => {
+                        insertAfter.insertAdjacentElement('afterend', section);
+                        insertAfter = section;
+                     });
+                  }
+
+                  updateSectionVisibility();
+                  const symbolItems = Array.from(document.querySelectorAll('#symbolIndex li'));
+                  const matchingSymbols = [];
+                  
+                  symbolItems.forEach(li => {
                      const link = li.querySelector('a');
                      if (link) {
                         const symbolName = link.textContent.toLowerCase();
@@ -2303,11 +2395,27 @@ go:noinline</p>
                            
                            if (!isPrivateSymbol || shouldShowPrivate) {
                               li.style.display = '';
+                              const isExactMatch = symbolName === query;
+                              matchingSymbols.push({
+                                 element: li,
+                                 name: symbolName,
+                                 isExact: isExactMatch
+                              });
                            }
                         } else {
                            li.style.display = 'none';
                         }
                      }
+                  });
+                  matchingSymbols.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     return a.name.localeCompare(b.name);
+                  });
+                  
+                  const symbolIndex = document.getElementById('symbolIndex');
+                  matchingSymbols.forEach(symbol => {
+                     symbolIndex.appendChild(symbol.element);
                   });
                });
             }
@@ -2330,6 +2438,7 @@ go:noinline</p>
             }
 
             buildSymbolIndex();
+            deduplicateImports();
 
             document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
                anchor.addEventListener("click", function (e) {

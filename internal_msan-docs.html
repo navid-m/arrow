@@ -29,7 +29,7 @@
          }
 
          .sidebar {
-            width: 12%;
+            width: 14%;
             background: rgba(59, 56, 56, 0.15);
             padding: 1.5rem;
             box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
@@ -615,7 +615,7 @@
                   <a href="#Enabled" class="anchor" title="Link to Enabled">#</a>
                </h3>
                
-               <pre><code class="language-go">const Enabled = true</code></pre>
+               <pre><code class="language-go">const Enabled = false</code></pre>
             </article>
             
             <article class="global symbol-anchor" id="Enabled" data-name="Enabled">
@@ -626,7 +626,7 @@
                   <a href="#Enabled" class="anchor" title="Link to Enabled">#</a>
                </h3>
                
-               <pre><code class="language-go">const Enabled = false</code></pre>
+               <pre><code class="language-go">const Enabled = true</code></pre>
             </article>
             
          </section>
@@ -642,8 +642,6 @@
                   <a href="#Free" class="anchor" title="Link to Free">#</a>
                </h3>
                
-               <p>go:linkname Free runtime.msanfree</p>
-               
                <pre><code class="language-go">func Free(addr unsafe.Pointer, sz uintptr)</code></pre>
             </article>
             
@@ -655,7 +653,20 @@
                   <a href="#Free" class="anchor" title="Link to Free">#</a>
                </h3>
                
+               <p>go:linkname Free runtime.msanfree</p>
+               
                <pre><code class="language-go">func Free(addr unsafe.Pointer, sz uintptr)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Malloc" data-name="Malloc">
+               <h3>
+                  Malloc 
+                  <span class="badge">function</span>
+                  
+                  <a href="#Malloc" class="anchor" title="Link to Malloc">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func Malloc(addr unsafe.Pointer, sz uintptr)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Malloc" data-name="Malloc">
@@ -671,15 +682,15 @@
                <pre><code class="language-go">func Malloc(addr unsafe.Pointer, sz uintptr)</code></pre>
             </article>
             
-            <article class="function symbol-anchor" id="Malloc" data-name="Malloc">
+            <article class="function symbol-anchor" id="Move" data-name="Move">
                <h3>
-                  Malloc 
+                  Move 
                   <span class="badge">function</span>
                   
-                  <a href="#Malloc" class="anchor" title="Link to Malloc">#</a>
+                  <a href="#Move" class="anchor" title="Link to Move">#</a>
                </h3>
                
-               <pre><code class="language-go">func Malloc(addr unsafe.Pointer, sz uintptr)</code></pre>
+               <pre><code class="language-go">func Move(dst unsafe.Pointer, src unsafe.Pointer, sz uintptr)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Move" data-name="Move">
@@ -695,15 +706,15 @@
                <pre><code class="language-go">func Move(dst unsafe.Pointer, src unsafe.Pointer, sz uintptr)</code></pre>
             </article>
             
-            <article class="function symbol-anchor" id="Move" data-name="Move">
+            <article class="function symbol-anchor" id="Read" data-name="Read">
                <h3>
-                  Move 
+                  Read 
                   <span class="badge">function</span>
                   
-                  <a href="#Move" class="anchor" title="Link to Move">#</a>
+                  <a href="#Read" class="anchor" title="Link to Read">#</a>
                </h3>
                
-               <pre><code class="language-go">func Move(dst unsafe.Pointer, src unsafe.Pointer, sz uintptr)</code></pre>
+               <pre><code class="language-go">func Read(addr unsafe.Pointer, sz uintptr)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Read" data-name="Read">
@@ -719,15 +730,15 @@
                <pre><code class="language-go">func Read(addr unsafe.Pointer, sz uintptr)</code></pre>
             </article>
             
-            <article class="function symbol-anchor" id="Read" data-name="Read">
+            <article class="function symbol-anchor" id="Write" data-name="Write">
                <h3>
-                  Read 
+                  Write 
                   <span class="badge">function</span>
                   
-                  <a href="#Read" class="anchor" title="Link to Read">#</a>
+                  <a href="#Write" class="anchor" title="Link to Write">#</a>
                </h3>
                
-               <pre><code class="language-go">func Read(addr unsafe.Pointer, sz uintptr)</code></pre>
+               <pre><code class="language-go">func Write(addr unsafe.Pointer, sz uintptr)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Write" data-name="Write">
@@ -743,17 +754,6 @@
                <pre><code class="language-go">func Write(addr unsafe.Pointer, sz uintptr)</code></pre>
             </article>
             
-            <article class="function symbol-anchor" id="Write" data-name="Write">
-               <h3>
-                  Write 
-                  <span class="badge">function</span>
-                  
-                  <a href="#Write" class="anchor" title="Link to Write">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func Write(addr unsafe.Pointer, sz uintptr)</code></pre>
-            </article>
-            
          </section>
          
          <hr />
@@ -764,6 +764,20 @@
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function deduplicateImports() {
+            const importsSection = document.querySelector('#imports-section code');
+            if (!importsSection) return;
+            
+            const lines = importsSection.textContent.split('\n');
+            var uniqueLines = [...new Set(lines.filter(line => line.trim()))];
+            uniqueLines.sort();
+            importsSection.textContent = uniqueLines.join('\n');
+            
+            if (window.Prism) {
+               Prism.highlightElement(importsSection);
+            }
+         }
+
          function updateSectionVisibility() {
             document.querySelectorAll("section").forEach(section => {
                const visibleArticles = section.querySelectorAll("article:not(.hidden)");
@@ -977,7 +991,9 @@
             if (searchInput) {
                searchInput.addEventListener("input", () => {
                   const query = searchInput.value.trim().toLowerCase();
-
+                  const allMatches = [];
+                  const sectionOrder = ['imports', 'globals', 'types', 'interfaces', 'structs', 'functions'];
+                  
                   document.querySelectorAll("article").forEach((el) => {
                      const name = el.dataset.name;
                      if (!name) return;
@@ -989,21 +1005,97 @@
                            el.textContent.toLowerCase().includes(query));
 
                      if (matches) {
-                        const isPrivateEl =
-                           el.classList.contains("private");
-                        const shouldShowPrivate =
-                           getPrivateToggleState(el);
+                        const isPrivateEl = el.classList.contains("private");
+                        const shouldShowPrivate = getPrivateToggleState(el);
 
                         if (!isPrivateEl || shouldShowPrivate) {
                            el.classList.remove("hidden");
+                           
+                           const section = el.closest('section');
+                           if (section) {
+                              const sectionId = section.id;
+                              const sectionIndex = sectionOrder.indexOf(sectionId);
+                              const isExactMatch = name.toLowerCase() === query;
+                              
+                              allMatches.push({
+                                 element: el,
+                                 name: name,
+                                 isExact: isExactMatch,
+                                 sectionId: sectionId,
+                                 sectionIndex: sectionIndex >= 0 ? sectionIndex : 999
+                              });
+                           }
                         }
                      } else {
                         el.classList.add("hidden");
                      }
-                     updateSectionVisibility();
                   });
 
-                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                  allMatches.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     if (a.sectionIndex !== b.sectionIndex) return a.sectionIndex - b.sectionIndex;
+                     return a.name.localeCompare(b.name);
+                  });
+
+                  const sectionMatches = {};
+                  allMatches.forEach(match => {
+                     if (!sectionMatches[match.sectionId]) {
+                        sectionMatches[match.sectionId] = [];
+                     }
+                     sectionMatches[match.sectionId].push(match);
+                  });
+                  Object.keys(sectionMatches).forEach(sectionId => {
+                     const section = document.getElementById(sectionId);
+                     if (!section) return;
+                     
+                     sectionMatches[sectionId].forEach(match => {
+                        section.appendChild(match.element);
+                     });
+                  });
+                  if (query === "") {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     
+                     let insertAfter = firstDivider;
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (section) {
+                           insertAfter.insertAdjacentElement('afterend', section);
+                           insertAfter = section;
+                        }
+                     });
+                  } else {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     const sectionsWithExactMatches = [];
+                     const sectionsWithoutExactMatches = [];
+                     
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (!section || !sectionMatches[sectionId]) return;
+                        
+                        const hasExactMatch = sectionMatches[sectionId].some(match => match.isExact);
+                        if (hasExactMatch) {
+                           sectionsWithExactMatches.push(section);
+                        } else {
+                           sectionsWithoutExactMatches.push(section);
+                        }
+                     });
+                     let insertAfter = firstDivider;
+                     [...sectionsWithExactMatches, ...sectionsWithoutExactMatches].forEach(section => {
+                        insertAfter.insertAdjacentElement('afterend', section);
+                        insertAfter = section;
+                     });
+                  }
+
+                  updateSectionVisibility();
+                  const symbolItems = Array.from(document.querySelectorAll('#symbolIndex li'));
+                  const matchingSymbols = [];
+                  
+                  symbolItems.forEach(li => {
                      const link = li.querySelector('a');
                      if (link) {
                         const symbolName = link.textContent.toLowerCase();
@@ -1017,11 +1109,27 @@
                            
                            if (!isPrivateSymbol || shouldShowPrivate) {
                               li.style.display = '';
+                              const isExactMatch = symbolName === query;
+                              matchingSymbols.push({
+                                 element: li,
+                                 name: symbolName,
+                                 isExact: isExactMatch
+                              });
                            }
                         } else {
                            li.style.display = 'none';
                         }
                      }
+                  });
+                  matchingSymbols.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     return a.name.localeCompare(b.name);
+                  });
+                  
+                  const symbolIndex = document.getElementById('symbolIndex');
+                  matchingSymbols.forEach(symbol => {
+                     symbolIndex.appendChild(symbol.element);
                   });
                });
             }
@@ -1044,6 +1152,7 @@
             }
 
             buildSymbolIndex();
+            deduplicateImports();
 
             document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
                anchor.addEventListener("click", function (e) {

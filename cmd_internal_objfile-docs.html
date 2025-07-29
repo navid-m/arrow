@@ -29,7 +29,7 @@
          }
 
          .sidebar {
-            width: 12%;
+            width: 14%;
             background: rgba(59, 56, 56, 0.15);
             padding: 1.5rem;
             box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
@@ -603,6 +603,22 @@
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
                <pre><code class="language-go">"cmd/internal/archive"
+"cmd/internal/goobj"
+"cmd/internal/objabi"
+"cmd/internal/sys"
+"debug/dwarf"
+"debug/gosym"
+"errors"
+"fmt"
+"io"
+"os"
+"debug/dwarf"
+"debug/macho"
+"fmt"
+"io"
+"slices"
+"sort"
+"cmd/internal/archive"
 "cmp"
 "debug/dwarf"
 "debug/gosym"
@@ -633,22 +649,6 @@
 "encoding/binary"
 "fmt"
 "io"
-"cmd/internal/archive"
-"cmd/internal/goobj"
-"cmd/internal/objabi"
-"cmd/internal/sys"
-"debug/dwarf"
-"debug/gosym"
-"errors"
-"fmt"
-"io"
-"os"
-"debug/dwarf"
-"debug/macho"
-"fmt"
-"io"
-"slices"
-"sort"
 </code></pre>
             </article>
          </section>
@@ -944,7 +944,10 @@ xcoff *xcoff.File
                   <a href="#DWARF" class="anchor" title="Link to DWARF">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f *File) DWARF() (*dwarf.Data, error)</code></pre>
+               <p>DWARF returns DWARF debug data for the file, if any.
+This is for cmd/pprof to locate cgo functions.</p>
+               
+               <pre><code class="language-go">func (e *Entry) DWARF() (*dwarf.Data, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="DWARF" data-name="DWARF">
@@ -955,10 +958,7 @@ xcoff *xcoff.File
                   <a href="#DWARF" class="anchor" title="Link to DWARF">#</a>
                </h3>
                
-               <p>DWARF returns DWARF debug data for the file, if any.
-This is for cmd/pprof to locate cgo functions.</p>
-               
-               <pre><code class="language-go">func (e *Entry) DWARF() (*dwarf.Data, error)</code></pre>
+               <pre><code class="language-go">func (f *File) DWARF() (*dwarf.Data, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Entries" data-name="Entries">
@@ -1002,11 +1002,7 @@ This is for cmd/pprof to locate cgo functions.</p>
                   <a href="#LoadAddress" class="anchor" title="Link to LoadAddress">#</a>
                </h3>
                
-               <p>LoadAddress returns the expected load address of the file.
-This differs from the actual load address for a position-independent
-executable.</p>
-               
-               <pre><code class="language-go">func (e *Entry) LoadAddress() (uint64, error)</code></pre>
+               <pre><code class="language-go">func (f *File) LoadAddress() (uint64, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="LoadAddress" data-name="LoadAddress">
@@ -1017,7 +1013,11 @@ executable.</p>
                   <a href="#LoadAddress" class="anchor" title="Link to LoadAddress">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f *File) LoadAddress() (uint64, error)</code></pre>
+               <p>LoadAddress returns the expected load address of the file.
+This differs from the actual load address for a position-independent
+executable.</p>
+               
+               <pre><code class="language-go">func (e *Entry) LoadAddress() (uint64, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Name" data-name="Name">
@@ -1145,6 +1145,17 @@ This function implements the Liner interface in preference to pcln() above.</p>
                   <a href="#dwarf" class="anchor" title="Link to dwarf">#</a>
                </h3>
                
+               <pre><code class="language-go">func (f *goobjFile) dwarf() (*dwarf.Data, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="dwarf" data-name="dwarf">
+               <h3>
+                  dwarf 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#dwarf" class="anchor" title="Link to dwarf">#</a>
+               </h3>
+               
                <pre><code class="language-go">func (f *machoFile) dwarf() (*dwarf.Data, error)</code></pre>
             </article>
             
@@ -1156,7 +1167,18 @@ This function implements the Liner interface in preference to pcln() above.</p>
                   <a href="#dwarf" class="anchor" title="Link to dwarf">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f *goobjFile) dwarf() (*dwarf.Data, error)</code></pre>
+               <pre><code class="language-go">func (f *peFile) dwarf() (*dwarf.Data, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="dwarf" data-name="dwarf">
+               <h3>
+                  dwarf 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#dwarf" class="anchor" title="Link to dwarf">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (f *plan9File) dwarf() (*dwarf.Data, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="dwarf" data-name="dwarf">
@@ -1179,28 +1201,6 @@ This function implements the Liner interface in preference to pcln() above.</p>
                </h3>
                
                <pre><code class="language-go">func (f *elfFile) dwarf() (*dwarf.Data, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="dwarf" data-name="dwarf">
-               <h3>
-                  dwarf 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#dwarf" class="anchor" title="Link to dwarf">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (f *plan9File) dwarf() (*dwarf.Data, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="dwarf" data-name="dwarf">
-               <h3>
-                  dwarf 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#dwarf" class="anchor" title="Link to dwarf">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (f *peFile) dwarf() (*dwarf.Data, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="findPESymbol" data-name="findPESymbol">
@@ -1244,6 +1244,39 @@ This function implements the Liner interface in preference to pcln() above.</p>
                   <a href="#goarch" class="anchor" title="Link to goarch">#</a>
                </h3>
                
+               <pre><code class="language-go">func (f *machoFile) goarch() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="goarch" data-name="goarch">
+               <h3>
+                  goarch 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#goarch" class="anchor" title="Link to goarch">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (f *peFile) goarch() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="goarch" data-name="goarch">
+               <h3>
+                  goarch 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#goarch" class="anchor" title="Link to goarch">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (f *plan9File) goarch() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="goarch" data-name="goarch">
+               <h3>
+                  goarch 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#goarch" class="anchor" title="Link to goarch">#</a>
+               </h3>
+               
                <pre><code class="language-go">func (f *goobjFile) goarch() string</code></pre>
             </article>
             
@@ -1266,40 +1299,7 @@ This function implements the Liner interface in preference to pcln() above.</p>
                   <a href="#goarch" class="anchor" title="Link to goarch">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f *peFile) goarch() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="goarch" data-name="goarch">
-               <h3>
-                  goarch 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#goarch" class="anchor" title="Link to goarch">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (f *machoFile) goarch() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="goarch" data-name="goarch">
-               <h3>
-                  goarch 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#goarch" class="anchor" title="Link to goarch">#</a>
-               </h3>
-               
                <pre><code class="language-go">func (f *elfFile) goarch() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="goarch" data-name="goarch">
-               <h3>
-                  goarch 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#goarch" class="anchor" title="Link to goarch">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (f *plan9File) goarch() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="goobjName" data-name="goobjName">
@@ -1343,17 +1343,6 @@ This function implements the Liner interface in preference to pcln() above.</p>
                   <a href="#loadAddress" class="anchor" title="Link to loadAddress">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f *machoFile) loadAddress() (uint64, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="loadAddress" data-name="loadAddress">
-               <h3>
-                  loadAddress 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#loadAddress" class="anchor" title="Link to loadAddress">#</a>
-               </h3>
-               
                <pre><code class="language-go">func (f *peFile) loadAddress() (uint64, error)</code></pre>
             </article>
             
@@ -1365,7 +1354,7 @@ This function implements the Liner interface in preference to pcln() above.</p>
                   <a href="#loadAddress" class="anchor" title="Link to loadAddress">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f *elfFile) loadAddress() (uint64, error)</code></pre>
+               <pre><code class="language-go">func (f *xcoffFile) loadAddress() (uint64, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="loadAddress" data-name="loadAddress">
@@ -1387,7 +1376,18 @@ This function implements the Liner interface in preference to pcln() above.</p>
                   <a href="#loadAddress" class="anchor" title="Link to loadAddress">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f *xcoffFile) loadAddress() (uint64, error)</code></pre>
+               <pre><code class="language-go">func (f *elfFile) loadAddress() (uint64, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="loadAddress" data-name="loadAddress">
+               <h3>
+                  loadAddress 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#loadAddress" class="anchor" title="Link to loadAddress">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (f *machoFile) loadAddress() (uint64, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="loadPETable" data-name="loadPETable">
@@ -1511,7 +1511,7 @@ offset of the pc from the entry point.</p>
                   <a href="#pcln" class="anchor" title="Link to pcln">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f *xcoffFile) pcln() (textStart uint64, symtab []byte, pclntab []byte, err error)</code></pre>
+               <pre><code class="language-go">func (f *goobjFile) pcln() (textStart uint64, symtab []byte, pclntab []byte, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="pcln" data-name="pcln">
@@ -1522,7 +1522,7 @@ offset of the pc from the entry point.</p>
                   <a href="#pcln" class="anchor" title="Link to pcln">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f *peFile) pcln() (textStart uint64, symtab []byte, pclntab []byte, err error)</code></pre>
+               <pre><code class="language-go">func (f *plan9File) pcln() (textStart uint64, symtab []byte, pclntab []byte, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="pcln" data-name="pcln">
@@ -1555,7 +1555,7 @@ offset of the pc from the entry point.</p>
                   <a href="#pcln" class="anchor" title="Link to pcln">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f *goobjFile) pcln() (textStart uint64, symtab []byte, pclntab []byte, err error)</code></pre>
+               <pre><code class="language-go">func (f *peFile) pcln() (textStart uint64, symtab []byte, pclntab []byte, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="pcln" data-name="pcln">
@@ -1566,7 +1566,7 @@ offset of the pc from the entry point.</p>
                   <a href="#pcln" class="anchor" title="Link to pcln">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f *plan9File) pcln() (textStart uint64, symtab []byte, pclntab []byte, err error)</code></pre>
+               <pre><code class="language-go">func (f *xcoffFile) pcln() (textStart uint64, symtab []byte, pclntab []byte, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="readvarint" data-name="readvarint">
@@ -1614,7 +1614,7 @@ offset of the pc from the entry point.</p>
                   <a href="#symbols" class="anchor" title="Link to symbols">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f *elfFile) symbols() ([]Sym, error)</code></pre>
+               <pre><code class="language-go">func (f *machoFile) symbols() ([]Sym, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="symbols" data-name="symbols">
@@ -1636,7 +1636,7 @@ offset of the pc from the entry point.</p>
                   <a href="#symbols" class="anchor" title="Link to symbols">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f *plan9File) symbols() ([]Sym, error)</code></pre>
+               <pre><code class="language-go">func (f *elfFile) symbols() ([]Sym, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="symbols" data-name="symbols">
@@ -1647,7 +1647,7 @@ offset of the pc from the entry point.</p>
                   <a href="#symbols" class="anchor" title="Link to symbols">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f *machoFile) symbols() ([]Sym, error)</code></pre>
+               <pre><code class="language-go">func (f *plan9File) symbols() ([]Sym, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="symbols" data-name="symbols">
@@ -1670,6 +1670,17 @@ offset of the pc from the entry point.</p>
                </h3>
                
                <pre><code class="language-go">func (f *peFile) symbols() ([]Sym, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="text" data-name="text">
+               <h3>
+                  text 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#text" class="anchor" title="Link to text">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (f *xcoffFile) text() (textStart uint64, text []byte, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="text" data-name="text">
@@ -1704,7 +1715,7 @@ offset of the pc from the entry point.</p>
                   <a href="#text" class="anchor" title="Link to text">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f *xcoffFile) text() (textStart uint64, text []byte, err error)</code></pre>
+               <pre><code class="language-go">func (f *elfFile) text() (textStart uint64, text []byte, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="text" data-name="text">
@@ -1729,17 +1740,6 @@ offset of the pc from the entry point.</p>
                <pre><code class="language-go">func (f *peFile) text() (textStart uint64, text []byte, err error)</code></pre>
             </article>
             
-            <article class="function symbol-anchor" id="text" data-name="text">
-               <h3>
-                  text 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#text" class="anchor" title="Link to text">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (f *elfFile) text() (textStart uint64, text []byte, err error)</code></pre>
-            </article>
-            
          </section>
          
          <hr />
@@ -1750,6 +1750,20 @@ offset of the pc from the entry point.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function deduplicateImports() {
+            const importsSection = document.querySelector('#imports-section code');
+            if (!importsSection) return;
+            
+            const lines = importsSection.textContent.split('\n');
+            var uniqueLines = [...new Set(lines.filter(line => line.trim()))];
+            uniqueLines.sort();
+            importsSection.textContent = uniqueLines.join('\n');
+            
+            if (window.Prism) {
+               Prism.highlightElement(importsSection);
+            }
+         }
+
          function updateSectionVisibility() {
             document.querySelectorAll("section").forEach(section => {
                const visibleArticles = section.querySelectorAll("article:not(.hidden)");
@@ -1963,7 +1977,9 @@ offset of the pc from the entry point.</p>
             if (searchInput) {
                searchInput.addEventListener("input", () => {
                   const query = searchInput.value.trim().toLowerCase();
-
+                  const allMatches = [];
+                  const sectionOrder = ['imports', 'globals', 'types', 'interfaces', 'structs', 'functions'];
+                  
                   document.querySelectorAll("article").forEach((el) => {
                      const name = el.dataset.name;
                      if (!name) return;
@@ -1975,21 +1991,97 @@ offset of the pc from the entry point.</p>
                            el.textContent.toLowerCase().includes(query));
 
                      if (matches) {
-                        const isPrivateEl =
-                           el.classList.contains("private");
-                        const shouldShowPrivate =
-                           getPrivateToggleState(el);
+                        const isPrivateEl = el.classList.contains("private");
+                        const shouldShowPrivate = getPrivateToggleState(el);
 
                         if (!isPrivateEl || shouldShowPrivate) {
                            el.classList.remove("hidden");
+                           
+                           const section = el.closest('section');
+                           if (section) {
+                              const sectionId = section.id;
+                              const sectionIndex = sectionOrder.indexOf(sectionId);
+                              const isExactMatch = name.toLowerCase() === query;
+                              
+                              allMatches.push({
+                                 element: el,
+                                 name: name,
+                                 isExact: isExactMatch,
+                                 sectionId: sectionId,
+                                 sectionIndex: sectionIndex >= 0 ? sectionIndex : 999
+                              });
+                           }
                         }
                      } else {
                         el.classList.add("hidden");
                      }
-                     updateSectionVisibility();
                   });
 
-                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                  allMatches.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     if (a.sectionIndex !== b.sectionIndex) return a.sectionIndex - b.sectionIndex;
+                     return a.name.localeCompare(b.name);
+                  });
+
+                  const sectionMatches = {};
+                  allMatches.forEach(match => {
+                     if (!sectionMatches[match.sectionId]) {
+                        sectionMatches[match.sectionId] = [];
+                     }
+                     sectionMatches[match.sectionId].push(match);
+                  });
+                  Object.keys(sectionMatches).forEach(sectionId => {
+                     const section = document.getElementById(sectionId);
+                     if (!section) return;
+                     
+                     sectionMatches[sectionId].forEach(match => {
+                        section.appendChild(match.element);
+                     });
+                  });
+                  if (query === "") {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     
+                     let insertAfter = firstDivider;
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (section) {
+                           insertAfter.insertAdjacentElement('afterend', section);
+                           insertAfter = section;
+                        }
+                     });
+                  } else {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     const sectionsWithExactMatches = [];
+                     const sectionsWithoutExactMatches = [];
+                     
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (!section || !sectionMatches[sectionId]) return;
+                        
+                        const hasExactMatch = sectionMatches[sectionId].some(match => match.isExact);
+                        if (hasExactMatch) {
+                           sectionsWithExactMatches.push(section);
+                        } else {
+                           sectionsWithoutExactMatches.push(section);
+                        }
+                     });
+                     let insertAfter = firstDivider;
+                     [...sectionsWithExactMatches, ...sectionsWithoutExactMatches].forEach(section => {
+                        insertAfter.insertAdjacentElement('afterend', section);
+                        insertAfter = section;
+                     });
+                  }
+
+                  updateSectionVisibility();
+                  const symbolItems = Array.from(document.querySelectorAll('#symbolIndex li'));
+                  const matchingSymbols = [];
+                  
+                  symbolItems.forEach(li => {
                      const link = li.querySelector('a');
                      if (link) {
                         const symbolName = link.textContent.toLowerCase();
@@ -2003,11 +2095,27 @@ offset of the pc from the entry point.</p>
                            
                            if (!isPrivateSymbol || shouldShowPrivate) {
                               li.style.display = '';
+                              const isExactMatch = symbolName === query;
+                              matchingSymbols.push({
+                                 element: li,
+                                 name: symbolName,
+                                 isExact: isExactMatch
+                              });
                            }
                         } else {
                            li.style.display = 'none';
                         }
                      }
+                  });
+                  matchingSymbols.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     return a.name.localeCompare(b.name);
+                  });
+                  
+                  const symbolIndex = document.getElementById('symbolIndex');
+                  matchingSymbols.forEach(symbol => {
+                     symbolIndex.appendChild(symbol.element);
                   });
                });
             }
@@ -2030,6 +2138,7 @@ offset of the pc from the entry point.</p>
             }
 
             buildSymbolIndex();
+            deduplicateImports();
 
             document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
                anchor.addEventListener("click", function (e) {

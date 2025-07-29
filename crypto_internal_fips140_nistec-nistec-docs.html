@@ -29,7 +29,7 @@
          }
 
          .sidebar {
-            width: 12%;
+            width: 14%;
             background: rgba(59, 56, 56, 0.15);
             padding: 1.5rem;
             box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
@@ -613,9 +613,16 @@
 "crypto/internal/fips140/subtle"
 "errors"
 "sync"
-_ "crypto/internal/fips140/check"
 "crypto/internal/fips140/nistec/fiat"
 "sync"
+"crypto/internal/fips140/nistec/fiat"
+"crypto/internal/fips140/subtle"
+"crypto/internal/fips140deps/byteorder"
+"crypto/internal/fips140deps/cpu"
+"errors"
+"math/bits"
+"sync"
+"unsafe"
 "crypto/internal/fips140deps/byteorder"
 "errors"
 "math/bits"
@@ -629,14 +636,7 @@ _ "crypto/internal/fips140/check"
 "crypto/internal/fips140/subtle"
 "errors"
 "sync"
-"crypto/internal/fips140/nistec/fiat"
-"crypto/internal/fips140/subtle"
-"crypto/internal/fips140deps/byteorder"
-"crypto/internal/fips140deps/cpu"
-"errors"
-"math/bits"
-"sync"
-"unsafe"
+_ "crypto/internal/fips140/check"
 "errors"
 </code></pre>
             </article>
@@ -1189,15 +1189,14 @@ z *fiat.P224Element
                   <a href="#P256Point" class="anchor" title="Link to P256Point">#</a>
                </h3>
                
-               <p>P256Point is a P-256 point. The zero value should not be assumed to be valid
-(although it is in this implementation).</p>
+               <p>P256Point is a P-256 point. The zero value is NOT valid.</p>
                
                <pre
                   class="fields-block"
                ><code class="fields-code language-go">type P256Point struct {
-x p256Element
-y p256Element
-z p256Element
+x fiat.P256Element
+y fiat.P256Element
+z fiat.P256Element
 }</code></pre>
             </article>
             
@@ -1208,14 +1207,15 @@ z p256Element
                   <a href="#P256Point" class="anchor" title="Link to P256Point">#</a>
                </h3>
                
-               <p>P256Point is a P-256 point. The zero value is NOT valid.</p>
+               <p>P256Point is a P-256 point. The zero value should not be assumed to be valid
+(although it is in this implementation).</p>
                
                <pre
                   class="fields-block"
                ><code class="fields-code language-go">type P256Point struct {
-x fiat.P256Element
-y fiat.P256Element
-z fiat.P256Element
+x p256Element
+y p256Element
+z p256Element
 }</code></pre>
             </article>
             
@@ -1268,8 +1268,8 @@ Montgomery domain elements. The point can't be the point at infinity.</p>
                <pre
                   class="fields-block"
                ><code class="fields-code language-go">type p256AffinePoint struct {
-x p256Element
-y p256Element
+x fiat.P256Element
+y fiat.P256Element
 }</code></pre>
             </article>
             
@@ -1286,8 +1286,8 @@ Montgomery domain elements. The point can't be the point at infinity.</p>
                <pre
                   class="fields-block"
                ><code class="fields-code language-go">type p256AffinePoint struct {
-x fiat.P256Element
-y fiat.P256Element
+x p256Element
+y p256Element
 }</code></pre>
             </article>
             
@@ -1306,7 +1306,7 @@ y fiat.P256Element
                
                <p>Add sets q = p1 + p2, and returns q. The points may overlap.</p>
                
-               <pre><code class="language-go">func (q *P384Point) Add(p1 *P384Point, p2 *P384Point) *P384Point</code></pre>
+               <pre><code class="language-go">func (q *P224Point) Add(p1 *P224Point, p2 *P224Point) *P224Point</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Add" data-name="Add">
@@ -1332,19 +1332,6 @@ y fiat.P256Element
                
                <p>Add sets q = p1 + p2, and returns q. The points may overlap.</p>
                
-               <pre><code class="language-go">func (q *P256Point) Add(r1 *P256Point, r2 *P256Point) *P256Point</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Add" data-name="Add">
-               <h3>
-                  Add 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Add" class="anchor" title="Link to Add">#</a>
-               </h3>
-               
-               <p>Add sets q = p1 + p2, and returns q. The points may overlap.</p>
-               
                <pre><code class="language-go">func (q *P256Point) Add(p1 *P256Point, p2 *P256Point) *P256Point</code></pre>
             </article>
             
@@ -1358,7 +1345,20 @@ y fiat.P256Element
                
                <p>Add sets q = p1 + p2, and returns q. The points may overlap.</p>
                
-               <pre><code class="language-go">func (q *P224Point) Add(p1 *P224Point, p2 *P224Point) *P224Point</code></pre>
+               <pre><code class="language-go">func (q *P256Point) Add(r1 *P256Point, r2 *P256Point) *P256Point</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Add" data-name="Add">
+               <h3>
+                  Add 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Add" class="anchor" title="Link to Add">#</a>
+               </h3>
+               
+               <p>Add sets q = p1 + p2, and returns q. The points may overlap.</p>
+               
+               <pre><code class="language-go">func (q *P384Point) Add(p1 *P384Point, p2 *P384Point) *P384Point</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="AddAffine" data-name="AddAffine">
@@ -1375,17 +1375,6 @@ coordinates, instead callers can set p2 to an arbitrary point and set
 infinity to 1.</p>
                
                <pre><code class="language-go">func (q *P256Point) AddAffine(p1 *P256Point, p2 *p256AffinePoint, infinity int) *P256Point</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Bytes" data-name="Bytes">
-               <h3>
-                  Bytes 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Bytes" class="anchor" title="Link to Bytes">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (s *p256OrdElement) Bytes() []byte</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Bytes" data-name="Bytes">
@@ -1415,7 +1404,7 @@ infinity is shorter than all other encodings.</p>
 SEC 1, Version 2.0, Section 2.3.3. Note that the encoding of the point at
 infinity is shorter than all other encodings.</p>
                
-               <pre><code class="language-go">func (p *P384Point) Bytes() []byte</code></pre>
+               <pre><code class="language-go">func (p *P256Point) Bytes() []byte</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Bytes" data-name="Bytes">
@@ -1445,7 +1434,18 @@ infinity is shorter than all other encodings.</p>
 SEC 1, Version 2.0, Section 2.3.3. Note that the encoding of the point at
 infinity is shorter than all other encodings.</p>
                
-               <pre><code class="language-go">func (p *P521Point) Bytes() []byte</code></pre>
+               <pre><code class="language-go">func (p *P384Point) Bytes() []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Bytes" data-name="Bytes">
+               <h3>
+                  Bytes 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Bytes" class="anchor" title="Link to Bytes">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (s *p256OrdElement) Bytes() []byte</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Bytes" data-name="Bytes">
@@ -1460,22 +1460,7 @@ infinity is shorter than all other encodings.</p>
 SEC 1, Version 2.0, Section 2.3.3. Note that the encoding of the point at
 infinity is shorter than all other encodings.</p>
                
-               <pre><code class="language-go">func (p *P256Point) Bytes() []byte</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="BytesCompressed" data-name="BytesCompressed">
-               <h3>
-                  BytesCompressed 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#BytesCompressed" class="anchor" title="Link to BytesCompressed">#</a>
-               </h3>
-               
-               <p>BytesCompressed returns the compressed or infinity encoding of p, as
-specified in SEC 1, Version 2.0, Section 2.3.3. Note that the encoding of the
-point at infinity is shorter than all other encodings.</p>
-               
-               <pre><code class="language-go">func (p *P256Point) BytesCompressed() []byte</code></pre>
+               <pre><code class="language-go">func (p *P521Point) Bytes() []byte</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="BytesCompressed" data-name="BytesCompressed">
@@ -1520,6 +1505,21 @@ point at infinity is shorter than all other encodings.</p>
 specified in SEC 1, Version 2.0, Section 2.3.3. Note that the encoding of the
 point at infinity is shorter than all other encodings.</p>
                
+               <pre><code class="language-go">func (p *P224Point) BytesCompressed() []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="BytesCompressed" data-name="BytesCompressed">
+               <h3>
+                  BytesCompressed 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#BytesCompressed" class="anchor" title="Link to BytesCompressed">#</a>
+               </h3>
+               
+               <p>BytesCompressed returns the compressed or infinity encoding of p, as
+specified in SEC 1, Version 2.0, Section 2.3.3. Note that the encoding of the
+point at infinity is shorter than all other encodings.</p>
+               
                <pre><code class="language-go">func (p *P521Point) BytesCompressed() []byte</code></pre>
             </article>
             
@@ -1535,35 +1535,7 @@ point at infinity is shorter than all other encodings.</p>
 specified in SEC 1, Version 2.0, Section 2.3.3. Note that the encoding of the
 point at infinity is shorter than all other encodings.</p>
                
-               <pre><code class="language-go">func (p *P224Point) BytesCompressed() []byte</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="BytesX" data-name="BytesX">
-               <h3>
-                  BytesX 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#BytesX" class="anchor" title="Link to BytesX">#</a>
-               </h3>
-               
-               <p>BytesX returns the encoding of the x-coordinate of p, as specified in SEC 1,
-Version 2.0, Section 2.3.5, or an error if p is the point at infinity.</p>
-               
-               <pre><code class="language-go">func (p *P256Point) BytesX() ([]byte, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="BytesX" data-name="BytesX">
-               <h3>
-                  BytesX 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#BytesX" class="anchor" title="Link to BytesX">#</a>
-               </h3>
-               
-               <p>BytesX returns the encoding of the x-coordinate of p, as specified in SEC 1,
-Version 2.0, Section 2.3.5, or an error if p is the point at infinity.</p>
-               
-               <pre><code class="language-go">func (p *P224Point) BytesX() ([]byte, error)</code></pre>
+               <pre><code class="language-go">func (p *P256Point) BytesCompressed() []byte</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="BytesX" data-name="BytesX">
@@ -1605,7 +1577,35 @@ Version 2.0, Section 2.3.5, or an error if p is the point at infinity.</p>
                <p>BytesX returns the encoding of the x-coordinate of p, as specified in SEC 1,
 Version 2.0, Section 2.3.5, or an error if p is the point at infinity.</p>
                
+               <pre><code class="language-go">func (p *P224Point) BytesX() ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="BytesX" data-name="BytesX">
+               <h3>
+                  BytesX 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#BytesX" class="anchor" title="Link to BytesX">#</a>
+               </h3>
+               
+               <p>BytesX returns the encoding of the x-coordinate of p, as specified in SEC 1,
+Version 2.0, Section 2.3.5, or an error if p is the point at infinity.</p>
+               
                <pre><code class="language-go">func (p *P521Point) BytesX() ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="BytesX" data-name="BytesX">
+               <h3>
+                  BytesX 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#BytesX" class="anchor" title="Link to BytesX">#</a>
+               </h3>
+               
+               <p>BytesX returns the encoding of the x-coordinate of p, as specified in SEC 1,
+Version 2.0, Section 2.3.5, or an error if p is the point at infinity.</p>
+               
+               <pre><code class="language-go">func (p *P256Point) BytesX() ([]byte, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Compute" data-name="Compute">
@@ -1631,6 +1631,19 @@ Version 2.0, Section 2.3.5, or an error if p is the point at infinity.</p>
                
                <p>Double sets q = p + p, and returns q. The points may overlap.</p>
                
+               <pre><code class="language-go">func (q *P256Point) Double(p *P256Point) *P256Point</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Double" data-name="Double">
+               <h3>
+                  Double 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Double" class="anchor" title="Link to Double">#</a>
+               </h3>
+               
+               <p>Double sets q = p + p, and returns q. The points may overlap.</p>
+               
                <pre><code class="language-go">func (q *P521Point) Double(p *P521Point) *P521Point</code></pre>
             </article>
             
@@ -1644,33 +1657,20 @@ Version 2.0, Section 2.3.5, or an error if p is the point at infinity.</p>
                
                <p>Double sets q = p + p, and returns q. The points may overlap.</p>
                
-               <pre><code class="language-go">func (q *P256Point) Double(p *P256Point) *P256Point</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Double" data-name="Double">
-               <h3>
-                  Double 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Double" class="anchor" title="Link to Double">#</a>
-               </h3>
-               
-               <p>Double sets q = p + p, and returns q. The points may overlap.</p>
-               
-               <pre><code class="language-go">func (q *P256Point) Double(p *P256Point) *P256Point</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Double" data-name="Double">
-               <h3>
-                  Double 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Double" class="anchor" title="Link to Double">#</a>
-               </h3>
-               
-               <p>Double sets q = p + p, and returns q. The points may overlap.</p>
-               
                <pre><code class="language-go">func (q *P384Point) Double(p *P384Point) *P384Point</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Double" data-name="Double">
+               <h3>
+                  Double 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Double" class="anchor" title="Link to Double">#</a>
+               </h3>
+               
+               <p>Double sets q = p + p, and returns q. The points may overlap.</p>
+               
+               <pre><code class="language-go">func (q *P256Point) Double(p *P256Point) *P256Point</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Double" data-name="Double">
@@ -1733,7 +1733,7 @@ Version 2.0, Section 2.3.5, or an error if p is the point at infinity.</p>
                   <a href="#NewP256Point" class="anchor" title="Link to NewP256Point">#</a>
                </h3>
                
-               <p>NewP256Point returns a new P256Point representing the point at infinity.</p>
+               <p>NewP256Point returns a new P256Point representing the point at infinity point.</p>
                
                <pre><code class="language-go">func NewP256Point() *P256Point</code></pre>
             </article>
@@ -1746,7 +1746,7 @@ Version 2.0, Section 2.3.5, or an error if p is the point at infinity.</p>
                   <a href="#NewP256Point" class="anchor" title="Link to NewP256Point">#</a>
                </h3>
                
-               <p>NewP256Point returns a new P256Point representing the point at infinity point.</p>
+               <p>NewP256Point returns a new P256Point representing the point at infinity.</p>
                
                <pre><code class="language-go">func NewP256Point() *P256Point</code></pre>
             </article>
@@ -1832,21 +1832,6 @@ than 256. The value of n leaks through timing side-channels.</p>
                   <a href="#ScalarBaseMult" class="anchor" title="Link to ScalarBaseMult">#</a>
                </h3>
                
-               <p>ScalarBaseMult sets p = scalar * generator, where scalar is a 32-byte big
-endian value, and returns r. If scalar is not 32 bytes long, ScalarBaseMult
-returns an error and the receiver is unchanged.</p>
-               
-               <pre><code class="language-go">func (p *P256Point) ScalarBaseMult(scalar []byte) (*P256Point, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="ScalarBaseMult" data-name="ScalarBaseMult">
-               <h3>
-                  ScalarBaseMult 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#ScalarBaseMult" class="anchor" title="Link to ScalarBaseMult">#</a>
-               </h3>
-               
                <p>ScalarBaseMult sets p = scalar * B, where B is the canonical generator, and
 returns p.</p>
                
@@ -1866,6 +1851,21 @@ endian value, and returns r. If scalar is not 32 bytes long, ScalarBaseMult
 returns an error and the receiver is unchanged.</p>
                
                <pre><code class="language-go">func (r *P256Point) ScalarBaseMult(scalar []byte) (*P256Point, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ScalarBaseMult" data-name="ScalarBaseMult">
+               <h3>
+                  ScalarBaseMult 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#ScalarBaseMult" class="anchor" title="Link to ScalarBaseMult">#</a>
+               </h3>
+               
+               <p>ScalarBaseMult sets p = scalar * generator, where scalar is a 32-byte big
+endian value, and returns r. If scalar is not 32 bytes long, ScalarBaseMult
+returns an error and the receiver is unchanged.</p>
+               
+               <pre><code class="language-go">func (p *P256Point) ScalarBaseMult(scalar []byte) (*P256Point, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ScalarBaseMult" data-name="ScalarBaseMult">
@@ -1919,24 +1919,9 @@ error and the receiver is unchanged.</p>
                   <a href="#ScalarMult" class="anchor" title="Link to ScalarMult">#</a>
                </h3>
                
-               <p>ScalarMult sets r = scalar * q, where scalar is a 32-byte big endian value,
-and returns r. If scalar is not 32 bytes long, ScalarMult returns an error
-and the receiver is unchanged.</p>
-               
-               <pre><code class="language-go">func (p *P256Point) ScalarMult(q *P256Point, scalar []byte) (*P256Point, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="ScalarMult" data-name="ScalarMult">
-               <h3>
-                  ScalarMult 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#ScalarMult" class="anchor" title="Link to ScalarMult">#</a>
-               </h3>
-               
                <p>ScalarMult sets p = scalar * q, and returns p.</p>
                
-               <pre><code class="language-go">func (p *P521Point) ScalarMult(q *P521Point, scalar []byte) (*P521Point, error)</code></pre>
+               <pre><code class="language-go">func (p *P224Point) ScalarMult(q *P224Point, scalar []byte) (*P224Point, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ScalarMult" data-name="ScalarMult">
@@ -1962,7 +1947,22 @@ and the receiver is unchanged.</p>
                
                <p>ScalarMult sets p = scalar * q, and returns p.</p>
                
-               <pre><code class="language-go">func (p *P224Point) ScalarMult(q *P224Point, scalar []byte) (*P224Point, error)</code></pre>
+               <pre><code class="language-go">func (p *P521Point) ScalarMult(q *P521Point, scalar []byte) (*P521Point, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ScalarMult" data-name="ScalarMult">
+               <h3>
+                  ScalarMult 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#ScalarMult" class="anchor" title="Link to ScalarMult">#</a>
+               </h3>
+               
+               <p>ScalarMult sets r = scalar * q, where scalar is a 32-byte big endian value,
+and returns r. If scalar is not 32 bytes long, ScalarMult returns an error
+and the receiver is unchanged.</p>
+               
+               <pre><code class="language-go">func (p *P256Point) ScalarMult(q *P256Point, scalar []byte) (*P256Point, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Select" data-name="Select">
@@ -1976,61 +1976,6 @@ and the receiver is unchanged.</p>
                <p>Select sets q to p1 if cond == 1, and to p2 if cond == 0.</p>
                
                <pre><code class="language-go">func (q *P384Point) Select(p1 *P384Point, p2 *P384Point, cond int) *P384Point</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Select" data-name="Select">
-               <h3>
-                  Select 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Select" class="anchor" title="Link to Select">#</a>
-               </h3>
-               
-               <p>Select sets q to p1 if cond == 1, and to p2 if cond == 0.</p>
-               
-               <pre><code class="language-go">func (q *P256Point) Select(p1 *P256Point, p2 *P256Point, cond int) *P256Point</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Select" data-name="Select">
-               <h3>
-                  Select 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Select" class="anchor" title="Link to Select">#</a>
-               </h3>
-               
-               <p>Select selects the n-th multiple of the table base point into p. It works in
-constant time by iterating over every entry of the table. n must be in [0, 15].</p>
-               
-               <pre><code class="language-go">func (table *p521Table) Select(p *P521Point, n uint8)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Select" data-name="Select">
-               <h3>
-                  Select 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Select" class="anchor" title="Link to Select">#</a>
-               </h3>
-               
-               <p>Select selects the n-th multiple of the table base point into p. It works in
-constant time. n can be in [0, 32], but (unlike p256Table.Select) if n is 0,
-p is set to an undefined value.</p>
-               
-               <pre><code class="language-go">func (table *p256AffineTable) Select(p *p256AffinePoint, n uint8)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Select" data-name="Select">
-               <h3>
-                  Select 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Select" class="anchor" title="Link to Select">#</a>
-               </h3>
-               
-               <p>Select sets q to p1 if cond == 1, and to p2 if cond == 0.</p>
-               
-               <pre><code class="language-go">func (q *P224Point) Select(p1 *P224Point, p2 *P224Point, cond int) *P224Point</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Select" data-name="Select">
@@ -2069,6 +2014,34 @@ constant time. n must be in [0, 16]. If n is 0, p is set to the identity point.<
                   <a href="#Select" class="anchor" title="Link to Select">#</a>
                </h3>
                
+               <p>Select selects the n-th multiple of the table base point into p. It works in
+constant time. n can be in [0, 32], but (unlike p256Table.Select) if n is 0,
+p is set to an undefined value.</p>
+               
+               <pre><code class="language-go">func (table *p256AffineTable) Select(p *p256AffinePoint, n uint8)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Select" data-name="Select">
+               <h3>
+                  Select 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Select" class="anchor" title="Link to Select">#</a>
+               </h3>
+               
+               <p>Select sets q to p1 if cond == 1, and to p2 if cond == 0.</p>
+               
+               <pre><code class="language-go">func (q *P256Point) Select(p1 *P256Point, p2 *P256Point, cond int) *P256Point</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Select" data-name="Select">
+               <h3>
+                  Select 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Select" class="anchor" title="Link to Select">#</a>
+               </h3>
+               
                <p>Select sets q to p1 if cond == 1, and to p2 if cond == 0.</p>
                
                <pre><code class="language-go">func (q *P521Point) Select(p1 *P521Point, p2 *P521Point, cond int) *P521Point</code></pre>
@@ -2085,6 +2058,33 @@ constant time. n must be in [0, 16]. If n is 0, p is set to the identity point.<
                <p>Select sets q to p1 if cond == 1, and to p2 if cond == 0.</p>
                
                <pre><code class="language-go">func (q *P256Point) Select(p1 *P256Point, p2 *P256Point, cond int) *P256Point</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Select" data-name="Select">
+               <h3>
+                  Select 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Select" class="anchor" title="Link to Select">#</a>
+               </h3>
+               
+               <p>Select sets q to p1 if cond == 1, and to p2 if cond == 0.</p>
+               
+               <pre><code class="language-go">func (q *P224Point) Select(p1 *P224Point, p2 *P224Point, cond int) *P224Point</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Select" data-name="Select">
+               <h3>
+                  Select 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Select" class="anchor" title="Link to Select">#</a>
+               </h3>
+               
+               <p>Select selects the n-th multiple of the table base point into p. It works in
+constant time by iterating over every entry of the table. n must be in [0, 15].</p>
+               
+               <pre><code class="language-go">func (table *p521Table) Select(p *P521Point, n uint8)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Select" data-name="Select">
@@ -2124,7 +2124,7 @@ constant time by iterating over every entry of the table. n must be in [0, 15].<
                
                <p>Set sets p = q and returns p.</p>
                
-               <pre><code class="language-go">func (p *P521Point) Set(q *P521Point) *P521Point</code></pre>
+               <pre><code class="language-go">func (p *P384Point) Set(q *P384Point) *P384Point</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Set" data-name="Set">
@@ -2150,7 +2150,7 @@ constant time by iterating over every entry of the table. n must be in [0, 15].<
                
                <p>Set sets p = q and returns p.</p>
                
-               <pre><code class="language-go">func (p *P224Point) Set(q *P224Point) *P224Point</code></pre>
+               <pre><code class="language-go">func (p *P521Point) Set(q *P521Point) *P521Point</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Set" data-name="Set">
@@ -2163,7 +2163,7 @@ constant time by iterating over every entry of the table. n must be in [0, 15].<
                
                <p>Set sets p = q and returns p.</p>
                
-               <pre><code class="language-go">func (p *P384Point) Set(q *P384Point) *P384Point</code></pre>
+               <pre><code class="language-go">func (p *P224Point) Set(q *P224Point) *P224Point</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="SetBytes" data-name="SetBytes">
@@ -2179,7 +2179,23 @@ b, as specified in SEC 1, Version 2.0, Section 2.3.4. If the point is not on
 the curve, it returns nil and an error, and the receiver is unchanged.
 Otherwise, it returns p.</p>
                
-               <pre><code class="language-go">func (p *P521Point) SetBytes(b []byte) (*P521Point, error)</code></pre>
+               <pre><code class="language-go">func (p *P224Point) SetBytes(b []byte) (*P224Point, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="SetBytes" data-name="SetBytes">
+               <h3>
+                  SetBytes 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#SetBytes" class="anchor" title="Link to SetBytes">#</a>
+               </h3>
+               
+               <p>SetBytes sets p to the compressed, uncompressed, or infinity value encoded in
+b, as specified in SEC 1, Version 2.0, Section 2.3.4. If the point is not on
+the curve, it returns nil and an error, and the receiver is unchanged.
+Otherwise, it returns p.</p>
+               
+               <pre><code class="language-go">func (p *P384Point) SetBytes(b []byte) (*P384Point, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="SetBytes" data-name="SetBytes">
@@ -2224,39 +2240,23 @@ b, as specified in SEC 1, Version 2.0, Section 2.3.4. If the point is not on
 the curve, it returns nil and an error, and the receiver is unchanged.
 Otherwise, it returns p.</p>
                
-               <pre><code class="language-go">func (p *P224Point) SetBytes(b []byte) (*P224Point, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="SetBytes" data-name="SetBytes">
-               <h3>
-                  SetBytes 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#SetBytes" class="anchor" title="Link to SetBytes">#</a>
-               </h3>
-               
-               <p>SetBytes sets p to the compressed, uncompressed, or infinity value encoded in
-b, as specified in SEC 1, Version 2.0, Section 2.3.4. If the point is not on
-the curve, it returns nil and an error, and the receiver is unchanged.
-Otherwise, it returns p.</p>
-               
-               <pre><code class="language-go">func (p *P384Point) SetBytes(b []byte) (*P384Point, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="SetBytes" data-name="SetBytes">
-               <h3>
-                  SetBytes 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#SetBytes" class="anchor" title="Link to SetBytes">#</a>
-               </h3>
-               
-               <p>SetBytes sets p to the compressed, uncompressed, or infinity value encoded in
-b, as specified in SEC 1, Version 2.0, Section 2.3.4. If the point is not on
-the curve, it returns nil and an error, and the receiver is unchanged.
-Otherwise, it returns p.</p>
-               
                <pre><code class="language-go">func (p *P256Point) SetBytes(b []byte) (*P256Point, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="SetBytes" data-name="SetBytes">
+               <h3>
+                  SetBytes 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#SetBytes" class="anchor" title="Link to SetBytes">#</a>
+               </h3>
+               
+               <p>SetBytes sets p to the compressed, uncompressed, or infinity value encoded in
+b, as specified in SEC 1, Version 2.0, Section 2.3.4. If the point is not on
+the curve, it returns nil and an error, and the receiver is unchanged.
+Otherwise, it returns p.</p>
+               
+               <pre><code class="language-go">func (p *P521Point) SetBytes(b []byte) (*P521Point, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="SetGenerator" data-name="SetGenerator">
@@ -2282,7 +2282,7 @@ Otherwise, it returns p.</p>
                
                <p>SetGenerator sets p to the canonical generator and returns p.</p>
                
-               <pre><code class="language-go">func (p *P521Point) SetGenerator() *P521Point</code></pre>
+               <pre><code class="language-go">func (p *P256Point) SetGenerator() *P256Point</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="SetGenerator" data-name="SetGenerator">
@@ -2308,7 +2308,7 @@ Otherwise, it returns p.</p>
                
                <p>SetGenerator sets p to the canonical generator and returns p.</p>
                
-               <pre><code class="language-go">func (p *P256Point) SetGenerator() *P256Point</code></pre>
+               <pre><code class="language-go">func (p *P521Point) SetGenerator() *P521Point</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="SetGenerator" data-name="SetGenerator">
@@ -2346,7 +2346,7 @@ Montgomery domain.</p>
                   <a href="#boothW5" class="anchor" title="Link to boothW5">#</a>
                </h3>
                
-               <pre><code class="language-go">func boothW5(in uint64) (uint8, int)</code></pre>
+               <pre><code class="language-go">func boothW5(in uint) (int, int)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="boothW5" data-name="boothW5">
@@ -2357,7 +2357,7 @@ Montgomery domain.</p>
                   <a href="#boothW5" class="anchor" title="Link to boothW5">#</a>
                </h3>
                
-               <pre><code class="language-go">func boothW5(in uint) (int, int)</code></pre>
+               <pre><code class="language-go">func boothW5(in uint64) (uint8, int)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="boothW6" data-name="boothW6">
@@ -2401,6 +2401,17 @@ Montgomery domain.</p>
                   <a href="#bytes" class="anchor" title="Link to bytes">#</a>
                </h3>
                
+               <pre><code class="language-go">func (p *P521Point) bytes(out *[*ast.BinaryExpr]byte) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="bytes" data-name="bytes">
+               <h3>
+                  bytes 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#bytes" class="anchor" title="Link to bytes">#</a>
+               </h3>
+               
                <pre><code class="language-go">func (p *P224Point) bytes(out *[*ast.BinaryExpr]byte) []byte</code></pre>
             </article>
             
@@ -2423,17 +2434,6 @@ Montgomery domain.</p>
                   <a href="#bytes" class="anchor" title="Link to bytes">#</a>
                </h3>
                
-               <pre><code class="language-go">func (p *P521Point) bytes(out *[*ast.BinaryExpr]byte) []byte</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="bytes" data-name="bytes">
-               <h3>
-                  bytes 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#bytes" class="anchor" title="Link to bytes">#</a>
-               </h3>
-               
                <pre><code class="language-go">func (p *P256Point) bytes(out *[p256UncompressedLength]byte) []byte</code></pre>
             </article>
             
@@ -2445,7 +2445,7 @@ Montgomery domain.</p>
                   <a href="#bytesCompressed" class="anchor" title="Link to bytesCompressed">#</a>
                </h3>
                
-               <pre><code class="language-go">func (p *P521Point) bytesCompressed(out *[*ast.BinaryExpr]byte) []byte</code></pre>
+               <pre><code class="language-go">func (p *P256Point) bytesCompressed(out *[p256CompressedLength]byte) []byte</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="bytesCompressed" data-name="bytesCompressed">
@@ -2467,7 +2467,7 @@ Montgomery domain.</p>
                   <a href="#bytesCompressed" class="anchor" title="Link to bytesCompressed">#</a>
                </h3>
                
-               <pre><code class="language-go">func (p *P384Point) bytesCompressed(out *[*ast.BinaryExpr]byte) []byte</code></pre>
+               <pre><code class="language-go">func (p *P521Point) bytesCompressed(out *[*ast.BinaryExpr]byte) []byte</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="bytesCompressed" data-name="bytesCompressed">
@@ -2478,7 +2478,7 @@ Montgomery domain.</p>
                   <a href="#bytesCompressed" class="anchor" title="Link to bytesCompressed">#</a>
                </h3>
                
-               <pre><code class="language-go">func (p *P256Point) bytesCompressed(out *[p256CompressedLength]byte) []byte</code></pre>
+               <pre><code class="language-go">func (p *P384Point) bytesCompressed(out *[*ast.BinaryExpr]byte) []byte</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="bytesCompressed" data-name="bytesCompressed">
@@ -2511,40 +2511,7 @@ Montgomery domain.</p>
                   <a href="#bytesX" class="anchor" title="Link to bytesX">#</a>
                </h3>
                
-               <pre><code class="language-go">func (p *P224Point) bytesX(out *[p224ElementLength]byte) ([]byte, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="bytesX" data-name="bytesX">
-               <h3>
-                  bytesX 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#bytesX" class="anchor" title="Link to bytesX">#</a>
-               </h3>
-               
                <pre><code class="language-go">func (p *P256Point) bytesX(out *[p256ElementLength]byte) ([]byte, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="bytesX" data-name="bytesX">
-               <h3>
-                  bytesX 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#bytesX" class="anchor" title="Link to bytesX">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (p *P256Point) bytesX(out *[p256ElementLength]byte) ([]byte, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="bytesX" data-name="bytesX">
-               <h3>
-                  bytesX 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#bytesX" class="anchor" title="Link to bytesX">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (p *P384Point) bytesX(out *[p384ElementLength]byte) ([]byte, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="bytesX" data-name="bytesX">
@@ -2558,19 +2525,37 @@ Montgomery domain.</p>
                <pre><code class="language-go">func (p *P521Point) bytesX(out *[p521ElementLength]byte) ([]byte, error)</code></pre>
             </article>
             
-            <article class="function symbol-anchor" id="generatorTable" data-name="generatorTable">
+            <article class="function symbol-anchor" id="bytesX" data-name="bytesX">
                <h3>
-                  generatorTable 
+                  bytesX 
                   <span class="badge method-badge">method</span>
                   
-                  <a href="#generatorTable" class="anchor" title="Link to generatorTable">#</a>
+                  <a href="#bytesX" class="anchor" title="Link to bytesX">#</a>
                </h3>
                
-               <p>generatorTable returns a sequence of p521Tables. The first table contains
-multiples of G. Each successive table is the previous table doubled four
-times.</p>
+               <pre><code class="language-go">func (p *P256Point) bytesX(out *[p256ElementLength]byte) ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="bytesX" data-name="bytesX">
+               <h3>
+                  bytesX 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#bytesX" class="anchor" title="Link to bytesX">#</a>
+               </h3>
                
-               <pre><code class="language-go">func (p *P521Point) generatorTable() *[*ast.BinaryExpr]p521Table</code></pre>
+               <pre><code class="language-go">func (p *P224Point) bytesX(out *[p224ElementLength]byte) ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="bytesX" data-name="bytesX">
+               <h3>
+                  bytesX 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#bytesX" class="anchor" title="Link to bytesX">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (p *P384Point) bytesX(out *[p384ElementLength]byte) ([]byte, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="generatorTable" data-name="generatorTable">
@@ -2601,6 +2586,21 @@ multiples of G. Each successive table is the previous table doubled four
 times.</p>
                
                <pre><code class="language-go">func (p *P224Point) generatorTable() *[*ast.BinaryExpr]p224Table</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="generatorTable" data-name="generatorTable">
+               <h3>
+                  generatorTable 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#generatorTable" class="anchor" title="Link to generatorTable">#</a>
+               </h3>
+               
+               <p>generatorTable returns a sequence of p521Tables. The first table contains
+multiples of G. Each successive table is the previous table doubled four
+times.</p>
+               
+               <pre><code class="language-go">func (p *P521Point) generatorTable() *[*ast.BinaryExpr]p521Table</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="init" data-name="init">
@@ -2765,7 +2765,7 @@ false and e is unchanged. e and x can overlap.</p>
                   <a href="#p256CheckOnCurve" class="anchor" title="Link to p256CheckOnCurve">#</a>
                </h3>
                
-               <pre><code class="language-go">func p256CheckOnCurve(x *fiat.P256Element, y *fiat.P256Element) error</code></pre>
+               <pre><code class="language-go">func p256CheckOnCurve(x *p256Element, y *p256Element) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="p256CheckOnCurve" data-name="p256CheckOnCurve">
@@ -2776,7 +2776,7 @@ false and e is unchanged. e and x can overlap.</p>
                   <a href="#p256CheckOnCurve" class="anchor" title="Link to p256CheckOnCurve">#</a>
                </h3>
                
-               <pre><code class="language-go">func p256CheckOnCurve(x *p256Element, y *p256Element) error</code></pre>
+               <pre><code class="language-go">func p256CheckOnCurve(x *fiat.P256Element, y *fiat.P256Element) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="p256Equal" data-name="p256Equal">
@@ -3007,7 +3007,7 @@ go:noescape</p>
                
                <p>p256Polynomial sets y2 to x³ - 3x + b, and returns y2.</p>
                
-               <pre><code class="language-go">func p256Polynomial(y2 *fiat.P256Element, x *fiat.P256Element) *fiat.P256Element</code></pre>
+               <pre><code class="language-go">func p256Polynomial(y2 *p256Element, x *p256Element) *p256Element</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="p256Polynomial" data-name="p256Polynomial">
@@ -3020,7 +3020,7 @@ go:noescape</p>
                
                <p>p256Polynomial sets y2 to x³ - 3x + b, and returns y2.</p>
                
-               <pre><code class="language-go">func p256Polynomial(y2 *p256Element, x *p256Element) *p256Element</code></pre>
+               <pre><code class="language-go">func p256Polynomial(y2 *fiat.P256Element, x *fiat.P256Element) *fiat.P256Element</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="p256ScalarMult" data-name="p256ScalarMult">
@@ -3266,6 +3266,20 @@ false and e is unchanged. e and x can overlap.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function deduplicateImports() {
+            const importsSection = document.querySelector('#imports-section code');
+            if (!importsSection) return;
+            
+            const lines = importsSection.textContent.split('\n');
+            var uniqueLines = [...new Set(lines.filter(line => line.trim()))];
+            uniqueLines.sort();
+            importsSection.textContent = uniqueLines.join('\n');
+            
+            if (window.Prism) {
+               Prism.highlightElement(importsSection);
+            }
+         }
+
          function updateSectionVisibility() {
             document.querySelectorAll("section").forEach(section => {
                const visibleArticles = section.querySelectorAll("article:not(.hidden)");
@@ -3479,7 +3493,9 @@ false and e is unchanged. e and x can overlap.</p>
             if (searchInput) {
                searchInput.addEventListener("input", () => {
                   const query = searchInput.value.trim().toLowerCase();
-
+                  const allMatches = [];
+                  const sectionOrder = ['imports', 'globals', 'types', 'interfaces', 'structs', 'functions'];
+                  
                   document.querySelectorAll("article").forEach((el) => {
                      const name = el.dataset.name;
                      if (!name) return;
@@ -3491,21 +3507,97 @@ false and e is unchanged. e and x can overlap.</p>
                            el.textContent.toLowerCase().includes(query));
 
                      if (matches) {
-                        const isPrivateEl =
-                           el.classList.contains("private");
-                        const shouldShowPrivate =
-                           getPrivateToggleState(el);
+                        const isPrivateEl = el.classList.contains("private");
+                        const shouldShowPrivate = getPrivateToggleState(el);
 
                         if (!isPrivateEl || shouldShowPrivate) {
                            el.classList.remove("hidden");
+                           
+                           const section = el.closest('section');
+                           if (section) {
+                              const sectionId = section.id;
+                              const sectionIndex = sectionOrder.indexOf(sectionId);
+                              const isExactMatch = name.toLowerCase() === query;
+                              
+                              allMatches.push({
+                                 element: el,
+                                 name: name,
+                                 isExact: isExactMatch,
+                                 sectionId: sectionId,
+                                 sectionIndex: sectionIndex >= 0 ? sectionIndex : 999
+                              });
+                           }
                         }
                      } else {
                         el.classList.add("hidden");
                      }
-                     updateSectionVisibility();
                   });
 
-                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                  allMatches.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     if (a.sectionIndex !== b.sectionIndex) return a.sectionIndex - b.sectionIndex;
+                     return a.name.localeCompare(b.name);
+                  });
+
+                  const sectionMatches = {};
+                  allMatches.forEach(match => {
+                     if (!sectionMatches[match.sectionId]) {
+                        sectionMatches[match.sectionId] = [];
+                     }
+                     sectionMatches[match.sectionId].push(match);
+                  });
+                  Object.keys(sectionMatches).forEach(sectionId => {
+                     const section = document.getElementById(sectionId);
+                     if (!section) return;
+                     
+                     sectionMatches[sectionId].forEach(match => {
+                        section.appendChild(match.element);
+                     });
+                  });
+                  if (query === "") {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     
+                     let insertAfter = firstDivider;
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (section) {
+                           insertAfter.insertAdjacentElement('afterend', section);
+                           insertAfter = section;
+                        }
+                     });
+                  } else {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     const sectionsWithExactMatches = [];
+                     const sectionsWithoutExactMatches = [];
+                     
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (!section || !sectionMatches[sectionId]) return;
+                        
+                        const hasExactMatch = sectionMatches[sectionId].some(match => match.isExact);
+                        if (hasExactMatch) {
+                           sectionsWithExactMatches.push(section);
+                        } else {
+                           sectionsWithoutExactMatches.push(section);
+                        }
+                     });
+                     let insertAfter = firstDivider;
+                     [...sectionsWithExactMatches, ...sectionsWithoutExactMatches].forEach(section => {
+                        insertAfter.insertAdjacentElement('afterend', section);
+                        insertAfter = section;
+                     });
+                  }
+
+                  updateSectionVisibility();
+                  const symbolItems = Array.from(document.querySelectorAll('#symbolIndex li'));
+                  const matchingSymbols = [];
+                  
+                  symbolItems.forEach(li => {
                      const link = li.querySelector('a');
                      if (link) {
                         const symbolName = link.textContent.toLowerCase();
@@ -3519,11 +3611,27 @@ false and e is unchanged. e and x can overlap.</p>
                            
                            if (!isPrivateSymbol || shouldShowPrivate) {
                               li.style.display = '';
+                              const isExactMatch = symbolName === query;
+                              matchingSymbols.push({
+                                 element: li,
+                                 name: symbolName,
+                                 isExact: isExactMatch
+                              });
                            }
                         } else {
                            li.style.display = 'none';
                         }
                      }
+                  });
+                  matchingSymbols.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     return a.name.localeCompare(b.name);
+                  });
+                  
+                  const symbolIndex = document.getElementById('symbolIndex');
+                  matchingSymbols.forEach(symbol => {
+                     symbolIndex.appendChild(symbol.element);
                   });
                });
             }
@@ -3546,6 +3654,7 @@ false and e is unchanged. e and x can overlap.</p>
             }
 
             buildSymbolIndex();
+            deduplicateImports();
 
             document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
                anchor.addEventListener("click", function (e) {

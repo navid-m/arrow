@@ -29,7 +29,7 @@
          }
 
          .sidebar {
-            width: 12%;
+            width: 14%;
             background: rgba(59, 56, 56, 0.15);
             padding: 1.5rem;
             box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
@@ -604,7 +604,9 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"internal/fmtsort"
+               <pre><code class="language-go">"strconv"
+"unicode/utf8"
+"internal/fmtsort"
 "io"
 "os"
 "reflect"
@@ -621,8 +623,6 @@
 "unicode/utf8"
 "errors"
 "slices"
-"strconv"
-"unicode/utf8"
 </code></pre>
             </article>
          </section>
@@ -1685,7 +1685,11 @@ It returns the number of bytes written and any write error encountered.</p>
                   <a href="#Read" class="anchor" title="Link to Read">#</a>
                </h3>
                
-               <pre><code class="language-go">func (r *stringReader) Read(b []byte) (n int, err error)</code></pre>
+               <p>The Read method is only in ScanState so that ScanState
+satisfies io.Reader. It will never be called when used as
+intended, so there is no need to make it actually work.</p>
+               
+               <pre><code class="language-go">func (s *ss) Read(buf []byte) (n int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Read" data-name="Read">
@@ -1696,11 +1700,18 @@ It returns the number of bytes written and any write error encountered.</p>
                   <a href="#Read" class="anchor" title="Link to Read">#</a>
                </h3>
                
-               <p>The Read method is only in ScanState so that ScanState
-satisfies io.Reader. It will never be called when used as
-intended, so there is no need to make it actually work.</p>
+               <pre><code class="language-go">func (r *stringReader) Read(b []byte) (n int, err error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ReadRune" data-name="ReadRune">
+               <h3>
+                  ReadRune 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#ReadRune" class="anchor" title="Link to ReadRune">#</a>
+               </h3>
                
-               <pre><code class="language-go">func (s *ss) Read(buf []byte) (n int, err error)</code></pre>
+               <pre><code class="language-go">func (s *ss) ReadRune() (r rune, size int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ReadRune" data-name="ReadRune">
@@ -1715,17 +1726,6 @@ intended, so there is no need to make it actually work.</p>
 io.Reader inside r.</p>
                
                <pre><code class="language-go">func (r *readRune) ReadRune() (rr rune, size int, err error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="ReadRune" data-name="ReadRune">
-               <h3>
-                  ReadRune 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#ReadRune" class="anchor" title="Link to ReadRune">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (s *ss) ReadRune() (r rune, size int, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Scan" data-name="Scan">
@@ -1942,7 +1942,7 @@ after the final item there must be a newline or EOF.</p>
                   <a href="#Width" class="anchor" title="Link to Width">#</a>
                </h3>
                
-               <pre><code class="language-go">func (p *pp) Width() (wid int, ok bool)</code></pre>
+               <pre><code class="language-go">func (s *ss) Width() (wid int, ok bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Width" data-name="Width">
@@ -1953,7 +1953,7 @@ after the final item there must be a newline or EOF.</p>
                   <a href="#Width" class="anchor" title="Link to Width">#</a>
                </h3>
                
-               <pre><code class="language-go">func (s *ss) Width() (wid int, ok bool)</code></pre>
+               <pre><code class="language-go">func (p *pp) Width() (wid int, ok bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Write" data-name="Write">
@@ -2358,10 +2358,10 @@ fmtFloat for r and j formatting.</p>
                   <a href="#fmtFloat" class="anchor" title="Link to fmtFloat">#</a>
                </h3>
                
-               <p>fmtFloat formats a float. The default precision for each verb
-is specified as last argument in the call to fmt_float.</p>
+               <p>fmtFloat formats a float64. It assumes that verb is a valid format specifier
+for strconv.AppendFloat and therefore fits into a byte.</p>
                
-               <pre><code class="language-go">func (p *pp) fmtFloat(v float64, size int, verb rune)</code></pre>
+               <pre><code class="language-go">func (f *fmt) fmtFloat(v float64, size int, verb rune, prec int)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="fmtFloat" data-name="fmtFloat">
@@ -2372,23 +2372,10 @@ is specified as last argument in the call to fmt_float.</p>
                   <a href="#fmtFloat" class="anchor" title="Link to fmtFloat">#</a>
                </h3>
                
-               <p>fmtFloat formats a float64. It assumes that verb is a valid format specifier
-for strconv.AppendFloat and therefore fits into a byte.</p>
+               <p>fmtFloat formats a float. The default precision for each verb
+is specified as last argument in the call to fmt_float.</p>
                
-               <pre><code class="language-go">func (f *fmt) fmtFloat(v float64, size int, verb rune, prec int)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="fmtInteger" data-name="fmtInteger">
-               <h3>
-                  fmtInteger 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#fmtInteger" class="anchor" title="Link to fmtInteger">#</a>
-               </h3>
-               
-               <p>fmtInteger formats a signed or unsigned integer.</p>
-               
-               <pre><code class="language-go">func (p *pp) fmtInteger(v uint64, isSigned bool, verb rune)</code></pre>
+               <pre><code class="language-go">func (p *pp) fmtFloat(v float64, size int, verb rune)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="fmtInteger" data-name="fmtInteger">
@@ -2402,6 +2389,19 @@ for strconv.AppendFloat and therefore fits into a byte.</p>
                <p>fmtInteger formats signed and unsigned integers.</p>
                
                <pre><code class="language-go">func (f *fmt) fmtInteger(u uint64, base int, isSigned bool, verb rune, digits string)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="fmtInteger" data-name="fmtInteger">
+               <h3>
+                  fmtInteger 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#fmtInteger" class="anchor" title="Link to fmtInteger">#</a>
+               </h3>
+               
+               <p>fmtInteger formats a signed or unsigned integer.</p>
+               
+               <pre><code class="language-go">func (p *pp) fmtInteger(v uint64, isSigned bool, verb rune)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="fmtPointer" data-name="fmtPointer">
@@ -2515,9 +2515,9 @@ If the character is not valid Unicode, it will print '\ufffd'.</p>
                   <a href="#free" class="anchor" title="Link to free">#</a>
                </h3>
                
-               <p>free saves used ss structs in ssFree; avoid an allocation per invocation.</p>
+               <p>free saves used pp structs in ppFree; avoids an allocation per invocation.</p>
                
-               <pre><code class="language-go">func (s *ss) free(old ssave)</code></pre>
+               <pre><code class="language-go">func (p *pp) free()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="free" data-name="free">
@@ -2528,9 +2528,9 @@ If the character is not valid Unicode, it will print '\ufffd'.</p>
                   <a href="#free" class="anchor" title="Link to free">#</a>
                </h3>
                
-               <p>free saves used pp structs in ppFree; avoids an allocation per invocation.</p>
+               <p>free saves used ss structs in ssFree; avoid an allocation per invocation.</p>
                
-               <pre><code class="language-go">func (p *pp) free()</code></pre>
+               <pre><code class="language-go">func (s *ss) free(old ssave)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="getBase" data-name="getBase">
@@ -3152,6 +3152,20 @@ too large to be used as a formatting width or precision.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function deduplicateImports() {
+            const importsSection = document.querySelector('#imports-section code');
+            if (!importsSection) return;
+            
+            const lines = importsSection.textContent.split('\n');
+            var uniqueLines = [...new Set(lines.filter(line => line.trim()))];
+            uniqueLines.sort();
+            importsSection.textContent = uniqueLines.join('\n');
+            
+            if (window.Prism) {
+               Prism.highlightElement(importsSection);
+            }
+         }
+
          function updateSectionVisibility() {
             document.querySelectorAll("section").forEach(section => {
                const visibleArticles = section.querySelectorAll("article:not(.hidden)");
@@ -3365,7 +3379,9 @@ too large to be used as a formatting width or precision.</p>
             if (searchInput) {
                searchInput.addEventListener("input", () => {
                   const query = searchInput.value.trim().toLowerCase();
-
+                  const allMatches = [];
+                  const sectionOrder = ['imports', 'globals', 'types', 'interfaces', 'structs', 'functions'];
+                  
                   document.querySelectorAll("article").forEach((el) => {
                      const name = el.dataset.name;
                      if (!name) return;
@@ -3377,21 +3393,97 @@ too large to be used as a formatting width or precision.</p>
                            el.textContent.toLowerCase().includes(query));
 
                      if (matches) {
-                        const isPrivateEl =
-                           el.classList.contains("private");
-                        const shouldShowPrivate =
-                           getPrivateToggleState(el);
+                        const isPrivateEl = el.classList.contains("private");
+                        const shouldShowPrivate = getPrivateToggleState(el);
 
                         if (!isPrivateEl || shouldShowPrivate) {
                            el.classList.remove("hidden");
+                           
+                           const section = el.closest('section');
+                           if (section) {
+                              const sectionId = section.id;
+                              const sectionIndex = sectionOrder.indexOf(sectionId);
+                              const isExactMatch = name.toLowerCase() === query;
+                              
+                              allMatches.push({
+                                 element: el,
+                                 name: name,
+                                 isExact: isExactMatch,
+                                 sectionId: sectionId,
+                                 sectionIndex: sectionIndex >= 0 ? sectionIndex : 999
+                              });
+                           }
                         }
                      } else {
                         el.classList.add("hidden");
                      }
-                     updateSectionVisibility();
                   });
 
-                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                  allMatches.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     if (a.sectionIndex !== b.sectionIndex) return a.sectionIndex - b.sectionIndex;
+                     return a.name.localeCompare(b.name);
+                  });
+
+                  const sectionMatches = {};
+                  allMatches.forEach(match => {
+                     if (!sectionMatches[match.sectionId]) {
+                        sectionMatches[match.sectionId] = [];
+                     }
+                     sectionMatches[match.sectionId].push(match);
+                  });
+                  Object.keys(sectionMatches).forEach(sectionId => {
+                     const section = document.getElementById(sectionId);
+                     if (!section) return;
+                     
+                     sectionMatches[sectionId].forEach(match => {
+                        section.appendChild(match.element);
+                     });
+                  });
+                  if (query === "") {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     
+                     let insertAfter = firstDivider;
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (section) {
+                           insertAfter.insertAdjacentElement('afterend', section);
+                           insertAfter = section;
+                        }
+                     });
+                  } else {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     const sectionsWithExactMatches = [];
+                     const sectionsWithoutExactMatches = [];
+                     
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (!section || !sectionMatches[sectionId]) return;
+                        
+                        const hasExactMatch = sectionMatches[sectionId].some(match => match.isExact);
+                        if (hasExactMatch) {
+                           sectionsWithExactMatches.push(section);
+                        } else {
+                           sectionsWithoutExactMatches.push(section);
+                        }
+                     });
+                     let insertAfter = firstDivider;
+                     [...sectionsWithExactMatches, ...sectionsWithoutExactMatches].forEach(section => {
+                        insertAfter.insertAdjacentElement('afterend', section);
+                        insertAfter = section;
+                     });
+                  }
+
+                  updateSectionVisibility();
+                  const symbolItems = Array.from(document.querySelectorAll('#symbolIndex li'));
+                  const matchingSymbols = [];
+                  
+                  symbolItems.forEach(li => {
                      const link = li.querySelector('a');
                      if (link) {
                         const symbolName = link.textContent.toLowerCase();
@@ -3405,11 +3497,27 @@ too large to be used as a formatting width or precision.</p>
                            
                            if (!isPrivateSymbol || shouldShowPrivate) {
                               li.style.display = '';
+                              const isExactMatch = symbolName === query;
+                              matchingSymbols.push({
+                                 element: li,
+                                 name: symbolName,
+                                 isExact: isExactMatch
+                              });
                            }
                         } else {
                            li.style.display = 'none';
                         }
                      }
+                  });
+                  matchingSymbols.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     return a.name.localeCompare(b.name);
+                  });
+                  
+                  const symbolIndex = document.getElementById('symbolIndex');
+                  matchingSymbols.forEach(symbol => {
+                     symbolIndex.appendChild(symbol.element);
                   });
                });
             }
@@ -3432,6 +3540,7 @@ too large to be used as a formatting width or precision.</p>
             }
 
             buildSymbolIndex();
+            deduplicateImports();
 
             document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
                anchor.addEventListener("click", function (e) {

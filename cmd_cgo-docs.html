@@ -29,7 +29,7 @@
          }
 
          .sidebar {
-            width: 12%;
+            width: 14%;
             background: rgba(59, 56, 56, 0.15);
             padding: 1.5rem;
             box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
@@ -602,8 +602,40 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"go/ast"
+               <pre><code class="language-go">"fmt"
+"go/ast"
+"go/format"
+"go/parser"
+"go/scanner"
 "go/token"
+"os"
+"strings"
+"go/ast"
+"go/token"
+"bytes"
+"cmd/internal/pkgpath"
+"debug/elf"
+"debug/macho"
+"debug/pe"
+"fmt"
+"go/ast"
+"go/printer"
+"go/token"
+"internal/xcoff"
+"io"
+"os"
+"os/exec"
+"path/filepath"
+"regexp"
+"sort"
+"strings"
+"unicode"
+"bytes"
+"fmt"
+"go/token"
+"os"
+"os/exec"
+"slices"
 "go/ast"
 "go/token"
 "bytes"
@@ -654,38 +686,6 @@
 "cmd/internal/hash"
 "cmd/internal/objabi"
 "cmd/internal/telemetry/counter"
-"bytes"
-"fmt"
-"go/token"
-"os"
-"os/exec"
-"slices"
-"fmt"
-"go/ast"
-"go/format"
-"go/parser"
-"go/scanner"
-"go/token"
-"os"
-"strings"
-"bytes"
-"cmd/internal/pkgpath"
-"debug/elf"
-"debug/macho"
-"debug/pe"
-"fmt"
-"go/ast"
-"go/printer"
-"go/token"
-"internal/xcoff"
-"io"
-"os"
-"os/exec"
-"path/filepath"
-"regexp"
-"sort"
-"strings"
-"unicode"
 </code></pre>
             </article>
          </section>
@@ -3185,7 +3185,7 @@ index into the list, the name if any, and the type.</p>
                   <a href="#fuzzyMatch" class="anchor" title="Link to fuzzyMatch">#</a>
                </h3>
                
-               <pre><code class="language-go">func (t *FuncType) fuzzyMatch(t2 *FuncType) bool</code></pre>
+               <pre><code class="language-go">func (t *Type) fuzzyMatch(t2 *Type) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="fuzzyMatch" data-name="fuzzyMatch">
@@ -3196,7 +3196,7 @@ index into the list, the name if any, and the type.</p>
                   <a href="#fuzzyMatch" class="anchor" title="Link to fuzzyMatch">#</a>
                </h3>
                
-               <pre><code class="language-go">func (t *Type) fuzzyMatch(t2 *Type) bool</code></pre>
+               <pre><code class="language-go">func (t *FuncType) fuzzyMatch(t2 *FuncType) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="gccCmd" data-name="gccCmd">
@@ -4187,6 +4187,20 @@ a different file.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function deduplicateImports() {
+            const importsSection = document.querySelector('#imports-section code');
+            if (!importsSection) return;
+            
+            const lines = importsSection.textContent.split('\n');
+            var uniqueLines = [...new Set(lines.filter(line => line.trim()))];
+            uniqueLines.sort();
+            importsSection.textContent = uniqueLines.join('\n');
+            
+            if (window.Prism) {
+               Prism.highlightElement(importsSection);
+            }
+         }
+
          function updateSectionVisibility() {
             document.querySelectorAll("section").forEach(section => {
                const visibleArticles = section.querySelectorAll("article:not(.hidden)");
@@ -4400,7 +4414,9 @@ a different file.</p>
             if (searchInput) {
                searchInput.addEventListener("input", () => {
                   const query = searchInput.value.trim().toLowerCase();
-
+                  const allMatches = [];
+                  const sectionOrder = ['imports', 'globals', 'types', 'interfaces', 'structs', 'functions'];
+                  
                   document.querySelectorAll("article").forEach((el) => {
                      const name = el.dataset.name;
                      if (!name) return;
@@ -4412,21 +4428,97 @@ a different file.</p>
                            el.textContent.toLowerCase().includes(query));
 
                      if (matches) {
-                        const isPrivateEl =
-                           el.classList.contains("private");
-                        const shouldShowPrivate =
-                           getPrivateToggleState(el);
+                        const isPrivateEl = el.classList.contains("private");
+                        const shouldShowPrivate = getPrivateToggleState(el);
 
                         if (!isPrivateEl || shouldShowPrivate) {
                            el.classList.remove("hidden");
+                           
+                           const section = el.closest('section');
+                           if (section) {
+                              const sectionId = section.id;
+                              const sectionIndex = sectionOrder.indexOf(sectionId);
+                              const isExactMatch = name.toLowerCase() === query;
+                              
+                              allMatches.push({
+                                 element: el,
+                                 name: name,
+                                 isExact: isExactMatch,
+                                 sectionId: sectionId,
+                                 sectionIndex: sectionIndex >= 0 ? sectionIndex : 999
+                              });
+                           }
                         }
                      } else {
                         el.classList.add("hidden");
                      }
-                     updateSectionVisibility();
                   });
 
-                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                  allMatches.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     if (a.sectionIndex !== b.sectionIndex) return a.sectionIndex - b.sectionIndex;
+                     return a.name.localeCompare(b.name);
+                  });
+
+                  const sectionMatches = {};
+                  allMatches.forEach(match => {
+                     if (!sectionMatches[match.sectionId]) {
+                        sectionMatches[match.sectionId] = [];
+                     }
+                     sectionMatches[match.sectionId].push(match);
+                  });
+                  Object.keys(sectionMatches).forEach(sectionId => {
+                     const section = document.getElementById(sectionId);
+                     if (!section) return;
+                     
+                     sectionMatches[sectionId].forEach(match => {
+                        section.appendChild(match.element);
+                     });
+                  });
+                  if (query === "") {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     
+                     let insertAfter = firstDivider;
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (section) {
+                           insertAfter.insertAdjacentElement('afterend', section);
+                           insertAfter = section;
+                        }
+                     });
+                  } else {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     const sectionsWithExactMatches = [];
+                     const sectionsWithoutExactMatches = [];
+                     
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (!section || !sectionMatches[sectionId]) return;
+                        
+                        const hasExactMatch = sectionMatches[sectionId].some(match => match.isExact);
+                        if (hasExactMatch) {
+                           sectionsWithExactMatches.push(section);
+                        } else {
+                           sectionsWithoutExactMatches.push(section);
+                        }
+                     });
+                     let insertAfter = firstDivider;
+                     [...sectionsWithExactMatches, ...sectionsWithoutExactMatches].forEach(section => {
+                        insertAfter.insertAdjacentElement('afterend', section);
+                        insertAfter = section;
+                     });
+                  }
+
+                  updateSectionVisibility();
+                  const symbolItems = Array.from(document.querySelectorAll('#symbolIndex li'));
+                  const matchingSymbols = [];
+                  
+                  symbolItems.forEach(li => {
                      const link = li.querySelector('a');
                      if (link) {
                         const symbolName = link.textContent.toLowerCase();
@@ -4440,11 +4532,27 @@ a different file.</p>
                            
                            if (!isPrivateSymbol || shouldShowPrivate) {
                               li.style.display = '';
+                              const isExactMatch = symbolName === query;
+                              matchingSymbols.push({
+                                 element: li,
+                                 name: symbolName,
+                                 isExact: isExactMatch
+                              });
                            }
                         } else {
                            li.style.display = 'none';
                         }
                      }
+                  });
+                  matchingSymbols.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     return a.name.localeCompare(b.name);
+                  });
+                  
+                  const symbolIndex = document.getElementById('symbolIndex');
+                  matchingSymbols.forEach(symbol => {
+                     symbolIndex.appendChild(symbol.element);
                   });
                });
             }
@@ -4467,6 +4575,7 @@ a different file.</p>
             }
 
             buildSymbolIndex();
+            deduplicateImports();
 
             document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
                anchor.addEventListener("click", function (e) {

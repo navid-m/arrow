@@ -29,7 +29,7 @@
          }
 
          .sidebar {
-            width: 12%;
+            width: 14%;
             background: rgba(59, 56, 56, 0.15);
             padding: 1.5rem;
             box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
@@ -600,7 +600,8 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"cmp"
+               <pre><code class="language-go">"math/bits"
+"cmp"
 "errors"
 "internal/bytealg"
 "internal/byteorder"
@@ -608,7 +609,6 @@
 "math"
 "strconv"
 "unique"
-"math/bits"
 </code></pre>
             </article>
          </section>
@@ -817,7 +817,7 @@ lo uint64
                
                <p>Addr returns p's IP address.</p>
                
-               <pre><code class="language-go">func (p Prefix) Addr() Addr</code></pre>
+               <pre><code class="language-go">func (p AddrPort) Addr() Addr</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Addr" data-name="Addr">
@@ -830,7 +830,7 @@ lo uint64
                
                <p>Addr returns p's IP address.</p>
                
-               <pre><code class="language-go">func (p AddrPort) Addr() Addr</code></pre>
+               <pre><code class="language-go">func (p Prefix) Addr() Addr</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="AddrFrom16" data-name="AddrFrom16">
@@ -898,6 +898,21 @@ It does not allocate.</p>
                   <a href="#AppendBinary" class="anchor" title="Link to AppendBinary">#</a>
                </h3>
                
+               <p>AppendBinary implements the [encoding.AppendMarshaler] interface.
+It returns [Addr.AppendBinary] with an additional byte appended
+containing the prefix bits.</p>
+               
+               <pre><code class="language-go">func (p Prefix) AppendBinary(b []byte) ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="AppendBinary" data-name="AppendBinary">
+               <h3>
+                  AppendBinary 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#AppendBinary" class="anchor" title="Link to AppendBinary">#</a>
+               </h3>
+               
                <p>AppendBinary implements the [encoding.BinaryAppender] interface.</p>
                
                <pre><code class="language-go">func (ip Addr) AppendBinary(b []byte) ([]byte, error)</code></pre>
@@ -916,21 +931,6 @@ It returns [Addr.AppendBinary] with an additional two bytes appended
 containing the port in little-endian.</p>
                
                <pre><code class="language-go">func (p AddrPort) AppendBinary(b []byte) ([]byte, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="AppendBinary" data-name="AppendBinary">
-               <h3>
-                  AppendBinary 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#AppendBinary" class="anchor" title="Link to AppendBinary">#</a>
-               </h3>
-               
-               <p>AppendBinary implements the [encoding.AppendMarshaler] interface.
-It returns [Addr.AppendBinary] with an additional byte appended
-containing the prefix bits.</p>
-               
-               <pre><code class="language-go">func (p Prefix) AppendBinary(b []byte) ([]byte, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="AppendText" data-name="AppendText">
@@ -955,10 +955,10 @@ It is the same as [Prefix.AppendTo].</p>
                   <a href="#AppendText" class="anchor" title="Link to AppendText">#</a>
                </h3>
                
-               <p>AppendText implements the [encoding.TextAppender] interface,
-It is the same as [Addr.AppendTo].</p>
+               <p>AppendText implements the [encoding.TextAppender] interface. The
+encoding is the same as returned by [AddrPort.AppendTo].</p>
                
-               <pre><code class="language-go">func (ip Addr) AppendText(b []byte) ([]byte, error)</code></pre>
+               <pre><code class="language-go">func (p AddrPort) AppendText(b []byte) ([]byte, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="AppendText" data-name="AppendText">
@@ -969,10 +969,10 @@ It is the same as [Addr.AppendTo].</p>
                   <a href="#AppendText" class="anchor" title="Link to AppendText">#</a>
                </h3>
                
-               <p>AppendText implements the [encoding.TextAppender] interface. The
-encoding is the same as returned by [AddrPort.AppendTo].</p>
+               <p>AppendText implements the [encoding.TextAppender] interface,
+It is the same as [Addr.AppendTo].</p>
                
-               <pre><code class="language-go">func (p AddrPort) AppendText(b []byte) ([]byte, error)</code></pre>
+               <pre><code class="language-go">func (ip Addr) AppendText(b []byte) ([]byte, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="AppendTo" data-name="AppendTo">
@@ -998,11 +998,11 @@ to b and returns the extended buffer.</p>
                   <a href="#AppendTo" class="anchor" title="Link to AppendTo">#</a>
                </h3>
                
-               <p>AppendTo appends a text encoding of p,
-as generated by [AddrPort.MarshalText],
+               <p>AppendTo appends a text encoding of ip,
+as generated by [Addr.MarshalText],
 to b and returns the extended buffer.</p>
                
-               <pre><code class="language-go">func (p AddrPort) AppendTo(b []byte) []byte</code></pre>
+               <pre><code class="language-go">func (ip Addr) AppendTo(b []byte) []byte</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="AppendTo" data-name="AppendTo">
@@ -1013,11 +1013,11 @@ to b and returns the extended buffer.</p>
                   <a href="#AppendTo" class="anchor" title="Link to AppendTo">#</a>
                </h3>
                
-               <p>AppendTo appends a text encoding of ip,
-as generated by [Addr.MarshalText],
+               <p>AppendTo appends a text encoding of p,
+as generated by [AddrPort.MarshalText],
 to b and returns the extended buffer.</p>
                
-               <pre><code class="language-go">func (ip Addr) AppendTo(b []byte) []byte</code></pre>
+               <pre><code class="language-go">func (p AddrPort) AppendTo(b []byte) []byte</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="As16" data-name="As16">
@@ -1103,11 +1103,11 @@ It reports -1 if invalid.</p>
                   <a href="#Compare" class="anchor" title="Link to Compare">#</a>
                </h3>
                
-               <p>Compare returns an integer comparing two AddrPorts.
-The result will be 0 if p == p2, -1 if p < p2, and +1 if p > p2.
-AddrPorts sort first by IP address, then port.</p>
+               <p>Compare returns an integer comparing two IPs.
+The result will be 0 if ip == ip2, -1 if ip < ip2, and +1 if ip > ip2.
+The definition of "less than" is the same as the [Addr.Less] method.</p>
                
-               <pre><code class="language-go">func (p AddrPort) Compare(p2 AddrPort) int</code></pre>
+               <pre><code class="language-go">func (ip Addr) Compare(ip2 Addr) int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Compare" data-name="Compare">
@@ -1118,11 +1118,11 @@ AddrPorts sort first by IP address, then port.</p>
                   <a href="#Compare" class="anchor" title="Link to Compare">#</a>
                </h3>
                
-               <p>Compare returns an integer comparing two IPs.
-The result will be 0 if ip == ip2, -1 if ip < ip2, and +1 if ip > ip2.
-The definition of "less than" is the same as the [Addr.Less] method.</p>
+               <p>Compare returns an integer comparing two AddrPorts.
+The result will be 0 if p == p2, -1 if p < p2, and +1 if p > p2.
+AddrPorts sort first by IP address, then port.</p>
                
-               <pre><code class="language-go">func (ip Addr) Compare(ip2 Addr) int</code></pre>
+               <pre><code class="language-go">func (p AddrPort) Compare(p2 AddrPort) int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Contains" data-name="Contains">
@@ -1151,7 +1151,7 @@ because Prefixes strip zones.</p>
                   <a href="#Error" class="anchor" title="Link to Error">#</a>
                </h3>
                
-               <pre><code class="language-go">func (err parseAddrError) Error() string</code></pre>
+               <pre><code class="language-go">func (err parsePrefixError) Error() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Error" data-name="Error">
@@ -1162,7 +1162,7 @@ because Prefixes strip zones.</p>
                   <a href="#Error" class="anchor" title="Link to Error">#</a>
                </h3>
                
-               <pre><code class="language-go">func (err parsePrefixError) Error() string</code></pre>
+               <pre><code class="language-go">func (err parseAddrError) Error() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="IPv4Unspecified" data-name="IPv4Unspecified">
@@ -1412,10 +1412,10 @@ Note that the zero [Addr] is not an unspecified address.</p>
                   <a href="#IsValid" class="anchor" title="Link to IsValid">#</a>
                </h3>
                
-               <p>IsValid reports whether p.Addr() is valid.
-All ports are valid, including zero.</p>
+               <p>IsValid reports whether the [Addr] is an initialized address (not the zero Addr).
+Note that "0.0.0.0" and "::" are both valid values.</p>
                
-               <pre><code class="language-go">func (p AddrPort) IsValid() bool</code></pre>
+               <pre><code class="language-go">func (ip Addr) IsValid() bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="IsValid" data-name="IsValid">
@@ -1426,10 +1426,10 @@ All ports are valid, including zero.</p>
                   <a href="#IsValid" class="anchor" title="Link to IsValid">#</a>
                </h3>
                
-               <p>IsValid reports whether the [Addr] is an initialized address (not the zero Addr).
-Note that "0.0.0.0" and "::" are both valid values.</p>
+               <p>IsValid reports whether p.Addr() is valid.
+All ports are valid, including zero.</p>
                
-               <pre><code class="language-go">func (ip Addr) IsValid() bool</code></pre>
+               <pre><code class="language-go">func (p AddrPort) IsValid() bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="IsValid" data-name="IsValid">
@@ -1471,21 +1471,6 @@ IPv6 addresses with zones sort just after the same address without a zone.</p>
                </h3>
                
                <p>MarshalBinary implements the [encoding.BinaryMarshaler] interface.
-It returns [Addr.MarshalBinary] with an additional two bytes appended
-containing the port in little-endian.</p>
-               
-               <pre><code class="language-go">func (p AddrPort) MarshalBinary() ([]byte, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="MarshalBinary" data-name="MarshalBinary">
-               <h3>
-                  MarshalBinary 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#MarshalBinary" class="anchor" title="Link to MarshalBinary">#</a>
-               </h3>
-               
-               <p>MarshalBinary implements the [encoding.BinaryMarshaler] interface.
 It returns a zero-length slice for the zero [Addr],
 the 4-byte form for an IPv4 address,
 and the 16-byte form with zone appended for an IPv6 address.</p>
@@ -1502,25 +1487,25 @@ and the 16-byte form with zone appended for an IPv6 address.</p>
                </h3>
                
                <p>MarshalBinary implements the [encoding.BinaryMarshaler] interface.
+It returns [Addr.MarshalBinary] with an additional two bytes appended
+containing the port in little-endian.</p>
+               
+               <pre><code class="language-go">func (p AddrPort) MarshalBinary() ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="MarshalBinary" data-name="MarshalBinary">
+               <h3>
+                  MarshalBinary 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#MarshalBinary" class="anchor" title="Link to MarshalBinary">#</a>
+               </h3>
+               
+               <p>MarshalBinary implements the [encoding.BinaryMarshaler] interface.
 It returns [Addr.MarshalBinary] with an additional byte appended
 containing the prefix bits.</p>
                
                <pre><code class="language-go">func (p Prefix) MarshalBinary() ([]byte, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="MarshalText" data-name="MarshalText">
-               <h3>
-                  MarshalText 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#MarshalText" class="anchor" title="Link to MarshalText">#</a>
-               </h3>
-               
-               <p>MarshalText implements the [encoding.TextMarshaler] interface. The
-encoding is the same as returned by [AddrPort.String], with one exception: if
-p.Addr() is the zero [Addr], the encoding is the empty string.</p>
-               
-               <pre><code class="language-go">func (p AddrPort) MarshalText() ([]byte, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="MarshalText" data-name="MarshalText">
@@ -1551,6 +1536,21 @@ The encoding is the same as returned by [Prefix.String], with one exception:
 If p is the zero value, the encoding is the empty string.</p>
                
                <pre><code class="language-go">func (p Prefix) MarshalText() ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="MarshalText" data-name="MarshalText">
+               <h3>
+                  MarshalText 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#MarshalText" class="anchor" title="Link to MarshalText">#</a>
+               </h3>
+               
+               <p>MarshalText implements the [encoding.TextMarshaler] interface. The
+encoding is the same as returned by [AddrPort.String], with one exception: if
+p.Addr() is the zero [Addr], the encoding is the empty string.</p>
+               
+               <pre><code class="language-go">func (p AddrPort) MarshalText() ([]byte, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Masked" data-name="Masked">
@@ -1835,20 +1835,6 @@ returns the wrapped IPv4 address. Otherwise it returns ip unmodified.</p>
                </h3>
                
                <p>UnmarshalBinary implements the [encoding.BinaryUnmarshaler] interface.
-It expects data in the form generated by [Prefix.MarshalBinary].</p>
-               
-               <pre><code class="language-go">func (p *Prefix) UnmarshalBinary(b []byte) error</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="UnmarshalBinary" data-name="UnmarshalBinary">
-               <h3>
-                  UnmarshalBinary 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#UnmarshalBinary" class="anchor" title="Link to UnmarshalBinary">#</a>
-               </h3>
-               
-               <p>UnmarshalBinary implements the [encoding.BinaryUnmarshaler] interface.
 It expects data in the form generated by MarshalBinary.</p>
                
                <pre><code class="language-go">func (ip *Addr) UnmarshalBinary(b []byte) error</code></pre>
@@ -1866,6 +1852,20 @@ It expects data in the form generated by MarshalBinary.</p>
 It expects data in the form generated by [AddrPort.MarshalBinary].</p>
                
                <pre><code class="language-go">func (p *AddrPort) UnmarshalBinary(b []byte) error</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="UnmarshalBinary" data-name="UnmarshalBinary">
+               <h3>
+                  UnmarshalBinary 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#UnmarshalBinary" class="anchor" title="Link to UnmarshalBinary">#</a>
+               </h3>
+               
+               <p>UnmarshalBinary implements the [encoding.BinaryUnmarshaler] interface.
+It expects data in the form generated by [Prefix.MarshalBinary].</p>
+               
+               <pre><code class="language-go">func (p *Prefix) UnmarshalBinary(b []byte) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="UnmarshalText" data-name="UnmarshalText">
@@ -1891,12 +1891,11 @@ or generated by [Prefix.MarshalText].</p>
                   <a href="#UnmarshalText" class="anchor" title="Link to UnmarshalText">#</a>
                </h3>
                
-               <p>UnmarshalText implements the encoding.TextUnmarshaler interface.
-The IP address is expected in a form accepted by [ParseAddr].
-If text is empty, UnmarshalText sets *ip to the zero [Addr] and
-returns no error.</p>
+               <p>UnmarshalText implements the encoding.TextUnmarshaler
+interface. The [AddrPort] is expected in a form
+generated by [AddrPort.MarshalText] or accepted by [ParseAddrPort].</p>
                
-               <pre><code class="language-go">func (ip *Addr) UnmarshalText(text []byte) error</code></pre>
+               <pre><code class="language-go">func (p *AddrPort) UnmarshalText(text []byte) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="UnmarshalText" data-name="UnmarshalText">
@@ -1907,11 +1906,12 @@ returns no error.</p>
                   <a href="#UnmarshalText" class="anchor" title="Link to UnmarshalText">#</a>
                </h3>
                
-               <p>UnmarshalText implements the encoding.TextUnmarshaler
-interface. The [AddrPort] is expected in a form
-generated by [AddrPort.MarshalText] or accepted by [ParseAddrPort].</p>
+               <p>UnmarshalText implements the encoding.TextUnmarshaler interface.
+The IP address is expected in a form accepted by [ParseAddr].
+If text is empty, UnmarshalText sets *ip to the zero [Addr] and
+returns no error.</p>
                
-               <pre><code class="language-go">func (p *AddrPort) UnmarshalText(text []byte) error</code></pre>
+               <pre><code class="language-go">func (ip *Addr) UnmarshalText(text []byte) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="WithZone" data-name="WithZone">
@@ -2123,6 +2123,22 @@ It only returns pointers for inlining reasons on 32-bit platforms.</p>
                   <a href="#isZero" class="anchor" title="Link to isZero">#</a>
                </h3>
                
+               <p>isZero reports whether u == 0.
+It's faster than u == (uint128{}) because the compiler (as of Go
+1.15/1.16b1) doesn't do this trick and instead inserts a branch in
+its eq alg's generated code.</p>
+               
+               <pre><code class="language-go">func (u uint128) isZero() bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="isZero" data-name="isZero">
+               <h3>
+                  isZero 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#isZero" class="anchor" title="Link to isZero">#</a>
+               </h3>
+               
                <p>isZero reports whether ip is the zero value of the IP type.
 The zero value is not a valid IP address of any type.
 Note that "0.0.0.0" and "::" are not the zero value. Use IsUnspecified to
@@ -2140,22 +2156,6 @@ check for these values instead.</p>
                </h3>
                
                <pre><code class="language-go">func (p Prefix) isZero() bool</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="isZero" data-name="isZero">
-               <h3>
-                  isZero 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#isZero" class="anchor" title="Link to isZero">#</a>
-               </h3>
-               
-               <p>isZero reports whether u == 0.
-It's faster than u == (uint128{}) because the compiler (as of Go
-1.15/1.16b1) doesn't do this trick and instead inserts a branch in
-its eq alg's generated code.</p>
-               
-               <pre><code class="language-go">func (u uint128) isZero() bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="marshalBinarySize" data-name="marshalBinarySize">
@@ -2394,6 +2394,20 @@ It's similar to WithZone, but small enough to be inlinable.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function deduplicateImports() {
+            const importsSection = document.querySelector('#imports-section code');
+            if (!importsSection) return;
+            
+            const lines = importsSection.textContent.split('\n');
+            var uniqueLines = [...new Set(lines.filter(line => line.trim()))];
+            uniqueLines.sort();
+            importsSection.textContent = uniqueLines.join('\n');
+            
+            if (window.Prism) {
+               Prism.highlightElement(importsSection);
+            }
+         }
+
          function updateSectionVisibility() {
             document.querySelectorAll("section").forEach(section => {
                const visibleArticles = section.querySelectorAll("article:not(.hidden)");
@@ -2607,7 +2621,9 @@ It's similar to WithZone, but small enough to be inlinable.</p>
             if (searchInput) {
                searchInput.addEventListener("input", () => {
                   const query = searchInput.value.trim().toLowerCase();
-
+                  const allMatches = [];
+                  const sectionOrder = ['imports', 'globals', 'types', 'interfaces', 'structs', 'functions'];
+                  
                   document.querySelectorAll("article").forEach((el) => {
                      const name = el.dataset.name;
                      if (!name) return;
@@ -2619,21 +2635,97 @@ It's similar to WithZone, but small enough to be inlinable.</p>
                            el.textContent.toLowerCase().includes(query));
 
                      if (matches) {
-                        const isPrivateEl =
-                           el.classList.contains("private");
-                        const shouldShowPrivate =
-                           getPrivateToggleState(el);
+                        const isPrivateEl = el.classList.contains("private");
+                        const shouldShowPrivate = getPrivateToggleState(el);
 
                         if (!isPrivateEl || shouldShowPrivate) {
                            el.classList.remove("hidden");
+                           
+                           const section = el.closest('section');
+                           if (section) {
+                              const sectionId = section.id;
+                              const sectionIndex = sectionOrder.indexOf(sectionId);
+                              const isExactMatch = name.toLowerCase() === query;
+                              
+                              allMatches.push({
+                                 element: el,
+                                 name: name,
+                                 isExact: isExactMatch,
+                                 sectionId: sectionId,
+                                 sectionIndex: sectionIndex >= 0 ? sectionIndex : 999
+                              });
+                           }
                         }
                      } else {
                         el.classList.add("hidden");
                      }
-                     updateSectionVisibility();
                   });
 
-                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                  allMatches.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     if (a.sectionIndex !== b.sectionIndex) return a.sectionIndex - b.sectionIndex;
+                     return a.name.localeCompare(b.name);
+                  });
+
+                  const sectionMatches = {};
+                  allMatches.forEach(match => {
+                     if (!sectionMatches[match.sectionId]) {
+                        sectionMatches[match.sectionId] = [];
+                     }
+                     sectionMatches[match.sectionId].push(match);
+                  });
+                  Object.keys(sectionMatches).forEach(sectionId => {
+                     const section = document.getElementById(sectionId);
+                     if (!section) return;
+                     
+                     sectionMatches[sectionId].forEach(match => {
+                        section.appendChild(match.element);
+                     });
+                  });
+                  if (query === "") {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     
+                     let insertAfter = firstDivider;
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (section) {
+                           insertAfter.insertAdjacentElement('afterend', section);
+                           insertAfter = section;
+                        }
+                     });
+                  } else {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     const sectionsWithExactMatches = [];
+                     const sectionsWithoutExactMatches = [];
+                     
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (!section || !sectionMatches[sectionId]) return;
+                        
+                        const hasExactMatch = sectionMatches[sectionId].some(match => match.isExact);
+                        if (hasExactMatch) {
+                           sectionsWithExactMatches.push(section);
+                        } else {
+                           sectionsWithoutExactMatches.push(section);
+                        }
+                     });
+                     let insertAfter = firstDivider;
+                     [...sectionsWithExactMatches, ...sectionsWithoutExactMatches].forEach(section => {
+                        insertAfter.insertAdjacentElement('afterend', section);
+                        insertAfter = section;
+                     });
+                  }
+
+                  updateSectionVisibility();
+                  const symbolItems = Array.from(document.querySelectorAll('#symbolIndex li'));
+                  const matchingSymbols = [];
+                  
+                  symbolItems.forEach(li => {
                      const link = li.querySelector('a');
                      if (link) {
                         const symbolName = link.textContent.toLowerCase();
@@ -2647,11 +2739,27 @@ It's similar to WithZone, but small enough to be inlinable.</p>
                            
                            if (!isPrivateSymbol || shouldShowPrivate) {
                               li.style.display = '';
+                              const isExactMatch = symbolName === query;
+                              matchingSymbols.push({
+                                 element: li,
+                                 name: symbolName,
+                                 isExact: isExactMatch
+                              });
                            }
                         } else {
                            li.style.display = 'none';
                         }
                      }
+                  });
+                  matchingSymbols.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     return a.name.localeCompare(b.name);
+                  });
+                  
+                  const symbolIndex = document.getElementById('symbolIndex');
+                  matchingSymbols.forEach(symbol => {
+                     symbolIndex.appendChild(symbol.element);
                   });
                });
             }
@@ -2674,6 +2782,7 @@ It's similar to WithZone, but small enough to be inlinable.</p>
             }
 
             buildSymbolIndex();
+            deduplicateImports();
 
             document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
                anchor.addEventListener("click", function (e) {

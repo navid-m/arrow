@@ -29,7 +29,7 @@
          }
 
          .sidebar {
-            width: 12%;
+            width: 14%;
             background: rgba(59, 56, 56, 0.15);
             padding: 1.5rem;
             box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
@@ -601,12 +601,6 @@
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
                <pre><code class="language-go">"bufio"
-"encoding/binary"
-"fmt"
-"io"
-"internal/trace/event"
-"internal/trace/version"
-"bufio"
 "fmt"
 "io"
 "strconv"
@@ -625,6 +619,12 @@
 "encoding/binary"
 "strconv"
 "strings"
+"internal/trace/event"
+"internal/trace/version"
+"bufio"
+"encoding/binary"
+"fmt"
+"io"
 "internal/trace/event"
 "internal/trace/version"
 </code></pre>
@@ -829,9 +829,9 @@ specs []event.Spec
                   <a href="#ReadEvent" class="anchor" title="Link to ReadEvent">#</a>
                </h3>
                
-               <p>ReadEvent reads and returns the next trace event in the text stream.</p>
+               <p>ReadEvent reads and returns the next trace event in the byte stream.</p>
                
-               <pre><code class="language-go">func (r *TextReader) ReadEvent() (Event, error)</code></pre>
+               <pre><code class="language-go">func (r *Reader) ReadEvent() (Event, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ReadEvent" data-name="ReadEvent">
@@ -842,9 +842,9 @@ specs []event.Spec
                   <a href="#ReadEvent" class="anchor" title="Link to ReadEvent">#</a>
                </h3>
                
-               <p>ReadEvent reads and returns the next trace event in the byte stream.</p>
+               <p>ReadEvent reads and returns the next trace event in the text stream.</p>
                
-               <pre><code class="language-go">func (r *Reader) ReadEvent() (Event, error)</code></pre>
+               <pre><code class="language-go">func (r *TextReader) ReadEvent() (Event, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -872,7 +872,7 @@ and emitted by the TextWriter.</p>
                
                <p>Version returns the version of the trace that we're reading.</p>
                
-               <pre><code class="language-go">func (r *TextReader) Version() version.Version</code></pre>
+               <pre><code class="language-go">func (r *Reader) Version() version.Version</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Version" data-name="Version">
@@ -885,20 +885,7 @@ and emitted by the TextWriter.</p>
                
                <p>Version returns the version of the trace that we're reading.</p>
                
-               <pre><code class="language-go">func (r *Reader) Version() version.Version</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="WriteEvent" data-name="WriteEvent">
-               <h3>
-                  WriteEvent 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#WriteEvent" class="anchor" title="Link to WriteEvent">#</a>
-               </h3>
-               
-               <p>WriteEvent writes a single event to the trace wire format stream.</p>
-               
-               <pre><code class="language-go">func (w *Writer) WriteEvent(e Event) error</code></pre>
+               <pre><code class="language-go">func (r *TextReader) Version() version.Version</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="WriteEvent" data-name="WriteEvent">
@@ -912,6 +899,19 @@ and emitted by the TextWriter.</p>
                <p>WriteEvent writes a single event to the stream.</p>
                
                <pre><code class="language-go">func (w *TextWriter) WriteEvent(e Event) error</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="WriteEvent" data-name="WriteEvent">
+               <h3>
+                  WriteEvent 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#WriteEvent" class="anchor" title="Link to WriteEvent">#</a>
+               </h3>
+               
+               <p>WriteEvent writes a single event to the trace wire format stream.</p>
+               
+               <pre><code class="language-go">func (w *Writer) WriteEvent(e Event) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="nextLine" data-name="nextLine">
@@ -961,23 +961,23 @@ and emitted by the TextWriter.</p>
             <article class="function symbol-anchor" id="readData" data-name="readData">
                <h3>
                   readData 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#readData" class="anchor" title="Link to readData">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (r *Reader) readData() ([]byte, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="readData" data-name="readData">
-               <h3>
-                  readData 
                   <span class="badge">function</span>
                   
                   <a href="#readData" class="anchor" title="Link to readData">#</a>
                </h3>
                
                <pre><code class="language-go">func readData(line string) ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="readData" data-name="readData">
+               <h3>
+                  readData 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#readData" class="anchor" title="Link to readData">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (r *Reader) readData() ([]byte, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="readToken" data-name="readToken">
@@ -1001,6 +1001,20 @@ and emitted by the TextWriter.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function deduplicateImports() {
+            const importsSection = document.querySelector('#imports-section code');
+            if (!importsSection) return;
+            
+            const lines = importsSection.textContent.split('\n');
+            var uniqueLines = [...new Set(lines.filter(line => line.trim()))];
+            uniqueLines.sort();
+            importsSection.textContent = uniqueLines.join('\n');
+            
+            if (window.Prism) {
+               Prism.highlightElement(importsSection);
+            }
+         }
+
          function updateSectionVisibility() {
             document.querySelectorAll("section").forEach(section => {
                const visibleArticles = section.querySelectorAll("article:not(.hidden)");
@@ -1214,7 +1228,9 @@ and emitted by the TextWriter.</p>
             if (searchInput) {
                searchInput.addEventListener("input", () => {
                   const query = searchInput.value.trim().toLowerCase();
-
+                  const allMatches = [];
+                  const sectionOrder = ['imports', 'globals', 'types', 'interfaces', 'structs', 'functions'];
+                  
                   document.querySelectorAll("article").forEach((el) => {
                      const name = el.dataset.name;
                      if (!name) return;
@@ -1226,21 +1242,97 @@ and emitted by the TextWriter.</p>
                            el.textContent.toLowerCase().includes(query));
 
                      if (matches) {
-                        const isPrivateEl =
-                           el.classList.contains("private");
-                        const shouldShowPrivate =
-                           getPrivateToggleState(el);
+                        const isPrivateEl = el.classList.contains("private");
+                        const shouldShowPrivate = getPrivateToggleState(el);
 
                         if (!isPrivateEl || shouldShowPrivate) {
                            el.classList.remove("hidden");
+                           
+                           const section = el.closest('section');
+                           if (section) {
+                              const sectionId = section.id;
+                              const sectionIndex = sectionOrder.indexOf(sectionId);
+                              const isExactMatch = name.toLowerCase() === query;
+                              
+                              allMatches.push({
+                                 element: el,
+                                 name: name,
+                                 isExact: isExactMatch,
+                                 sectionId: sectionId,
+                                 sectionIndex: sectionIndex >= 0 ? sectionIndex : 999
+                              });
+                           }
                         }
                      } else {
                         el.classList.add("hidden");
                      }
-                     updateSectionVisibility();
                   });
 
-                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                  allMatches.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     if (a.sectionIndex !== b.sectionIndex) return a.sectionIndex - b.sectionIndex;
+                     return a.name.localeCompare(b.name);
+                  });
+
+                  const sectionMatches = {};
+                  allMatches.forEach(match => {
+                     if (!sectionMatches[match.sectionId]) {
+                        sectionMatches[match.sectionId] = [];
+                     }
+                     sectionMatches[match.sectionId].push(match);
+                  });
+                  Object.keys(sectionMatches).forEach(sectionId => {
+                     const section = document.getElementById(sectionId);
+                     if (!section) return;
+                     
+                     sectionMatches[sectionId].forEach(match => {
+                        section.appendChild(match.element);
+                     });
+                  });
+                  if (query === "") {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     
+                     let insertAfter = firstDivider;
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (section) {
+                           insertAfter.insertAdjacentElement('afterend', section);
+                           insertAfter = section;
+                        }
+                     });
+                  } else {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     const sectionsWithExactMatches = [];
+                     const sectionsWithoutExactMatches = [];
+                     
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (!section || !sectionMatches[sectionId]) return;
+                        
+                        const hasExactMatch = sectionMatches[sectionId].some(match => match.isExact);
+                        if (hasExactMatch) {
+                           sectionsWithExactMatches.push(section);
+                        } else {
+                           sectionsWithoutExactMatches.push(section);
+                        }
+                     });
+                     let insertAfter = firstDivider;
+                     [...sectionsWithExactMatches, ...sectionsWithoutExactMatches].forEach(section => {
+                        insertAfter.insertAdjacentElement('afterend', section);
+                        insertAfter = section;
+                     });
+                  }
+
+                  updateSectionVisibility();
+                  const symbolItems = Array.from(document.querySelectorAll('#symbolIndex li'));
+                  const matchingSymbols = [];
+                  
+                  symbolItems.forEach(li => {
                      const link = li.querySelector('a');
                      if (link) {
                         const symbolName = link.textContent.toLowerCase();
@@ -1254,11 +1346,27 @@ and emitted by the TextWriter.</p>
                            
                            if (!isPrivateSymbol || shouldShowPrivate) {
                               li.style.display = '';
+                              const isExactMatch = symbolName === query;
+                              matchingSymbols.push({
+                                 element: li,
+                                 name: symbolName,
+                                 isExact: isExactMatch
+                              });
                            }
                         } else {
                            li.style.display = 'none';
                         }
                      }
+                  });
+                  matchingSymbols.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     return a.name.localeCompare(b.name);
+                  });
+                  
+                  const symbolIndex = document.getElementById('symbolIndex');
+                  matchingSymbols.forEach(symbol => {
+                     symbolIndex.appendChild(symbol.element);
                   });
                });
             }
@@ -1281,6 +1389,7 @@ and emitted by the TextWriter.</p>
             }
 
             buildSymbolIndex();
+            deduplicateImports();
 
             document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
                anchor.addEventListener("click", function (e) {

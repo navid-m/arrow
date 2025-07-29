@@ -29,7 +29,7 @@
          }
 
          .sidebar {
-            width: 12%;
+            width: 14%;
             background: rgba(59, 56, 56, 0.15);
             padding: 1.5rem;
             box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
@@ -602,8 +602,30 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"os"
+               <pre><code class="language-go">"fmt"
 "runtime"
+"fmt"
+"os"
+"runtime"
+"syscall"
+"syscall"
+"bytes"
+"fmt"
+"runtime"
+"strings"
+"unsafe"
+"syscall"
+"time"
+"fmt"
+"iter"
+"runtime"
+"fmt"
+"os"
+"runtime/pprof"
+"time"
+"runtime"
+"runtime/debug"
+"unsafe"
 "runtime"
 "time"
 "unsafe"
@@ -613,37 +635,19 @@
 "time"
 "os"
 "runtime"
-"sync"
-"time"
-"bytes"
-"fmt"
-"os"
-"os/exec"
-"regexp"
 "runtime"
-"strconv"
-"strings"
-"syscall"
-"fmt"
-"os"
-"runtime/pprof"
-"time"
-"syscall"
-"time"
 "internal/syscall/windows"
 "runtime"
 "sync"
 "syscall"
 "unsafe"
-"bytes"
-"fmt"
-"runtime"
-"strings"
 "unsafe"
 "fmt"
 "os"
 "runtime/pprof"
 "time"
+"errors"
+_ "unsafe"
 "fmt"
 "math"
 "os"
@@ -654,42 +658,38 @@
 "sync/atomic"
 "time"
 "unsafe"
-"syscall"
-"fmt"
-"os"
-"runtime"
-"runtime"
-"sync"
-"runtime"
-"runtime/debug"
-"sync/atomic"
-"errors"
-_ "unsafe"
-"fmt"
-"iter"
-"runtime"
-"unsafe"
-"runtime"
 "bytes"
 "fmt"
 "os"
 "runtime"
 "runtime/pprof"
-"syscall"
-"strings"
+"bytes"
 "fmt"
+"os"
+"os/exec"
+"regexp"
 "runtime"
+"strconv"
+"strings"
+"syscall"
+"runtime"
+"sync"
 "os"
 "time"
+"os"
+"runtime"
+"sync"
+"time"
+"runtime"
+"runtime/debug"
+"sync/atomic"
+"strings"
 "bytes"
 "fmt"
 "internal/testenv"
 "io"
 "os"
 "syscall"
-"runtime"
-"runtime/debug"
-"unsafe"
 </code></pre>
             </article>
          </section>
@@ -1479,6 +1479,17 @@ See issue 30150.</p>
                   <a href="#Error" class="anchor" title="Link to Error">#</a>
                </h3>
                
+               <pre><code class="language-go">func (e examplePanicError) Error() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Error" data-name="Error">
+               <h3>
+                  Error 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Error" class="anchor" title="Link to Error">#</a>
+               </h3>
+               
                <pre><code class="language-go">func (*panicError) Error() string</code></pre>
             </article>
             
@@ -1490,7 +1501,7 @@ See issue 30150.</p>
                   <a href="#Error" class="anchor" title="Link to Error">#</a>
                </h3>
                
-               <pre><code class="language-go">func (e exampleError) Error() string</code></pre>
+               <pre><code class="language-go">func (errorThatPrint) Error() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Error" data-name="Error">
@@ -1501,7 +1512,7 @@ See issue 30150.</p>
                   <a href="#Error" class="anchor" title="Link to Error">#</a>
                </h3>
                
-               <pre><code class="language-go">func (e examplePanicError) Error() string</code></pre>
+               <pre><code class="language-go">func (errorThatGosched) Error() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Error" data-name="Error">
@@ -1534,18 +1545,7 @@ See issue 30150.</p>
                   <a href="#Error" class="anchor" title="Link to Error">#</a>
                </h3>
                
-               <pre><code class="language-go">func (errorThatPrint) Error() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Error" data-name="Error">
-               <h3>
-                  Error 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Error" class="anchor" title="Link to Error">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (errorThatGosched) Error() string</code></pre>
+               <pre><code class="language-go">func (e exampleError) Error() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ErrorPanic" data-name="ErrorPanic">
@@ -2078,7 +2078,7 @@ another defer to be processed.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code class="language-go">func (s exampleStringer) String() string</code></pre>
+               <pre><code class="language-go">func (s examplePanicStringer) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -2100,7 +2100,7 @@ another defer to be processed.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code class="language-go">func (s examplePanicStringer) String() string</code></pre>
+               <pre><code class="language-go">func (s exampleStringer) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="StringPanic" data-name="StringPanic">
@@ -3293,6 +3293,20 @@ consistent testing environment to help avoid flakiness.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function deduplicateImports() {
+            const importsSection = document.querySelector('#imports-section code');
+            if (!importsSection) return;
+            
+            const lines = importsSection.textContent.split('\n');
+            var uniqueLines = [...new Set(lines.filter(line => line.trim()))];
+            uniqueLines.sort();
+            importsSection.textContent = uniqueLines.join('\n');
+            
+            if (window.Prism) {
+               Prism.highlightElement(importsSection);
+            }
+         }
+
          function updateSectionVisibility() {
             document.querySelectorAll("section").forEach(section => {
                const visibleArticles = section.querySelectorAll("article:not(.hidden)");
@@ -3506,7 +3520,9 @@ consistent testing environment to help avoid flakiness.</p>
             if (searchInput) {
                searchInput.addEventListener("input", () => {
                   const query = searchInput.value.trim().toLowerCase();
-
+                  const allMatches = [];
+                  const sectionOrder = ['imports', 'globals', 'types', 'interfaces', 'structs', 'functions'];
+                  
                   document.querySelectorAll("article").forEach((el) => {
                      const name = el.dataset.name;
                      if (!name) return;
@@ -3518,21 +3534,97 @@ consistent testing environment to help avoid flakiness.</p>
                            el.textContent.toLowerCase().includes(query));
 
                      if (matches) {
-                        const isPrivateEl =
-                           el.classList.contains("private");
-                        const shouldShowPrivate =
-                           getPrivateToggleState(el);
+                        const isPrivateEl = el.classList.contains("private");
+                        const shouldShowPrivate = getPrivateToggleState(el);
 
                         if (!isPrivateEl || shouldShowPrivate) {
                            el.classList.remove("hidden");
+                           
+                           const section = el.closest('section');
+                           if (section) {
+                              const sectionId = section.id;
+                              const sectionIndex = sectionOrder.indexOf(sectionId);
+                              const isExactMatch = name.toLowerCase() === query;
+                              
+                              allMatches.push({
+                                 element: el,
+                                 name: name,
+                                 isExact: isExactMatch,
+                                 sectionId: sectionId,
+                                 sectionIndex: sectionIndex >= 0 ? sectionIndex : 999
+                              });
+                           }
                         }
                      } else {
                         el.classList.add("hidden");
                      }
-                     updateSectionVisibility();
                   });
 
-                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                  allMatches.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     if (a.sectionIndex !== b.sectionIndex) return a.sectionIndex - b.sectionIndex;
+                     return a.name.localeCompare(b.name);
+                  });
+
+                  const sectionMatches = {};
+                  allMatches.forEach(match => {
+                     if (!sectionMatches[match.sectionId]) {
+                        sectionMatches[match.sectionId] = [];
+                     }
+                     sectionMatches[match.sectionId].push(match);
+                  });
+                  Object.keys(sectionMatches).forEach(sectionId => {
+                     const section = document.getElementById(sectionId);
+                     if (!section) return;
+                     
+                     sectionMatches[sectionId].forEach(match => {
+                        section.appendChild(match.element);
+                     });
+                  });
+                  if (query === "") {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     
+                     let insertAfter = firstDivider;
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (section) {
+                           insertAfter.insertAdjacentElement('afterend', section);
+                           insertAfter = section;
+                        }
+                     });
+                  } else {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     const sectionsWithExactMatches = [];
+                     const sectionsWithoutExactMatches = [];
+                     
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (!section || !sectionMatches[sectionId]) return;
+                        
+                        const hasExactMatch = sectionMatches[sectionId].some(match => match.isExact);
+                        if (hasExactMatch) {
+                           sectionsWithExactMatches.push(section);
+                        } else {
+                           sectionsWithoutExactMatches.push(section);
+                        }
+                     });
+                     let insertAfter = firstDivider;
+                     [...sectionsWithExactMatches, ...sectionsWithoutExactMatches].forEach(section => {
+                        insertAfter.insertAdjacentElement('afterend', section);
+                        insertAfter = section;
+                     });
+                  }
+
+                  updateSectionVisibility();
+                  const symbolItems = Array.from(document.querySelectorAll('#symbolIndex li'));
+                  const matchingSymbols = [];
+                  
+                  symbolItems.forEach(li => {
                      const link = li.querySelector('a');
                      if (link) {
                         const symbolName = link.textContent.toLowerCase();
@@ -3546,11 +3638,27 @@ consistent testing environment to help avoid flakiness.</p>
                            
                            if (!isPrivateSymbol || shouldShowPrivate) {
                               li.style.display = '';
+                              const isExactMatch = symbolName === query;
+                              matchingSymbols.push({
+                                 element: li,
+                                 name: symbolName,
+                                 isExact: isExactMatch
+                              });
                            }
                         } else {
                            li.style.display = 'none';
                         }
                      }
+                  });
+                  matchingSymbols.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     return a.name.localeCompare(b.name);
+                  });
+                  
+                  const symbolIndex = document.getElementById('symbolIndex');
+                  matchingSymbols.forEach(symbol => {
+                     symbolIndex.appendChild(symbol.element);
                   });
                });
             }
@@ -3573,6 +3681,7 @@ consistent testing environment to help avoid flakiness.</p>
             }
 
             buildSymbolIndex();
+            deduplicateImports();
 
             document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
                anchor.addEventListener("click", function (e) {

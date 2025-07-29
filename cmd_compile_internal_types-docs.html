@@ -29,7 +29,7 @@
          }
 
          .sidebar {
-            width: 12%;
+            width: 14%;
             background: rgba(59, 56, 56, 0.15);
             padding: 1.5rem;
             box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
@@ -604,18 +604,18 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"math"
-"slices"
+               <pre><code class="language-go">"cmd/compile/internal/base"
+"fmt"
+"internal/goversion"
+"internal/lazyregexp"
+"log"
+"strconv"
 "cmd/compile/internal/base"
-"cmd/internal/src"
-"internal/types/errors"
 "cmd/compile/internal/base"
 "cmd/internal/obj"
 "strings"
 "unicode"
 "unicode/utf8"
-"cmd/compile/internal/base"
-"strconv"
 "cmd/compile/internal/base"
 "cmd/internal/objabi"
 "cmd/internal/src"
@@ -626,6 +626,7 @@
 "sync"
 "cmd/compile/internal/base"
 "cmd/internal/src"
+"strconv"
 "bytes"
 "encoding/binary"
 "fmt"
@@ -633,18 +634,17 @@
 "sync"
 "cmd/compile/internal/base"
 "cmd/internal/hash"
-"fmt"
-"internal/goversion"
-"internal/lazyregexp"
-"log"
-"strconv"
-"cmd/compile/internal/base"
 "strconv"
 "cmd/internal/obj"
 "cmd/internal/objabi"
 "fmt"
 "strconv"
 "sync"
+"math"
+"slices"
+"cmd/compile/internal/base"
+"cmd/internal/src"
+"internal/types/errors"
 </code></pre>
             </article>
          </section>
@@ -3351,13 +3351,15 @@ a struct type t.</p>
                   <a href="#Format" class="anchor" title="Link to Format">#</a>
                </h3>
                
-               <p>Format implements formatting for a Sym.
+               <p>Format implements formatting for a Type.
 The valid formats are:
-%v	Go syntax: Name for symbols in the local package, PkgName.Name for imported symbols.
-%+v	Debug syntax: always include PkgName. prefix even for local names.
-%S	Short syntax: Name only, no matter what.</p>
+%v	Go syntax
+%+v	Debug syntax: Go syntax with a KIND- prefix for all but builtins.
+%L	Go syntax for underlying type if t is named
+%S	short Go syntax: drop leading "func" in function type
+%-S	special case for method receiver symbol</p>
                
-               <pre><code class="language-go">func (s *Sym) Format(f fmt.State, verb rune)</code></pre>
+               <pre><code class="language-go">func (t *Type) Format(s fmt.State, verb rune)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Format" data-name="Format">
@@ -3368,15 +3370,13 @@ The valid formats are:
                   <a href="#Format" class="anchor" title="Link to Format">#</a>
                </h3>
                
-               <p>Format implements formatting for a Type.
+               <p>Format implements formatting for a Sym.
 The valid formats are:
-%v	Go syntax
-%+v	Debug syntax: Go syntax with a KIND- prefix for all but builtins.
-%L	Go syntax for underlying type if t is named
-%S	short Go syntax: drop leading "func" in function type
-%-S	special case for method receiver symbol</p>
+%v	Go syntax: Name for symbols in the local package, PkgName.Name for imported symbols.
+%+v	Debug syntax: always include PkgName. prefix even for local names.
+%S	Short syntax: Name only, no matter what.</p>
                
-               <pre><code class="language-go">func (t *Type) Format(s fmt.State, verb rune)</code></pre>
+               <pre><code class="language-go">func (s *Sym) Format(f fmt.State, verb rune)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Func" data-name="Func">
@@ -5213,6 +5213,17 @@ suffix, if any.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
+               <pre><code class="language-go">func (i AlgKind) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
                <pre><code class="language-go">func (i Kind) String() string</code></pre>
             </article>
             
@@ -5227,17 +5238,6 @@ suffix, if any.</p>
                <p>String returns the Go syntax for the type t.</p>
                
                <pre><code class="language-go">func (t *Type) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (i AlgKind) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="StructType" data-name="StructType">
@@ -5925,6 +5925,20 @@ This is where t was declared or where it appeared as a type expression.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function deduplicateImports() {
+            const importsSection = document.querySelector('#imports-section code');
+            if (!importsSection) return;
+            
+            const lines = importsSection.textContent.split('\n');
+            var uniqueLines = [...new Set(lines.filter(line => line.trim()))];
+            uniqueLines.sort();
+            importsSection.textContent = uniqueLines.join('\n');
+            
+            if (window.Prism) {
+               Prism.highlightElement(importsSection);
+            }
+         }
+
          function updateSectionVisibility() {
             document.querySelectorAll("section").forEach(section => {
                const visibleArticles = section.querySelectorAll("article:not(.hidden)");
@@ -6138,7 +6152,9 @@ This is where t was declared or where it appeared as a type expression.</p>
             if (searchInput) {
                searchInput.addEventListener("input", () => {
                   const query = searchInput.value.trim().toLowerCase();
-
+                  const allMatches = [];
+                  const sectionOrder = ['imports', 'globals', 'types', 'interfaces', 'structs', 'functions'];
+                  
                   document.querySelectorAll("article").forEach((el) => {
                      const name = el.dataset.name;
                      if (!name) return;
@@ -6150,21 +6166,97 @@ This is where t was declared or where it appeared as a type expression.</p>
                            el.textContent.toLowerCase().includes(query));
 
                      if (matches) {
-                        const isPrivateEl =
-                           el.classList.contains("private");
-                        const shouldShowPrivate =
-                           getPrivateToggleState(el);
+                        const isPrivateEl = el.classList.contains("private");
+                        const shouldShowPrivate = getPrivateToggleState(el);
 
                         if (!isPrivateEl || shouldShowPrivate) {
                            el.classList.remove("hidden");
+                           
+                           const section = el.closest('section');
+                           if (section) {
+                              const sectionId = section.id;
+                              const sectionIndex = sectionOrder.indexOf(sectionId);
+                              const isExactMatch = name.toLowerCase() === query;
+                              
+                              allMatches.push({
+                                 element: el,
+                                 name: name,
+                                 isExact: isExactMatch,
+                                 sectionId: sectionId,
+                                 sectionIndex: sectionIndex >= 0 ? sectionIndex : 999
+                              });
+                           }
                         }
                      } else {
                         el.classList.add("hidden");
                      }
-                     updateSectionVisibility();
                   });
 
-                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                  allMatches.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     if (a.sectionIndex !== b.sectionIndex) return a.sectionIndex - b.sectionIndex;
+                     return a.name.localeCompare(b.name);
+                  });
+
+                  const sectionMatches = {};
+                  allMatches.forEach(match => {
+                     if (!sectionMatches[match.sectionId]) {
+                        sectionMatches[match.sectionId] = [];
+                     }
+                     sectionMatches[match.sectionId].push(match);
+                  });
+                  Object.keys(sectionMatches).forEach(sectionId => {
+                     const section = document.getElementById(sectionId);
+                     if (!section) return;
+                     
+                     sectionMatches[sectionId].forEach(match => {
+                        section.appendChild(match.element);
+                     });
+                  });
+                  if (query === "") {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     
+                     let insertAfter = firstDivider;
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (section) {
+                           insertAfter.insertAdjacentElement('afterend', section);
+                           insertAfter = section;
+                        }
+                     });
+                  } else {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     const sectionsWithExactMatches = [];
+                     const sectionsWithoutExactMatches = [];
+                     
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (!section || !sectionMatches[sectionId]) return;
+                        
+                        const hasExactMatch = sectionMatches[sectionId].some(match => match.isExact);
+                        if (hasExactMatch) {
+                           sectionsWithExactMatches.push(section);
+                        } else {
+                           sectionsWithoutExactMatches.push(section);
+                        }
+                     });
+                     let insertAfter = firstDivider;
+                     [...sectionsWithExactMatches, ...sectionsWithoutExactMatches].forEach(section => {
+                        insertAfter.insertAdjacentElement('afterend', section);
+                        insertAfter = section;
+                     });
+                  }
+
+                  updateSectionVisibility();
+                  const symbolItems = Array.from(document.querySelectorAll('#symbolIndex li'));
+                  const matchingSymbols = [];
+                  
+                  symbolItems.forEach(li => {
                      const link = li.querySelector('a');
                      if (link) {
                         const symbolName = link.textContent.toLowerCase();
@@ -6178,11 +6270,27 @@ This is where t was declared or where it appeared as a type expression.</p>
                            
                            if (!isPrivateSymbol || shouldShowPrivate) {
                               li.style.display = '';
+                              const isExactMatch = symbolName === query;
+                              matchingSymbols.push({
+                                 element: li,
+                                 name: symbolName,
+                                 isExact: isExactMatch
+                              });
                            }
                         } else {
                            li.style.display = 'none';
                         }
                      }
+                  });
+                  matchingSymbols.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     return a.name.localeCompare(b.name);
+                  });
+                  
+                  const symbolIndex = document.getElementById('symbolIndex');
+                  matchingSymbols.forEach(symbol => {
+                     symbolIndex.appendChild(symbol.element);
                   });
                });
             }
@@ -6205,6 +6313,7 @@ This is where t was declared or where it appeared as a type expression.</p>
             }
 
             buildSymbolIndex();
+            deduplicateImports();
 
             document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
                anchor.addEventListener("click", function (e) {

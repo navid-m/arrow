@@ -29,7 +29,7 @@
          }
 
          .sidebar {
-            width: 12%;
+            width: 14%;
             background: rgba(59, 56, 56, 0.15);
             padding: 1.5rem;
             box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
@@ -608,26 +608,26 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">isync "internal/sync"
+               <pre><code class="language-go">"sync/atomic"
+"unsafe"
+isync "internal/sync"
+"sync/atomic"
+isync "internal/sync"
+"sync/atomic"
 "internal/race"
 "runtime"
 "sync/atomic"
 "unsafe"
 "unsafe"
+"sync/atomic"
+"unsafe"
+"unsafe"
 "unsafe"
 "internal/race"
 "sync/atomic"
 "unsafe"
 "internal/race"
 "sync/atomic"
-"unsafe"
-"sync/atomic"
-"unsafe"
-"sync/atomic"
-isync "internal/sync"
-"sync/atomic"
-"sync/atomic"
-"unsafe"
 "unsafe"
 </code></pre>
             </article>
@@ -1150,8 +1150,6 @@ agree.</p>
                ><code class="fields-code language-go">type notifyList struct {
 wait uint32
 notify uint32
-rank int
-pad int
 lock uintptr
 head unsafe.Pointer
 tail unsafe.Pointer
@@ -1173,6 +1171,8 @@ agree.</p>
                ><code class="fields-code language-go">type notifyList struct {
 wait uint32
 notify uint32
+rank int
+pad int
 lock uintptr
 head unsafe.Pointer
 tail unsafe.Pointer
@@ -1600,24 +1600,7 @@ The loaded result is true if the value was loaded, false if stored.</p>
                   <a href="#Lock" class="anchor" title="Link to Lock">#</a>
                </h3>
                
-               <p>Lock is a no-op used by -copylocks checker from `go vet`.</p>
-               
-               <pre><code class="language-go">func (*noCopy) Lock()</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Lock" data-name="Lock">
-               <h3>
-                  Lock 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Lock" class="anchor" title="Link to Lock">#</a>
-               </h3>
-               
-               <p>Lock locks rw for writing.
-If the lock is already locked for reading or writing,
-Lock blocks until the lock is available.</p>
-               
-               <pre><code class="language-go">func (rw *RWMutex) Lock()</code></pre>
+               <pre><code class="language-go">func (r *rlocker) Lock()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Lock" data-name="Lock">
@@ -1643,7 +1626,24 @@ blocks until the mutex is available.</p>
                   <a href="#Lock" class="anchor" title="Link to Lock">#</a>
                </h3>
                
-               <pre><code class="language-go">func (r *rlocker) Lock()</code></pre>
+               <p>Lock locks rw for writing.
+If the lock is already locked for reading or writing,
+Lock blocks until the lock is available.</p>
+               
+               <pre><code class="language-go">func (rw *RWMutex) Lock()</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Lock" data-name="Lock">
+               <h3>
+                  Lock 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Lock" class="anchor" title="Link to Lock">#</a>
+               </h3>
+               
+               <p>Lock is a no-op used by -copylocks checker from `go vet`.</p>
+               
+               <pre><code class="language-go">func (*noCopy) Lock()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="NewCond" data-name="NewCond">
@@ -1884,12 +1884,12 @@ The loaded result reports whether the key was present.</p>
                   <a href="#TryLock" class="anchor" title="Link to TryLock">#</a>
                </h3>
                
-               <p>TryLock tries to lock rw for writing and reports whether it succeeded.
+               <p>TryLock tries to lock m and reports whether it succeeded.
 Note that while correct uses of TryLock do exist, they are rare,
 and use of TryLock is often a sign of a deeper problem
 in a particular use of mutexes.</p>
                
-               <pre><code class="language-go">func (rw *RWMutex) TryLock() bool</code></pre>
+               <pre><code class="language-go">func (m *Mutex) TryLock() bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="TryLock" data-name="TryLock">
@@ -1900,12 +1900,12 @@ in a particular use of mutexes.</p>
                   <a href="#TryLock" class="anchor" title="Link to TryLock">#</a>
                </h3>
                
-               <p>TryLock tries to lock m and reports whether it succeeded.
+               <p>TryLock tries to lock rw for writing and reports whether it succeeded.
 Note that while correct uses of TryLock do exist, they are rare,
 and use of TryLock is often a sign of a deeper problem
 in a particular use of mutexes.</p>
                
-               <pre><code class="language-go">func (m *Mutex) TryLock() bool</code></pre>
+               <pre><code class="language-go">func (rw *RWMutex) TryLock() bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="TryRLock" data-name="TryRLock">
@@ -1922,6 +1922,23 @@ and use of TryRLock is often a sign of a deeper problem
 in a particular use of mutexes.</p>
                
                <pre><code class="language-go">func (rw *RWMutex) TryRLock() bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Unlock" data-name="Unlock">
+               <h3>
+                  Unlock 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Unlock" class="anchor" title="Link to Unlock">#</a>
+               </h3>
+               
+               <p>Unlock unlocks m.
+It is a run-time error if m is not locked on entry to Unlock.
+A locked [Mutex] is not associated with a particular goroutine.
+It is allowed for one goroutine to lock a Mutex and then
+arrange for another goroutine to unlock it.</p>
+               
+               <pre><code class="language-go">func (m *Mutex) Unlock()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Unlock" data-name="Unlock">
@@ -1961,23 +1978,6 @@ goroutine. One goroutine may [RWMutex.RLock] ([RWMutex.Lock]) a RWMutex and then
 arrange for another goroutine to [RWMutex.RUnlock] ([RWMutex.Unlock]) it.</p>
                
                <pre><code class="language-go">func (rw *RWMutex) Unlock()</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Unlock" data-name="Unlock">
-               <h3>
-                  Unlock 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Unlock" class="anchor" title="Link to Unlock">#</a>
-               </h3>
-               
-               <p>Unlock unlocks m.
-It is a run-time error if m is not locked on entry to Unlock.
-A locked [Mutex] is not associated with a particular goroutine.
-It is allowed for one goroutine to lock a Mutex and then
-arrange for another goroutine to unlock it.</p>
-               
-               <pre><code class="language-go">func (m *Mutex) Unlock()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Wait" data-name="Wait">
@@ -2680,6 +2680,20 @@ before m.mu is unlocked.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function deduplicateImports() {
+            const importsSection = document.querySelector('#imports-section code');
+            if (!importsSection) return;
+            
+            const lines = importsSection.textContent.split('\n');
+            var uniqueLines = [...new Set(lines.filter(line => line.trim()))];
+            uniqueLines.sort();
+            importsSection.textContent = uniqueLines.join('\n');
+            
+            if (window.Prism) {
+               Prism.highlightElement(importsSection);
+            }
+         }
+
          function updateSectionVisibility() {
             document.querySelectorAll("section").forEach(section => {
                const visibleArticles = section.querySelectorAll("article:not(.hidden)");
@@ -2893,7 +2907,9 @@ before m.mu is unlocked.</p>
             if (searchInput) {
                searchInput.addEventListener("input", () => {
                   const query = searchInput.value.trim().toLowerCase();
-
+                  const allMatches = [];
+                  const sectionOrder = ['imports', 'globals', 'types', 'interfaces', 'structs', 'functions'];
+                  
                   document.querySelectorAll("article").forEach((el) => {
                      const name = el.dataset.name;
                      if (!name) return;
@@ -2905,21 +2921,97 @@ before m.mu is unlocked.</p>
                            el.textContent.toLowerCase().includes(query));
 
                      if (matches) {
-                        const isPrivateEl =
-                           el.classList.contains("private");
-                        const shouldShowPrivate =
-                           getPrivateToggleState(el);
+                        const isPrivateEl = el.classList.contains("private");
+                        const shouldShowPrivate = getPrivateToggleState(el);
 
                         if (!isPrivateEl || shouldShowPrivate) {
                            el.classList.remove("hidden");
+                           
+                           const section = el.closest('section');
+                           if (section) {
+                              const sectionId = section.id;
+                              const sectionIndex = sectionOrder.indexOf(sectionId);
+                              const isExactMatch = name.toLowerCase() === query;
+                              
+                              allMatches.push({
+                                 element: el,
+                                 name: name,
+                                 isExact: isExactMatch,
+                                 sectionId: sectionId,
+                                 sectionIndex: sectionIndex >= 0 ? sectionIndex : 999
+                              });
+                           }
                         }
                      } else {
                         el.classList.add("hidden");
                      }
-                     updateSectionVisibility();
                   });
 
-                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                  allMatches.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     if (a.sectionIndex !== b.sectionIndex) return a.sectionIndex - b.sectionIndex;
+                     return a.name.localeCompare(b.name);
+                  });
+
+                  const sectionMatches = {};
+                  allMatches.forEach(match => {
+                     if (!sectionMatches[match.sectionId]) {
+                        sectionMatches[match.sectionId] = [];
+                     }
+                     sectionMatches[match.sectionId].push(match);
+                  });
+                  Object.keys(sectionMatches).forEach(sectionId => {
+                     const section = document.getElementById(sectionId);
+                     if (!section) return;
+                     
+                     sectionMatches[sectionId].forEach(match => {
+                        section.appendChild(match.element);
+                     });
+                  });
+                  if (query === "") {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     
+                     let insertAfter = firstDivider;
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (section) {
+                           insertAfter.insertAdjacentElement('afterend', section);
+                           insertAfter = section;
+                        }
+                     });
+                  } else {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     const sectionsWithExactMatches = [];
+                     const sectionsWithoutExactMatches = [];
+                     
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (!section || !sectionMatches[sectionId]) return;
+                        
+                        const hasExactMatch = sectionMatches[sectionId].some(match => match.isExact);
+                        if (hasExactMatch) {
+                           sectionsWithExactMatches.push(section);
+                        } else {
+                           sectionsWithoutExactMatches.push(section);
+                        }
+                     });
+                     let insertAfter = firstDivider;
+                     [...sectionsWithExactMatches, ...sectionsWithoutExactMatches].forEach(section => {
+                        insertAfter.insertAdjacentElement('afterend', section);
+                        insertAfter = section;
+                     });
+                  }
+
+                  updateSectionVisibility();
+                  const symbolItems = Array.from(document.querySelectorAll('#symbolIndex li'));
+                  const matchingSymbols = [];
+                  
+                  symbolItems.forEach(li => {
                      const link = li.querySelector('a');
                      if (link) {
                         const symbolName = link.textContent.toLowerCase();
@@ -2933,11 +3025,27 @@ before m.mu is unlocked.</p>
                            
                            if (!isPrivateSymbol || shouldShowPrivate) {
                               li.style.display = '';
+                              const isExactMatch = symbolName === query;
+                              matchingSymbols.push({
+                                 element: li,
+                                 name: symbolName,
+                                 isExact: isExactMatch
+                              });
                            }
                         } else {
                            li.style.display = 'none';
                         }
                      }
+                  });
+                  matchingSymbols.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     return a.name.localeCompare(b.name);
+                  });
+                  
+                  const symbolIndex = document.getElementById('symbolIndex');
+                  matchingSymbols.forEach(symbol => {
+                     symbolIndex.appendChild(symbol.element);
                   });
                });
             }
@@ -2960,6 +3068,7 @@ before m.mu is unlocked.</p>
             }
 
             buildSymbolIndex();
+            deduplicateImports();
 
             document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
                anchor.addEventListener("click", function (e) {

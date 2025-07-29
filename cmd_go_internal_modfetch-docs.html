@@ -29,7 +29,7 @@
          }
 
          .sidebar {
-            width: 12%;
+            width: 14%;
             background: rgba(59, 56, 56, 0.15);
             padding: 1.5rem;
             box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
@@ -606,26 +606,25 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"golang.org/x/mod/module"
+               <pre><code class="language-go">"archive/zip"
+"bytes"
 "context"
-"encoding/json"
 "errors"
 "fmt"
 "io"
 "io/fs"
-"net/url"
+"os"
 "path"
-pathpkg "path"
 "path/filepath"
+"sort"
 "strings"
-"sync"
 "time"
-"cmd/go/internal/base"
-"cmd/go/internal/cfg"
+"cmd/go/internal/gover"
 "cmd/go/internal/modfetch/codehost"
-"cmd/go/internal/web"
+"golang.org/x/mod/modfile"
 "golang.org/x/mod/module"
 "golang.org/x/mod/semver"
+modzip "golang.org/x/mod/zip"
 "bytes"
 "errors"
 "fmt"
@@ -651,6 +650,7 @@ pathpkg "path"
 "strings"
 "cmd/go/internal/gover"
 "cmd/go/internal/modfetch/codehost"
+"golang.org/x/mod/module"
 "bytes"
 "context"
 "encoding/json"
@@ -677,25 +677,6 @@ pathpkg "path"
 "archive/zip"
 "bytes"
 "context"
-"errors"
-"fmt"
-"io"
-"io/fs"
-"os"
-"path"
-"path/filepath"
-"sort"
-"strings"
-"time"
-"cmd/go/internal/gover"
-"cmd/go/internal/modfetch/codehost"
-"golang.org/x/mod/modfile"
-"golang.org/x/mod/module"
-"golang.org/x/mod/semver"
-modzip "golang.org/x/mod/zip"
-"archive/zip"
-"bytes"
-"context"
 "crypto/sha256"
 "encoding/base64"
 "errors"
@@ -719,6 +700,25 @@ modzip "golang.org/x/mod/zip"
 "golang.org/x/mod/module"
 "golang.org/x/mod/sumdb/dirhash"
 modzip "golang.org/x/mod/zip"
+"context"
+"encoding/json"
+"errors"
+"fmt"
+"io"
+"io/fs"
+"net/url"
+"path"
+pathpkg "path"
+"path/filepath"
+"strings"
+"sync"
+"time"
+"cmd/go/internal/base"
+"cmd/go/internal/cfg"
+"cmd/go/internal/modfetch/codehost"
+"cmd/go/internal/web"
+"golang.org/x/mod/module"
+"golang.org/x/mod/semver"
 "context"
 "fmt"
 "io"
@@ -1548,7 +1548,7 @@ f *zip.File
                   <a href="#CheckReuse" class="anchor" title="Link to CheckReuse">#</a>
                </h3>
                
-               <pre><code class="language-go">func (r *toolchainRepo) CheckReuse(ctx context.Context, old *codehost.Origin) error</code></pre>
+               <pre><code class="language-go">func (r *cachingRepo) CheckReuse(ctx context.Context, old *codehost.Origin) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="CheckReuse" data-name="CheckReuse">
@@ -1560,6 +1560,28 @@ f *zip.File
                </h3>
                
                <pre><code class="language-go">func (r *codeRepo) CheckReuse(ctx context.Context, old *codehost.Origin) error</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="CheckReuse" data-name="CheckReuse">
+               <h3>
+                  CheckReuse 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#CheckReuse" class="anchor" title="Link to CheckReuse">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (p *proxyRepo) CheckReuse(ctx context.Context, old *codehost.Origin) error</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="CheckReuse" data-name="CheckReuse">
+               <h3>
+                  CheckReuse 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#CheckReuse" class="anchor" title="Link to CheckReuse">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (r *toolchainRepo) CheckReuse(ctx context.Context, old *codehost.Origin) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="CheckReuse" data-name="CheckReuse">
@@ -1582,28 +1604,6 @@ f *zip.File
                </h3>
                
                <pre><code class="language-go">func (l *loggingRepo) CheckReuse(ctx context.Context, old *codehost.Origin) (err error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="CheckReuse" data-name="CheckReuse">
-               <h3>
-                  CheckReuse 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#CheckReuse" class="anchor" title="Link to CheckReuse">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (r *cachingRepo) CheckReuse(ctx context.Context, old *codehost.Origin) error</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="CheckReuse" data-name="CheckReuse">
-               <h3>
-                  CheckReuse 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#CheckReuse" class="anchor" title="Link to CheckReuse">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (p *proxyRepo) CheckReuse(ctx context.Context, old *codehost.Origin) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Download" data-name="Download">
@@ -1693,7 +1693,7 @@ local zip cache and returns the name of the zip file.</p>
                   <a href="#GoMod" class="anchor" title="Link to GoMod">#</a>
                </h3>
                
-               <pre><code class="language-go">func (r *codeRepo) GoMod(ctx context.Context, version string) (data []byte, err error)</code></pre>
+               <pre><code class="language-go">func (l *loggingRepo) GoMod(ctx context.Context, version string) ([]byte, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="GoMod" data-name="GoMod">
@@ -1704,7 +1704,33 @@ local zip cache and returns the name of the zip file.</p>
                   <a href="#GoMod" class="anchor" title="Link to GoMod">#</a>
                </h3>
                
-               <pre><code class="language-go">func (r errRepo) GoMod(ctx context.Context, version string) ([]byte, error)</code></pre>
+               <pre><code class="language-go">func (r *codeRepo) GoMod(ctx context.Context, version string) (data []byte, err error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="GoMod" data-name="GoMod">
+               <h3>
+                  GoMod 
+                  <span class="badge">function</span>
+                  
+                  <a href="#GoMod" class="anchor" title="Link to GoMod">#</a>
+               </h3>
+               
+               <p>GoMod is like Lookup(ctx, path).GoMod(rev) but avoids the
+repository path resolution in Lookup if the result is
+already cached on local disk.</p>
+               
+               <pre><code class="language-go">func GoMod(ctx context.Context, path string, rev string) ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="GoMod" data-name="GoMod">
+               <h3>
+                  GoMod 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#GoMod" class="anchor" title="Link to GoMod">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (r *cachingRepo) GoMod(ctx context.Context, version string) ([]byte, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="GoMod" data-name="GoMod">
@@ -1737,33 +1763,7 @@ local zip cache and returns the name of the zip file.</p>
                   <a href="#GoMod" class="anchor" title="Link to GoMod">#</a>
                </h3>
                
-               <pre><code class="language-go">func (r *cachingRepo) GoMod(ctx context.Context, version string) ([]byte, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="GoMod" data-name="GoMod">
-               <h3>
-                  GoMod 
-                  <span class="badge">function</span>
-                  
-                  <a href="#GoMod" class="anchor" title="Link to GoMod">#</a>
-               </h3>
-               
-               <p>GoMod is like Lookup(ctx, path).GoMod(rev) but avoids the
-repository path resolution in Lookup if the result is
-already cached on local disk.</p>
-               
-               <pre><code class="language-go">func GoMod(ctx context.Context, path string, rev string) ([]byte, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="GoMod" data-name="GoMod">
-               <h3>
-                  GoMod 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#GoMod" class="anchor" title="Link to GoMod">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (l *loggingRepo) GoMod(ctx context.Context, version string) ([]byte, error)</code></pre>
+               <pre><code class="language-go">func (r errRepo) GoMod(ctx context.Context, version string) ([]byte, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="GoModFile" data-name="GoModFile">
@@ -1865,7 +1865,7 @@ containing the cached information.</p>
                   <a href="#Latest" class="anchor" title="Link to Latest">#</a>
                </h3>
                
-               <pre><code class="language-go">func (l *loggingRepo) Latest(ctx context.Context) (*RevInfo, error)</code></pre>
+               <pre><code class="language-go">func (r *toolchainRepo) Latest(ctx context.Context) (*RevInfo, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Latest" data-name="Latest">
@@ -1920,7 +1920,7 @@ containing the cached information.</p>
                   <a href="#Latest" class="anchor" title="Link to Latest">#</a>
                </h3>
                
-               <pre><code class="language-go">func (r *toolchainRepo) Latest(ctx context.Context) (*RevInfo, error)</code></pre>
+               <pre><code class="language-go">func (l *loggingRepo) Latest(ctx context.Context) (*RevInfo, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="LegacyGoMod" data-name="LegacyGoMod">
@@ -1997,7 +1997,7 @@ has any defined versions.</p>
                   <a href="#Lstat" class="anchor" title="Link to Lstat">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f dataFile) Lstat() (fs.FileInfo, error)</code></pre>
+               <pre><code class="language-go">func (f zipFile) Lstat() (fs.FileInfo, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Lstat" data-name="Lstat">
@@ -2008,7 +2008,7 @@ has any defined versions.</p>
                   <a href="#Lstat" class="anchor" title="Link to Lstat">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f zipFile) Lstat() (fs.FileInfo, error)</code></pre>
+               <pre><code class="language-go">func (f dataFile) Lstat() (fs.FileInfo, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ModTime" data-name="ModTime">
@@ -2041,18 +2041,7 @@ has any defined versions.</p>
                   <a href="#ModulePath" class="anchor" title="Link to ModulePath">#</a>
                </h3>
                
-               <pre><code class="language-go">func (r *codeRepo) ModulePath() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="ModulePath" data-name="ModulePath">
-               <h3>
-                  ModulePath 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#ModulePath" class="anchor" title="Link to ModulePath">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (r errRepo) ModulePath() string</code></pre>
+               <pre><code class="language-go">func (r *cachingRepo) ModulePath() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ModulePath" data-name="ModulePath">
@@ -2085,7 +2074,7 @@ has any defined versions.</p>
                   <a href="#ModulePath" class="anchor" title="Link to ModulePath">#</a>
                </h3>
                
-               <pre><code class="language-go">func (r *cachingRepo) ModulePath() string</code></pre>
+               <pre><code class="language-go">func (r errRepo) ModulePath() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ModulePath" data-name="ModulePath">
@@ -2097,6 +2086,17 @@ has any defined versions.</p>
                </h3>
                
                <pre><code class="language-go">func (p *proxyRepo) ModulePath() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ModulePath" data-name="ModulePath">
+               <h3>
+                  ModulePath 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#ModulePath" class="anchor" title="Link to ModulePath">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (r *codeRepo) ModulePath() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Name" data-name="Name">
@@ -2118,7 +2118,7 @@ has any defined versions.</p>
                   <a href="#Open" class="anchor" title="Link to Open">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f zipFile) Open() (io.ReadCloser, error)</code></pre>
+               <pre><code class="language-go">func (f dataFile) Open() (io.ReadCloser, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Open" data-name="Open">
@@ -2129,7 +2129,7 @@ has any defined versions.</p>
                   <a href="#Open" class="anchor" title="Link to Open">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f dataFile) Open() (io.ReadCloser, error)</code></pre>
+               <pre><code class="language-go">func (f zipFile) Open() (io.ReadCloser, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Path" data-name="Path">
@@ -2286,17 +2286,6 @@ If err is nil, the caller MUST eventually call the unlock function.</p>
                   <a href="#Stat" class="anchor" title="Link to Stat">#</a>
                </h3>
                
-               <pre><code class="language-go">func (r *codeRepo) Stat(ctx context.Context, rev string) (*RevInfo, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Stat" data-name="Stat">
-               <h3>
-                  Stat 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Stat" class="anchor" title="Link to Stat">#</a>
-               </h3>
-               
                <pre><code class="language-go">func (r *toolchainRepo) Stat(ctx context.Context, rev string) (*RevInfo, error)</code></pre>
             </article>
             
@@ -2330,6 +2319,17 @@ If err is nil, the caller MUST eventually call the unlock function.</p>
                   <a href="#Stat" class="anchor" title="Link to Stat">#</a>
                </h3>
                
+               <pre><code class="language-go">func (r *cachingRepo) Stat(ctx context.Context, rev string) (*RevInfo, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Stat" data-name="Stat">
+               <h3>
+                  Stat 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Stat" class="anchor" title="Link to Stat">#</a>
+               </h3>
+               
                <pre><code class="language-go">func (l *loggingRepo) Stat(ctx context.Context, rev string) (*RevInfo, error)</code></pre>
             </article>
             
@@ -2341,7 +2341,7 @@ If err is nil, the caller MUST eventually call the unlock function.</p>
                   <a href="#Stat" class="anchor" title="Link to Stat">#</a>
                </h3>
                
-               <pre><code class="language-go">func (r *cachingRepo) Stat(ctx context.Context, rev string) (*RevInfo, error)</code></pre>
+               <pre><code class="language-go">func (r *codeRepo) Stat(ctx context.Context, rev string) (*RevInfo, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -2464,7 +2464,7 @@ which ship in the Go distribution itself.</p>
                   <a href="#Versions" class="anchor" title="Link to Versions">#</a>
                </h3>
                
-               <pre><code class="language-go">func (r *toolchainRepo) Versions(ctx context.Context, prefix string) (*Versions, error)</code></pre>
+               <pre><code class="language-go">func (r errRepo) Versions(ctx context.Context, prefix string) (*Versions, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Versions" data-name="Versions">
@@ -2475,7 +2475,7 @@ which ship in the Go distribution itself.</p>
                   <a href="#Versions" class="anchor" title="Link to Versions">#</a>
                </h3>
                
-               <pre><code class="language-go">func (r errRepo) Versions(ctx context.Context, prefix string) (*Versions, error)</code></pre>
+               <pre><code class="language-go">func (l *loggingRepo) Versions(ctx context.Context, prefix string) (*Versions, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Versions" data-name="Versions">
@@ -2508,7 +2508,7 @@ which ship in the Go distribution itself.</p>
                   <a href="#Versions" class="anchor" title="Link to Versions">#</a>
                </h3>
                
-               <pre><code class="language-go">func (l *loggingRepo) Versions(ctx context.Context, prefix string) (*Versions, error)</code></pre>
+               <pre><code class="language-go">func (r *toolchainRepo) Versions(ctx context.Context, prefix string) (*Versions, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Versions" data-name="Versions">
@@ -2573,28 +2573,6 @@ have been marked for deletion with TrimGoSum.</p>
                   <a href="#Zip" class="anchor" title="Link to Zip">#</a>
                </h3>
                
-               <pre><code class="language-go">func (r *codeRepo) Zip(ctx context.Context, dst io.Writer, version string) error</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Zip" data-name="Zip">
-               <h3>
-                  Zip 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Zip" class="anchor" title="Link to Zip">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (l *loggingRepo) Zip(ctx context.Context, dst io.Writer, version string) error</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Zip" data-name="Zip">
-               <h3>
-                  Zip 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Zip" class="anchor" title="Link to Zip">#</a>
-               </h3>
-               
                <pre><code class="language-go">func (r *cachingRepo) Zip(ctx context.Context, dst io.Writer, version string) error</code></pre>
             </article>
             
@@ -2617,7 +2595,18 @@ have been marked for deletion with TrimGoSum.</p>
                   <a href="#Zip" class="anchor" title="Link to Zip">#</a>
                </h3>
                
-               <pre><code class="language-go">func (r errRepo) Zip(ctx context.Context, dst io.Writer, version string) error</code></pre>
+               <pre><code class="language-go">func (r *codeRepo) Zip(ctx context.Context, dst io.Writer, version string) error</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Zip" data-name="Zip">
+               <h3>
+                  Zip 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Zip" class="anchor" title="Link to Zip">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (l *loggingRepo) Zip(ctx context.Context, dst io.Writer, version string) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Zip" data-name="Zip">
@@ -2629,6 +2618,17 @@ have been marked for deletion with TrimGoSum.</p>
                </h3>
                
                <pre><code class="language-go">func (r *toolchainRepo) Zip(ctx context.Context, dst io.Writer, version string) error</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Zip" data-name="Zip">
+               <h3>
+                  Zip 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Zip" class="anchor" title="Link to Zip">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (r errRepo) Zip(ctx context.Context, dst io.Writer, version string) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="addModSumLocked" data-name="addModSumLocked">
@@ -3528,6 +3528,20 @@ The file name must have been returned by a previous call to readDiskStat.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function deduplicateImports() {
+            const importsSection = document.querySelector('#imports-section code');
+            if (!importsSection) return;
+            
+            const lines = importsSection.textContent.split('\n');
+            var uniqueLines = [...new Set(lines.filter(line => line.trim()))];
+            uniqueLines.sort();
+            importsSection.textContent = uniqueLines.join('\n');
+            
+            if (window.Prism) {
+               Prism.highlightElement(importsSection);
+            }
+         }
+
          function updateSectionVisibility() {
             document.querySelectorAll("section").forEach(section => {
                const visibleArticles = section.querySelectorAll("article:not(.hidden)");
@@ -3741,7 +3755,9 @@ The file name must have been returned by a previous call to readDiskStat.</p>
             if (searchInput) {
                searchInput.addEventListener("input", () => {
                   const query = searchInput.value.trim().toLowerCase();
-
+                  const allMatches = [];
+                  const sectionOrder = ['imports', 'globals', 'types', 'interfaces', 'structs', 'functions'];
+                  
                   document.querySelectorAll("article").forEach((el) => {
                      const name = el.dataset.name;
                      if (!name) return;
@@ -3753,21 +3769,97 @@ The file name must have been returned by a previous call to readDiskStat.</p>
                            el.textContent.toLowerCase().includes(query));
 
                      if (matches) {
-                        const isPrivateEl =
-                           el.classList.contains("private");
-                        const shouldShowPrivate =
-                           getPrivateToggleState(el);
+                        const isPrivateEl = el.classList.contains("private");
+                        const shouldShowPrivate = getPrivateToggleState(el);
 
                         if (!isPrivateEl || shouldShowPrivate) {
                            el.classList.remove("hidden");
+                           
+                           const section = el.closest('section');
+                           if (section) {
+                              const sectionId = section.id;
+                              const sectionIndex = sectionOrder.indexOf(sectionId);
+                              const isExactMatch = name.toLowerCase() === query;
+                              
+                              allMatches.push({
+                                 element: el,
+                                 name: name,
+                                 isExact: isExactMatch,
+                                 sectionId: sectionId,
+                                 sectionIndex: sectionIndex >= 0 ? sectionIndex : 999
+                              });
+                           }
                         }
                      } else {
                         el.classList.add("hidden");
                      }
-                     updateSectionVisibility();
                   });
 
-                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                  allMatches.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     if (a.sectionIndex !== b.sectionIndex) return a.sectionIndex - b.sectionIndex;
+                     return a.name.localeCompare(b.name);
+                  });
+
+                  const sectionMatches = {};
+                  allMatches.forEach(match => {
+                     if (!sectionMatches[match.sectionId]) {
+                        sectionMatches[match.sectionId] = [];
+                     }
+                     sectionMatches[match.sectionId].push(match);
+                  });
+                  Object.keys(sectionMatches).forEach(sectionId => {
+                     const section = document.getElementById(sectionId);
+                     if (!section) return;
+                     
+                     sectionMatches[sectionId].forEach(match => {
+                        section.appendChild(match.element);
+                     });
+                  });
+                  if (query === "") {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     
+                     let insertAfter = firstDivider;
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (section) {
+                           insertAfter.insertAdjacentElement('afterend', section);
+                           insertAfter = section;
+                        }
+                     });
+                  } else {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     const sectionsWithExactMatches = [];
+                     const sectionsWithoutExactMatches = [];
+                     
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (!section || !sectionMatches[sectionId]) return;
+                        
+                        const hasExactMatch = sectionMatches[sectionId].some(match => match.isExact);
+                        if (hasExactMatch) {
+                           sectionsWithExactMatches.push(section);
+                        } else {
+                           sectionsWithoutExactMatches.push(section);
+                        }
+                     });
+                     let insertAfter = firstDivider;
+                     [...sectionsWithExactMatches, ...sectionsWithoutExactMatches].forEach(section => {
+                        insertAfter.insertAdjacentElement('afterend', section);
+                        insertAfter = section;
+                     });
+                  }
+
+                  updateSectionVisibility();
+                  const symbolItems = Array.from(document.querySelectorAll('#symbolIndex li'));
+                  const matchingSymbols = [];
+                  
+                  symbolItems.forEach(li => {
                      const link = li.querySelector('a');
                      if (link) {
                         const symbolName = link.textContent.toLowerCase();
@@ -3781,11 +3873,27 @@ The file name must have been returned by a previous call to readDiskStat.</p>
                            
                            if (!isPrivateSymbol || shouldShowPrivate) {
                               li.style.display = '';
+                              const isExactMatch = symbolName === query;
+                              matchingSymbols.push({
+                                 element: li,
+                                 name: symbolName,
+                                 isExact: isExactMatch
+                              });
                            }
                         } else {
                            li.style.display = 'none';
                         }
                      }
+                  });
+                  matchingSymbols.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     return a.name.localeCompare(b.name);
+                  });
+                  
+                  const symbolIndex = document.getElementById('symbolIndex');
+                  matchingSymbols.forEach(symbol => {
+                     symbolIndex.appendChild(symbol.element);
                   });
                });
             }
@@ -3808,6 +3916,7 @@ The file name must have been returned by a previous call to readDiskStat.</p>
             }
 
             buildSymbolIndex();
+            deduplicateImports();
 
             document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
                anchor.addEventListener("click", function (e) {

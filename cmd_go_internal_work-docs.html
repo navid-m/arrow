@@ -29,7 +29,7 @@
          }
 
          .sidebar {
-            width: 12%;
+            width: 14%;
             background: rgba(59, 56, 56, 0.15);
             padding: 1.5rem;
             box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
@@ -604,26 +604,72 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"bufio"
-"bytes"
+               <pre><code class="language-go">"context"
+"errors"
+"flag"
 "fmt"
-"internal/buildcfg"
-"internal/platform"
-"io"
-"log"
+"go/build"
 "os"
 "path/filepath"
 "runtime"
+"strconv"
 "strings"
 "cmd/go/internal/base"
 "cmd/go/internal/cfg"
-"cmd/go/internal/fips140"
+"cmd/go/internal/fsys"
+"cmd/go/internal/load"
+"cmd/go/internal/modload"
+"cmd/go/internal/search"
+"cmd/go/internal/trace"
+"cmd/internal/pathcache"
+"cmd/go/internal/base"
+"cmd/go/internal/cfg"
+"cmd/go/internal/str"
+"cmd/internal/cov/covcmd"
+"context"
+"encoding/json"
+"fmt"
+"internal/coverage"
+"io"
+"os"
+"path/filepath"
+"bytes"
+"cmd/internal/cov/covcmd"
+"cmd/internal/pathcache"
+"context"
+"crypto/sha256"
+"encoding/json"
+"errors"
+"fmt"
+"go/token"
+"internal/lazyregexp"
+"io"
+"io/fs"
+"log"
+"math/rand"
+"os"
+"os/exec"
+"path/filepath"
+"regexp"
+"runtime"
+"slices"
+"sort"
+"strconv"
+"strings"
+"sync"
+"time"
+"cmd/go/internal/base"
+"cmd/go/internal/cache"
+"cmd/go/internal/cfg"
 "cmd/go/internal/fsys"
 "cmd/go/internal/gover"
 "cmd/go/internal/load"
+"cmd/go/internal/modload"
 "cmd/go/internal/str"
+"cmd/go/internal/trace"
+"cmd/internal/buildid"
 "cmd/internal/quoted"
-"crypto/sha1"
+"cmd/internal/sys"
 "bytes"
 "fmt"
 "os"
@@ -665,6 +711,56 @@
 "strings"
 "sync"
 "time"
+"bytes"
+"fmt"
+"os"
+"os/exec"
+"strings"
+"sync"
+"cmd/go/internal/base"
+"cmd/go/internal/cache"
+"cmd/go/internal/cfg"
+"cmd/go/internal/fsys"
+"cmd/go/internal/str"
+"cmd/internal/buildid"
+"cmd/internal/pathcache"
+"cmd/internal/quoted"
+"cmd/internal/telemetry/counter"
+"bufio"
+"bytes"
+"fmt"
+"internal/buildcfg"
+"internal/platform"
+"io"
+"log"
+"os"
+"path/filepath"
+"runtime"
+"strings"
+"cmd/go/internal/base"
+"cmd/go/internal/cfg"
+"cmd/go/internal/fips140"
+"cmd/go/internal/fsys"
+"cmd/go/internal/gover"
+"cmd/go/internal/load"
+"cmd/go/internal/str"
+"cmd/internal/quoted"
+"crypto/sha1"
+"bytes"
+"cmd/go/internal/base"
+"cmd/go/internal/cfg"
+"cmd/go/internal/fsys"
+"cmd/go/internal/modload"
+"cmd/internal/quoted"
+"fmt"
+"internal/platform"
+"os"
+"os/exec"
+"path/filepath"
+"regexp"
+"runtime"
+"strconv"
+"sync"
 "bufio"
 "bytes"
 "cmd/internal/cov/covcmd"
@@ -687,102 +783,6 @@
 "cmd/go/internal/trace"
 "cmd/internal/buildid"
 "cmd/internal/robustio"
-"bytes"
-"fmt"
-"os"
-"os/exec"
-"strings"
-"sync"
-"cmd/go/internal/base"
-"cmd/go/internal/cache"
-"cmd/go/internal/cfg"
-"cmd/go/internal/fsys"
-"cmd/go/internal/str"
-"cmd/internal/buildid"
-"cmd/internal/pathcache"
-"cmd/internal/quoted"
-"cmd/internal/telemetry/counter"
-"cmd/go/internal/base"
-"cmd/go/internal/cfg"
-"cmd/go/internal/str"
-"cmd/internal/cov/covcmd"
-"context"
-"encoding/json"
-"fmt"
-"internal/coverage"
-"io"
-"os"
-"path/filepath"
-"bytes"
-"cmd/go/internal/base"
-"cmd/go/internal/cfg"
-"cmd/go/internal/fsys"
-"cmd/go/internal/modload"
-"cmd/internal/quoted"
-"fmt"
-"internal/platform"
-"os"
-"os/exec"
-"path/filepath"
-"regexp"
-"runtime"
-"strconv"
-"sync"
-"context"
-"errors"
-"flag"
-"fmt"
-"go/build"
-"os"
-"path/filepath"
-"runtime"
-"strconv"
-"strings"
-"cmd/go/internal/base"
-"cmd/go/internal/cfg"
-"cmd/go/internal/fsys"
-"cmd/go/internal/load"
-"cmd/go/internal/modload"
-"cmd/go/internal/search"
-"cmd/go/internal/trace"
-"cmd/internal/pathcache"
-"bytes"
-"cmd/internal/cov/covcmd"
-"cmd/internal/pathcache"
-"context"
-"crypto/sha256"
-"encoding/json"
-"errors"
-"fmt"
-"go/token"
-"internal/lazyregexp"
-"io"
-"io/fs"
-"log"
-"math/rand"
-"os"
-"os/exec"
-"path/filepath"
-"regexp"
-"runtime"
-"slices"
-"sort"
-"strconv"
-"strings"
-"sync"
-"time"
-"cmd/go/internal/base"
-"cmd/go/internal/cache"
-"cmd/go/internal/cfg"
-"cmd/go/internal/fsys"
-"cmd/go/internal/gover"
-"cmd/go/internal/load"
-"cmd/go/internal/modload"
-"cmd/go/internal/str"
-"cmd/go/internal/trace"
-"cmd/internal/buildid"
-"cmd/internal/quoted"
-"cmd/internal/sys"
 </code></pre>
             </article>
          </section>
@@ -2076,7 +2076,7 @@ SucceedOnTypecheckFailure bool
                   <a href="#Act" class="anchor" title="Link to Act">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f ActorFunc) Act(b *Builder, ctx context.Context, a *Action) error</code></pre>
+               <pre><code class="language-go">func (ba *buildActor) Act(b *Builder, ctx context.Context, a *Action) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Act" data-name="Act">
@@ -2098,7 +2098,7 @@ SucceedOnTypecheckFailure bool
                   <a href="#Act" class="anchor" title="Link to Act">#</a>
                </h3>
                
-               <pre><code class="language-go">func (ba *buildActor) Act(b *Builder, ctx context.Context, a *Action) error</code></pre>
+               <pre><code class="language-go">func (f ActorFunc) Act(b *Builder, ctx context.Context, a *Action) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="AddBuildFlags" data-name="AddBuildFlags">
@@ -2630,7 +2630,7 @@ an error, and returns the first error.</p>
                   <a href="#Set" class="anchor" title="Link to Set">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f coverFlag) Set(value string) error</code></pre>
+               <pre><code class="language-go">func (f *buildvcsFlag) Set(s string) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Set" data-name="Set">
@@ -2641,18 +2641,7 @@ an error, and returns the first error.</p>
                   <a href="#Set" class="anchor" title="Link to Set">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f *coverModeFlag) Set(value string) error</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Set" data-name="Set">
-               <h3>
-                  Set 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Set" class="anchor" title="Link to Set">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (f stringFlag) Set(value string) error</code></pre>
+               <pre><code class="language-go">func (v *tagsFlag) Set(s string) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Set" data-name="Set">
@@ -2674,7 +2663,7 @@ an error, and returns the first error.</p>
                   <a href="#Set" class="anchor" title="Link to Set">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f *buildvcsFlag) Set(s string) error</code></pre>
+               <pre><code class="language-go">func (f stringFlag) Set(value string) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Set" data-name="Set">
@@ -2685,7 +2674,18 @@ an error, and returns the first error.</p>
                   <a href="#Set" class="anchor" title="Link to Set">#</a>
                </h3>
                
-               <pre><code class="language-go">func (v *tagsFlag) Set(s string) error</code></pre>
+               <pre><code class="language-go">func (f *coverModeFlag) Set(value string) error</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Set" data-name="Set">
+               <h3>
+                  Set 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Set" class="anchor" title="Link to Set">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (f coverFlag) Set(value string) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Shell" data-name="Shell">
@@ -2738,17 +2738,6 @@ prints a "cd" command to switch to dir and updates the script directory.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f commaListFlag) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
                <pre><code class="language-go">func (v *tagsFlag) String() string</code></pre>
             </article>
             
@@ -2771,6 +2760,17 @@ prints a "cd" command to switch to dir and updates the script directory.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
+               <pre><code class="language-go">func (f coverFlag) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
                <pre><code class="language-go">func (f *coverModeFlag) String() string</code></pre>
             </article>
             
@@ -2782,7 +2782,7 @@ prints a "cd" command to switch to dir and updates the script directory.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code class="language-go">func (f coverFlag) String() string</code></pre>
+               <pre><code class="language-go">func (f commaListFlag) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -3030,6 +3030,17 @@ v is known to be of the form "1.23".</p>
                   <a href="#asm" class="anchor" title="Link to asm">#</a>
                </h3>
                
+               <pre><code class="language-go">func (tools gccgoToolchain) asm(b *Builder, a *Action, sfiles []string) ([]string, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="asm" data-name="asm">
+               <h3>
+                  asm 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#asm" class="anchor" title="Link to asm">#</a>
+               </h3>
+               
                <pre><code class="language-go">func (noToolchain) asm(b *Builder, a *Action, sfiles []string) ([]string, error)</code></pre>
             </article>
             
@@ -3042,17 +3053,6 @@ v is known to be of the form "1.23".</p>
                </h3>
                
                <pre><code class="language-go">func (gcToolchain) asm(b *Builder, a *Action, sfiles []string) ([]string, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="asm" data-name="asm">
-               <h3>
-                  asm 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#asm" class="anchor" title="Link to asm">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (tools gccgoToolchain) asm(b *Builder, a *Action, sfiles []string) ([]string, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="asmArgs" data-name="asmArgs">
@@ -3267,7 +3267,7 @@ to make the caching in linkShared less awkward?</p>
                   <a href="#cc" class="anchor" title="Link to cc">#</a>
                </h3>
                
-               <pre><code class="language-go">func (noToolchain) cc(b *Builder, a *Action, ofile string, cfile string) error</code></pre>
+               <pre><code class="language-go">func (tools gccgoToolchain) cc(b *Builder, a *Action, ofile string, cfile string) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="cc" data-name="cc">
@@ -3278,7 +3278,7 @@ to make the caching in linkShared less awkward?</p>
                   <a href="#cc" class="anchor" title="Link to cc">#</a>
                </h3>
                
-               <pre><code class="language-go">func (tools gccgoToolchain) cc(b *Builder, a *Action, ofile string, cfile string) error</code></pre>
+               <pre><code class="language-go">func (noToolchain) cc(b *Builder, a *Action, ofile string, cfile string) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ccExe" data-name="ccExe">
@@ -3744,7 +3744,7 @@ but it generates random inputs without guidance, so it's much less effective.</p
                   <a href="#gc" class="anchor" title="Link to gc">#</a>
                </h3>
                
-               <pre><code class="language-go">func (gcToolchain) gc(b *Builder, a *Action, archive string, importcfg []byte, embedcfg []byte, symabis string, asmhdr bool, pgoProfile string, gofiles []string) (ofile string, output []byte, err error)</code></pre>
+               <pre><code class="language-go">func (noToolchain) gc(b *Builder, a *Action, archive string, importcfg []byte, embedcfg []byte, symabis string, asmhdr bool, pgoProfile string, gofiles []string) (ofile string, out []byte, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="gc" data-name="gc">
@@ -3755,7 +3755,7 @@ but it generates random inputs without guidance, so it's much less effective.</p
                   <a href="#gc" class="anchor" title="Link to gc">#</a>
                </h3>
                
-               <pre><code class="language-go">func (noToolchain) gc(b *Builder, a *Action, archive string, importcfg []byte, embedcfg []byte, symabis string, asmhdr bool, pgoProfile string, gofiles []string) (ofile string, out []byte, err error)</code></pre>
+               <pre><code class="language-go">func (gcToolchain) gc(b *Builder, a *Action, archive string, importcfg []byte, embedcfg []byte, symabis string, asmhdr bool, pgoProfile string, gofiles []string) (ofile string, output []byte, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="gc" data-name="gc">
@@ -4127,7 +4127,7 @@ TODO: See issue 5279. The printing of commands needs a complete redo.</p>
                   <a href="#ld" class="anchor" title="Link to ld">#</a>
                </h3>
                
-               <pre><code class="language-go">func (noToolchain) ld(b *Builder, root *Action, targetPath string, importcfg string, mainpkg string) error</code></pre>
+               <pre><code class="language-go">func (tools gccgoToolchain) ld(b *Builder, root *Action, targetPath string, importcfg string, mainpkg string) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ld" data-name="ld">
@@ -4138,7 +4138,7 @@ TODO: See issue 5279. The printing of commands needs a complete redo.</p>
                   <a href="#ld" class="anchor" title="Link to ld">#</a>
                </h3>
                
-               <pre><code class="language-go">func (tools gccgoToolchain) ld(b *Builder, root *Action, targetPath string, importcfg string, mainpkg string) error</code></pre>
+               <pre><code class="language-go">func (noToolchain) ld(b *Builder, root *Action, targetPath string, importcfg string, mainpkg string) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ld" data-name="ld">
@@ -4171,7 +4171,7 @@ TODO: See issue 5279. The printing of commands needs a complete redo.</p>
                   <a href="#ldShared" class="anchor" title="Link to ldShared">#</a>
                </h3>
                
-               <pre><code class="language-go">func (tools gccgoToolchain) ldShared(b *Builder, root *Action, toplevelactions []*Action, targetPath string, importcfg string, allactions []*Action) error</code></pre>
+               <pre><code class="language-go">func (gcToolchain) ldShared(b *Builder, root *Action, toplevelactions []*Action, targetPath string, importcfg string, allactions []*Action) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ldShared" data-name="ldShared">
@@ -4182,7 +4182,7 @@ TODO: See issue 5279. The printing of commands needs a complete redo.</p>
                   <a href="#ldShared" class="anchor" title="Link to ldShared">#</a>
                </h3>
                
-               <pre><code class="language-go">func (gcToolchain) ldShared(b *Builder, root *Action, toplevelactions []*Action, targetPath string, importcfg string, allactions []*Action) error</code></pre>
+               <pre><code class="language-go">func (tools gccgoToolchain) ldShared(b *Builder, root *Action, toplevelactions []*Action, targetPath string, importcfg string, allactions []*Action) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="libname" data-name="libname">
@@ -4219,7 +4219,10 @@ Name parts are joined with ','.</p>
                   <a href="#link" class="anchor" title="Link to link">#</a>
                </h3>
                
-               <pre><code class="language-go">func (tools gccgoToolchain) link(b *Builder, root *Action, out string, importcfg string, allactions []*Action, buildmode string, desc string) error</code></pre>
+               <p>link is the action for linking a single command.
+Note that any new influence on this logic must be reported in b.linkActionID above as well.</p>
+               
+               <pre><code class="language-go">func (b *Builder) link(ctx context.Context, a *Action) (err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="link" data-name="link">
@@ -4230,10 +4233,7 @@ Name parts are joined with ','.</p>
                   <a href="#link" class="anchor" title="Link to link">#</a>
                </h3>
                
-               <p>link is the action for linking a single command.
-Note that any new influence on this logic must be reported in b.linkActionID above as well.</p>
-               
-               <pre><code class="language-go">func (b *Builder) link(ctx context.Context, a *Action) (err error)</code></pre>
+               <pre><code class="language-go">func (tools gccgoToolchain) link(b *Builder, root *Action, out string, importcfg string, allactions []*Action, buildmode string, desc string) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="linkActionID" data-name="linkActionID">
@@ -4295,17 +4295,6 @@ and then linkSharedAction reads that library to find out the package list.</p>
                   <a href="#linker" class="anchor" title="Link to linker">#</a>
                </h3>
                
-               <pre><code class="language-go">func (noToolchain) linker() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="linker" data-name="linker">
-               <h3>
-                  linker 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#linker" class="anchor" title="Link to linker">#</a>
-               </h3>
-               
                <pre><code class="language-go">func (gccgoToolchain) linker() string</code></pre>
             </article>
             
@@ -4318,6 +4307,17 @@ and then linkSharedAction reads that library to find out the package list.</p>
                </h3>
                
                <pre><code class="language-go">func (gcToolchain) linker() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="linker" data-name="linker">
+               <h3>
+                  linker 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#linker" class="anchor" title="Link to linker">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (noToolchain) linker() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="loadCachedCgoHdr" data-name="loadCachedCgoHdr">
@@ -4508,7 +4508,7 @@ covMetaFileName field if 'genCoverMeta' flag is set.</p>
                   <a href="#pack" class="anchor" title="Link to pack">#</a>
                </h3>
                
-               <pre><code class="language-go">func (noToolchain) pack(b *Builder, a *Action, afile string, ofiles []string) error</code></pre>
+               <pre><code class="language-go">func (gcToolchain) pack(b *Builder, a *Action, afile string, ofiles []string) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="pack" data-name="pack">
@@ -4530,7 +4530,7 @@ covMetaFileName field if 'genCoverMeta' flag is set.</p>
                   <a href="#pack" class="anchor" title="Link to pack">#</a>
                </h3>
                
-               <pre><code class="language-go">func (gcToolchain) pack(b *Builder, a *Action, afile string, ofiles []string) error</code></pre>
+               <pre><code class="language-go">func (noToolchain) pack(b *Builder, a *Action, afile string, ofiles []string) error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="packInternal" data-name="packInternal">
@@ -4979,7 +4979,7 @@ of swig >= 2.0.9.</p>
                   <a href="#symabis" class="anchor" title="Link to symabis">#</a>
                </h3>
                
-               <pre><code class="language-go">func (noToolchain) symabis(b *Builder, a *Action, sfiles []string) (string, error)</code></pre>
+               <pre><code class="language-go">func (gccgoToolchain) symabis(b *Builder, a *Action, sfiles []string) (string, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="symabis" data-name="symabis">
@@ -4990,7 +4990,7 @@ of swig >= 2.0.9.</p>
                   <a href="#symabis" class="anchor" title="Link to symabis">#</a>
                </h3>
                
-               <pre><code class="language-go">func (gccgoToolchain) symabis(b *Builder, a *Action, sfiles []string) (string, error)</code></pre>
+               <pre><code class="language-go">func (noToolchain) symabis(b *Builder, a *Action, sfiles []string) (string, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="toolID" data-name="toolID">
@@ -5183,6 +5183,20 @@ succeeds. The flushOutput call must happen after updateBuildID.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function deduplicateImports() {
+            const importsSection = document.querySelector('#imports-section code');
+            if (!importsSection) return;
+            
+            const lines = importsSection.textContent.split('\n');
+            var uniqueLines = [...new Set(lines.filter(line => line.trim()))];
+            uniqueLines.sort();
+            importsSection.textContent = uniqueLines.join('\n');
+            
+            if (window.Prism) {
+               Prism.highlightElement(importsSection);
+            }
+         }
+
          function updateSectionVisibility() {
             document.querySelectorAll("section").forEach(section => {
                const visibleArticles = section.querySelectorAll("article:not(.hidden)");
@@ -5396,7 +5410,9 @@ succeeds. The flushOutput call must happen after updateBuildID.</p>
             if (searchInput) {
                searchInput.addEventListener("input", () => {
                   const query = searchInput.value.trim().toLowerCase();
-
+                  const allMatches = [];
+                  const sectionOrder = ['imports', 'globals', 'types', 'interfaces', 'structs', 'functions'];
+                  
                   document.querySelectorAll("article").forEach((el) => {
                      const name = el.dataset.name;
                      if (!name) return;
@@ -5408,21 +5424,97 @@ succeeds. The flushOutput call must happen after updateBuildID.</p>
                            el.textContent.toLowerCase().includes(query));
 
                      if (matches) {
-                        const isPrivateEl =
-                           el.classList.contains("private");
-                        const shouldShowPrivate =
-                           getPrivateToggleState(el);
+                        const isPrivateEl = el.classList.contains("private");
+                        const shouldShowPrivate = getPrivateToggleState(el);
 
                         if (!isPrivateEl || shouldShowPrivate) {
                            el.classList.remove("hidden");
+                           
+                           const section = el.closest('section');
+                           if (section) {
+                              const sectionId = section.id;
+                              const sectionIndex = sectionOrder.indexOf(sectionId);
+                              const isExactMatch = name.toLowerCase() === query;
+                              
+                              allMatches.push({
+                                 element: el,
+                                 name: name,
+                                 isExact: isExactMatch,
+                                 sectionId: sectionId,
+                                 sectionIndex: sectionIndex >= 0 ? sectionIndex : 999
+                              });
+                           }
                         }
                      } else {
                         el.classList.add("hidden");
                      }
-                     updateSectionVisibility();
                   });
 
-                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                  allMatches.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     if (a.sectionIndex !== b.sectionIndex) return a.sectionIndex - b.sectionIndex;
+                     return a.name.localeCompare(b.name);
+                  });
+
+                  const sectionMatches = {};
+                  allMatches.forEach(match => {
+                     if (!sectionMatches[match.sectionId]) {
+                        sectionMatches[match.sectionId] = [];
+                     }
+                     sectionMatches[match.sectionId].push(match);
+                  });
+                  Object.keys(sectionMatches).forEach(sectionId => {
+                     const section = document.getElementById(sectionId);
+                     if (!section) return;
+                     
+                     sectionMatches[sectionId].forEach(match => {
+                        section.appendChild(match.element);
+                     });
+                  });
+                  if (query === "") {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     
+                     let insertAfter = firstDivider;
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (section) {
+                           insertAfter.insertAdjacentElement('afterend', section);
+                           insertAfter = section;
+                        }
+                     });
+                  } else {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     const sectionsWithExactMatches = [];
+                     const sectionsWithoutExactMatches = [];
+                     
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (!section || !sectionMatches[sectionId]) return;
+                        
+                        const hasExactMatch = sectionMatches[sectionId].some(match => match.isExact);
+                        if (hasExactMatch) {
+                           sectionsWithExactMatches.push(section);
+                        } else {
+                           sectionsWithoutExactMatches.push(section);
+                        }
+                     });
+                     let insertAfter = firstDivider;
+                     [...sectionsWithExactMatches, ...sectionsWithoutExactMatches].forEach(section => {
+                        insertAfter.insertAdjacentElement('afterend', section);
+                        insertAfter = section;
+                     });
+                  }
+
+                  updateSectionVisibility();
+                  const symbolItems = Array.from(document.querySelectorAll('#symbolIndex li'));
+                  const matchingSymbols = [];
+                  
+                  symbolItems.forEach(li => {
                      const link = li.querySelector('a');
                      if (link) {
                         const symbolName = link.textContent.toLowerCase();
@@ -5436,11 +5528,27 @@ succeeds. The flushOutput call must happen after updateBuildID.</p>
                            
                            if (!isPrivateSymbol || shouldShowPrivate) {
                               li.style.display = '';
+                              const isExactMatch = symbolName === query;
+                              matchingSymbols.push({
+                                 element: li,
+                                 name: symbolName,
+                                 isExact: isExactMatch
+                              });
                            }
                         } else {
                            li.style.display = 'none';
                         }
                      }
+                  });
+                  matchingSymbols.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     return a.name.localeCompare(b.name);
+                  });
+                  
+                  const symbolIndex = document.getElementById('symbolIndex');
+                  matchingSymbols.forEach(symbol => {
+                     symbolIndex.appendChild(symbol.element);
                   });
                });
             }
@@ -5463,6 +5571,7 @@ succeeds. The flushOutput call must happen after updateBuildID.</p>
             }
 
             buildSymbolIndex();
+            deduplicateImports();
 
             document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
                anchor.addEventListener("click", function (e) {

@@ -29,7 +29,7 @@
          }
 
          .sidebar {
-            width: 12%;
+            width: 14%;
             background: rgba(59, 56, 56, 0.15);
             padding: 1.5rem;
             box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
@@ -604,7 +604,23 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"fmt"
+               <pre><code class="language-go">"bytes"
+"crypto/sha256"
+"encoding/hex"
+"errors"
+"fmt"
+"internal/godebug"
+"io"
+"io/fs"
+"os"
+"path/filepath"
+"strconv"
+"strings"
+"time"
+"cmd/go/internal/base"
+"cmd/go/internal/lockedfile"
+"cmd/go/internal/mmap"
+"fmt"
 "os"
 "path/filepath"
 "sync"
@@ -637,22 +653,6 @@
 "sync"
 "sync/atomic"
 "time"
-"bytes"
-"crypto/sha256"
-"encoding/hex"
-"errors"
-"fmt"
-"internal/godebug"
-"io"
-"io/fs"
-"os"
-"path/filepath"
-"strconv"
-"strings"
-"time"
-"cmd/go/internal/base"
-"cmd/go/internal/lockedfile"
-"cmd/go/internal/mmap"
 </code></pre>
             </article>
          </section>
@@ -1180,7 +1180,7 @@ io.ReadSeeker
                   <a href="#Close" class="anchor" title="Link to Close">#</a>
                </h3>
                
-               <pre><code class="language-go">func (c *DiskCache) Close() error</code></pre>
+               <pre><code class="language-go">func (c *ProgCache) Close() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Close" data-name="Close">
@@ -1191,7 +1191,7 @@ io.ReadSeeker
                   <a href="#Close" class="anchor" title="Link to Close">#</a>
                </h3>
                
-               <pre><code class="language-go">func (c *ProgCache) Close() error</code></pre>
+               <pre><code class="language-go">func (c *DiskCache) Close() error</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Default" data-name="Default">
@@ -1395,7 +1395,9 @@ network file systems and may not suffice to protect the cache.</p>
                   <a href="#OutputFile" class="anchor" title="Link to OutputFile">#</a>
                </h3>
                
-               <pre><code class="language-go">func (c *ProgCache) OutputFile(o OutputID) string</code></pre>
+               <p>OutputFile returns the name of the cache file storing output with the given OutputID.</p>
+               
+               <pre><code class="language-go">func (c *DiskCache) OutputFile(out OutputID) string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="OutputFile" data-name="OutputFile">
@@ -1406,20 +1408,7 @@ network file systems and may not suffice to protect the cache.</p>
                   <a href="#OutputFile" class="anchor" title="Link to OutputFile">#</a>
                </h3>
                
-               <p>OutputFile returns the name of the cache file storing output with the given OutputID.</p>
-               
-               <pre><code class="language-go">func (c *DiskCache) OutputFile(out OutputID) string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Put" data-name="Put">
-               <h3>
-                  Put 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Put" class="anchor" title="Link to Put">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (c *ProgCache) Put(a ActionID, file io.ReadSeeker) (_ OutputID, size int64, _ error)</code></pre>
+               <pre><code class="language-go">func (c *ProgCache) OutputFile(o OutputID) string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Put" data-name="Put">
@@ -1434,6 +1423,17 @@ network file systems and may not suffice to protect the cache.</p>
 It may read file twice. The content of file must not change between the two passes.</p>
                
                <pre><code class="language-go">func (c *DiskCache) Put(id ActionID, file io.ReadSeeker) (OutputID, int64, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Put" data-name="Put">
+               <h3>
+                  Put 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Put" class="anchor" title="Link to Put">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (c *ProgCache) Put(a ActionID, file io.ReadSeeker) (_ OutputID, size int64, _ error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="PutBytes" data-name="PutBytes">
@@ -1789,6 +1789,20 @@ version string.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function deduplicateImports() {
+            const importsSection = document.querySelector('#imports-section code');
+            if (!importsSection) return;
+            
+            const lines = importsSection.textContent.split('\n');
+            var uniqueLines = [...new Set(lines.filter(line => line.trim()))];
+            uniqueLines.sort();
+            importsSection.textContent = uniqueLines.join('\n');
+            
+            if (window.Prism) {
+               Prism.highlightElement(importsSection);
+            }
+         }
+
          function updateSectionVisibility() {
             document.querySelectorAll("section").forEach(section => {
                const visibleArticles = section.querySelectorAll("article:not(.hidden)");
@@ -2002,7 +2016,9 @@ version string.</p>
             if (searchInput) {
                searchInput.addEventListener("input", () => {
                   const query = searchInput.value.trim().toLowerCase();
-
+                  const allMatches = [];
+                  const sectionOrder = ['imports', 'globals', 'types', 'interfaces', 'structs', 'functions'];
+                  
                   document.querySelectorAll("article").forEach((el) => {
                      const name = el.dataset.name;
                      if (!name) return;
@@ -2014,21 +2030,97 @@ version string.</p>
                            el.textContent.toLowerCase().includes(query));
 
                      if (matches) {
-                        const isPrivateEl =
-                           el.classList.contains("private");
-                        const shouldShowPrivate =
-                           getPrivateToggleState(el);
+                        const isPrivateEl = el.classList.contains("private");
+                        const shouldShowPrivate = getPrivateToggleState(el);
 
                         if (!isPrivateEl || shouldShowPrivate) {
                            el.classList.remove("hidden");
+                           
+                           const section = el.closest('section');
+                           if (section) {
+                              const sectionId = section.id;
+                              const sectionIndex = sectionOrder.indexOf(sectionId);
+                              const isExactMatch = name.toLowerCase() === query;
+                              
+                              allMatches.push({
+                                 element: el,
+                                 name: name,
+                                 isExact: isExactMatch,
+                                 sectionId: sectionId,
+                                 sectionIndex: sectionIndex >= 0 ? sectionIndex : 999
+                              });
+                           }
                         }
                      } else {
                         el.classList.add("hidden");
                      }
-                     updateSectionVisibility();
                   });
 
-                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                  allMatches.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     if (a.sectionIndex !== b.sectionIndex) return a.sectionIndex - b.sectionIndex;
+                     return a.name.localeCompare(b.name);
+                  });
+
+                  const sectionMatches = {};
+                  allMatches.forEach(match => {
+                     if (!sectionMatches[match.sectionId]) {
+                        sectionMatches[match.sectionId] = [];
+                     }
+                     sectionMatches[match.sectionId].push(match);
+                  });
+                  Object.keys(sectionMatches).forEach(sectionId => {
+                     const section = document.getElementById(sectionId);
+                     if (!section) return;
+                     
+                     sectionMatches[sectionId].forEach(match => {
+                        section.appendChild(match.element);
+                     });
+                  });
+                  if (query === "") {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     
+                     let insertAfter = firstDivider;
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (section) {
+                           insertAfter.insertAdjacentElement('afterend', section);
+                           insertAfter = section;
+                        }
+                     });
+                  } else {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     const sectionsWithExactMatches = [];
+                     const sectionsWithoutExactMatches = [];
+                     
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (!section || !sectionMatches[sectionId]) return;
+                        
+                        const hasExactMatch = sectionMatches[sectionId].some(match => match.isExact);
+                        if (hasExactMatch) {
+                           sectionsWithExactMatches.push(section);
+                        } else {
+                           sectionsWithoutExactMatches.push(section);
+                        }
+                     });
+                     let insertAfter = firstDivider;
+                     [...sectionsWithExactMatches, ...sectionsWithoutExactMatches].forEach(section => {
+                        insertAfter.insertAdjacentElement('afterend', section);
+                        insertAfter = section;
+                     });
+                  }
+
+                  updateSectionVisibility();
+                  const symbolItems = Array.from(document.querySelectorAll('#symbolIndex li'));
+                  const matchingSymbols = [];
+                  
+                  symbolItems.forEach(li => {
                      const link = li.querySelector('a');
                      if (link) {
                         const symbolName = link.textContent.toLowerCase();
@@ -2042,11 +2134,27 @@ version string.</p>
                            
                            if (!isPrivateSymbol || shouldShowPrivate) {
                               li.style.display = '';
+                              const isExactMatch = symbolName === query;
+                              matchingSymbols.push({
+                                 element: li,
+                                 name: symbolName,
+                                 isExact: isExactMatch
+                              });
                            }
                         } else {
                            li.style.display = 'none';
                         }
                      }
+                  });
+                  matchingSymbols.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     return a.name.localeCompare(b.name);
+                  });
+                  
+                  const symbolIndex = document.getElementById('symbolIndex');
+                  matchingSymbols.forEach(symbol => {
+                     symbolIndex.appendChild(symbol.element);
                   });
                });
             }
@@ -2069,6 +2177,7 @@ version string.</p>
             }
 
             buildSymbolIndex();
+            deduplicateImports();
 
             document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
                anchor.addEventListener("click", function (e) {

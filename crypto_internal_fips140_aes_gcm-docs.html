@@ -29,7 +29,7 @@
          }
 
          .sidebar {
-            width: 12%;
+            width: 14%;
             background: rgba(59, 56, 56, 0.15);
             padding: 1.5rem;
             box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
@@ -603,10 +603,12 @@
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
                <pre><code class="language-go">"crypto/internal/fips140"
-"crypto/internal/fips140deps/byteorder"
-"crypto/internal/fips140"
 "crypto/internal/fips140/aes"
 _ "crypto/internal/fips140/check"
+"errors"
+"crypto/internal/fips140"
+"crypto/internal/fips140/aes"
+"crypto/internal/fips140/alias"
 "errors"
 "crypto/internal/fips140/aes"
 "crypto/internal/fips140/subtle"
@@ -624,6 +626,12 @@ _ "crypto/internal/fips140/check"
 "crypto/internal/fips140/aes"
 "crypto/internal/fips140/subtle"
 "crypto/internal/fips140deps/byteorder"
+"crypto/internal/fips140deps/godebug"
+"crypto/internal/impl"
+"runtime"
+"crypto/internal/fips140/aes"
+"crypto/internal/fips140/subtle"
+"crypto/internal/fips140deps/byteorder"
 "crypto/internal/fips140deps/cpu"
 "crypto/internal/impl"
 "crypto/internal/fips140"
@@ -632,15 +640,7 @@ _ "crypto/internal/fips140/check"
 "crypto/internal/fips140"
 "crypto/internal/fips140/aes"
 "crypto/internal/fips140"
-"crypto/internal/fips140/aes"
-"crypto/internal/fips140/alias"
-"errors"
-"crypto/internal/fips140/aes"
-"crypto/internal/fips140/subtle"
 "crypto/internal/fips140deps/byteorder"
-"crypto/internal/fips140deps/godebug"
-"crypto/internal/impl"
-"runtime"
 </code></pre>
             </article>
          </section>
@@ -774,7 +774,10 @@ _ "crypto/internal/fips140/check"
                   <a href="#supportsAESGCM" class="anchor" title="Link to supportsAESGCM">#</a>
                </h3>
                
-                  <p class="doc-comment">Keep in sync with crypto/tls.hasAESGCMHardwareSupport.</p>
+                  <p class="doc-comment">The POWER architecture doesn't have a way to turn off AES-GCM support
+at runtime with GODEBUG=cpu.something=off, so introduce a new GODEBUG
+knob for that. It's intentionally only checked at init() time, to
+avoid the performance overhead of checking it every time.</p>
                
                <pre><code class="language-go">var supportsAESGCM = *ast.BinaryExpr</code></pre>
             </article>
@@ -787,10 +790,7 @@ _ "crypto/internal/fips140/check"
                   <a href="#supportsAESGCM" class="anchor" title="Link to supportsAESGCM">#</a>
                </h3>
                
-                  <p class="doc-comment">The POWER architecture doesn't have a way to turn off AES-GCM support
-at runtime with GODEBUG=cpu.something=off, so introduce a new GODEBUG
-knob for that. It's intentionally only checked at init() time, to
-avoid the performance overhead of checking it every time.</p>
+                  <p class="doc-comment">Keep in sync with crypto/tls.hasAESGCMHardwareSupport.</p>
                
                <pre><code class="language-go">var supportsAESGCM = *ast.BinaryExpr</code></pre>
             </article>
@@ -1032,7 +1032,7 @@ productTable [256]byte
                <pre
                   class="fields-block"
                ><code class="fields-code language-go">type gcmPlatformData struct {
-hashKey gcmHashKey
+productTable [256]byte
 }</code></pre>
             </article>
             
@@ -1046,7 +1046,7 @@ hashKey gcmHashKey
                <pre
                   class="fields-block"
                ><code class="fields-code language-go">type gcmPlatformData struct {
-productTable [256]byte
+hashKey gcmHashKey
 }</code></pre>
             </article>
             
@@ -1199,7 +1199,7 @@ This complies with FIPS 140-3 IG C.H Scenario 3.</p>
                   <a href="#NonceSize" class="anchor" title="Link to NonceSize">#</a>
                </h3>
                
-               <pre><code class="language-go">func (g *GCMForSSH) NonceSize() int</code></pre>
+               <pre><code class="language-go">func (g *GCMForTLS13) NonceSize() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="NonceSize" data-name="NonceSize">
@@ -1210,7 +1210,7 @@ This complies with FIPS 140-3 IG C.H Scenario 3.</p>
                   <a href="#NonceSize" class="anchor" title="Link to NonceSize">#</a>
                </h3>
                
-               <pre><code class="language-go">func (g *GCMForTLS13) NonceSize() int</code></pre>
+               <pre><code class="language-go">func (g *GCMForSSH) NonceSize() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="NonceSize" data-name="NonceSize">
@@ -1265,17 +1265,6 @@ This complies with FIPS 140-3 IG C.H Scenario 3.</p>
                   <a href="#Open" class="anchor" title="Link to Open">#</a>
                </h3>
                
-               <pre><code class="language-go">func (g *GCMForTLS13) Open(dst []byte, nonce []byte, ciphertext []byte, data []byte) ([]byte, error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Open" data-name="Open">
-               <h3>
-                  Open 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Open" class="anchor" title="Link to Open">#</a>
-               </h3>
-               
                <pre><code class="language-go">func (g *GCMForTLS12) Open(dst []byte, nonce []byte, ciphertext []byte, data []byte) ([]byte, error)</code></pre>
             </article>
             
@@ -1287,7 +1276,7 @@ This complies with FIPS 140-3 IG C.H Scenario 3.</p>
                   <a href="#Open" class="anchor" title="Link to Open">#</a>
                </h3>
                
-               <pre><code class="language-go">func (g *GCM) Open(dst []byte, nonce []byte, ciphertext []byte, data []byte) ([]byte, error)</code></pre>
+               <pre><code class="language-go">func (g *GCMForTLS13) Open(dst []byte, nonce []byte, ciphertext []byte, data []byte) ([]byte, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Open" data-name="Open">
@@ -1299,6 +1288,17 @@ This complies with FIPS 140-3 IG C.H Scenario 3.</p>
                </h3>
                
                <pre><code class="language-go">func (g *GCMForSSH) Open(dst []byte, nonce []byte, ciphertext []byte, data []byte) ([]byte, error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Open" data-name="Open">
+               <h3>
+                  Open 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Open" class="anchor" title="Link to Open">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (g *GCM) Open(dst []byte, nonce []byte, ciphertext []byte, data []byte) ([]byte, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Overhead" data-name="Overhead">
@@ -1320,17 +1320,6 @@ This complies with FIPS 140-3 IG C.H Scenario 3.</p>
                   <a href="#Overhead" class="anchor" title="Link to Overhead">#</a>
                </h3>
                
-               <pre><code class="language-go">func (g *GCMForTLS13) Overhead() int</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Overhead" data-name="Overhead">
-               <h3>
-                  Overhead 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Overhead" class="anchor" title="Link to Overhead">#</a>
-               </h3>
-               
                <pre><code class="language-go">func (g *GCM) Overhead() int</code></pre>
             </article>
             
@@ -1342,7 +1331,7 @@ This complies with FIPS 140-3 IG C.H Scenario 3.</p>
                   <a href="#Overhead" class="anchor" title="Link to Overhead">#</a>
                </h3>
                
-               <pre><code class="language-go">func (g *GCMForSSH) Overhead() int</code></pre>
+               <pre><code class="language-go">func (g *GCMForTLS12) Overhead() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Overhead" data-name="Overhead">
@@ -1353,7 +1342,18 @@ This complies with FIPS 140-3 IG C.H Scenario 3.</p>
                   <a href="#Overhead" class="anchor" title="Link to Overhead">#</a>
                </h3>
                
-               <pre><code class="language-go">func (g *GCMForTLS12) Overhead() int</code></pre>
+               <pre><code class="language-go">func (g *GCMForTLS13) Overhead() int</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Overhead" data-name="Overhead">
+               <h3>
+                  Overhead 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Overhead" class="anchor" title="Link to Overhead">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (g *GCMForSSH) Overhead() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Seal" data-name="Seal">
@@ -1386,17 +1386,6 @@ This complies with FIPS 140-3 IG C.H Scenario 3.</p>
                   <a href="#Seal" class="anchor" title="Link to Seal">#</a>
                </h3>
                
-               <pre><code class="language-go">func (g *GCM) Seal(dst []byte, nonce []byte, plaintext []byte, data []byte) []byte</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Seal" data-name="Seal">
-               <h3>
-                  Seal 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Seal" class="anchor" title="Link to Seal">#</a>
-               </h3>
-               
                <pre><code class="language-go">func (g *GCMForTLS13) Seal(dst []byte, nonce []byte, plaintext []byte, data []byte) []byte</code></pre>
             </article>
             
@@ -1409,6 +1398,17 @@ This complies with FIPS 140-3 IG C.H Scenario 3.</p>
                </h3>
                
                <pre><code class="language-go">func (g *GCMWithCounterNonce) Seal(dst []byte, nonce []byte, plaintext []byte, data []byte) []byte</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Seal" data-name="Seal">
+               <h3>
+                  Seal 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Seal" class="anchor" title="Link to Seal">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (g *GCM) Seal(dst []byte, nonce []byte, plaintext []byte, data []byte) []byte</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="SealWithRandomNonce" data-name="SealWithRandomNonce">
@@ -1451,31 +1451,31 @@ tagMask and writes the result to out.</p>
                   <a href="#checkGenericIsExpected" class="anchor" title="Link to checkGenericIsExpected">#</a>
                </h3>
                
-               <pre><code class="language-go">func checkGenericIsExpected()</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="checkGenericIsExpected" data-name="checkGenericIsExpected">
-               <h3>
-                  checkGenericIsExpected 
-                  <span class="badge">function</span>
-                  
-                  <a href="#checkGenericIsExpected" class="anchor" title="Link to checkGenericIsExpected">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func checkGenericIsExpected()</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="checkGenericIsExpected" data-name="checkGenericIsExpected">
-               <h3>
-                  checkGenericIsExpected 
-                  <span class="badge">function</span>
-                  
-                  <a href="#checkGenericIsExpected" class="anchor" title="Link to checkGenericIsExpected">#</a>
-               </h3>
-               
                <p>checkGenericIsExpected is called by the variable-time implementation to make
 sure it is not used when hardware support is available. It shouldn't happen,
 but this way it's more evidently correct.</p>
+               
+               <pre><code class="language-go">func checkGenericIsExpected()</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="checkGenericIsExpected" data-name="checkGenericIsExpected">
+               <h3>
+                  checkGenericIsExpected 
+                  <span class="badge">function</span>
+                  
+                  <a href="#checkGenericIsExpected" class="anchor" title="Link to checkGenericIsExpected">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func checkGenericIsExpected()</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="checkGenericIsExpected" data-name="checkGenericIsExpected">
+               <h3>
+                  checkGenericIsExpected 
+                  <span class="badge">function</span>
+                  
+                  <a href="#checkGenericIsExpected" class="anchor" title="Link to checkGenericIsExpected">#</a>
+               </h3>
                
                <pre><code class="language-go">func checkGenericIsExpected()</code></pre>
             </article>
@@ -1565,9 +1565,10 @@ go:noescape</p>
                   <a href="#deriveCounter" class="anchor" title="Link to deriveCounter">#</a>
                </h3>
                
-               <p>deriveCounter computes the initial GCM counter state from the given nonce.</p>
+               <p>deriveCounter computes the initial GCM counter state from the given nonce.
+See NIST SP 800-38D, section 7.1 and deriveCounterGeneric in gcm_generic.go.</p>
                
-               <pre><code class="language-go">func deriveCounter(counter *[gcmBlockSize]byte, nonce []byte, productTable *[256]byte)</code></pre>
+               <pre><code class="language-go">func deriveCounter(H *gcmHashKey, counter *[gcmBlockSize]byte, nonce []byte)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="deriveCounter" data-name="deriveCounter">
@@ -1578,10 +1579,9 @@ go:noescape</p>
                   <a href="#deriveCounter" class="anchor" title="Link to deriveCounter">#</a>
                </h3>
                
-               <p>deriveCounter computes the initial GCM counter state from the given nonce.
-See NIST SP 800-38D, section 7.1 and deriveCounterGeneric in gcm_generic.go.</p>
+               <p>deriveCounter computes the initial GCM counter state from the given nonce.</p>
                
-               <pre><code class="language-go">func deriveCounter(H *gcmHashKey, counter *[gcmBlockSize]byte, nonce []byte)</code></pre>
+               <pre><code class="language-go">func deriveCounter(counter *[gcmBlockSize]byte, nonce []byte, productTable *[256]byte)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="deriveCounterGeneric" data-name="deriveCounterGeneric">
@@ -1766,8 +1766,6 @@ and increments it.</p>
                   <a href="#gcmLengths" class="anchor" title="Link to gcmLengths">#</a>
                </h3>
                
-               <p>gcmLengths writes len0 || len1 as big-endian values to a 16-byte array.</p>
-               
                <pre><code class="language-go">func gcmLengths(len0 uint64, len1 uint64) [16]byte</code></pre>
             </article>
             
@@ -1778,6 +1776,8 @@ and increments it.</p>
                   
                   <a href="#gcmLengths" class="anchor" title="Link to gcmLengths">#</a>
                </h3>
+               
+               <p>gcmLengths writes len0 || len1 as big-endian values to a 16-byte array.</p>
                
                <pre><code class="language-go">func gcmLengths(len0 uint64, len1 uint64) [16]byte</code></pre>
             </article>
@@ -2072,9 +2072,10 @@ go:noinline</p>
                </h3>
                
                <p>paddedGHASH pads data with zeroes until its length is a multiple of
-16-bytes. It then calculates a new value for hash using the GHASH algorithm.</p>
+16-bytes. It then calculates a new value for hash using the ghash
+algorithm.</p>
                
-               <pre><code class="language-go">func paddedGHASH(hashKey *gcmHashKey, hash *[16]byte, data []byte)</code></pre>
+               <pre><code class="language-go">func paddedGHASH(hash *[16]byte, data []byte, productTable *[256]byte)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="paddedGHASH" data-name="paddedGHASH">
@@ -2086,10 +2087,9 @@ go:noinline</p>
                </h3>
                
                <p>paddedGHASH pads data with zeroes until its length is a multiple of
-16-bytes. It then calculates a new value for hash using the ghash
-algorithm.</p>
+16-bytes. It then calculates a new value for hash using the GHASH algorithm.</p>
                
-               <pre><code class="language-go">func paddedGHASH(hash *[16]byte, data []byte, productTable *[256]byte)</code></pre>
+               <pre><code class="language-go">func paddedGHASH(hashKey *gcmHashKey, hash *[16]byte, data []byte)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="reverseBits" data-name="reverseBits">
@@ -2246,6 +2246,20 @@ Horner's rule. There must be a multiple of gcmBlockSize bytes in blocks.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function deduplicateImports() {
+            const importsSection = document.querySelector('#imports-section code');
+            if (!importsSection) return;
+            
+            const lines = importsSection.textContent.split('\n');
+            var uniqueLines = [...new Set(lines.filter(line => line.trim()))];
+            uniqueLines.sort();
+            importsSection.textContent = uniqueLines.join('\n');
+            
+            if (window.Prism) {
+               Prism.highlightElement(importsSection);
+            }
+         }
+
          function updateSectionVisibility() {
             document.querySelectorAll("section").forEach(section => {
                const visibleArticles = section.querySelectorAll("article:not(.hidden)");
@@ -2459,7 +2473,9 @@ Horner's rule. There must be a multiple of gcmBlockSize bytes in blocks.</p>
             if (searchInput) {
                searchInput.addEventListener("input", () => {
                   const query = searchInput.value.trim().toLowerCase();
-
+                  const allMatches = [];
+                  const sectionOrder = ['imports', 'globals', 'types', 'interfaces', 'structs', 'functions'];
+                  
                   document.querySelectorAll("article").forEach((el) => {
                      const name = el.dataset.name;
                      if (!name) return;
@@ -2471,21 +2487,97 @@ Horner's rule. There must be a multiple of gcmBlockSize bytes in blocks.</p>
                            el.textContent.toLowerCase().includes(query));
 
                      if (matches) {
-                        const isPrivateEl =
-                           el.classList.contains("private");
-                        const shouldShowPrivate =
-                           getPrivateToggleState(el);
+                        const isPrivateEl = el.classList.contains("private");
+                        const shouldShowPrivate = getPrivateToggleState(el);
 
                         if (!isPrivateEl || shouldShowPrivate) {
                            el.classList.remove("hidden");
+                           
+                           const section = el.closest('section');
+                           if (section) {
+                              const sectionId = section.id;
+                              const sectionIndex = sectionOrder.indexOf(sectionId);
+                              const isExactMatch = name.toLowerCase() === query;
+                              
+                              allMatches.push({
+                                 element: el,
+                                 name: name,
+                                 isExact: isExactMatch,
+                                 sectionId: sectionId,
+                                 sectionIndex: sectionIndex >= 0 ? sectionIndex : 999
+                              });
+                           }
                         }
                      } else {
                         el.classList.add("hidden");
                      }
-                     updateSectionVisibility();
                   });
 
-                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                  allMatches.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     if (a.sectionIndex !== b.sectionIndex) return a.sectionIndex - b.sectionIndex;
+                     return a.name.localeCompare(b.name);
+                  });
+
+                  const sectionMatches = {};
+                  allMatches.forEach(match => {
+                     if (!sectionMatches[match.sectionId]) {
+                        sectionMatches[match.sectionId] = [];
+                     }
+                     sectionMatches[match.sectionId].push(match);
+                  });
+                  Object.keys(sectionMatches).forEach(sectionId => {
+                     const section = document.getElementById(sectionId);
+                     if (!section) return;
+                     
+                     sectionMatches[sectionId].forEach(match => {
+                        section.appendChild(match.element);
+                     });
+                  });
+                  if (query === "") {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     
+                     let insertAfter = firstDivider;
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (section) {
+                           insertAfter.insertAdjacentElement('afterend', section);
+                           insertAfter = section;
+                        }
+                     });
+                  } else {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     const sectionsWithExactMatches = [];
+                     const sectionsWithoutExactMatches = [];
+                     
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (!section || !sectionMatches[sectionId]) return;
+                        
+                        const hasExactMatch = sectionMatches[sectionId].some(match => match.isExact);
+                        if (hasExactMatch) {
+                           sectionsWithExactMatches.push(section);
+                        } else {
+                           sectionsWithoutExactMatches.push(section);
+                        }
+                     });
+                     let insertAfter = firstDivider;
+                     [...sectionsWithExactMatches, ...sectionsWithoutExactMatches].forEach(section => {
+                        insertAfter.insertAdjacentElement('afterend', section);
+                        insertAfter = section;
+                     });
+                  }
+
+                  updateSectionVisibility();
+                  const symbolItems = Array.from(document.querySelectorAll('#symbolIndex li'));
+                  const matchingSymbols = [];
+                  
+                  symbolItems.forEach(li => {
                      const link = li.querySelector('a');
                      if (link) {
                         const symbolName = link.textContent.toLowerCase();
@@ -2499,11 +2591,27 @@ Horner's rule. There must be a multiple of gcmBlockSize bytes in blocks.</p>
                            
                            if (!isPrivateSymbol || shouldShowPrivate) {
                               li.style.display = '';
+                              const isExactMatch = symbolName === query;
+                              matchingSymbols.push({
+                                 element: li,
+                                 name: symbolName,
+                                 isExact: isExactMatch
+                              });
                            }
                         } else {
                            li.style.display = 'none';
                         }
                      }
+                  });
+                  matchingSymbols.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     return a.name.localeCompare(b.name);
+                  });
+                  
+                  const symbolIndex = document.getElementById('symbolIndex');
+                  matchingSymbols.forEach(symbol => {
+                     symbolIndex.appendChild(symbol.element);
                   });
                });
             }
@@ -2526,6 +2634,7 @@ Horner's rule. There must be a multiple of gcmBlockSize bytes in blocks.</p>
             }
 
             buildSymbolIndex();
+            deduplicateImports();
 
             document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
                anchor.addEventListener("click", function (e) {

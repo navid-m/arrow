@@ -29,7 +29,7 @@
          }
 
          .sidebar {
-            width: 12%;
+            width: 14%;
             background: rgba(59, 56, 56, 0.15);
             padding: 1.5rem;
             box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
@@ -604,8 +604,7 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"golang.org/x/text/internal/language/compact"
-"fmt"
+               <pre><code class="language-go">"fmt"
 "sort"
 "golang.org/x/text/internal/language"
 "strings"
@@ -619,6 +618,7 @@
 "strconv"
 "strings"
 "golang.org/x/text/internal/language"
+"golang.org/x/text/internal/language/compact"
 </code></pre>
             </article>
          </section>
@@ -2760,10 +2760,10 @@ It uses a variant of CLDR's Add Likely Subtags algorithm. This is subject to cha
                   <a href="#BaseLanguages" class="anchor" title="Link to BaseLanguages">#</a>
                </h3>
                
-               <p>BaseLanguages returns the list of all supported base languages. It generates
-the list by traversing the internal structures.</p>
+               <p>BaseLanguages returns the result from calling s.bases if it is specified or
+otherwise derives the set of supported base languages from tags.</p>
                
-               <pre><code class="language-go">func (s allSubtags) BaseLanguages() []Base</code></pre>
+               <pre><code class="language-go">func (s *coverage) BaseLanguages() []Base</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="BaseLanguages" data-name="BaseLanguages">
@@ -2774,23 +2774,10 @@ the list by traversing the internal structures.</p>
                   <a href="#BaseLanguages" class="anchor" title="Link to BaseLanguages">#</a>
                </h3>
                
-               <p>BaseLanguages returns the result from calling s.bases if it is specified or
-otherwise derives the set of supported base languages from tags.</p>
+               <p>BaseLanguages returns the list of all supported base languages. It generates
+the list by traversing the internal structures.</p>
                
-               <pre><code class="language-go">func (s *coverage) BaseLanguages() []Base</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Canonicalize" data-name="Canonicalize">
-               <h3>
-                  Canonicalize 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Canonicalize" class="anchor" title="Link to Canonicalize">#</a>
-               </h3>
-               
-               <p>Canonicalize returns the canonicalized equivalent of the tag.</p>
-               
-               <pre><code class="language-go">func (c CanonType) Canonicalize(t Tag) (Tag, error)</code></pre>
+               <pre><code class="language-go">func (s allSubtags) BaseLanguages() []Base</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Canonicalize" data-name="Canonicalize">
@@ -2806,6 +2793,19 @@ deprecated. It will not return a replacement for deprecated regions that
 are split into multiple regions.</p>
                
                <pre><code class="language-go">func (r Region) Canonicalize() Region</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Canonicalize" data-name="Canonicalize">
+               <h3>
+                  Canonicalize 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Canonicalize" class="anchor" title="Link to Canonicalize">#</a>
+               </h3>
+               
+               <p>Canonicalize returns the canonicalized equivalent of the tag.</p>
+               
+               <pre><code class="language-go">func (c CanonType) Canonicalize(t Tag) (Tag, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="CompactIndex" data-name="CompactIndex">
@@ -2828,28 +2828,6 @@ first match after repeatedly taking the Parent of t.</p>
             <article class="function symbol-anchor" id="Compose" data-name="Compose">
                <h3>
                   Compose 
-                  <span class="badge">function</span>
-                  
-                  <a href="#Compose" class="anchor" title="Link to Compose">#</a>
-               </h3>
-               
-               <p>Compose creates a Tag from individual parts, which may be of type Tag, Base,
-Script, Region, Variant, []Variant, Extension, []Extension or error. If a
-Base, Script or Region or slice of type Variant or Extension is passed more
-than once, the latter will overwrite the former. Variants and Extensions are
-accumulated, but if two extensions of the same type are passed, the latter
-will replace the former. For -u extensions, though, the key-type pairs are
-added, where later values overwrite older ones. A Tag overwrites all former
-values and typically only makes sense as the first argument. The resulting
-tag is returned after canonicalizing using the Default CanonType. If one or
-more errors are encountered, one of the errors is returned.</p>
-               
-               <pre><code class="language-go">func Compose(part ...interface{}) (t Tag, err error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Compose" data-name="Compose">
-               <h3>
-                  Compose 
                   <span class="badge method-badge">method</span>
                   
                   <a href="#Compose" class="anchor" title="Link to Compose">#</a>
@@ -2867,6 +2845,28 @@ tag is returned after canonicalizing using CanonType c. If one or more errors
 are encountered, one of the errors is returned.</p>
                
                <pre><code class="language-go">func (c CanonType) Compose(part ...interface{}) (t Tag, err error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Compose" data-name="Compose">
+               <h3>
+                  Compose 
+                  <span class="badge">function</span>
+                  
+                  <a href="#Compose" class="anchor" title="Link to Compose">#</a>
+               </h3>
+               
+               <p>Compose creates a Tag from individual parts, which may be of type Tag, Base,
+Script, Region, Variant, []Variant, Extension, []Extension or error. If a
+Base, Script or Region or slice of type Variant or Extension is passed more
+than once, the latter will overwrite the former. Variants and Extensions are
+accumulated, but if two extensions of the same type are passed, the latter
+will replace the former. For -u extensions, though, the key-type pairs are
+added, where later values overwrite older ones. A Tag overwrites all former
+values and typically only makes sense as the first argument. The resulting
+tag is returned after canonicalizing using the Default CanonType. If one or
+more errors are encountered, one of the errors is returned.</p>
+               
+               <pre><code class="language-go">func Compose(part ...interface{}) (t Tag, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Comprehends" data-name="Comprehends">
@@ -3003,6 +3003,21 @@ includes non-standard definitions from CLDR.</p>
                   <a href="#IsPrivateUse" class="anchor" title="Link to IsPrivateUse">#</a>
                </h3>
                
+               <p>IsPrivateUse reports whether r has the ISO 3166 User-assigned status. This
+may include private-use tags that are assigned by CLDR and used in this
+implementation. So IsPrivateUse and IsCountry can be simultaneously true.</p>
+               
+               <pre><code class="language-go">func (r Region) IsPrivateUse() bool</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="IsPrivateUse" data-name="IsPrivateUse">
+               <h3>
+                  IsPrivateUse 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#IsPrivateUse" class="anchor" title="Link to IsPrivateUse">#</a>
+               </h3>
+               
                <p>IsPrivateUse reports whether this language code is reserved for private use.</p>
                
                <pre><code class="language-go">func (b Base) IsPrivateUse() bool</code></pre>
@@ -3019,21 +3034,6 @@ includes non-standard definitions from CLDR.</p>
                <p>IsPrivateUse reports whether this script code is reserved for private use.</p>
                
                <pre><code class="language-go">func (s Script) IsPrivateUse() bool</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="IsPrivateUse" data-name="IsPrivateUse">
-               <h3>
-                  IsPrivateUse 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#IsPrivateUse" class="anchor" title="Link to IsPrivateUse">#</a>
-               </h3>
-               
-               <p>IsPrivateUse reports whether r has the ISO 3166 User-assigned status. This
-may include private-use tags that are assigned by CLDR and used in this
-implementation. So IsPrivateUse and IsCountry can be simultaneously true.</p>
-               
-               <pre><code class="language-go">func (r Region) IsPrivateUse() bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="IsRoot" data-name="IsRoot">
@@ -3309,26 +3309,6 @@ is "zh-Hant", and the parent of "zh-Hant" is "und".</p>
             <article class="function symbol-anchor" id="Parse" data-name="Parse">
                <h3>
                   Parse 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Parse" class="anchor" title="Link to Parse">#</a>
-               </h3>
-               
-               <p>Parse parses the given BCP 47 string and returns a valid Tag. If parsing
-failed it returns an error and any part of the tag that could be parsed.
-If parsing succeeded but an unknown value was found, it returns
-ValueError. The Tag returned in this case is just stripped of the unknown
-value. All other values are preserved. It accepts tags in the BCP 47 format
-and extensions to this standard defined in
-https://www.unicode.org/reports/tr35/#Unicode_Language_and_Locale_Identifiers.
-The resulting tag is canonicalized using the canonicalization type c.</p>
-               
-               <pre><code class="language-go">func (c CanonType) Parse(s string) (t Tag, err error)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Parse" data-name="Parse">
-               <h3>
-                  Parse 
                   <span class="badge">function</span>
                   
                   <a href="#Parse" class="anchor" title="Link to Parse">#</a>
@@ -3344,6 +3324,26 @@ https://www.unicode.org/reports/tr35/#Unicode_Language_and_Locale_Identifiers.
 The resulting tag is canonicalized using the default canonicalization type.</p>
                
                <pre><code class="language-go">func Parse(s string) (t Tag, err error)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Parse" data-name="Parse">
+               <h3>
+                  Parse 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Parse" class="anchor" title="Link to Parse">#</a>
+               </h3>
+               
+               <p>Parse parses the given BCP 47 string and returns a valid Tag. If parsing
+failed it returns an error and any part of the tag that could be parsed.
+If parsing succeeded but an unknown value was found, it returns
+ValueError. The Tag returned in this case is just stripped of the unknown
+value. All other values are preserved. It accepts tags in the BCP 47 format
+and extensions to this standard defined in
+https://www.unicode.org/reports/tr35/#Unicode_Language_and_Locale_Identifiers.
+The resulting tag is canonicalized using the canonicalization type c.</p>
+               
+               <pre><code class="language-go">func (c CanonType) Parse(s string) (t Tag, err error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="ParseAcceptLanguage" data-name="ParseAcceptLanguage">
@@ -3583,60 +3583,7 @@ An empty value removes an existing pair with the same key.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <p>String returns the string representation of the variant.</p>
-               
-               <pre><code class="language-go">func (v Variant) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <p>String returns the canonical string representation of the language tag.</p>
-               
-               <pre><code class="language-go">func (t Tag) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
                <pre><code class="language-go">func (c Confidence) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <p>String returns the string representation of the extension, including the
-type tag.</p>
-               
-               <pre><code class="language-go">func (e Extension) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <p>String returns the BCP 47 representation of the base language.</p>
-               
-               <pre><code class="language-go">func (b Base) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -3661,10 +3608,63 @@ It returns "Zzzz" for an unspecified script.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
+               <p>String returns the BCP 47 representation of the base language.</p>
+               
+               <pre><code class="language-go">func (b Base) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <p>String returns the canonical string representation of the language tag.</p>
+               
+               <pre><code class="language-go">func (t Tag) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <p>String returns the string representation of the variant.</p>
+               
+               <pre><code class="language-go">func (v Variant) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
                <p>String returns the BCP 47 representation for the region.
 It returns "ZZ" for an unspecified region.</p>
                
                <pre><code class="language-go">func (r Region) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <p>String returns the string representation of the extension, including the
+type tag.</p>
+               
+               <pre><code class="language-go">func (e Extension) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Swap" data-name="Swap">
@@ -3715,7 +3715,9 @@ obtained using any of the default methods.</p>
                   <a href="#Tags" class="anchor" title="Link to Tags">#</a>
                </h3>
                
-               <pre><code class="language-go">func (s *coverage) Tags() []Tag</code></pre>
+               <p>Tags always returns nil.</p>
+               
+               <pre><code class="language-go">func (s allSubtags) Tags() []Tag</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Tags" data-name="Tags">
@@ -3726,9 +3728,7 @@ obtained using any of the default methods.</p>
                   <a href="#Tags" class="anchor" title="Link to Tags">#</a>
                </h3>
                
-               <p>Tags always returns nil.</p>
-               
-               <pre><code class="language-go">func (s allSubtags) Tags() []Tag</code></pre>
+               <pre><code class="language-go">func (s *coverage) Tags() []Tag</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Tokens" data-name="Tokens">
@@ -4127,6 +4127,20 @@ be false.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function deduplicateImports() {
+            const importsSection = document.querySelector('#imports-section code');
+            if (!importsSection) return;
+            
+            const lines = importsSection.textContent.split('\n');
+            var uniqueLines = [...new Set(lines.filter(line => line.trim()))];
+            uniqueLines.sort();
+            importsSection.textContent = uniqueLines.join('\n');
+            
+            if (window.Prism) {
+               Prism.highlightElement(importsSection);
+            }
+         }
+
          function updateSectionVisibility() {
             document.querySelectorAll("section").forEach(section => {
                const visibleArticles = section.querySelectorAll("article:not(.hidden)");
@@ -4340,7 +4354,9 @@ be false.</p>
             if (searchInput) {
                searchInput.addEventListener("input", () => {
                   const query = searchInput.value.trim().toLowerCase();
-
+                  const allMatches = [];
+                  const sectionOrder = ['imports', 'globals', 'types', 'interfaces', 'structs', 'functions'];
+                  
                   document.querySelectorAll("article").forEach((el) => {
                      const name = el.dataset.name;
                      if (!name) return;
@@ -4352,21 +4368,97 @@ be false.</p>
                            el.textContent.toLowerCase().includes(query));
 
                      if (matches) {
-                        const isPrivateEl =
-                           el.classList.contains("private");
-                        const shouldShowPrivate =
-                           getPrivateToggleState(el);
+                        const isPrivateEl = el.classList.contains("private");
+                        const shouldShowPrivate = getPrivateToggleState(el);
 
                         if (!isPrivateEl || shouldShowPrivate) {
                            el.classList.remove("hidden");
+                           
+                           const section = el.closest('section');
+                           if (section) {
+                              const sectionId = section.id;
+                              const sectionIndex = sectionOrder.indexOf(sectionId);
+                              const isExactMatch = name.toLowerCase() === query;
+                              
+                              allMatches.push({
+                                 element: el,
+                                 name: name,
+                                 isExact: isExactMatch,
+                                 sectionId: sectionId,
+                                 sectionIndex: sectionIndex >= 0 ? sectionIndex : 999
+                              });
+                           }
                         }
                      } else {
                         el.classList.add("hidden");
                      }
-                     updateSectionVisibility();
                   });
 
-                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                  allMatches.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     if (a.sectionIndex !== b.sectionIndex) return a.sectionIndex - b.sectionIndex;
+                     return a.name.localeCompare(b.name);
+                  });
+
+                  const sectionMatches = {};
+                  allMatches.forEach(match => {
+                     if (!sectionMatches[match.sectionId]) {
+                        sectionMatches[match.sectionId] = [];
+                     }
+                     sectionMatches[match.sectionId].push(match);
+                  });
+                  Object.keys(sectionMatches).forEach(sectionId => {
+                     const section = document.getElementById(sectionId);
+                     if (!section) return;
+                     
+                     sectionMatches[sectionId].forEach(match => {
+                        section.appendChild(match.element);
+                     });
+                  });
+                  if (query === "") {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     
+                     let insertAfter = firstDivider;
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (section) {
+                           insertAfter.insertAdjacentElement('afterend', section);
+                           insertAfter = section;
+                        }
+                     });
+                  } else {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     const sectionsWithExactMatches = [];
+                     const sectionsWithoutExactMatches = [];
+                     
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (!section || !sectionMatches[sectionId]) return;
+                        
+                        const hasExactMatch = sectionMatches[sectionId].some(match => match.isExact);
+                        if (hasExactMatch) {
+                           sectionsWithExactMatches.push(section);
+                        } else {
+                           sectionsWithoutExactMatches.push(section);
+                        }
+                     });
+                     let insertAfter = firstDivider;
+                     [...sectionsWithExactMatches, ...sectionsWithoutExactMatches].forEach(section => {
+                        insertAfter.insertAdjacentElement('afterend', section);
+                        insertAfter = section;
+                     });
+                  }
+
+                  updateSectionVisibility();
+                  const symbolItems = Array.from(document.querySelectorAll('#symbolIndex li'));
+                  const matchingSymbols = [];
+                  
+                  symbolItems.forEach(li => {
                      const link = li.querySelector('a');
                      if (link) {
                         const symbolName = link.textContent.toLowerCase();
@@ -4380,11 +4472,27 @@ be false.</p>
                            
                            if (!isPrivateSymbol || shouldShowPrivate) {
                               li.style.display = '';
+                              const isExactMatch = symbolName === query;
+                              matchingSymbols.push({
+                                 element: li,
+                                 name: symbolName,
+                                 isExact: isExactMatch
+                              });
                            }
                         } else {
                            li.style.display = 'none';
                         }
                      }
+                  });
+                  matchingSymbols.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     return a.name.localeCompare(b.name);
+                  });
+                  
+                  const symbolIndex = document.getElementById('symbolIndex');
+                  matchingSymbols.forEach(symbol => {
+                     symbolIndex.appendChild(symbol.element);
                   });
                });
             }
@@ -4407,6 +4515,7 @@ be false.</p>
             }
 
             buildSymbolIndex();
+            deduplicateImports();
 
             document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
                anchor.addEventListener("click", function (e) {

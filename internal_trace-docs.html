@@ -29,7 +29,7 @@
          }
 
          .sidebar {
-            width: 12%;
+            width: 14%;
             background: rgba(59, 56, 56, 0.15);
             padding: 1.5rem;
             box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
@@ -614,14 +614,16 @@
                   Imports
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
-               <pre><code class="language-go">"cmp"
-"slices"
-"strings"
-"time"
+               <pre><code class="language-go">"fmt"
 "bytes"
 "encoding/binary"
 "fmt"
 "io"
+"internal/trace/event"
+"internal/trace/event/go122"
+"cmp"
+"encoding/binary"
+"fmt"
 "internal/trace/event"
 "internal/trace/event/go122"
 "fmt"
@@ -632,6 +634,31 @@
 "internal/trace/event"
 "internal/trace/event/go122"
 "internal/trace/version"
+"cmp"
+"math"
+"slices"
+"errors"
+"fmt"
+"internal/trace/event"
+"internal/trace/event/go122"
+"internal/trace/internal/oldtrace"
+"io"
+"cmp"
+"slices"
+"strings"
+"time"
+"fmt"
+"fmt"
+"math"
+"strings"
+"internal/trace/event"
+"internal/trace/event/go122"
+"internal/trace/version"
+"container/heap"
+"math"
+"sort"
+"strings"
+"time"
 "bufio"
 "bytes"
 "cmp"
@@ -642,6 +669,11 @@
 "strings"
 "internal/trace/event"
 "internal/trace/event/go122"
+"fmt"
+"strings"
+"internal/trace/event"
+"internal/trace/event/go122"
+"internal/trace/version"
 "bufio"
 "fmt"
 "io"
@@ -649,38 +681,6 @@
 "strings"
 "internal/trace/event/go122"
 "internal/trace/internal/oldtrace"
-"internal/trace/version"
-"fmt"
-"fmt"
-"fmt"
-"math"
-"strings"
-"internal/trace/event"
-"internal/trace/event/go122"
-"internal/trace/version"
-"cmp"
-"encoding/binary"
-"fmt"
-"internal/trace/event"
-"internal/trace/event/go122"
-"container/heap"
-"math"
-"sort"
-"strings"
-"time"
-"cmp"
-"math"
-"slices"
-"errors"
-"fmt"
-"internal/trace/event"
-"internal/trace/event/go122"
-"internal/trace/internal/oldtrace"
-"io"
-"fmt"
-"strings"
-"internal/trace/event"
-"internal/trace/event/go122"
 "internal/trace/version"
 </code></pre>
             </article>
@@ -4067,6 +4067,23 @@ It cleans up any remaining state and returns the full summary.</p>
                   <a href="#Goroutine" class="anchor" title="Link to Goroutine">#</a>
                </h3>
                
+               <p>Goroutine returns the state transition for a goroutine.
+Transitions to and from states that are Executing are special in that
+they change the future execution context. In other words, future events
+on the same thread will feature the same goroutine until it stops running.
+Panics if d.Resource.Kind is not ResourceGoroutine.</p>
+               
+               <pre><code class="language-go">func (d StateTransition) Goroutine() (from GoState, to GoState)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Goroutine" data-name="Goroutine">
+               <h3>
+                  Goroutine 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Goroutine" class="anchor" title="Link to Goroutine">#</a>
+               </h3>
+               
                <p>Goroutine returns the ID of the goroutine that was executing when
 this event happened. It describes part of the execution context
 for this event.
@@ -4093,23 +4110,6 @@ r.Kind must be ResourceGoroutine or this function will panic.</p>
                <pre><code class="language-go">func (r ResourceID) Goroutine() GoID</code></pre>
             </article>
             
-            <article class="function symbol-anchor" id="Goroutine" data-name="Goroutine">
-               <h3>
-                  Goroutine 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Goroutine" class="anchor" title="Link to Goroutine">#</a>
-               </h3>
-               
-               <p>Goroutine returns the state transition for a goroutine.
-Transitions to and from states that are Executing are special in that
-they change the future execution context. In other words, future events
-on the same thread will feature the same goroutine until it stops running.
-Panics if d.Resource.Kind is not ResourceGoroutine.</p>
-               
-               <pre><code class="language-go">func (d StateTransition) Goroutine() (from GoState, to GoState)</code></pre>
-            </article>
-            
             <article class="function symbol-anchor" id="IsSystemGoroutine" data-name="IsSystemGoroutine">
                <h3>
                   IsSystemGoroutine 
@@ -4129,12 +4129,9 @@ Panics if d.Resource.Kind is not ResourceGoroutine.</p>
                   <a href="#Kind" class="anchor" title="Link to Kind">#</a>
                </h3>
                
-               <p>Kind returns the ValueKind of the value.
-It represents the underlying structure of the value.
-New ValueKinds may be added in the future. Users of this type must be robust
-to that possibility.</p>
+               <p>Kind returns the kind of event that this is.</p>
                
-               <pre><code class="language-go">func (v Value) Kind() ValueKind</code></pre>
+               <pre><code class="language-go">func (e Event) Kind() EventKind</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Kind" data-name="Kind">
@@ -4145,9 +4142,12 @@ to that possibility.</p>
                   <a href="#Kind" class="anchor" title="Link to Kind">#</a>
                </h3>
                
-               <p>Kind returns the kind of event that this is.</p>
+               <p>Kind returns the ValueKind of the value.
+It represents the underlying structure of the value.
+New ValueKinds may be added in the future. Users of this type must be robust
+to that possibility.</p>
                
-               <pre><code class="language-go">func (e Event) Kind() EventKind</code></pre>
+               <pre><code class="language-go">func (v Value) Kind() ValueKind</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Label" data-name="Label">
@@ -4376,7 +4376,7 @@ function.</p>
                   <a href="#Pop" class="anchor" title="Link to Pop">#</a>
                </h3>
                
-               <pre><code class="language-go">func (h *utilHeap) Pop() any</code></pre>
+               <pre><code class="language-go">func (h *bandUtilHeap) Pop() any</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Pop" data-name="Pop">
@@ -4387,23 +4387,7 @@ function.</p>
                   <a href="#Pop" class="anchor" title="Link to Pop">#</a>
                </h3>
                
-               <pre><code class="language-go">func (h *bandUtilHeap) Pop() any</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Proc" data-name="Proc">
-               <h3>
-                  Proc 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Proc" class="anchor" title="Link to Proc">#</a>
-               </h3>
-               
-               <p>Proc returns the ID of the proc this event event pertains to.
-Note that for proc state transitions this always refers to the
-state before the transition. For example, if a proc is just
-starting to run on this thread, then this will return NoProc.</p>
-               
-               <pre><code class="language-go">func (e Event) Proc() ProcID</code></pre>
+               <pre><code class="language-go">func (h *utilHeap) Pop() any</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Proc" data-name="Proc">
@@ -4437,15 +4421,20 @@ Panics if d.Resource.Kind is not ResourceProc.</p>
                <pre><code class="language-go">func (d StateTransition) Proc() (from ProcState, to ProcState)</code></pre>
             </article>
             
-            <article class="function symbol-anchor" id="Push" data-name="Push">
+            <article class="function symbol-anchor" id="Proc" data-name="Proc">
                <h3>
-                  Push 
+                  Proc 
                   <span class="badge method-badge">method</span>
                   
-                  <a href="#Push" class="anchor" title="Link to Push">#</a>
+                  <a href="#Proc" class="anchor" title="Link to Proc">#</a>
                </h3>
                
-               <pre><code class="language-go">func (h *utilHeap) Push(x any)</code></pre>
+               <p>Proc returns the ID of the proc this event event pertains to.
+Note that for proc state transitions this always refers to the
+state before the transition. For example, if a proc is just
+starting to run on this thread, then this will return NoProc.</p>
+               
+               <pre><code class="language-go">func (e Event) Proc() ProcID</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Push" data-name="Push">
@@ -4457,6 +4446,17 @@ Panics if d.Resource.Kind is not ResourceProc.</p>
                </h3>
                
                <pre><code class="language-go">func (h *bandUtilHeap) Push(x any)</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Push" data-name="Push">
+               <h3>
+                  Push 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Push" class="anchor" title="Link to Push">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (h *utilHeap) Push(x any)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Range" data-name="Range">
@@ -4568,89 +4568,24 @@ Panics if Kind != EventStateTransition.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <p>String returns the event as a human-readable string.
-The format of the string is intended for debugging and is subject to change.</p>
-               
-               <pre><code class="language-go">func (e Event) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <p>String returns a human-readable string for the GC state.</p>
-               
-               <pre><code class="language-go">func (s gcState) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <p>String returns a human-readable string representation of the ResourceID.
-This representation is subject to change and is intended primarily for debugging.</p>
-               
-               <pre><code class="language-go">func (r ResourceID) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func (s stack) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <p>String returns a debug string representation of the seqCounter.</p>
-               
-               <pre><code class="language-go">func (c seqCounter) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
-               <p>String returns a human-readable representation of a GoState.
-The format of the returned string is for debugging purposes and is subject to change.</p>
-               
-               <pre><code class="language-go">func (s GoState) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
-               
                <p>String returns a human-readable representation of a ProcState.
 The format of the returned string is for debugging purposes and is subject to change.</p>
                
                <pre><code class="language-go">func (s ProcState) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <p>String returns the event as a human-readable string.
+The format of the string is intended for debugging and is subject to change.</p>
+               
+               <pre><code class="language-go">func (e Event) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -4675,9 +4610,74 @@ The format of the returned string is for debugging purposes and is subject to ch
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
+               <p>String returns a debug string representation of the seqCounter.</p>
+               
+               <pre><code class="language-go">func (c seqCounter) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (s stack) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <p>String returns a human-readable string representation of the ResourceID.
+This representation is subject to change and is intended primarily for debugging.</p>
+               
+               <pre><code class="language-go">func (r ResourceID) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
                <p>String returns a string form of the EventKind.</p>
                
                <pre><code class="language-go">func (e EventKind) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <p>String returns a human-readable representation of a GoState.
+The format of the returned string is for debugging purposes and is subject to change.</p>
+               
+               <pre><code class="language-go">func (s GoState) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
+               
+               <p>String returns a human-readable string for the GC state.</p>
+               
+               <pre><code class="language-go">func (s gcState) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Sub" data-name="Sub">
@@ -4737,20 +4737,6 @@ Panics if Kind != EventTaskBegin and Kind != EventTaskEnd.</p>
                   <a href="#Thread" class="anchor" title="Link to Thread">#</a>
                </h3>
                
-               <p>Thread obtains a ThreadID from the resource ID.
-r.Kind must be ResourceThread or this function will panic.</p>
-               
-               <pre><code class="language-go">func (r ResourceID) Thread() ThreadID</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Thread" data-name="Thread">
-               <h3>
-                  Thread 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Thread" class="anchor" title="Link to Thread">#</a>
-               </h3>
-               
                <p>Thread returns the ID of the thread this event pertains to.
 Note that for thread state transitions this always refers to the
 state before the transition. For example, if a thread is just
@@ -4761,6 +4747,20 @@ may be tracked in the future, and callers must be robust to this
 possibility.</p>
                
                <pre><code class="language-go">func (e Event) Thread() ThreadID</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Thread" data-name="Thread">
+               <h3>
+                  Thread 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Thread" class="anchor" title="Link to Thread">#</a>
+               </h3>
+               
+               <p>Thread obtains a ThreadID from the resource ID.
+r.Kind must be ResourceThread or this function will panic.</p>
+               
+               <pre><code class="language-go">func (r ResourceID) Thread() ThreadID</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Time" data-name="Time">
@@ -5925,10 +5925,10 @@ This should only be used if id has already been validated.</p>
                   <a href="#next" class="anchor" title="Link to next">#</a>
                </h3>
                
-               <p>next returns the next event, io.EOF if there are no more events, or a
-descriptive error for invalid events.</p>
+               <p>next returns the smallest time t' > time of a change in the
+utilization function.</p>
                
-               <pre><code class="language-go">func (it *oldTraceConverter) next() (Event, error)</code></pre>
+               <pre><code class="language-go">func (in *integrator) next(time int64) int64</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="next" data-name="next">
@@ -5939,10 +5939,10 @@ descriptive error for invalid events.</p>
                   <a href="#next" class="anchor" title="Link to next">#</a>
                </h3>
                
-               <p>next returns the smallest time t' > time of a change in the
-utilization function.</p>
+               <p>next returns the next event, io.EOF if there are no more events, or a
+descriptive error for invalid events.</p>
                
-               <pre><code class="language-go">func (in *integrator) next(time int64) int64</code></pre>
+               <pre><code class="language-go">func (it *oldTraceConverter) next() (Event, error)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="nextEvent" data-name="nextEvent">
@@ -6229,6 +6229,20 @@ string values in the future.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function deduplicateImports() {
+            const importsSection = document.querySelector('#imports-section code');
+            if (!importsSection) return;
+            
+            const lines = importsSection.textContent.split('\n');
+            var uniqueLines = [...new Set(lines.filter(line => line.trim()))];
+            uniqueLines.sort();
+            importsSection.textContent = uniqueLines.join('\n');
+            
+            if (window.Prism) {
+               Prism.highlightElement(importsSection);
+            }
+         }
+
          function updateSectionVisibility() {
             document.querySelectorAll("section").forEach(section => {
                const visibleArticles = section.querySelectorAll("article:not(.hidden)");
@@ -6442,7 +6456,9 @@ string values in the future.</p>
             if (searchInput) {
                searchInput.addEventListener("input", () => {
                   const query = searchInput.value.trim().toLowerCase();
-
+                  const allMatches = [];
+                  const sectionOrder = ['imports', 'globals', 'types', 'interfaces', 'structs', 'functions'];
+                  
                   document.querySelectorAll("article").forEach((el) => {
                      const name = el.dataset.name;
                      if (!name) return;
@@ -6454,21 +6470,97 @@ string values in the future.</p>
                            el.textContent.toLowerCase().includes(query));
 
                      if (matches) {
-                        const isPrivateEl =
-                           el.classList.contains("private");
-                        const shouldShowPrivate =
-                           getPrivateToggleState(el);
+                        const isPrivateEl = el.classList.contains("private");
+                        const shouldShowPrivate = getPrivateToggleState(el);
 
                         if (!isPrivateEl || shouldShowPrivate) {
                            el.classList.remove("hidden");
+                           
+                           const section = el.closest('section');
+                           if (section) {
+                              const sectionId = section.id;
+                              const sectionIndex = sectionOrder.indexOf(sectionId);
+                              const isExactMatch = name.toLowerCase() === query;
+                              
+                              allMatches.push({
+                                 element: el,
+                                 name: name,
+                                 isExact: isExactMatch,
+                                 sectionId: sectionId,
+                                 sectionIndex: sectionIndex >= 0 ? sectionIndex : 999
+                              });
+                           }
                         }
                      } else {
                         el.classList.add("hidden");
                      }
-                     updateSectionVisibility();
                   });
 
-                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                  allMatches.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     if (a.sectionIndex !== b.sectionIndex) return a.sectionIndex - b.sectionIndex;
+                     return a.name.localeCompare(b.name);
+                  });
+
+                  const sectionMatches = {};
+                  allMatches.forEach(match => {
+                     if (!sectionMatches[match.sectionId]) {
+                        sectionMatches[match.sectionId] = [];
+                     }
+                     sectionMatches[match.sectionId].push(match);
+                  });
+                  Object.keys(sectionMatches).forEach(sectionId => {
+                     const section = document.getElementById(sectionId);
+                     if (!section) return;
+                     
+                     sectionMatches[sectionId].forEach(match => {
+                        section.appendChild(match.element);
+                     });
+                  });
+                  if (query === "") {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     
+                     let insertAfter = firstDivider;
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (section) {
+                           insertAfter.insertAdjacentElement('afterend', section);
+                           insertAfter = section;
+                        }
+                     });
+                  } else {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     const sectionsWithExactMatches = [];
+                     const sectionsWithoutExactMatches = [];
+                     
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (!section || !sectionMatches[sectionId]) return;
+                        
+                        const hasExactMatch = sectionMatches[sectionId].some(match => match.isExact);
+                        if (hasExactMatch) {
+                           sectionsWithExactMatches.push(section);
+                        } else {
+                           sectionsWithoutExactMatches.push(section);
+                        }
+                     });
+                     let insertAfter = firstDivider;
+                     [...sectionsWithExactMatches, ...sectionsWithoutExactMatches].forEach(section => {
+                        insertAfter.insertAdjacentElement('afterend', section);
+                        insertAfter = section;
+                     });
+                  }
+
+                  updateSectionVisibility();
+                  const symbolItems = Array.from(document.querySelectorAll('#symbolIndex li'));
+                  const matchingSymbols = [];
+                  
+                  symbolItems.forEach(li => {
                      const link = li.querySelector('a');
                      if (link) {
                         const symbolName = link.textContent.toLowerCase();
@@ -6482,11 +6574,27 @@ string values in the future.</p>
                            
                            if (!isPrivateSymbol || shouldShowPrivate) {
                               li.style.display = '';
+                              const isExactMatch = symbolName === query;
+                              matchingSymbols.push({
+                                 element: li,
+                                 name: symbolName,
+                                 isExact: isExactMatch
+                              });
                            }
                         } else {
                            li.style.display = 'none';
                         }
                      }
+                  });
+                  matchingSymbols.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     return a.name.localeCompare(b.name);
+                  });
+                  
+                  const symbolIndex = document.getElementById('symbolIndex');
+                  matchingSymbols.forEach(symbol => {
+                     symbolIndex.appendChild(symbol.element);
                   });
                });
             }
@@ -6509,6 +6617,7 @@ string values in the future.</p>
             }
 
             buildSymbolIndex();
+            deduplicateImports();
 
             document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
                anchor.addEventListener("click", function (e) {

@@ -29,7 +29,7 @@
          }
 
          .sidebar {
-            width: 12%;
+            width: 14%;
             background: rgba(59, 56, 56, 0.15);
             padding: 1.5rem;
             box-shadow: 2px 0 8px rgba(0, 0, 0, 0.4);
@@ -605,8 +605,20 @@
                   <a href="#imports-section" class="anchor" title="Link to imports">#</a>
                </h3>
                <pre><code class="language-go">"internal/abi"
+"unsafe"
+"unsafe"
+"iter"
+"internal/abi"
 "internal/goarch"
 "internal/unsafeheader"
+"unsafe"
+"internal/abi"
+"internal/goarch"
+"unsafe"
+"internal/abi"
+"internal/race"
+"internal/runtime/maps"
+"internal/runtime/sys"
 "unsafe"
 "internal/abi"
 "internal/goarch"
@@ -624,27 +636,15 @@
 "math"
 "runtime"
 "unsafe"
-"internal/abi"
-"internal/goarch"
-"unsafe"
+"arena"
 "internal/bytealg"
 "unsafe"
 "internal/abi"
+"internal/goarch"
 "unsafe"
-"internal/abi"
-"internal/race"
-"internal/runtime/maps"
-"internal/runtime/sys"
-"unsafe"
-"arena"
 "internal/abi"
 "unsafe"
 _ "unsafe"
-"unsafe"
-"iter"
-"internal/abi"
-"internal/goarch"
-"unsafe"
 </code></pre>
             </article>
          </section>
@@ -2800,12 +2800,7 @@ v is a receive-only channel.</p>
                   <a href="#Comparable" class="anchor" title="Link to Comparable">#</a>
                </h3>
                
-               <p>Comparable reports whether the value v is comparable.
-If the type of v is an interface, this checks the dynamic type.
-If this reports true then v.Interface() == x will not panic for any x,
-nor will v.Equal(u) for any Value u.</p>
-               
-               <pre><code class="language-go">func (v Value) Comparable() bool</code></pre>
+               <pre><code class="language-go">func (t *rtype) Comparable() bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Comparable" data-name="Comparable">
@@ -2816,7 +2811,12 @@ nor will v.Equal(u) for any Value u.</p>
                   <a href="#Comparable" class="anchor" title="Link to Comparable">#</a>
                </h3>
                
-               <pre><code class="language-go">func (t *rtype) Comparable() bool</code></pre>
+               <p>Comparable reports whether the value v is comparable.
+If the type of v is an interface, this checks the dynamic type.
+If this reports true then v.Interface() == x will not panic for any x,
+nor will v.Equal(u) for any Value u.</p>
+               
+               <pre><code class="language-go">func (v Value) Comparable() bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Complex" data-name="Complex">
@@ -2939,7 +2939,12 @@ This ensures that DeepEqual terminates.</p>
                   <a href="#Elem" class="anchor" title="Link to Elem">#</a>
                </h3>
                
-               <pre><code class="language-go">func (t *rtype) Elem() Type</code></pre>
+               <p>Elem returns the value that the interface v contains
+or that the pointer v points to.
+It panics if v's Kind is not [Interface] or [Pointer].
+It returns the zero Value if v is nil.</p>
+               
+               <pre><code class="language-go">func (v Value) Elem() Value</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Elem" data-name="Elem">
@@ -2950,12 +2955,7 @@ This ensures that DeepEqual terminates.</p>
                   <a href="#Elem" class="anchor" title="Link to Elem">#</a>
                </h3>
                
-               <p>Elem returns the value that the interface v contains
-or that the pointer v points to.
-It panics if v's Kind is not [Interface] or [Pointer].
-It returns the zero Value if v is nil.</p>
-               
-               <pre><code class="language-go">func (v Value) Elem() Value</code></pre>
+               <pre><code class="language-go">func (t *rtype) Elem() Type</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Equal" data-name="Equal">
@@ -2997,7 +2997,10 @@ and the type is not comparable, Equal will panic.</p>
                   <a href="#Field" class="anchor" title="Link to Field">#</a>
                </h3>
                
-               <pre><code class="language-go">func (t *rtype) Field(i int) StructField</code></pre>
+               <p>Field returns the i'th field of the struct v.
+It panics if v's Kind is not [Struct] or i is out of range.</p>
+               
+               <pre><code class="language-go">func (v Value) Field(i int) Value</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Field" data-name="Field">
@@ -3008,10 +3011,7 @@ and the type is not comparable, Equal will panic.</p>
                   <a href="#Field" class="anchor" title="Link to Field">#</a>
                </h3>
                
-               <p>Field returns the i'th field of the struct v.
-It panics if v's Kind is not [Struct] or i is out of range.</p>
-               
-               <pre><code class="language-go">func (v Value) Field(i int) Value</code></pre>
+               <pre><code class="language-go">func (t *rtype) Field(i int) StructField</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Field" data-name="Field">
@@ -3046,19 +3046,6 @@ It panics if v's Kind is not [Struct] or i is out of range.</p>
                   <a href="#FieldByIndex" class="anchor" title="Link to FieldByIndex">#</a>
                </h3>
                
-               <p>FieldByIndex returns the nested field corresponding to index.</p>
-               
-               <pre><code class="language-go">func (t *structType) FieldByIndex(index []int) (f StructField)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="FieldByIndex" data-name="FieldByIndex">
-               <h3>
-                  FieldByIndex 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#FieldByIndex" class="anchor" title="Link to FieldByIndex">#</a>
-               </h3>
-               
                <pre><code class="language-go">func (t *rtype) FieldByIndex(index []int) StructField</code></pre>
             </article>
             
@@ -3075,6 +3062,19 @@ It panics if evaluation requires stepping through a nil
 pointer or a field that is not a struct.</p>
                
                <pre><code class="language-go">func (v Value) FieldByIndex(index []int) Value</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="FieldByIndex" data-name="FieldByIndex">
+               <h3>
+                  FieldByIndex 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#FieldByIndex" class="anchor" title="Link to FieldByIndex">#</a>
+               </h3>
+               
+               <p>FieldByIndex returns the nested field corresponding to index.</p>
+               
+               <pre><code class="language-go">func (t *structType) FieldByIndex(index []int) (f StructField)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="FieldByIndexErr" data-name="FieldByIndexErr">
@@ -3101,7 +3101,10 @@ is not a struct.</p>
                   <a href="#FieldByName" class="anchor" title="Link to FieldByName">#</a>
                </h3>
                
-               <pre><code class="language-go">func (t *rtype) FieldByName(name string) (StructField, bool)</code></pre>
+               <p>FieldByName returns the struct field with the given name
+and a boolean to indicate if the field was found.</p>
+               
+               <pre><code class="language-go">func (t *structType) FieldByName(name string) (f StructField, present bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="FieldByName" data-name="FieldByName">
@@ -3112,10 +3115,7 @@ is not a struct.</p>
                   <a href="#FieldByName" class="anchor" title="Link to FieldByName">#</a>
                </h3>
                
-               <p>FieldByName returns the struct field with the given name
-and a boolean to indicate if the field was found.</p>
-               
-               <pre><code class="language-go">func (t *structType) FieldByName(name string) (f StructField, present bool)</code></pre>
+               <pre><code class="language-go">func (t *rtype) FieldByName(name string) (StructField, bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="FieldByName" data-name="FieldByName">
@@ -3131,6 +3131,20 @@ It returns the zero Value if no field was found.
 It panics if v's Kind is not [Struct].</p>
                
                <pre><code class="language-go">func (v Value) FieldByName(name string) Value</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="FieldByNameFunc" data-name="FieldByNameFunc">
+               <h3>
+                  FieldByNameFunc 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#FieldByNameFunc" class="anchor" title="Link to FieldByNameFunc">#</a>
+               </h3>
+               
+               <p>FieldByNameFunc returns the struct field with a name that satisfies the
+match function and a boolean to indicate if the field was found.</p>
+               
+               <pre><code class="language-go">func (t *structType) FieldByNameFunc(match func(string) bool) (result StructField, ok bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="FieldByNameFunc" data-name="FieldByNameFunc">
@@ -3158,20 +3172,6 @@ It returns the zero Value if no field was found.</p>
                </h3>
                
                <pre><code class="language-go">func (t *rtype) FieldByNameFunc(match func(string) bool) (StructField, bool)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="FieldByNameFunc" data-name="FieldByNameFunc">
-               <h3>
-                  FieldByNameFunc 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#FieldByNameFunc" class="anchor" title="Link to FieldByNameFunc">#</a>
-               </h3>
-               
-               <p>FieldByNameFunc returns the struct field with a name that satisfies the
-match function and a boolean to indicate if the field was found.</p>
-               
-               <pre><code class="language-go">func (t *structType) FieldByNameFunc(match func(string) bool) (result StructField, ok bool)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Float" data-name="Float">
@@ -3436,30 +3436,6 @@ It panics if the argument is invalid.</p>
                   <a href="#Key" class="anchor" title="Link to Key">#</a>
                </h3>
                
-               <pre><code class="language-go">func (t *rtype) Key() Type</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Key" data-name="Key">
-               <h3>
-                  Key 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Key" class="anchor" title="Link to Key">#</a>
-               </h3>
-               
-               <p>Key returns the key of iter's current map entry.</p>
-               
-               <pre><code class="language-go">func (iter *MapIter) Key() Value</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="Key" data-name="Key">
-               <h3>
-                  Key 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#Key" class="anchor" title="Link to Key">#</a>
-               </h3>
-               
                <p>Key returns the key of iter's current map entry.</p>
                
                <pre><code class="language-go">func (iter *MapIter) Key() Value</code></pre>
@@ -3474,6 +3450,30 @@ It panics if the argument is invalid.</p>
                </h3>
                
                <pre><code class="language-go">func (t *rtype) Key() Type</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Key" data-name="Key">
+               <h3>
+                  Key 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Key" class="anchor" title="Link to Key">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func (t *rtype) Key() Type</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="Key" data-name="Key">
+               <h3>
+                  Key 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#Key" class="anchor" title="Link to Key">#</a>
+               </h3>
+               
+               <p>Key returns the key of iter's current map entry.</p>
+               
+               <pre><code class="language-go">func (iter *MapIter) Key() Value</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Kind" data-name="Kind">
@@ -3781,9 +3781,7 @@ v := iter.Value()
                   <a href="#Method" class="anchor" title="Link to Method">#</a>
                </h3>
                
-               <p>Method returns the i'th method in the type's method set.</p>
-               
-               <pre><code class="language-go">func (t *interfaceType) Method(i int) (m Method)</code></pre>
+               <pre><code class="language-go">func (t *rtype) Method(i int) (m Method)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Method" data-name="Method">
@@ -3794,7 +3792,9 @@ v := iter.Value()
                   <a href="#Method" class="anchor" title="Link to Method">#</a>
                </h3>
                
-               <pre><code class="language-go">func (t *rtype) Method(i int) (m Method)</code></pre>
+               <p>Method returns the i'th method in the type's method set.</p>
+               
+               <pre><code class="language-go">func (t *interfaceType) Method(i int) (m Method)</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Method" data-name="Method">
@@ -3821,6 +3821,23 @@ Method panics if i is out of range or if v is a nil interface value.</p>
                   <a href="#MethodByName" class="anchor" title="Link to MethodByName">#</a>
                </h3>
                
+               <p>MethodByName returns a function value corresponding to the method
+of v with the given name.
+The arguments to a Call on the returned function should not include
+a receiver; the returned function will always use v as the receiver.
+It returns the zero Value if no method was found.</p>
+               
+               <pre><code class="language-go">func (v Value) MethodByName(name string) Value</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="MethodByName" data-name="MethodByName">
+               <h3>
+                  MethodByName 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#MethodByName" class="anchor" title="Link to MethodByName">#</a>
+               </h3>
+               
                <pre><code class="language-go">func (t *rtype) MethodByName(name string) (m Method, ok bool)</code></pre>
             </article>
             
@@ -3835,23 +3852,6 @@ Method panics if i is out of range or if v is a nil interface value.</p>
                <p>MethodByName method with the given name in the type's method set.</p>
                
                <pre><code class="language-go">func (t *interfaceType) MethodByName(name string) (m Method, ok bool)</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="MethodByName" data-name="MethodByName">
-               <h3>
-                  MethodByName 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#MethodByName" class="anchor" title="Link to MethodByName">#</a>
-               </h3>
-               
-               <p>MethodByName returns a function value corresponding to the method
-of v with the given name.
-The arguments to a Call on the returned function should not include
-a receiver; the returned function will always use v as the receiver.
-It returns the zero Value if no method was found.</p>
-               
-               <pre><code class="language-go">func (v Value) MethodByName(name string) Value</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="Name" data-name="Name">
@@ -3931,7 +3931,10 @@ calls to [MapIter.Key], [MapIter.Value], or [MapIter.Next] will panic.</p>
                   <a href="#NumField" class="anchor" title="Link to NumField">#</a>
                </h3>
                
-               <pre><code class="language-go">func (t *rtype) NumField() int</code></pre>
+               <p>NumField returns the number of fields in the struct v.
+It panics if v's Kind is not [Struct].</p>
+               
+               <pre><code class="language-go">func (v Value) NumField() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="NumField" data-name="NumField">
@@ -3942,10 +3945,7 @@ calls to [MapIter.Key], [MapIter.Value], or [MapIter.Next] will panic.</p>
                   <a href="#NumField" class="anchor" title="Link to NumField">#</a>
                </h3>
                
-               <p>NumField returns the number of fields in the struct v.
-It panics if v's Kind is not [Struct].</p>
-               
-               <pre><code class="language-go">func (v Value) NumField() int</code></pre>
+               <pre><code class="language-go">func (t *rtype) NumField() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="NumIn" data-name="NumIn">
@@ -3982,9 +3982,7 @@ For an interface type, it returns the number of exported and unexported methods.
                   <a href="#NumMethod" class="anchor" title="Link to NumMethod">#</a>
                </h3>
                
-               <p>NumMethod returns the number of interface methods in the type's method set.</p>
-               
-               <pre><code class="language-go">func (t *interfaceType) NumMethod() int</code></pre>
+               <pre><code class="language-go">func (t *rtype) NumMethod() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="NumMethod" data-name="NumMethod">
@@ -3995,7 +3993,9 @@ For an interface type, it returns the number of exported and unexported methods.
                   <a href="#NumMethod" class="anchor" title="Link to NumMethod">#</a>
                </h3>
                
-               <pre><code class="language-go">func (t *rtype) NumMethod() int</code></pre>
+               <p>NumMethod returns the number of interface methods in the type's method set.</p>
+               
+               <pre><code class="language-go">func (t *interfaceType) NumMethod() int</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="NumOut" data-name="NumOut">
@@ -4028,10 +4028,7 @@ For an interface type, it returns the number of exported and unexported methods.
                   <a href="#OverflowComplex" class="anchor" title="Link to OverflowComplex">#</a>
                </h3>
                
-               <p>OverflowComplex reports whether the complex128 x cannot be represented by v's type.
-It panics if v's Kind is not [Complex64] or [Complex128].</p>
-               
-               <pre><code class="language-go">func (v Value) OverflowComplex(x complex128) bool</code></pre>
+               <pre><code class="language-go">func (t *rtype) OverflowComplex(x complex128) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="OverflowComplex" data-name="OverflowComplex">
@@ -4042,7 +4039,10 @@ It panics if v's Kind is not [Complex64] or [Complex128].</p>
                   <a href="#OverflowComplex" class="anchor" title="Link to OverflowComplex">#</a>
                </h3>
                
-               <pre><code class="language-go">func (t *rtype) OverflowComplex(x complex128) bool</code></pre>
+               <p>OverflowComplex reports whether the complex128 x cannot be represented by v's type.
+It panics if v's Kind is not [Complex64] or [Complex128].</p>
+               
+               <pre><code class="language-go">func (v Value) OverflowComplex(x complex128) bool</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="OverflowFloat" data-name="OverflowFloat">
@@ -4668,25 +4668,9 @@ For example, if t represents int, SliceOf(t) represents []int.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <pre><code class="language-go">func (d ChanDir) String() string</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="String" data-name="String">
-               <h3>
-                  String 
-                  <span class="badge method-badge">method</span>
-                  
-                  <a href="#String" class="anchor" title="Link to String">#</a>
-               </h3>
+               <p>String returns the name of k.</p>
                
-               <p>String returns the string v's underlying value, as a string.
-String is a special case because of Go's String method convention.
-Unlike the other getters, it does not panic if v's Kind is not [String].
-Instead, it returns a string of the form "<T value>" where T is v's type.
-The fmt package treats Values specially. It does not call their String
-method implicitly but instead prints the concrete values they hold.</p>
-               
-               <pre><code class="language-go">func (v Value) String() string</code></pre>
+               <pre><code class="language-go">func (k Kind) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="String" data-name="String">
@@ -4708,9 +4692,25 @@ method implicitly but instead prints the concrete values they hold.</p>
                   <a href="#String" class="anchor" title="Link to String">#</a>
                </h3>
                
-               <p>String returns the name of k.</p>
+               <pre><code class="language-go">func (d ChanDir) String() string</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="String" data-name="String">
+               <h3>
+                  String 
+                  <span class="badge method-badge">method</span>
+                  
+                  <a href="#String" class="anchor" title="Link to String">#</a>
+               </h3>
                
-               <pre><code class="language-go">func (k Kind) String() string</code></pre>
+               <p>String returns the string v's underlying value, as a string.
+String is a special case because of Go's String method convention.
+Unlike the other getters, it does not panic if v's Kind is not [String].
+Instead, it returns a string of the form "<T value>" where T is v's type.
+The fmt package treats Values specially. It does not call their String
+method implicitly but instead prints the concrete values they hold.</p>
+               
+               <pre><code class="language-go">func (v Value) String() string</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="StructOf" data-name="StructOf">
@@ -6237,7 +6237,7 @@ and the ideal constant rules (no ideal constants at run time).</p>
                   <a href="#dump" class="anchor" title="Link to dump">#</a>
                </h3>
                
-               <pre><code class="language-go">func (a *abiSeq) dump()</code></pre>
+               <pre><code class="language-go">func (a *abiDesc) dump()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="dump" data-name="dump">
@@ -6248,7 +6248,7 @@ and the ideal constant rules (no ideal constants at run time).</p>
                   <a href="#dump" class="anchor" title="Link to dump">#</a>
                </h3>
                
-               <pre><code class="language-go">func (a *abiDesc) dump()</code></pre>
+               <pre><code class="language-go">func (a *abiSeq) dump()</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="dumpPtrBitMap" data-name="dumpPtrBitMap">
@@ -7197,7 +7197,7 @@ an unexported field.</p>
                   <a href="#nameOff" class="anchor" title="Link to nameOff">#</a>
                </h3>
                
-               <pre><code class="language-go">func (t *interfaceType) nameOff(off aNameOff) abi.Name</code></pre>
+               <pre><code class="language-go">func (t *rtype) nameOff(off aNameOff) abi.Name</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="nameOff" data-name="nameOff">
@@ -7208,7 +7208,7 @@ an unexported field.</p>
                   <a href="#nameOff" class="anchor" title="Link to nameOff">#</a>
                </h3>
                
-               <pre><code class="language-go">func (t *rtype) nameOff(off aNameOff) abi.Name</code></pre>
+               <pre><code class="language-go">func (t *interfaceType) nameOff(off aNameOff) abi.Name</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="nameOffFor" data-name="nameOffFor">
@@ -7364,23 +7364,23 @@ if v.Kind() == Pointer, the base type must not be not-in-heap.</p>
             <article class="function symbol-anchor" id="ptrTo" data-name="ptrTo">
                <h3>
                   ptrTo 
-                  <span class="badge">function</span>
-                  
-                  <a href="#ptrTo" class="anchor" title="Link to ptrTo">#</a>
-               </h3>
-               
-               <pre><code class="language-go">func ptrTo(t *abi.Type) *abi.Type</code></pre>
-            </article>
-            
-            <article class="function symbol-anchor" id="ptrTo" data-name="ptrTo">
-               <h3>
-                  ptrTo 
                   <span class="badge method-badge">method</span>
                   
                   <a href="#ptrTo" class="anchor" title="Link to ptrTo">#</a>
                </h3>
                
                <pre><code class="language-go">func (t *rtype) ptrTo() *abi.Type</code></pre>
+            </article>
+            
+            <article class="function symbol-anchor" id="ptrTo" data-name="ptrTo">
+               <h3>
+                  ptrTo 
+                  <span class="badge">function</span>
+                  
+                  <a href="#ptrTo" class="anchor" title="Link to ptrTo">#</a>
+               </h3>
+               
+               <pre><code class="language-go">func ptrTo(t *abi.Type) *abi.Type</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="rangeNum" data-name="rangeNum">
@@ -7807,7 +7807,7 @@ See abiType and Type, which do return the correct type.</p>
                   <a href="#typeOff" class="anchor" title="Link to typeOff">#</a>
                </h3>
                
-               <pre><code class="language-go">func (t *interfaceType) typeOff(off aTypeOff) *abi.Type</code></pre>
+               <pre><code class="language-go">func (t *rtype) typeOff(off aTypeOff) *abi.Type</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="typeOff" data-name="typeOff">
@@ -7818,7 +7818,7 @@ See abiType and Type, which do return the correct type.</p>
                   <a href="#typeOff" class="anchor" title="Link to typeOff">#</a>
                </h3>
                
-               <pre><code class="language-go">func (t *rtype) typeOff(off aTypeOff) *abi.Type</code></pre>
+               <pre><code class="language-go">func (t *interfaceType) typeOff(off aTypeOff) *abi.Type</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="typeOffFor" data-name="typeOffFor">
@@ -8015,7 +8015,7 @@ go:linkname typesByString</p>
                   <a href="#uncommon" class="anchor" title="Link to uncommon">#</a>
                </h3>
                
-               <pre><code class="language-go">func (t *interfaceType) uncommon() *abi.UncommonType</code></pre>
+               <pre><code class="language-go">func (t *rtype) uncommon() *abi.UncommonType</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="uncommon" data-name="uncommon">
@@ -8026,7 +8026,7 @@ go:linkname typesByString</p>
                   <a href="#uncommon" class="anchor" title="Link to uncommon">#</a>
                </h3>
                
-               <pre><code class="language-go">func (t *rtype) uncommon() *abi.UncommonType</code></pre>
+               <pre><code class="language-go">func (t *interfaceType) uncommon() *abi.UncommonType</code></pre>
             </article>
             
             <article class="function symbol-anchor" id="unpackEface" data-name="unpackEface">
@@ -8159,6 +8159,20 @@ Name field cleared.</p>
       <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.29.0/plugins/autoloader/prism-autoloader.min.js"></script>
 
       <script>
+         function deduplicateImports() {
+            const importsSection = document.querySelector('#imports-section code');
+            if (!importsSection) return;
+            
+            const lines = importsSection.textContent.split('\n');
+            var uniqueLines = [...new Set(lines.filter(line => line.trim()))];
+            uniqueLines.sort();
+            importsSection.textContent = uniqueLines.join('\n');
+            
+            if (window.Prism) {
+               Prism.highlightElement(importsSection);
+            }
+         }
+
          function updateSectionVisibility() {
             document.querySelectorAll("section").forEach(section => {
                const visibleArticles = section.querySelectorAll("article:not(.hidden)");
@@ -8372,7 +8386,9 @@ Name field cleared.</p>
             if (searchInput) {
                searchInput.addEventListener("input", () => {
                   const query = searchInput.value.trim().toLowerCase();
-
+                  const allMatches = [];
+                  const sectionOrder = ['imports', 'globals', 'types', 'interfaces', 'structs', 'functions'];
+                  
                   document.querySelectorAll("article").forEach((el) => {
                      const name = el.dataset.name;
                      if (!name) return;
@@ -8384,21 +8400,97 @@ Name field cleared.</p>
                            el.textContent.toLowerCase().includes(query));
 
                      if (matches) {
-                        const isPrivateEl =
-                           el.classList.contains("private");
-                        const shouldShowPrivate =
-                           getPrivateToggleState(el);
+                        const isPrivateEl = el.classList.contains("private");
+                        const shouldShowPrivate = getPrivateToggleState(el);
 
                         if (!isPrivateEl || shouldShowPrivate) {
                            el.classList.remove("hidden");
+                           
+                           const section = el.closest('section');
+                           if (section) {
+                              const sectionId = section.id;
+                              const sectionIndex = sectionOrder.indexOf(sectionId);
+                              const isExactMatch = name.toLowerCase() === query;
+                              
+                              allMatches.push({
+                                 element: el,
+                                 name: name,
+                                 isExact: isExactMatch,
+                                 sectionId: sectionId,
+                                 sectionIndex: sectionIndex >= 0 ? sectionIndex : 999
+                              });
+                           }
                         }
                      } else {
                         el.classList.add("hidden");
                      }
-                     updateSectionVisibility();
                   });
 
-                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                  allMatches.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     if (a.sectionIndex !== b.sectionIndex) return a.sectionIndex - b.sectionIndex;
+                     return a.name.localeCompare(b.name);
+                  });
+
+                  const sectionMatches = {};
+                  allMatches.forEach(match => {
+                     if (!sectionMatches[match.sectionId]) {
+                        sectionMatches[match.sectionId] = [];
+                     }
+                     sectionMatches[match.sectionId].push(match);
+                  });
+                  Object.keys(sectionMatches).forEach(sectionId => {
+                     const section = document.getElementById(sectionId);
+                     if (!section) return;
+                     
+                     sectionMatches[sectionId].forEach(match => {
+                        section.appendChild(match.element);
+                     });
+                  });
+                  if (query === "") {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     
+                     let insertAfter = firstDivider;
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (section) {
+                           insertAfter.insertAdjacentElement('afterend', section);
+                           insertAfter = section;
+                        }
+                     });
+                  } else {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     const sectionsWithExactMatches = [];
+                     const sectionsWithoutExactMatches = [];
+                     
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (!section || !sectionMatches[sectionId]) return;
+                        
+                        const hasExactMatch = sectionMatches[sectionId].some(match => match.isExact);
+                        if (hasExactMatch) {
+                           sectionsWithExactMatches.push(section);
+                        } else {
+                           sectionsWithoutExactMatches.push(section);
+                        }
+                     });
+                     let insertAfter = firstDivider;
+                     [...sectionsWithExactMatches, ...sectionsWithoutExactMatches].forEach(section => {
+                        insertAfter.insertAdjacentElement('afterend', section);
+                        insertAfter = section;
+                     });
+                  }
+
+                  updateSectionVisibility();
+                  const symbolItems = Array.from(document.querySelectorAll('#symbolIndex li'));
+                  const matchingSymbols = [];
+                  
+                  symbolItems.forEach(li => {
                      const link = li.querySelector('a');
                      if (link) {
                         const symbolName = link.textContent.toLowerCase();
@@ -8412,11 +8504,27 @@ Name field cleared.</p>
                            
                            if (!isPrivateSymbol || shouldShowPrivate) {
                               li.style.display = '';
+                              const isExactMatch = symbolName === query;
+                              matchingSymbols.push({
+                                 element: li,
+                                 name: symbolName,
+                                 isExact: isExactMatch
+                              });
                            }
                         } else {
                            li.style.display = 'none';
                         }
                      }
+                  });
+                  matchingSymbols.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     return a.name.localeCompare(b.name);
+                  });
+                  
+                  const symbolIndex = document.getElementById('symbolIndex');
+                  matchingSymbols.forEach(symbol => {
+                     symbolIndex.appendChild(symbol.element);
                   });
                });
             }
@@ -8439,6 +8547,7 @@ Name field cleared.</p>
             }
 
             buildSymbolIndex();
+            deduplicateImports();
 
             document.querySelectorAll('a[href^="#"]').forEach((anchor) => {
                anchor.addEventListener("click", function (e) {
