@@ -949,7 +949,7 @@
             if (searchInput) {
                searchInput.addEventListener("input", () => {
                   const query = searchInput.value.trim().toLowerCase();
-
+                  const sectionMatches = {};                  
                   document.querySelectorAll("article").forEach((el) => {
                      const name = el.dataset.name;
                      if (!name) return;
@@ -961,21 +961,57 @@
                            el.textContent.toLowerCase().includes(query));
 
                      if (matches) {
-                        const isPrivateEl =
-                           el.classList.contains("private");
-                        const shouldShowPrivate =
-                           getPrivateToggleState(el);
+                        const isPrivateEl = el.classList.contains("private");
+                        const shouldShowPrivate = getPrivateToggleState(el);
 
                         if (!isPrivateEl || shouldShowPrivate) {
                            el.classList.remove("hidden");
+
+                           const section = el.closest('section');
+                           if (section) {
+                              const sectionId = section.id;
+                              if (!sectionMatches[sectionId]) {
+                                 sectionMatches[sectionId] = [];
+                              }
+                              
+                              const isExactMatch = name.toLowerCase() === query;
+                              sectionMatches[sectionId].push({
+                                 element: el,
+                                 name: name,
+                                 isExact: isExactMatch
+                              });
+                           }
                         }
                      } else {
                         el.classList.add("hidden");
                      }
-                     updateSectionVisibility();
                   });
 
-                  document.querySelectorAll('#symbolIndex li').forEach(li => {
+                  Object.keys(sectionMatches).forEach(sectionId => {
+                     const section = document.getElementById(sectionId);
+                     if (!section) return;
+                     
+                     const matches = sectionMatches[sectionId];
+                     
+
+                     matches.sort((a, b) => {
+                        if (a.isExact && !b.isExact) return -1;
+                        if (!a.isExact && b.isExact) return 1;
+                        return a.name.localeCompare(b.name);
+                     });
+                     
+
+                     matches.forEach(match => {
+                        section.appendChild(match.element);
+                     });
+                  });
+
+                  updateSectionVisibility();
+
+                  const symbolItems = Array.from(document.querySelectorAll('#symbolIndex li'));
+                  const matchingSymbols = [];
+                  
+                  symbolItems.forEach(li => {
                      const link = li.querySelector('a');
                      if (link) {
                         const symbolName = link.textContent.toLowerCase();
@@ -989,11 +1025,28 @@
                            
                            if (!isPrivateSymbol || shouldShowPrivate) {
                               li.style.display = '';
+                              const isExactMatch = symbolName === query;
+                              matchingSymbols.push({
+                                 element: li,
+                                 name: symbolName,
+                                 isExact: isExactMatch
+                              });
                            }
                         } else {
                            li.style.display = 'none';
                         }
                      }
+                  });
+                  
+                  matchingSymbols.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     return a.name.localeCompare(b.name);
+                  });
+                  
+                  const symbolIndex = document.getElementById('symbolIndex');
+                  matchingSymbols.forEach(symbol => {
+                     symbolIndex.appendChild(symbol.element);
                   });
                });
             }
