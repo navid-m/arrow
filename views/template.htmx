@@ -949,7 +949,9 @@
             if (searchInput) {
                searchInput.addEventListener("input", () => {
                   const query = searchInput.value.trim().toLowerCase();
-                  const sectionMatches = {};                  
+                  const allMatches = [];
+                  const sectionOrder = ['imports', 'globals', 'types', 'interfaces', 'structs', 'functions'];
+                  
                   document.querySelectorAll("article").forEach((el) => {
                      const name = el.dataset.name;
                      if (!name) return;
@@ -966,19 +968,19 @@
 
                         if (!isPrivateEl || shouldShowPrivate) {
                            el.classList.remove("hidden");
-
+                           
                            const section = el.closest('section');
                            if (section) {
                               const sectionId = section.id;
-                              if (!sectionMatches[sectionId]) {
-                                 sectionMatches[sectionId] = [];
-                              }
-                              
+                              const sectionIndex = sectionOrder.indexOf(sectionId);
                               const isExactMatch = name.toLowerCase() === query;
-                              sectionMatches[sectionId].push({
+                              
+                              allMatches.push({
                                  element: el,
                                  name: name,
-                                 isExact: isExactMatch
+                                 isExact: isExactMatch,
+                                 sectionId: sectionId,
+                                 sectionIndex: sectionIndex >= 0 ? sectionIndex : 999
                               });
                            }
                         }
@@ -987,27 +989,67 @@
                      }
                   });
 
+                  allMatches.sort((a, b) => {
+                     if (a.isExact && !b.isExact) return -1;
+                     if (!a.isExact && b.isExact) return 1;
+                     if (a.sectionIndex !== b.sectionIndex) return a.sectionIndex - b.sectionIndex;
+                     return a.name.localeCompare(b.name);
+                  });
+
+                  const sectionMatches = {};
+                  allMatches.forEach(match => {
+                     if (!sectionMatches[match.sectionId]) {
+                        sectionMatches[match.sectionId] = [];
+                     }
+                     sectionMatches[match.sectionId].push(match);
+                  });
                   Object.keys(sectionMatches).forEach(sectionId => {
                      const section = document.getElementById(sectionId);
                      if (!section) return;
                      
-                     const matches = sectionMatches[sectionId];
-                     
-
-                     matches.sort((a, b) => {
-                        if (a.isExact && !b.isExact) return -1;
-                        if (!a.isExact && b.isExact) return 1;
-                        return a.name.localeCompare(b.name);
-                     });
-                     
-
-                     matches.forEach(match => {
+                     sectionMatches[sectionId].forEach(match => {
                         section.appendChild(match.element);
                      });
                   });
+                  if (query === "") {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     
+                     let insertAfter = firstDivider;
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (section) {
+                           insertAfter.insertAdjacentElement('afterend', section);
+                           insertAfter = section;
+                        }
+                     });
+                  } else {
+                     const main = document.querySelector('main');
+                     const h1 = main.querySelector('h1');
+                     const firstDivider = main.querySelector('.section-divider');
+                     const sectionsWithExactMatches = [];
+                     const sectionsWithoutExactMatches = [];
+                     
+                     sectionOrder.forEach(sectionId => {
+                        const section = document.getElementById(sectionId);
+                        if (!section || !sectionMatches[sectionId]) return;
+                        
+                        const hasExactMatch = sectionMatches[sectionId].some(match => match.isExact);
+                        if (hasExactMatch) {
+                           sectionsWithExactMatches.push(section);
+                        } else {
+                           sectionsWithoutExactMatches.push(section);
+                        }
+                     });
+                     let insertAfter = firstDivider;
+                     [...sectionsWithExactMatches, ...sectionsWithoutExactMatches].forEach(section => {
+                        insertAfter.insertAdjacentElement('afterend', section);
+                        insertAfter = section;
+                     });
+                  }
 
                   updateSectionVisibility();
-
                   const symbolItems = Array.from(document.querySelectorAll('#symbolIndex li'));
                   const matchingSymbols = [];
                   
@@ -1037,7 +1079,6 @@
                         }
                      }
                   });
-                  
                   matchingSymbols.sort((a, b) => {
                      if (a.isExact && !b.isExact) return -1;
                      if (!a.isExact && b.isExact) return 1;
